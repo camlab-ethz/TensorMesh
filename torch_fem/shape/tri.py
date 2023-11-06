@@ -1,6 +1,8 @@
 import torch 
 
-basis_p1 = torch.tensor([[0, 0],[1, 0],[0, 1]], dtype=torch.float)
+basis_p1 = torch.tensor([[0, 0],
+                         [1, 0],
+                         [0, 1]], dtype=torch.float)
 
 def shape_val_p1(quadrature):
     """
@@ -53,10 +55,9 @@ def shape_grad_p1(quadrature, element_coords, return_jac=False):
     grad_phi[..., 1, 0] = 1
     grad_phi[..., 2, 1] = 1
     
-    
-    jac  = torch.einsum("bhi,ghj->bgij", element_coords, grad_phi)
+    jac  = torch.einsum("ebj,qbi->eqij", element_coords, grad_phi)
     ijac = torch.inverse(jac)
-    grad_phi = torch.einsum("gbi,ngji->ngbj", grad_phi, ijac)
+    grad_phi = torch.einsum("qbi,eqji->eqbj", grad_phi, ijac)
 
     if return_jac:
         return grad_phi, jac
@@ -137,9 +138,9 @@ def shape_grad_p2(quadrature, element_coords, return_jac=False):
     grad_phi[..., 5, 0] = 0
     grad_phi[..., 5, 1] = 4*eta - 2
 
-    jac  = torch.einsum("bhi,ghj->bgij", element_coords, grad_phi)
+    jac  = torch.einsum("ebj,qbi->eqij", element_coords, grad_phi)
     ijac = torch.inverse(jac)
-    grad_phi = torch.einsum("gbi,ngji->ngbj", grad_phi, ijac)
+    grad_phi = torch.einsum("qbi,eqji->eqbj", grad_phi, ijac)
 
     if return_jac:
         return grad_phi, jac

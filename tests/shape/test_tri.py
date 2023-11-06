@@ -29,6 +29,14 @@ def test_max_p1():
     phi  = phi.max(dim=0).values # [n_basis]
     assert torch.allclose(phi, torch.ones_like(phi))
 
+def test_linear_p1():
+    x, y = torch.meshgrid(torch.linspace(0, 1, 100), torch.linspace(0, 1, 100))
+    mask = x + y <= 1
+    x, y = x[mask], y[mask]
+    z = x + y 
+    xy =  torch.stack([x, y], dim=-1)
+    phi = shape_val_p1(xy)
+
 def test_sum_p2():
     x, y = torch.meshgrid(torch.linspace(0, 1, 200), torch.linspace(0, 1, 200))
     mask = x + y <= 1

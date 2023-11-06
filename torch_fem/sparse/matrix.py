@@ -226,11 +226,13 @@ class SparseMatrix(nn.Module):
         col   = col[:, None].repeat(1, block_size * block_size)
 
         i,j   = torch.meshgrid(torch.arange(block_size), torch.arange(block_size)) 
-
-        row   = row + i.flatten()
-        col   = col + j.flatten()
-
+       
+        row   = row * block_size+ i.flatten()
+        col   = col * block_size+ j.flatten()
+        
         shape = (shape[0] * block_size, shape[1] * block_size)
+        row   = row.flatten()
+        col   = col.flatten()
 
         return SparseMatrix(edata, row, col, shape)
 

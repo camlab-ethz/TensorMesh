@@ -7,10 +7,21 @@ A fast:rocket:, differentiable:dart:, cross-platform:computer:, jit-free:pushpin
 ---
 
 
-
 ## Document
 
+### Quadrature Order
 
+- line: $[1,\infin]$
+- triangle: $[1,20)$
+- quad: $[1,\infin]$
+- tetra: $[1,10)$
+
+### Shape Function Order
+
+- line: $[1,1]$
+- triangle: $[1,2]$
+- quad: $[1,2]$
+- tetra: $[1,2]$
 
 ## Feature
 

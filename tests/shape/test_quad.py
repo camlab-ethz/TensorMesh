@@ -12,35 +12,35 @@ from torch_fem.shape.quad import shape_val_p1,\
 
 
 def test_sum_p1():
-    x, y = torch.meshgrid(torch.linspace(-1, 1, 100), torch.linspace(-1, 1, 100))
+    x, y = torch.meshgrid(torch.linspace(0, 1, 100), torch.linspace(0, 1, 100))
     xy   = torch.stack([x, y], dim=-1).reshape(-1, 2)
     phi  = shape_val_p1(xy) # [n_quadrature, n_basis]
     phi  = phi.sum(dim=-1)
     assert torch.allclose(phi, torch.ones_like(phi))
 
 def test_max_p1():
-    x, y = torch.meshgrid(torch.linspace(-1, 1, 200), torch.linspace(-1, 1, 200))
+    x, y = torch.meshgrid(torch.linspace(0, 1, 200), torch.linspace(0, 1, 200))
     xy   = torch.stack([x, y], dim=-1).reshape(-1, 2)
     phi  = shape_val_p1(xy) # [n_quadrature, n_basis]
     phi  = phi.max(dim=0).values # [n_basis]
     assert torch.allclose(phi, torch.ones_like(phi))
 
 def test_sum_p2():
-    x, y = torch.meshgrid(torch.linspace(-1, 1, 100), torch.linspace(-1, 1, 100))
+    x, y = torch.meshgrid(torch.linspace(0, 1, 100), torch.linspace(0, 1, 100))
     xy   = torch.stack([x, y], dim=-1).reshape(-1, 2)
     phi  = shape_val_p2(xy) # [n_quadrature, n_basis]
     phi  = phi.sum(dim=-1)
     assert torch.allclose(phi, torch.ones_like(phi))
 
 def test_max_p2():
-    x, y = torch.meshgrid(torch.linspace(-1, 1, 400), torch.linspace(-1, 1, 400))
+    x, y = torch.meshgrid(torch.linspace(0, 1, 400), torch.linspace(0, 1, 400))
     xy   = torch.stack([x, y], dim=-1).reshape(-1, 2)
     phi  = shape_val_p2(xy) # [n_quadrature, n_basis]
     phi  = phi.max(dim=0).values # [n_basis]
-    assert torch.allclose(phi, torch.ones_like(phi),  rtol=1e-4)
+    assert torch.allclose(phi, torch.ones_like(phi),  rtol=1e-4), f"phi = {phi}"
 
 def test_integral_p1():
-    x, y = torch.meshgrid(torch.linspace(-1, 1, 400), torch.linspace(-1, 1, 400))
+    x, y = torch.meshgrid(torch.linspace(0, 1, 400), torch.linspace(0, 1, 400))
     x  = x.reshape(-1)
     y  = y.reshape(-1)
     element_coords = basis_p1
@@ -58,7 +58,7 @@ def test_integral_p1():
         torch.allclose(integral_dy, torch.zeros_like(integral_dy))
 
 def test_integral_p2():
-    x, y = torch.meshgrid(torch.linspace(-1, 1, 400), torch.linspace(-1, 1, 400))
+    x, y = torch.meshgrid(torch.linspace(0, 1, 400), torch.linspace(0, 1, 400))
     x  = x.reshape(-1)
     y  = y.reshape(-1)
    

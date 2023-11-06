@@ -34,7 +34,7 @@ def gauss_points_n1(device:str='cpu'):
     ], device=device)
     return weights, points
 
-def gauss_points_n2(device:str='cpu'):
+def gauss_points_n3(device:str='cpu'):
     """
         Parameters:
         -----------
@@ -57,7 +57,7 @@ def gauss_points_n2(device:str='cpu'):
     ], device=device)
     return weights, points
 
-def gauss_points_n3(device:str='cpu'):
+def gauss_points_n4(device:str='cpu'):
     """
         Parameters:
         -----------
@@ -100,8 +100,8 @@ def gauss_points(n:int, device:str='cpu'):
     
     find_points = {
         1: gauss_points_n1,
-        3: gauss_points_n2,
-        4: gauss_points_n3
+        3: gauss_points_n3,
+        4: gauss_points_n4
     }
 
     assert n in find_points, f"n must be in {find_points.keys()}, but got {n}"

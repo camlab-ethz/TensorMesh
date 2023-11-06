@@ -1,8 +1,13 @@
 import torch 
+import numpy as np
+from numpy.polynomial.legendre import Legendre
+from .line import shape_val_pn
 
 
-
-basis_p1 = torch.tensor([[-1, -1], [-1, 1], [1, 1], [1, -1]], dtype=torch.float32) 
+basis_p1 = torch.tensor([[0., 0.],
+                        [1., 0.],
+                        [1., 1.],
+                        [0., 1.]], dtype=torch.float32) 
 
 def shape_val_p1(quadrature):
     """
@@ -20,11 +25,11 @@ def shape_val_p1(quadrature):
     assert quadrature.dim() == 2, f"quadrature must be 2D, but got {quadrature.dim()}"
 
     phi = torch.zeros((*quadrature.shape[:-1], 4), device=quadrature.device,  dtype=quadrature.dtype)
-    xi, eta = quadrature[..., 0], quadrature[..., 1]
-    phi[:, 0] = 0.25 * (1 - xi) * (1 - eta)
-    phi[:, 1] = 0.25 * (1 + xi) * (1 - eta)
-    phi[:, 2] = 0.25 * (1 + xi) * (1 + eta)
-    phi[:, 3] = 0.25 * (1 - xi) * (1 + eta)
+    x, y = quadrature[..., 0], quadrature[..., 1]
+    phi[:, 0] = (1. - x) * (1. - y)
+    phi[:, 1] = x * (1. - y)
+    phi[:, 2] = x * y
+    phi[:, 3] = (1. - x) * y
 
     return phi
 
@@ -54,27 +59,35 @@ def shape_grad_p1(quadrature, element_coords, return_jac=False):
     assert n_dim == 2, f"n_dim must be 2 for triangle , but got {n_dim}"
     
     grad_phi = torch.zeros(n_quadrature, n_basis, n_dim, device=quadrature.device, dtype=quadrature.dtype)
-    eta, xi  = quadrature[..., 0], quadrature[..., 1]
-    grad_phi[:, 0, 0] = -0.25 * (1 - xi)
-    grad_phi[:, 0, 1] = -0.25 * (1 - eta)
-    grad_phi[:, 1, 0] = 0.25 * (1 - xi)
-    grad_phi[:, 1, 1] = -0.25 * (1 + eta)
-    grad_phi[:, 2, 0] = 0.25 * (1 + xi)
-    grad_phi[:, 2, 1] = 0.25 * (1 + eta)
-    grad_phi[:, 3, 0] = -0.25 * (1 + xi)
-    grad_phi[:, 3, 1] = 0.25 * (1 - eta)
+    x, y = quadrature[..., 0], quadrature[..., 1]
+    grad_phi[:, 0, 0] = -1 + y
+    grad_phi[:, 0, 1] = -1 + x 
+    grad_phi[:, 1, 0] = 1 - y
+    grad_phi[:, 1, 1] = -x
+    grad_phi[:, 2, 0] = y
+    grad_phi[:, 2, 1] = x
+    grad_phi[:, 3, 0] = -y
+    grad_phi[:, 3, 1] = 1 - x
     
     
-    jac  = torch.einsum("bhi,ghj->bgij", element_coords, grad_phi)
+    jac  = torch.einsum("ebj,qbi->eqij", element_coords, grad_phi)
     ijac = torch.inverse(jac)
-    grad_phi = torch.einsum("gbi,ngji->ngbj", grad_phi, ijac)
+    grad_phi = torch.einsum("qbi,eqji->eqbj", grad_phi, ijac)
 
     if return_jac:
         return grad_phi, jac
     else:
         return grad_phi
 
-basis_p2 = torch.tensor([[-1, -1], [-1, 1], [1, 1], [1, -1], [-1, 0], [0, 1], [1, 0], [0, -1], [0, 0]], dtype=torch.float32) 
+basis_p2 = torch.tensor([[0.0, 0.0],
+                        [1.0, 0.0],
+                        [1.0, 1.0],
+                        [0.0, 1.0],
+                        [0.5, 0.0],
+                        [1.0, 0.5],
+                        [0.5, 1.0],
+                        [0.0, 0.5],
+                        [0.5, 0.5]], dtype=torch.float32) 
 
 def shape_val_p2(quadrature):
     """
@@ -91,18 +104,19 @@ def shape_val_p2(quadrature):
     assert n_dim == 2, f"n_dim must be 2 for triangle , but got {n_dim}"
 
     phi = torch.zeros(*quadrature.shape[:-1], 9, device=quadrature.device, dtype=quadrature.dtype)
-    xi, eta = quadrature[..., 0], quadrature[..., 1]
+    quadrature = 2 * quadrature - 1
+    x, y = quadrature[..., 0], quadrature[..., 1]
+    x2, y2 = x ** 2, y ** 2
 
-    phi[:, 0] = 0.25 * (xi * xi - xi) * (eta * eta - eta)
-    phi[:, 1] = 0.25 * (xi * xi + xi) * (eta * eta - eta)
-    phi[:, 2] = 0.25 * (xi * xi + xi) * (eta * eta + eta)
-    phi[:, 3] = 0.25 * (xi * xi - xi) * (eta * eta + eta)
-    phi[:, 4] = 0.5 * (1 - xi * xi) * (eta * eta - eta)
-    phi[:, 5] = 0.5 * (1 - eta * eta) * (xi * xi + xi)
-    phi[:, 6] = 0.5 * (1 - xi * xi) * (eta * eta + eta)
-    phi[:, 7] = 0.5 * (1 - eta * eta) * (xi * xi - xi)
-    phi[:, 8] = (1 - xi * xi) * (1 - eta * eta)
-
+    phi[:, 0] = 0.25 * (x2 - x) * (y2 - y)
+    phi[:, 1] = 0.25 * (x2 + x) * (y2 - y)
+    phi[:, 2] = 0.25 * (x2 + x) * (y2 + y)
+    phi[:, 3] = 0.25 * (x2 - x) * (y2 + y)
+    phi[:, 4] = 0.5 * (y2 - y) * (1 - x2)
+    phi[:, 5] = 0.5 * (x2 + x) * (1 - y2)
+    phi[:, 6] = 0.5 * (y2 + y) * (1 - x2)
+    phi[:, 7] = 0.5 * (x2 - x) * (1 - y2)
+    phi[:, 8] = (1 - x2) * (1 - y2)
 
     return phi
 
@@ -133,33 +147,33 @@ def shape_grad_p2(quadrature, element_coords, return_jac=False):
     
     n_basis = 9
     grad_phi = torch.zeros(n_quadrature, n_basis, n_dim, device=quadrature.device, dtype=quadrature.dtype)
-    xi, eta = quadrature[..., 0], quadrature[..., 1]
-    
-    grad_phi[:, 0, 0] = 0.25 * (2 * xi - 1) * (eta * eta - eta)
-    grad_phi[:, 0, 1] = 0.25 * (xi * xi - xi) * (2 * eta - 1)
-    grad_phi[:, 1, 0] = 0.25 * (2 * xi + 1) * (eta * eta - eta)
-    grad_phi[:, 1, 1] = 0.25 * (xi * xi + xi) * (2 * eta - 1)
-    grad_phi[:, 2, 0] = 0.25 * (2 * xi + 1) * (eta * eta + eta)
-    grad_phi[:, 2, 1] = 0.25 * (xi * xi + xi) * (2 * eta + 1)
-    grad_phi[:, 3, 0] = 0.25 * (2 * xi - 1) * (eta * eta + eta)
-    grad_phi[:, 3, 1] = 0.25 * (xi * xi - xi) * (2 * eta + 1)
-    grad_phi[:, 4, 0] = -xi * (eta * eta - eta)
-    grad_phi[:, 4, 1] = 0.5 * (1 - xi * xi) * (2 * eta - 1)
-    grad_phi[:, 5, 0] = 0.5 * (1 - eta * eta) * (2 * xi + 1)
-    grad_phi[:, 5, 1] = -eta * (xi * xi + xi)
-    grad_phi[:, 6, 0] = -xi * (eta * eta + eta)
-    grad_phi[:, 6, 1] = 0.5 * (1 - xi * xi) * (2 * eta + 1)
-    grad_phi[:, 7, 0] = 0.5 * (1 - eta * eta) * (2 * xi - 1)
-    grad_phi[:, 7, 1] = -eta * (xi * xi - xi)
-    grad_phi[:, 8, 0] = -2 * xi * (1 - eta * eta)
-    grad_phi[:, 8, 1] = -2 * eta * (1 - xi * xi)
+    quadrature = 2 * quadrature - 1
+    x, y = quadrature[..., 0], quadrature[..., 1]
+    x2, y2 = x ** 2, y ** 2
+    grad_phi[:, 0, 0] = 0.25 * ((-1 + 2 * x) * (-1 + y) * y)
+    grad_phi[:, 0, 1] = 0.25 * ((-1 + x) * x * (-1 + 2 * y))
+    grad_phi[:, 1, 0] = 0.25 * ((1 + 2 * x) * (-1 + y) * y)
+    grad_phi[:, 1, 1] = 0.25 * (x * (1 + x) * (-1 + 2 * y))
+    grad_phi[:, 2, 0] = 0.25 * ((1 + 2 * x) * y * (1 + y))
+    grad_phi[:, 2, 1] = 0.25 * (x * (1 + x) * (1 + 2 * y))
+    grad_phi[:, 3, 0] = 0.25 * ((-1 + 2 * x) * y * (1 + y))
+    grad_phi[:, 3, 1] = 0.25 * ((-1 + x) * x * (1 + 2 * y))
+    grad_phi[:, 4, 0] = -(x * (-1 + y) * y)
+    grad_phi[:, 4, 1] = -0.5 * ((-1 + x2) * (-1 + 2 * y))
+    grad_phi[:, 5, 0] = -0.5 * ((1 + 2 * x) * (-1 + y2))
+    grad_phi[:, 5, 1] = -(x * (1 + x) * y)
+    grad_phi[:, 6, 0] = -(x * y * (1 + y))
+    grad_phi[:, 6, 1] = -0.5 * ((-1 + x2) * (1 + 2 * y))
+    grad_phi[:, 7, 0] = -0.5 * ((-1 + 2 * x) * (-1 + y2))
+    grad_phi[:, 7, 1] = -((-1 + x) * x * y)
+    grad_phi[:, 8, 0] = 2 * x * (-1 + y2)
+    grad_phi[:, 8, 1] = 2 * (-1 + x2) * y
 
-    jac  = torch.einsum("bhi,ghj->bgij", element_coords, grad_phi)
+    jac  = torch.einsum("ebj,qbi->eqij", element_coords, grad_phi)
     ijac = torch.inverse(jac)
-    grad_phi = torch.einsum("gbi,ngji->ngbj", grad_phi, ijac)
+    grad_phi = torch.einsum("qbi,eqji->eqbj", grad_phi, ijac)
 
     if return_jac:
         return grad_phi, jac
     else:
         return grad_phi
-

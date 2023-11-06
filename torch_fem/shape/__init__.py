@@ -11,6 +11,12 @@ from .quad import shape_val_p1 as quad4_shape_val
 from .quad import shape_grad_p1 as quad4_shape_grad
 from .quad import shape_val_p2 as quad9_shape_val
 from .quad import shape_grad_p2 as quad9_shape_grad
+from .tetra import basis_p1 as tetra4_basis_p1
+from .tetra import basis_p2 as tetra10_basis_p2
+from .tetra import shape_val_p1 as tetra4_shape_val
+from .tetra import shape_grad_p1 as tetra4_shape_grad
+from .tetra import shape_val_p2 as tetra10_shape_val
+from .tetra import shape_grad_p2 as tetra10_shape_grad
 
 
 def get_basis(element_type):
@@ -21,6 +27,9 @@ def get_basis(element_type):
         "quad":quad4_basis_p1,
         "quad4":quad4_basis_p1,
         "quad9":quad9_basis_p2,
+        "tetra":tetra4_basis_p1,
+        "tetra4":tetra4_basis_p1,
+        "tetra10":tetra10_basis_p2,
     }
     if element_type not in find_basis:
         raise ValueError(f"element_type must be one of {list(find_basis.keys())}, but got {element_type}")
@@ -49,6 +58,9 @@ def get_shape_val(element_type, quadrature_points):
         "quad":quad4_shape_val,
         "quad4":quad4_shape_val,
         "quad9":quad9_shape_val,
+        "tetra":tetra4_shape_val,
+        "tetra4":tetra4_shape_val,
+        "tetra10":tetra10_shape_val,
     }
     if element_type not in find_shape_val:
         raise ValueError(f"element_type must be one of {list(find_shape_val.keys())}, but got {element_type}")
@@ -85,6 +97,9 @@ def get_shape_grad(element_type, quadrature_weights, quadrature_points, element_
         "quad":quad4_shape_grad,
         "quad4":quad4_shape_grad,
         "quad9":quad9_shape_grad,
+        "tetra":tetra4_shape_grad,
+        "tetra4":tetra4_shape_grad,
+        "tetra10":tetra10_shape_grad,
     }
 
     assert element_type in find_shape_grad, f"element_type must be one of {list(find_shape_grad.keys())}, but got {element_type}"
