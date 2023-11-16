@@ -39,7 +39,7 @@ def wave_torchfem(dt=0.001, c=4.0, n=100):
     torch.random.manual_seed(123456)
     
     mesh = Mesh.gen_rectangle(chara_length=0.05)
-    # mesh = Mesh.gen_rectangle(chara_length=0.01, cell_type="quad")
+    # mesh = Mesh.gen_rectangle(chara_length=0.01, element_type="quad")
    
     dataset = WaveMultiSinCos(K=4, c=c)
 

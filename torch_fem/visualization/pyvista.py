@@ -6,7 +6,7 @@ import numpy as np
 # Make sure to import torch if you're using it
 # import torch
 
-def plot(kwargs, mesh, save_path=None, dt=None, show_mesh=False):
+def plot_value(kwargs, mesh, save_path=None, dt=None, show_mesh=False):
     is_2d = mesh.points.shape[1] == 2
     mesh.write("tmp.vtk", file_format="vtk")
     mesh = pv.read("tmp.vtk",)

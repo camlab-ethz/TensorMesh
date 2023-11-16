@@ -1,10 +1,5 @@
 import torch
 
-def is_float(x):
-    if  isinstance(x, torch.Tensor):
-        return x.dtype == torch.float32 or x.dtype == torch.float64 or x.dtype == torch.float16
-    else:
-        return x == torch.float32 or x == torch.float64 or x == torch.float16
 
 def trace(tensor):
     return torch.einsum(f"...ii->...", tensor)

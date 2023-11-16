@@ -48,7 +48,7 @@ class KAssembler(ElementAssembler):
     
 
 if __name__ == '__main__':
-    mesh = Mesh.gen_rectangle(chara_length=0.1,cell_type="tri").double()
+    mesh = Mesh.gen_rectangle(chara_length=0.1,element_type="tri").double()
 
     K_asm = KAssembler.from_mesh(mesh, quadrature_order=1)
 

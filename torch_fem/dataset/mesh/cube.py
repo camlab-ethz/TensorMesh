@@ -26,7 +26,7 @@ def gen_cube(chara_length=0.1,
                 the characteristic length of the mesh
             order: int
                 the order of the mesh
-            cell_type: str
+            element_type: str
                 the type of the element, e.g., 'quad', 'tri'
             left: float
                 the left boundary of the rectangle

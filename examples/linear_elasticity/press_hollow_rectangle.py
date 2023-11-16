@@ -50,7 +50,7 @@ class KAssembler(ElementAssembler):
     
 
 if __name__ == '__main__':
-    mesh = Mesh.gen_hollow_rectangle(chara_length=0.02, cell_type="quad").double()
+    mesh = Mesh.gen_hollow_rectangle(chara_length=0.02, element_type="quad").double()
 
     K_asm = KAssembler.from_mesh(mesh, quadrature_order=3)
 

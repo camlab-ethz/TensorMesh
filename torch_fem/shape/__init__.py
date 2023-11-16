@@ -1,4 +1,7 @@
+import os
+import toml
 import torch
+import scipy.spatial
 from .tri import basis_p1 as tri3_basis_p1
 from .tri import basis_p2 as tri6_basis_p2
 from .tri import shape_val_p1 as tri3_shape_val 
@@ -19,9 +22,16 @@ from .tetra import shape_val_p2 as tetra10_shape_val
 from .tetra import shape_grad_p2 as tetra10_shape_grad
 
 
+with open(os.path.join(os.path.dirname(__file__), "dimension.toml"), "r") as f:
+    element_type2dimension = toml.load(f)
+with open(os.path.join(os.path.dirname(__file__), "order.toml"), "r") as f:
+    element_type2order = toml.load(f)
+
+
 def get_basis(element_type):
     find_basis = {
         "triangle":tri3_basis_p1,
+        "triangle6":tri6_basis_p2,
         "tri3":tri3_basis_p1,
         "tri6":tri6_basis_p2,
         "quad":quad4_basis_p1,
@@ -35,6 +45,27 @@ def get_basis(element_type):
         raise ValueError(f"element_type must be one of {list(find_basis.keys())}, but got {element_type}")
     
     return find_basis[element_type]
+
+def get_boundary(element_type):
+    """
+        Parameters:
+        -----------
+            element_type: str
+                the type of the element
+        Returns:
+        --------
+            boundary elements: torch.Tensor [n_boundary, n_boundary_basis]
+
+        Examples:
+        >>> get_boundary("quad")
+        tensor([[1, 0],
+                [2, 1],
+                [3, 0],
+                [3, 2]])
+    """
+    basis  = get_basis(element_type)
+    hull   = scipy.spatial.ConvexHull(basis)
+    return torch.tensor(hull.simplices, dtype=torch.int64)
 
 def get_shape_val(element_type, quadrature_points):
     """
@@ -53,6 +84,7 @@ def get_shape_val(element_type, quadrature_points):
     """
     find_shape_val = {
         "triangle":tri3_shape_val,
+        "triangle6":tri6_shape_val,
         "tri3":tri3_shape_val,
         "tri6":tri6_shape_val,
         "quad":quad4_shape_val,
@@ -92,6 +124,7 @@ def get_shape_grad(element_type, quadrature_weights, quadrature_points, element_
     """
     find_shape_grad = {
         "triangle":tri3_shape_grad,
+        "triangle6":tri6_shape_grad, 
         "tri3":tri3_shape_grad,
         "tri6":tri6_shape_grad,
         "quad":quad4_shape_grad,

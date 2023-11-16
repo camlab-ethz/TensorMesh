@@ -8,9 +8,55 @@ import matplotlib.tri as tri
 import matplotlib.patches as patches
 from matplotlib.collections import PatchCollection
 from matplotlib import animation
+from scipy.spatial import ConvexHull
 
 
-def plot(kwargs, mesh,  save_path=None, dt=None,show_mesh=False):
+def plot_mesh(mesh, save_path=None):
+    elements = mesh.elements()
+    points   = mesh.points.cpu().numpy()
+
+    assert points.shape[1] == 2, f"points must be 2D, but got {points.shape}"
+
+    fig, ax = plt.subplots(figsize=(8,  8))
+
+    def draw_elements(elements):
+        if elements.shape[1] == 3: # tri
+            ax.triplot(points[:,0], points[:,1], elements, color='k', linewidth=0.5)
+        elif elements.shape[1] == 4: # quad
+            polygons = [patches.Polygon(points[element], closed=True, fill=False, edgecolor='k', linewidth=0.5) for element in elements]
+            polygons = PatchCollection(polygons, match_original=True)
+            ax.add_collection(polygons)
+        elif elements.shape[1] == 6: # tri6
+            order = np.array([0, 3, 1, 4, 2, 5])
+            polygons = [patches.Polygon(points[element[order]], closed=True, fill=False, edgecolor='k', linewidth=0.5) for element in elements]
+            polygons = PatchCollection(polygons, match_original=True)
+            ax.add_collection(polygons)
+        elif elements.shape[1] == 9: # quad9 
+            order = np.array([0, 4, 1, 5, 2, 6, 3, 7])
+            polygons = [patches.Polygon(points[element[order]], closed=True, fill=False, edgecolor='k', linewidth=0.5) for element in elements]
+            polygons = PatchCollection(polygons, match_original=True)
+            ax.add_collection(polygons)
+        else:
+            raise NotImplementedError(f"element type {elements.shape[1]} is not supported")
+   
+    if isinstance(elements, torch.Tensor):
+        elements = elements.detach().cpu().numpy()
+        draw_elements(elements)
+    elif isinstance(elements, dict):
+        for value in elements.values():
+            draw_elements(value.detach().cpu().numpy())
+    else:
+        raise NotImplementedError(f"elements type {type(elements)} is not supported")
+    
+    ax.scatter(points[:,0], points[:,1], s=1, c='orange')
+    ax.axis("equal")
+    ax.axis("off")
+    if save_path is None:
+        plt.show()
+    else:
+        fig.savefig(save_path, dpi=400)
+           
+def plot_value(kwargs, mesh,  save_path=None, dt=None,show_mesh=False):
     """
         Parameters:
         -----------
@@ -19,7 +65,7 @@ def plot(kwargs, mesh,  save_path=None, dt=None,show_mesh=False):
             mesh: torch_fem.mesh.mesh.Mesh
     """
     points = mesh.points
-    elements = mesh.elements(mesh.default_cell_type)
+    elements = mesh.elements()
    
     ncols = len(kwargs.keys())
     fig, ax = plt.subplots(1, ncols, figsize=(5*ncols, 5))
@@ -63,6 +109,7 @@ def plot(kwargs, mesh,  save_path=None, dt=None,show_mesh=False):
                 fig.suptitle(f"Frame:{frame:5d}")
         anim = FuncAnimation(fig, update, frames=len(value), interval=100)
         anim.save(save_path, fps=10,  dpi=400)
+
 
 class StreamPlotter:
     def __init__(self,   nrows=1, ncols=1,  filename=None):

@@ -14,7 +14,7 @@ else:
 
 def gen_L(chara_length=0.1,
              order=1,
-             cell_type="quad",
+             element_type="quad",
              left=0.0, right=1.0, bottom=0.0, top=1.0, 
              top_inner=0.5,
              right_inner=0.5,
@@ -27,7 +27,7 @@ def gen_L(chara_length=0.1,
                 the characteristic length of the mesh
             order: int
                 the order of the mesh
-            cell_type: str
+            element_type: str
                 the type of the element, e.g., 'quad', 'tri'
             left: float
                 the left boundary of the Lshape
@@ -52,10 +52,10 @@ def gen_L(chara_length=0.1,
     assert left < right, f"left must be smaller than right, but got {left} >= {right}"
     assert bottom < top, f"bottom must be smaller than top, but got {bottom} >= {top}"
     assert chara_length > 0, f"chara_length must be positive, but got {chara_length} <= 0"
-    assert cell_type in ["quad", "tri"], f"cell_type must be 'quad' or 'tri', but got {cell_type}"
+    assert element_type in ["quad", "tri"], f"element_type must be 'quad' or 'tri', but got {element_type}"
 
     if cache_path is None:
-        cache_path = f".gmsh_cache/L_{left}_{right}_{bottom}_{top}_{top_inner}_{right_inner}_{chara_length}_{order}_{cell_type}.msh"
+        cache_path = f".gmsh_cache/L_{left}_{right}_{bottom}_{top}_{top_inner}_{right_inner}_{chara_length}_{order}_{element_type}.msh"
 
     if not os.path.exists(os.path.dirname(cache_path)):
         os.makedirs(os.path.dirname(cache_path))
@@ -76,7 +76,7 @@ def gen_L(chara_length=0.1,
 
         gmsh.model.occ.synchronize()
 
-        if cell_type == "quad":
+        if element_type == "quad":
             # Set transfinite meshing
             # gmsh.model.mesh.setTransfiniteSurface(rectangle_outer, "Right")
             # Apply the recombine algorithm to generate quad elements
@@ -123,5 +123,5 @@ def gen_L(chara_length=0.1,
 
 
 if __name__ == '__main__':
-    mesh = gen_L(cell_type="quad", chara_length=0.1, order=2, visualize=False)
+    mesh = gen_L(element_type="quad", chara_length=0.1, order=2, visualize=False)
     print(mesh)

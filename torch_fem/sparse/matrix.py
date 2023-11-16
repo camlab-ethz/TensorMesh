@@ -10,6 +10,7 @@ from .solve import spsolve
 class SparseMatrix(nn.Module):
     def __init__(self, edata,  row, col, shape):
         super().__init__()
+        assert edata.shape[0] == row.shape[0] == col.shape[0], f"the first dim of edata, row, col should be the same, but got {edata.shape[0]}, {row.shape[0]}, {col.shape[0]}"
         assert edata.device == row.device == col.device, f"edata, row, col should be on the same device, but got {edata.device}, {row.device}, {col.device}"
         self.register_buffer("edata", edata)
         self.register_buffer("row", row)
@@ -17,6 +18,10 @@ class SparseMatrix(nn.Module):
         self.shape = shape
 
         self.layout_hash = hashlib.sha256(row.cpu().numpy().tobytes() + col.cpu().numpy().tobytes()).hexdigest()
+
+    @property
+    def edges(self):
+        return torch.stack([self.row, self.col], dim=0)
 
     def elementwise_operation(self, func, obj):
         if  isinstance(obj, SparseMatrix):

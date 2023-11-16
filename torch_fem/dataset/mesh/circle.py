@@ -14,7 +14,7 @@ else:
 
 def gen_circle(chara_length=0.1,
              order=1,
-             cell_type="quad",
+             element_type="quad",
              cx = 0.0, cy = 0.0, r = 1.0,
              visualize=False,
              cache_path=None):
@@ -25,7 +25,7 @@ def gen_circle(chara_length=0.1,
                 The characteristic length of the mesh
             order: int
                 The order of the elements
-            cell_type: str
+            element_type: str
                 The type of the elements. Must be one of "quad" or "tri"
             cx: float
                 The x-coordinate of the center of the circle
@@ -43,10 +43,10 @@ def gen_circle(chara_length=0.1,
     """
     assert r > 0, f"r must be positive, but got {r} <= 0"
     assert chara_length > 0, f"chara_length must be positive, but got {chara_length} <= 0"
-    assert cell_type in ["quad", "tri"], f"cell_type must be 'quad' or 'tri', but got {cell_type}"
+    assert element_type in ["quad", "tri"], f"element_type must be 'quad' or 'tri', but got {element_type}"
 
     if cache_path is None:
-        cache_path = f".gmsh_cache/circle_{cx}_{cy}_{r}_{chara_length}_{order}_{cell_type}.msh"
+        cache_path = f".gmsh_cache/circle_{cx}_{cy}_{r}_{chara_length}_{order}_{element_type}.msh"
 
     if not os.path.exists(os.path.dirname(cache_path)):
         os.makedirs(os.path.dirname(cache_path))
@@ -60,7 +60,7 @@ def gen_circle(chara_length=0.1,
 
         gmsh.model.occ.synchronize()
 
-        if cell_type == "quad":
+        if element_type == "quad":
             # Set transfinite meshing
             gmsh.model.mesh.setTransfiniteSurface(circle, "Right")
             # Apply the recombine algorithm to generate quad elements
@@ -96,7 +96,7 @@ def gen_circle(chara_length=0.1,
 
 def gen_hollow_circle(chara_length=0.1,
              order=1,
-             cell_type="quad",
+             element_type="quad",
              cx = 0.0, cy = 0.0, r_inner = 1.0, r_outer = 2.0,
              visualize=False,
              cache_path=None):
@@ -107,7 +107,7 @@ def gen_hollow_circle(chara_length=0.1,
                 The characteristic length of the mesh
             order: int
                 The order of the elements
-            cell_type: str
+            element_type: str
                 The type of the elements. Must be one of "quad" or "tri"
             cx: float
                 The x-coordinate of the center of the circle
@@ -130,10 +130,10 @@ def gen_hollow_circle(chara_length=0.1,
     assert r_outer > 0, f"r_outer must be positive, but got {r_outer} <= 0"
     assert r_outer > r_inner, f"r_outer must be greater than r_inner, but got {r_outer} <= {r_inner}"
     assert chara_length > 0, f"chara_length must be positive, but got {chara_length} <= 0"
-    assert cell_type in ["quad", "tri"], f"cell_type must be 'quad' or 'tri', but got {cell_type}"
+    assert element_type in ["quad", "tri"], f"element_type must be 'quad' or 'tri', but got {element_type}"
    
     if cache_path is None:
-        cache_path = f".gmsh_cache/circle_{cx}_{cy}_{r_inner}_{r_outer}_{chara_length}_{order}_{cell_type}.msh"
+        cache_path = f".gmsh_cache/circle_{cx}_{cy}_{r_inner}_{r_outer}_{chara_length}_{order}_{element_type}.msh"
 
     if not os.path.exists(os.path.dirname(cache_path)):
         os.makedirs(os.path.dirname(cache_path))
@@ -152,7 +152,7 @@ def gen_hollow_circle(chara_length=0.1,
         hollow_circle = hollow_entity[0][-1]
         gmsh.model.occ.synchronize()
 
-        if cell_type == "quad":
+        if element_type == "quad":
             # Set transfinite meshing
             # gmsh.model.mesh.setTransfiniteSurface(circle_outer, "Right")
             # Apply the recombine algorithm to generate quad elements
@@ -191,5 +191,5 @@ def gen_hollow_circle(chara_length=0.1,
     return mesh
 
 if __name__ == '__main__':
-    mesh = gen_hollow_circle(cell_type="quad", chara_length=0.1, order=2, visualize=False)
+    mesh = gen_hollow_circle(element_type="quad", chara_length=0.1, order=2, visualize=False)
     print(mesh)

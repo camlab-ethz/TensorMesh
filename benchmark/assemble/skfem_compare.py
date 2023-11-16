@@ -85,7 +85,7 @@ class ThFEMAsmCUDA:
    
 
 
-def plot_comparison(cell_type, chara_lengths, n_times, csv_path, ax):
+def plot_comparison(element_type, chara_lengths, n_times, csv_path, ax):
 
     data = {
         "chara_length":[],
@@ -95,16 +95,16 @@ def plot_comparison(cell_type, chara_lengths, n_times, csv_path, ax):
     pbar = tqdm(total=len(chara_lengths)*n_times*3)
 
     for chara_length in chara_lengths:
-        if cell_type == "tri":
-            mesh = fem.Mesh.gen_rectangle(chara_length=chara_length, cell_type=cell_type)
-        elif cell_type == "tetra":
+        if element_type == "tri":
+            mesh = fem.Mesh.gen_rectangle(chara_length=chara_length, element_type=element_type)
+        elif element_type == "tetra":
             mesh = fem.Mesh.gen_cube(chara_length=chara_length)
         th_asm_cpu = ThFEMAsmCPU(mesh)
         th_asm_gpu = ThFEMAsmCUDA(mesh)
         sk_asm = {
             "tri":SkfEMAsmTri,
             "tetra":SkfEMAsmTet
-        }[cell_type](mesh)
+        }[element_type](mesh)
         for _ in range(n_times):
             for name, assembler in zip(["torch_fem cpu", "torch_fem cuda", "scikit-fem"], [th_asm_cpu, th_asm_gpu, sk_asm]):
                 start = time.time()
@@ -131,7 +131,7 @@ if __name__ == '__main__':
     fig, ax = plt.subplots(figsize=(12,  8))
 
     plot_comparison(
-        cell_type="tri",
+        element_type="tri",
         chara_lengths=[0.05, 0.01, 0.005, 0.002],
         n_times=5,
         csv_path="skfem_compare_2d.csv",
@@ -143,7 +143,7 @@ if __name__ == '__main__':
     fig, ax = plt.subplots(figsize=(12,  8))
 
     plot_comparison(
-        cell_type="tetra",
+        element_type="tetra",
         chara_lengths=[0.1,  0.05, 0.02],
         n_times=5,
         csv_path="skfem_compare_3d.csv",

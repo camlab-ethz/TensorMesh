@@ -14,7 +14,7 @@ else:
 
 def gen_rectangle(chara_length=0.1,
              order=1,
-             cell_type="quad",
+             element_type="quad",
              left=0.0, right=1.0, bottom=0.0, top=1.0,
              visualize=False,
              cache_path=None):
@@ -25,7 +25,7 @@ def gen_rectangle(chara_length=0.1,
                 the characteristic length of the mesh
             order: int
                 the order of the mesh
-            cell_type: str
+            element_type: str
                 the type of the element, e.g., 'quad', 'tri'
             left: float
                 the left boundary of the rectangle
@@ -46,10 +46,10 @@ def gen_rectangle(chara_length=0.1,
     assert left < right, f"left must be smaller than right, but got {left} >= {right}"
     assert bottom < top, f"bottom must be smaller than top, but got {bottom} >= {top}"
     assert chara_length > 0, f"chara_length must be positive, but got {chara_length} <= 0"
-    assert cell_type in ["quad", "tri"], f"cell_type must be 'quad' or 'tri', but got {cell_type}"
+    assert element_type in ["quad", "tri"], f"element_type must be 'quad' or 'tri', but got {element_type}"
 
     if cache_path is None:
-        cache_path = f".gmsh_cache/rectangle_{left}_{right}_{bottom}_{top}_{chara_length}_{order}_{cell_type}.msh"
+        cache_path = f".gmsh_cache/rectangle_{left}_{right}_{bottom}_{top}_{chara_length}_{order}_{element_type}.msh"
 
     if not os.path.exists(os.path.dirname(cache_path)):
         os.makedirs(os.path.dirname(cache_path))
@@ -65,7 +65,7 @@ def gen_rectangle(chara_length=0.1,
 
         gmsh.model.occ.synchronize()
 
-        if cell_type == "quad":
+        if element_type == "quad":
             # Set transfinite meshing
             gmsh.model.mesh.setTransfiniteSurface(rectangle, "Right")
             # Apply the recombine algorithm to generate quad elements
@@ -108,7 +108,7 @@ def gen_rectangle(chara_length=0.1,
 
 def gen_hollow_rectangle(chara_length=0.1,
              order=1,
-             cell_type="quad",
+             element_type="quad",
              outer_left=0.0, outer_right=1.0, outer_bottom=0.0, outer_top=1.0,
              inner_left = 0.25,  inner_right=0.75,
              inner_bottom =0.25, inner_top=0.75,
@@ -121,7 +121,7 @@ def gen_hollow_rectangle(chara_length=0.1,
                 the characteristic length of the mesh
             order: int
                 the order of the mesh
-            cell_type: str
+            element_type: str
                 the type of the element, e.g., 'quad', 'tri'
             outer_left: float
                 the left boundary of the rectangle
@@ -153,10 +153,10 @@ def gen_hollow_rectangle(chara_length=0.1,
     assert outer_left < outer_right, f"left must be smaller than right, but got {outer_left} >= {outer_right}"
     assert outer_bottom < outer_top, f"outer_bottom must be smaller than outer_top, but got {outer_bottom} >= {outer_top}"
     assert chara_length > 0, f"chara_length must be positive, but got {chara_length} <= 0"
-    assert cell_type in ["quad", "tri"], f"cell_type must be 'quad' or 'tri', but got {cell_type}"
+    assert element_type in ["quad", "tri"], f"element_type must be 'quad' or 'tri', but got {element_type}"
 
     if cache_path is None:
-        cache_path = f".gmsh_cache/hollow_rectangle_{outer_left}_{outer_right}_{outer_bottom}_{outer_top}_{inner_left}_{inner_right}_{inner_bottom}_{inner_top}_{chara_length}_{order}_{cell_type}.msh"
+        cache_path = f".gmsh_cache/hollow_rectangle_{outer_left}_{outer_right}_{outer_bottom}_{outer_top}_{inner_left}_{inner_right}_{inner_bottom}_{inner_top}_{chara_length}_{order}_{element_type}.msh"
     if not os.path.exists(os.path.dirname(cache_path)):
         os.makedirs(os.path.dirname(cache_path))
 
@@ -176,7 +176,7 @@ def gen_hollow_rectangle(chara_length=0.1,
 
         gmsh.model.occ.synchronize()
 
-        if cell_type == "quad":
+        if element_type == "quad":
             # Set transfinite meshing
             # gmsh.model.mesh.setTransfiniteSurface(rectangle, "Right")
             # Apply the recombine algorithm to generate quad elements
@@ -229,5 +229,5 @@ def gen_hollow_rectangle(chara_length=0.1,
 
 
 if __name__ == '__main__':
-    mesh = gen_hollow_rectangle(cell_type="quad", chara_length=0.1, order=2, visualize=False)
+    mesh = gen_hollow_rectangle(element_type="quad", chara_length=0.1, order=2, visualize=False)
     print(mesh)

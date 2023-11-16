@@ -9,79 +9,22 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import matplotlib.tri as tri
 import re
+import scipy.spatial
 from itertools import chain
+from functools  import reduce
+from operator import eq
+from collections import defaultdict
+from typing import Iterable
 
-from ..utils import is_float
+
+from ..shape import get_basis, get_boundary
 from .dimension import topological_dimension
-# from .vis import plot as plot_matplotlib
+from ..sparse import SparseMatrix
+from ..nn import BufferDict
 
 
-def highest_dimension_cell_type(cells):
-    """
-        Parameters:
-        -----------
-            cells: dict
-                the cells of the mesh
-        Returns:
-        --------
-            cell_type: str
-                the type of the highest order cell
-    """
-    return max(cells.keys(), key=lambda x: topological_dimension[x])
 
-def is_int(tensor):
-    if tensor.dtype in [torch.int8, torch.int16, torch.int32, torch.int64]:
-        return True
-    else:
-        return False
 
-def is_float(tensor):
-    if tensor.dtype in [torch.float16, torch.float32, torch.float64]:
-        return True
-    else:
-        return False
-
-class BufferDict(nn.Module):
-    def __init__(self, data):
-        super().__init__()
-        self._data = {}
-        pattern = re.compile("^[a-zA-Z_][a-zA-Z0-9_]*$")
-        for key in list(data.keys()):
-            if not pattern.match(key):
-                self._data[key] = data.pop(key)
-        for key, value in data.items():
-            self.register_buffer(key, value)
-    
-    def as_parameter(self, key):
-        buffer = self._buffers.pop(key)
-        self.register_parameter(key, buffer)
-        
-    def as_buffer(self, key):
-        parameter = self._parameters.pop(key)
-        self.register_buffer(key, parameter)
-        
-    def keys(self):
-        return chain(self._buffers.keys(), self._parameters.keys(), self._data.keys())
-    
-    def items(self):
-        return chain(self._buffers.items(), self._parameters.items(), self._data.items())
-    
-    def values(self):
-        return chain(self._buffers.values(), self._parameters.values(), self._data.values())
-    
-    def __getitem__(self, key):
-        if key not in self.keys():
-            raise KeyError(f"{key} is not found in the BufferDict")
-        return self._buffers[key] if key in self._buffers else self._parameters[key] if key in self._parameters else self._data[key]
-
-    @property
-    def dtype(self):
-        return next(iter(self.buffers().values())).dtype
-    
-    @property
-    def device(self):
-        return next(iter(self.buffers().values())).device
-    
 
 class Mesh(nn.Module):
     def __init__(self, mesh):
@@ -103,7 +46,7 @@ class Mesh(nn.Module):
                 mesh.field_data[key] = mesh.field_data[key].astype(bool)
         
         # cells
-        self.cells  = BufferDict({k:torch.from_numpy(v) for k,v in mesh.cells_dict.items()})
+        self.cells  = BufferDict({k:torch.from_numpy(v).long() for k,v in mesh.cells_dict.items()})
         
         # point data
         self.point_data = BufferDict({k:torch.from_numpy(v) for k,v in mesh.point_data.items()})
@@ -119,9 +62,21 @@ class Mesh(nn.Module):
         # cell setes useless
         self.cell_sets = mesh.cell_sets
 
-        self.default_cell_type = highest_dimension_cell_type(self.cells)
+        self.dim2eletyp = defaultdict(list) # Dict[int, List[str]]
+        for element_type in self.cells.keys():
+            self.dim2eletyp[topological_dimension[element_type]].append(element_type)
+        self.default_eletyp = self.dim2eletyp[max(self.dim2eletyp.keys())] 
+        if len(self.default_eletyp) == 1: # if only one element type, use it as default
+            self.default_eletyp = self.default_eletyp[0]
+        self.default_element_type = self.default_eletyp
 
-        self.points = nn.Parameter(torch.from_numpy(mesh.points[:, :topological_dimension[self.default_cell_type]]))
+
+        dimension = max(self.dim2eletyp.keys())
+
+        self.register_buffer(
+            "points",
+            torch.from_numpy(mesh.points[:, :dimension])
+        )
 
     def register_point_data(self, key, value):
         assert key not in self.point_data.keys(), f"the key {key} already exists in point_data"
@@ -206,34 +161,186 @@ class Mesh(nn.Module):
     def write(self, file_name:str,file_format:str=None):
         return self.save(file_name, file_format)
 
-    def node_adjacency(self):
-        pass 
-
-    def edge_adjacency(self):
-        pass
-
-    def elements(self, cell_type=None):
-        if cell_type is None:
-            cell_type = self.default_cell_type
-        return self.cells[cell_type]
-    
-    def plot(self, kwargs, save_path=None, backend="pyvista", dt=None, show_mesh=False):
+    def node_adjacency(self, element_type=None):
         """
             Parameters:
             -----------
-                kwargs: dict
+                element_type: str or Iterable[str] or None
+                    the type of the elements
+                    if None is the default_eletyp
+                    default : None
+            Returns:
+            --------
+                SparseMatrix [n_point, n_point]
+        """
+        elements = self.elements(element_type)
+        if isinstance(elements, torch.Tensor):
+            edges = torch.vmap(lambda x:torch.stack(torch.meshgrid(x,x),-1))(elements).reshape(-1,2).T
+        elif isinstance(elements, dict):
+            edges = []
+            for k,v in elements.items():
+                edges.append(torch.vmap(lambda x:torch.stack(torch.meshgrid(x,x),-1))(v).reshape(-1,2).T)
+            edges = torch.cat(edges, -1)
+      
+        connections = torch.sparse_coo_tensor(
+            edges, torch.ones(edges.shape[1]), size=(self.n_point, self.n_point)
+        ).coalesce()
+        edges = connections.indices()
+        return SparseMatrix(torch.ones(edges.shape[1]), edges[0], edges[1], (self.n_point, self.n_point))
+
+    def element_adjacency(self, element_type=None):
+        """
+            Parameters:
+            -----------
+                element_type: str or Iterable[str] or None
+                    the type of the elements, should be of same dimension
+                    if None is the default_eletyp
+                    default : None
+            Returns:
+            --------
+                SparseMatrix [n_element, n_element]
+        """
+
+        def get_element_adjacency(ele_ids, boundaries):
+            """
+                Parameters:
+                -----------
+                    ele_ids: torch.Tensor [\int n_element*n_boundary_per_element]
+                    boundaries: torch.Tensor [\int n_element*n_boundary_per_element, n_boundary_basis]
+            """
+            assert ele_ids.dim() ==  1, f"ele_ids should be 1d, but got {ele_ids.dim()}"	
+            assert boundaries.dim() == 2, f"boundaries should be 2d, but got {boundaries.dim()}"
+            assert boundaries.shape[0] == ele_ids.shape[0], f"the first dimension of boundaries should be {ele_ids.shape[0]}, but got {boundaries.shape[0]}"
+            boundaries= boundaries.reshape(-1, boundaries.shape[-1]) # [n_element * n_boundary_per_element, n_boundary_basis]
+            # make sure the index is ascending, so it's unique
+            boundaries= boundaries.sort(dim=-1).values # [n_element * n_boundary_per_element, n_boundary_basis] 
+            # the count = 2 means the boundary is shared by two elements, otherwise the boundary is on the boundary of the domain
+            unique_boundaries, inverse_indices, counts = boundaries.unique(dim=0, return_counts=True,  return_inverse=True) # [n_boundary_element, n_boundary_basis]
+            assert counts.max() == 2, f"the maximum number of elements sharing a boundary is 2, but got {counts.max()}"
+            valid_mask = counts == 2 # [n_boundary_element]
+            # for the each element, which boundary is shared by two elements
+            valid_mask = valid_mask[inverse_indices] # [n_element * n_boundary_per_element]
+            ele_ids_bd = ele_ids    # [n_element * n_boundary_per_element]
+            # only keep the shared boundary elements, but now it's shuffled
+            ele_ids_bd = ele_ids_bd[valid_mask] # [n_shared_boundary * 2]
+            # by sorting the inverse_indices, we can get the order like [0,0,1,1,2,2,3,3,...]
+            sort_index=torch.argsort(inverse_indices[valid_mask]) # [n_shared_boundary * 2]
+            # and then we can get the shared boundary elements in order 
+            ele_ids_bd = ele_ids_bd[sort_index] # [n_shared_boundary * 2]
+            edges     = ele_ids_bd.reshape(-1, 2).T # [2, n_shared_boundary]
+            # add the reverse direction
+            edges = torch.cat([edges, torch.stack([edges[1], edges[0]])], -1)
+          
+            return edges
+
+        elements = self.elements(element_type)
+        if isinstance(elements, torch.Tensor):
+            n_element = elements.shape[0]
+            boundaries= get_boundary(self.default_eletyp) # [n_boundary_per_element, n_boundary_basis]
+            
+            if isinstance(boundaries, torch.Tensor):
+                boundaries= elements[:, boundaries] # [n_element, n_boundary_per_element, n_boundary_basis]
+                n_boundary_per_element = boundaries.shape[1]
+                n_boundary_basis = boundaries.shape[-1]
+                edges = get_element_adjacency(torch.arange(n_element).repeat_interleave(n_boundary_per_element), boundaries.reshape(-1, n_boundary_basis))
+            elif isinstance(boundaries, dict):
+                edges = []
+                for k,v in boundaries.items():
+                    n_boundary_per_element = v.shape[1]
+                    n_boundary_basis = v.shape[-1]
+                    edges.append(get_element_adjacency(torch.arange(n_element).repeat_interleave(n_boundary_per_element), v.reshape(-1, n_boundary_basis)))
+                edges = torch.cat(edges, -1)
+            return SparseMatrix(torch.ones(edges.shape[1]), edges[0], edges[1], (n_element, n_element))
+            
+            
+        else: # mix of different element types
+            assert reduce(eq, [topological_dimension[k] for k in elements.keys()]), f"all elements should be of same dimension, but got {elements.keys()}"
+            n_element = sum([v.shape[0] for v in elements.values()])
+            ele_ids   = torch.arange(n_element)
+            boundaries = {}
+            ele_ids    = {}
+            ele_ptr    = 0
+            for element_type, element in elements.items():
+                # breakpoint()
+                partial_boundaries = get_boundary(element_type) 
+                partial_boundaries = element[:, partial_boundaries] # [n_element, n_boundary_per_element, n_boundary_basis]
+                partial_ele_ids = torch.arange(ele_ptr, ele_ptr + element.shape[0])
+                if isinstance(partial_boundaries, torch.Tensor):
+                    n_boundary_per_element = partial_boundaries.shape[1]
+                    n_boundary_basis = partial_boundaries.shape[-1]
+                    if n_boundary_basis in boundaries:
+                        boundaries[n_boundary_basis].append(partial_boundaries)
+                        ele_ids[n_boundary_basis].append(partial_ele_ids.repeat_interleave(n_boundary_per_element))
+                    else:
+                        boundaries[n_boundary_basis] = [partial_boundaries]
+                        ele_ids[n_boundary_basis] = [partial_ele_ids.repeat_interleave(n_boundary_per_element)]
+                elif isinstance(partial_boundaries, dict):
+                    for k,v in partial_boundaries.items():
+                        n_boundary_per_element = v.shape[1]
+                        n_boundary_basis = v.shape[-1]
+                        if n_boundary_basis in boundaries:
+                            boundaries[n_boundary_basis].append(v)
+                            ele_ids[n_boundary_basis].append(partial_ele_ids.repeat_interleave(n_boundary_per_element))
+                        else:
+                            boundaries[n_boundary_basis] = [v]
+                            ele_ids[n_boundary_basis] = [partial_ele_ids.repeat_interleave(n_boundary_per_element)]
+                ele_ptr += element.shape[0]
+           
+            for k, v in boundaries.items():
+                boundaries[k] = torch.cat([i.reshape(-1,i.shape[-1]) for i in v], 0)
+                ele_ids[k]    = torch.cat(ele_ids[k], 0)
+            edges = []
+            for k in boundaries.keys():
+                edges.append(get_element_adjacency(ele_ids[k], boundaries[k]))
+            edges = torch.cat(edges, -1)
+            return SparseMatrix(torch.ones(edges.shape[1]), edges[0], edges[1], (n_element, n_element))
+
+    def elements(self, element_type=None):
+        """
+            Parameters:
+            -----------
+                element_type: str or Iterable[str] or None
+                    the type of the elements
+                    if None is the default_eletyp
+                    default : None 
+            Returns:
+            --------
+                torch.Tensor [n_element, n_basis] if element_type is str
+                Dict[str, torch.Tensor [n_element, n_basis]] if element_type is Iterable[str]
+        """
+        if element_type is None:
+            element_type = self.default_eletyp
+        if isinstance(element_type, str):
+            return self.cells[element_type]
+        elif isinstance(element_type, Iterable):
+            return {k:self.cells[k] for k in element_type}
+        else:
+            raise Exception(f"element_type must be str or Iterable[str], but got {element_type}")
+    
+    def plot(self, values= None, save_path=None, backend="matplotlib", dt=None, show_mesh=False):
+        """
+            Parameters:
+            -----------
+                values: dict
                     
         """
-        from ..visualization import plot_matplotlib, plot_pyvista
+        # from ..visualization import plot_value_matplotlib, plot_pyvista
 
-        plot_fns = {
-            "pyvista":plot_pyvista,
-            "matplotlib":plot_matplotlib,
-        }
-        assert  backend in plot_fns.keys(), f"backend must be one of {list(plot_fns.keys())}, but got {backend}"
+        # plot_fns = {
+        #     "pyvista":plot_pyvista,
+        #     "matplotlib":plot_matplotlib,
+        # }
+        # assert  backend in plot_fns.keys(), f"backend must be one of {list(plot_fns.keys())}, but got {backend}"
 
-        return plot_fns[backend](kwargs, self,  save_path, dt, show_mesh)
+        # return plot_fns[backend](kwargs, self,  save_path, dt, show_mesh)
              
+        from ..visualization import plot_value_matplotlib, plot_mesh_matplotlib
+
+        if values is None:
+            return plot_mesh_matplotlib(self, save_path)
+        else:
+            return plot_value_matplotlib(values, self, save_path, dt, show_mesh)
+
     @property
     def n_point(self):
         return self.points.shape[0]
@@ -291,18 +398,18 @@ class Mesh(nn.Module):
     @staticmethod
     def gen_rectangle(chara_length=0.1,
              order=1,
-             cell_type="tri",
+             element_type="tri",
              left=0.0, right=1.0, bottom=0.0, top=1.0,
              visualize=False,
              cache_path=None):
         from ..dataset import gen_rectangle
-        return gen_rectangle(chara_length, order, cell_type, left, right, bottom, top, visualize, cache_path)
+        return gen_rectangle(chara_length, order, element_type, left, right, bottom, top, visualize, cache_path)
 
     @staticmethod
     def gen_hollow_rectangle(
         chara_length=0.1,
         order=1,
-        cell_type="quad",
+        element_type="quad",
         outer_left=0.0, outer_right=1.0, outer_bottom=0.0, outer_top=1.0,
         inner_left = 0.25,  inner_right=0.75,
         inner_bottom =0.25, inner_top=0.75,
@@ -312,7 +419,7 @@ class Mesh(nn.Module):
         from ..dataset import gen_hollow_rectangle
         return gen_hollow_rectangle(chara_length,
              order,
-             cell_type,
+             element_type,
              outer_left, outer_right, outer_bottom, outer_top,
              inner_left,  inner_right,
              inner_bottom, inner_top,
@@ -322,24 +429,24 @@ class Mesh(nn.Module):
     @staticmethod
     def gen_circle(chara_length=0.1,
             order=1,
-            cell_type="tri",
+            element_type="tri",
             cx = 0.0, cy = 0.0, r = 1.0,
             visualize=False,
             cache_path=None):
         from ..dataset import gen_circle
-        return gen_circle(chara_length, order, cell_type, cx, cy, r, visualize, cache_path)
+        return gen_circle(chara_length, order, element_type, cx, cy, r, visualize, cache_path)
 
     @staticmethod
     def gen_hollow_circle(chara_length=0.1,
              order=1,
-             cell_type="quad",
+             element_type="quad",
              cx = 0.0, cy = 0.0, r_inner = 1.0, r_outer = 2.0,
              visualize=False,
              cache_path=None):
         from ..dataset import gen_hollow_circle
         return gen_hollow_circle(chara_length,
              order,
-             cell_type,
+             element_type,
              cx, cy, r_inner, r_outer,
              visualize,
              cache_path)
@@ -347,14 +454,14 @@ class Mesh(nn.Module):
     @staticmethod
     def gen_L(chara_length=0.1,
              order=1,
-             cell_type="quad",
+             element_type="quad",
              left=0.0, right=1.0, bottom=0.0, top=1.0, 
              top_inner=0.5,
              right_inner=0.5,
              visualize=False,
              cache_path=None):
         from ..dataset import gen_L
-        return gen_L(chara_length, order, cell_type, left, right, bottom, top, top_inner, right_inner, visualize, cache_path)
+        return gen_L(chara_length, order, element_type, left, right, bottom, top, top_inner, right_inner, visualize, cache_path)
 
     @staticmethod
     def gen_cube(chara_length=0.1, 

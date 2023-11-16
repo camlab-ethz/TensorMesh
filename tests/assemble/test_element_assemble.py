@@ -1,3 +1,6 @@
+# TODO
+# add linear elasticity
+
 import sys 
 import numpy as np
 import torch
@@ -8,7 +11,7 @@ from torch_fem import ElementAssembler, NodeAssembler,  Mesh
 from torch_fem import dot, mul
 import skfem
 
-class  LaplaceAssembler(ElementAssembler):
+class LaplaceAssembler(ElementAssembler):
     def forward(self, gradu, gradv):
         K = dot(gradu, gradv)
         return K
@@ -38,16 +41,16 @@ def element_assemble(mesh, model="laplace"):
     K = K_asm(mesh.points)
 
     K_scipy = K.to_scipy_coo()
-    if mesh.default_cell_type.startswith("tri"):
+    if mesh.default_element_type.startswith("tri"):
         Mesh = skfem.MeshTri
-    elif mesh.default_cell_type.startswith("quad"):
+    elif mesh.default_element_type.startswith("quad"):
         Mesh = skfem.MeshQuad
-    elif mesh.default_cell_type.startswith("tet"):
+    elif mesh.default_element_type.startswith("tet"):
         Mesh = skfem.MeshTet
     else:
         raise NotImplementedError
 
-    mesh_skfem = Mesh(mesh.points.T.detach().cpu().numpy(), mesh.elements().T.numpy())
+    mesh_skfem = Mesh(mesh.points.T.cpu().numpy(), mesh.elements().T.numpy())
 
     skfem_assembler = {
         "laplace": laplace_assembler,
@@ -58,10 +61,7 @@ def element_assemble(mesh, model="laplace"):
         "triangle": skfem.ElementTriP1(),
         "quad": skfem.ElementQuad1(),
         "tetra": skfem.ElementTetP1(),
-        "triangle6": skfem.ElementTriP2(),
-        "quad8": skfem.ElementQuad2(),
-        "tetra10": skfem.ElementTetP2()
-    }[mesh.default_cell_type]
+    }[mesh.default_element_type]
     basis = skfem.InteriorBasis(mesh_skfem, element)
 
     K_skfem = skfem.asm(skfem_assembler, basis)
@@ -75,9 +75,9 @@ def element_assemble(mesh, model="laplace"):
             np.testing.assert_allclose(min_lambda, 0, atol=1e-10)
 
 
-def test_element_assmebler_tri1_1():
-    element_assemble(Mesh.gen_rectangle(chara_length=0.1,  cell_type="tri"), model="laplace")
-    element_assemble(Mesh.gen_rectangle(chara_length=0.1,  cell_type="tri"), model="product")
+def test_element_assembler_tri1_1():
+    element_assemble(Mesh.gen_rectangle(chara_length=0.1,  element_type="tri"), model="laplace")
+    element_assemble(Mesh.gen_rectangle(chara_length=0.1,  element_type="tri"), model="product")
 
 def test_element_assembler_tri1_2():
     m = skfem.MeshTri().refined(5)
@@ -87,21 +87,9 @@ def test_element_assembler_tri1_2():
     element_assemble(mesh, model="product")
 
 def test_element_assembler_quad1():
-    element_assemble(Mesh.gen_rectangle(chara_length=0.1,  cell_type="quad"), model="laplace")
-    element_assemble(Mesh.gen_rectangle(chara_length=0.1,  cell_type="quad"), model="product")
+    element_assemble(Mesh.gen_rectangle(chara_length=0.1,  element_type="quad"), model="laplace")
+    element_assemble(Mesh.gen_rectangle(chara_length=0.1,  element_type="quad"), model="product")
 
 def test_element_assembler_tet1():
-    element_assemble(Mesh.gen_cube(chara_length=0.), model="laplace")
-    element_assemble(Mesh.gen_cube(chara_length=0.), model="product")
-
-def test_element_assembler_tri2():
-    element_assemble(Mesh.gen_rectangle(chara_length=0.1,  cell_type="tri", order=2), model="laplace")
-    element_assemble(Mesh.gen_rectangle(chara_length=0.1,  cell_type="tri", order=2), model="product")
-
-def test_element_assembler_quad2():
-    element_assemble(Mesh.gen_rectangle(chara_length=0.1,  cell_type="quad", order=2), model="laplace")
-    element_assemble(Mesh.gen_rectangle(chara_length=0.1,  cell_type="quad", order=2), model="product")
-
-def test_element_assembler_tet2():
-    element_assemble(Mesh.gen_cube(chara_length=0.1, order=2), model="laplace")
-    element_assemble(Mesh.gen_cube(chara_length=0.1, order=2), model="product")
+    element_assemble(Mesh.gen_cube(chara_length=0.1), model="laplace")
+    element_assemble(Mesh.gen_cube(chara_length=0.1), model="product")

@@ -46,7 +46,7 @@ class FAssembler(NodeAssembler):
     
 
 if __name__ == '__main__':
-    mesh = Mesh.gen_rectangle(chara_length=0.02, cell_type="quad").double()
+    mesh = Mesh.gen_rectangle(chara_length=0.02, element_type="quad").double()
 
     K_asm = KAssembler.from_mesh(mesh)
     F_asm = FAssembler.from_mesh(mesh)
