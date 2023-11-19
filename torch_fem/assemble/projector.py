@@ -3,18 +3,36 @@ import torch.nn as nn
 import numpy as np 
 
 class Projector(nn.Module):
+    """
+    
+    Attributes
+    ----------
+    projection: torch.sparse_csr_matrix
+        the projection matrix
+    from_shape: tuple or int or np.ndarray or torch.Size
+        the input tensor should be of shape [*from_shape, ...]
+    to_shape: tuple or int or np.ndarray or torch.Size
+        the output tensor should be of shape [*to_shape, ...]
+    
+    
+    """
     def __init__(self, from_, to_, from_shape, to_shape, dtype = None):
         """
-            Parameters:
-            -----------
-                from_: torch.tensor[n_edges] or np.ndarray[n_edges]
-                to_: torch.tensor[n_edges] or np.ndarray[n_edges]
-                from_shape: tuple or int or 1D np.ndarray or torch.Size
-                to_shape: tuple or int or 1D np.ndarray or torch.Size
-
-            Usage:
-            >>> m = scipy.sparse.rand(3, 4, 0.5, format="coo")
-            >>> p = Projector(m.col, m.row, 3, 4)
+        Parameters
+        ----------
+        from_: torch.Tensor or np.ndarray
+            1D torch.Tensor or np.ndarray of shape [n_edges]
+        to_: torch.Tensor or np.ndarray
+            1D torch.Tensor or np.ndarray of shape [n_edges]
+        from_shape: tuple or int or np.ndarray or torch.Size
+            the input tensor should be of shape [*from_shape, ...]
+        to_shape: tuple or int or np.ndarray or torch.Size
+            the output tensor should be of shape [*to_shape, ...]
+        Examples
+        --------
+        the basic usage of projector is like a sparse matrix
+        >>> m = scipy.sparse.rand(3, 4, 0.5, format="coo")
+        >>> p = Projector(m.col, m.row, 3, 4)
         """
         super().__init__()
         if isinstance(from_shape, int):
@@ -59,12 +77,14 @@ class Projector(nn.Module):
 
     def __call__(self, x):
         """
-            Parameters:
-            -----------
-                x: torch.tensor[*from_shape, ...]
-            Returns:
-            --------
-                y: torch.tensor[*to_shape, ....]
+        Parameters
+        ----------
+        x : torch.Tensor
+            the input tensor of shape [*from_shape, ...]
+        Returns
+        -------
+        torch.Tensor
+            the output tensor of shape [*to_shape, ...]
         """
         assert self.dtype == x.dtype, f"the dtype of x must be {self.dtype}, but got {x.dtype}"
         assert self.device == x.device, f"the device of x must be {self.device}, but got {x.device}"
@@ -79,3 +99,6 @@ class Projector(nn.Module):
             x = self.projection @ x
         x = x.reshape(*self.to_shape, *dim_shape)
         return x
+
+
+Projector.type.__doc__ = nn.Module.type.__doc__

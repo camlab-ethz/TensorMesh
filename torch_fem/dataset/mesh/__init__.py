@@ -3,4 +3,4 @@ from .rectangle import gen_rectangle, gen_hollow_rectangle
 from .sphere import gen_sphere, gen_hollow_sphere
 from .cube import gen_cube, gen_hollow_cube
 from .L import gen_L
-from .generator import MeshGen
+from .meshgen import MeshGen

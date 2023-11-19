@@ -11,22 +11,28 @@ class SparseMMCPU(Function):
     @staticmethod
     def forward(ctx, edata, row, col, shape, B):
         """
-            Parameters:
-            ----------
-                edata: torch.Tensor of shape [n_edge]
-                    the edge data
-                row  : torch.Tensor of shape [n_edge]
-                    the row indices
-                col  : torch.Tensor of shape [n_edge]
-                    the column indices
-                shape: tuple [M, N]
-                    the shape of the sparse matrix
-                B    : torch.Tensor of shape [N, K]
-                    the feature matrix
-            Returns:
-            --------
-                C: torch.Tensor of shape [M, K]
-                    the output feature matrix
+        Parameters
+        ---------
+        edata: torch.Tensor 
+            1D tensor of shape [n_edge]
+            the edge data
+        row  : torch.Tensor 
+            1D tensor of shape [n_edge]
+            the row indices
+        col  : torch.Tensor 
+            1D tensor of shape [n_edge]
+            the column indices
+        shape: Tuple[int, int]
+            bi-tuple [M, N]
+            the shape of the sparse matrix
+        B    : torch.Tensor 
+            2D tensor of shape [N, K]
+            the dense matrix
+        Returns:
+        --------
+        torch.Tensor 
+            2D tensor of shape [M, K]
+            the output feature matrix
         """
         ctx.save_for_backward(edata, row, col, B)
         A_scipy = scipy.sparse.coo_matrix((edata.numpy(), (row.numpy(), col.numpy())), shape=shape)
@@ -39,19 +45,21 @@ class SparseMMCPU(Function):
     @staticmethod
     def backward(ctx, grad_outputs):
         """
-            Parameters:
-            -----------
-                grad_outputs: torch.Tensor of shape [M, K]
-                    the gradient of the output feature matrix
-            Returns:
-            --------
-                edata_grad: torch.Tensor of shape [n_edge]
-                    the gradient of the edge data
-                row_grad  : None
-                col_grad  : None
-                shape_grad: None
-                B_grad    : torch.Tensor of shape [N, K]
-                    the gradient of the feature matrix
+        Parameters
+        -----------
+        grad_outputs : torch.Tensor 
+            torch.Tensor of shape [M, K]
+            the gradient of the output feature matrix
+        Returns
+        -------
+        edata_grad : torch.Tensor 
+            1D tensor of shape [n_edge]
+            the gradient of the edge data
+        row_grad  : None
+        col_grad  : None
+        shape_grad: None
+        B_grad    : torch.Tensor of shape [N, K]
+            the gradient of the feature matrix
         """
 
         edata, row, col, B = ctx.saved_tensors
@@ -132,22 +140,27 @@ class SparseMVCUDA(Function):
 
 def spmv(edata, row, col, shape, B):
     """
-        Parameters:
-        -----------
-            edata: torch.Tensor of shape [n_edge]
-                the edge data
-            row  : torch.Tensor of shape [n_edge]
-                the row indices
-            col  : torch.Tensor of shape [n_edge]
-                the column indices
-            shape: tuple
-                the shape of the sparse matrix
-            B    : torch.Tensor of shape [n_node]
-                the feature matrix
-        Returns:
-        --------
-            C: torch.Tensor of shape [n_node]
-                the output feature matrix
+    Parameters
+    ----------
+    edata : torch.Tensor 
+        1D tensor of shape [n_edge]
+        the edge data
+    row  : torch.Tensor 
+        1D tensor of shape [n_edge]
+        the row indices
+    col  : torch.Tensor 
+        1D tensor of shape [n_edge]
+        the column indices
+    shape: Tuple[int,  int]
+        the shape of the sparse matrix
+    B    : torch.Tensor 
+        1D tensor of shape [n_node]
+        the dense vector
+    Returns
+    -------
+    torch.Tensor 
+        1D tensor of shape [n_node]
+        the output vector
     """
     assert edata.dtype == B.dtype, f"A.dtype {edata.dtype} != B.dtype {B.dtype}"
     assert B.dim() == 1
@@ -160,22 +173,27 @@ def spmv(edata, row, col, shape, B):
 
 def spmm(edata, row, col, shape, B):
     """
-        Parameters:
-        -----------
-            edata: torch.Tensor of shape [n_edge]
-                the edge data
-            row  : torch.Tensor of shape [n_edge]
-                the row indices
-            col  : torch.Tensor of shape [n_edge]
-                the column indices
-            shape: tuple
-                the shape of the sparse matrix
-            B    : torch.Tensor of shape [n_node, n_feature] or [n_node]
-                the feature matrix
-        Returns:
-        --------
-            C: torch.Tensor of shape [n_node, n_feature] or [n_node]
-                the output feature matrix
+    Parameters
+    ----------
+    edata: torch.Tensor 
+        1D tensor of shape [n_edge]
+        the edge data
+    row  : torch.Tensor 
+        1D tensor of shape [n_edge]
+        the row indices
+    col  : torch.Tensor 
+        1D tensor of shape [n_edge]
+        the column indices
+    shape: Tuple[int int]
+        the shape of the sparse matrix
+    B    : torch.Tensor 
+        2D or 1D torch.Tensor of shape [n_node, n_feature] or [n_node]
+        the dense matrix/vector
+    Returns:
+    --------
+    torch.Tensor 
+        2D or 1D torch.Tensor of shape [n_node, n_feature] or [n_node]
+        the output feature matrix
     """
     assert edata.dtype == B.dtype, f"A.dtype {edata.dtype} != B.dtype {B.dtype}"
     if B.dim() == 1:

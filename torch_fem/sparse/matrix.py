@@ -8,6 +8,40 @@ from .solve import spsolve
 
 
 class SparseMatrix(nn.Module):
+    """coo format sparse matrix
+
+    Parameters
+    ----------
+    edata: torch.Tensor 
+        1D float tensor of shape :math:`[|\mathcal E|]`, where :math:`|\mathcal E|` is the number of edges
+        the edge data
+    row: torch.Tensor
+        1D int tensor of shape :math:`[|\mathcal E|]`, where :math:`|\mathcal E|` is the number of edges
+        the row indices
+    col: torch.Tensor
+        1D int tensor of shape :math:`[|\\mathcal E|]`, where :math:`|\mathcal E|` is the number of edges
+        the column indices
+    shape: Tuple[int, int]
+        the shape of the sparse matrix of the first two dim, e.g. (3, 4)
+
+    Attributes
+    ----------
+    edata: torch.Tensor 
+        1D float tensor of shape :math:`[|\mathcal E|]`, where :math:`|\mathcal E|` is the number of edges
+        the edge data
+    row: torch.Tensor
+        1D int tensor of shape :math:`[|\mathcal E|]`, where :math:`|\mathcal E|` is the number of edges
+        the row indices
+    col: torch.Tensor
+        1D int tensor of shape :math:`[|\\mathcal E|]`, where :math:`|\mathcal E|` is the number of edges
+        the column indices
+    shape: Tuple[int, int]
+        the shape of the sparse matrix of the first two dim, e.g. (3, 4)
+    hash_layout: str
+        it will be used to check if two sparse matrices have the same layout,
+        the hash of the layout of the sparse matrix
+    
+    """
     def __init__(self, edata,  row, col, shape):
         super().__init__()
         assert edata.shape[0] == row.shape[0] == col.shape[0], f"the first dim of edata, row, col should be the same, but got {edata.shape[0]}, {row.shape[0]}, {col.shape[0]}"
@@ -21,9 +55,31 @@ class SparseMatrix(nn.Module):
 
     @property
     def edges(self):
+        """
+        Returns
+        -------
+        torch.Tensor
+            the edge indices of shape :math:`[2, |\mathcal E|]`, where :math:`|\mathcal E|` is the number of edges
+        """
         return torch.stack([self.row, self.col], dim=0)
 
     def elementwise_operation(self, func, obj):
+        """Elementwise operation with another sparse matrix or a tensor or a scalar
+        If the object is a sparse matrix, the :attribute:`edges` of the two sparse matrices should be the same
+
+        Parameters
+        ----------
+
+        func: Callable[[torch.Tensor, torch.Tensor], torch.Tensor]
+            the elementwise operation
+        obj: SparseMatrix or torch.Tensor or int or float
+            the object to be elementwise operated with
+
+        Returns
+        -------
+        result: SparseMatrix
+            the result of the elementwise operation
+        """
         if  isinstance(obj, SparseMatrix):
             assert self.shape == obj.shape, f"the shape of the two sparse matrices should be the same, but got {self.shape}, {obj.shape}"
             assert self.has_same_layout(obj), f"the row indices of the two sparse matrices should be the same, but got {self.row}, {obj.row}"
@@ -55,25 +111,131 @@ class SparseMatrix(nn.Module):
         return self.elementwise_operation(torch.pow, obj)
 
     def __matmul__(self, x):
+        """
+        Parameters
+        ----------
+        x: torch.Tensor
+            the dense tensor of shape [b] or [b,h] to be multiplied with the sparse matrix
+
+        Returns
+        -------
+        torch.Tensor
+            the result of the multiplication of shape [a] or [a,h]
+        """
         return spmm(self.edata, self.row, self.col, self.shape, x)
 
     def solve(self, x):
+        """
+        Parameters
+        ----------
+        x: torch.Tensor
+            the dense tensor of shape [a] or [a,h] to be solved with the sparse matrix
+
+        Returns
+        -------
+        torch.Tensor
+            the result of the solution of shape [b] or [b,h]
+        """
         return spsolve(self.edata, self.row, self.col, self.shape, x)
 
     def requires_grad_(self, requires_grad: bool = True):
+        """
+        Parameters
+        ----------
+        requires_grad: bool, optional
+            whether the sparse matrix requires gradient, default :obj:`True`
+        
+        Returns
+        -------
+        SparseMatrix    
+            the sparse matrix with requires_grad set to requires_grad
+        """
         self.edata.requires_grad_(requires_grad)
         return self
   
     def transpose(self):
+        """tranpose the sparse matrix
+
+        .. math::
+            
+            A = A^\\top
+        
+        """
         return SparseMatrix(self.edata, self.col, self.row, self.shape[::-1])
 
     def sqrt(self):
+        """element-wise square root
+        
+        .. math::
+
+            A_{ij} = \\sqrt{A_{ij}}
+        
+        """
         return SparseMatrix(self.edata.sqrt(), self.row, self.col, self.shape)
     
     def reciprocal(self):
+        """element-wise reciprocal
+        
+        .. math::
+            
+            A_{ij} = \\frac{1}{A_{ij}}
+
+        """
         return SparseMatrix(self.edata.reciprocal(), self.row, self.col, self.shape)
 
+    def degree(self, axis=0):
+        """how many non-zero element in each row/column
+        - axis = :obj:`0`
+            
+            .. math::
+                \\sum_{j}\mathbb{1}_{A_{ij} \\neq 0}    
+        
+        - axis = :obj:`1`
+        
+            .. math::
+                \\sum_{i}\mathbb{1}_{A_{ij} \\neq 0}     
+        
+        Parameters
+        ----------
+        axis: int, optional
+            the axis to sum, can be :obj:`0` or :obj:`1`, default :obj:`0`
+        
+        Returns
+        -------
+        torch.Tensor
+            the degree of shape :math:`[n_{\\text{row}}]` or :math:`[n_{\\text{col}}]`
+        """
+        nonzero = self.row if axis == 0 else self.col
+        return torch.bincount(nonzero, minlength=self.shape[0] if axis == 0 else self.shape[1])
+
     def sum(self, axis=None):
+        """sum of all non-zero elements
+
+        * axis = :obj:`None`
+
+            .. math::
+                \sum_{ij}A_{ij}
+
+        * axis = :obj:`0`
+
+            .. math::
+                \sum_{j}A_{ij}
+        
+        * axis = :obj:`1`
+        
+            .. math::
+                \sum_{i}A_{ij}
+
+        Parameters
+        ----------
+        axis: int, optional
+            the axis to sum, can be :obj:`None`, :obj:`0` or :obj:`1`, default :obj:`None`
+        
+        Returns
+        -------
+        torch.Tensor
+            the sum of shape :math:`[]` or :math:`[n_\\text{row}]` or :math:`[n_\\text{col}]`
+        """
         if axis is None:
             return self.edata.sum()
         elif axis == 0:
@@ -99,22 +261,53 @@ class SparseMatrix(nn.Module):
     
     @property
     def T(self):
+        """
+        Returns
+        -------
+        torch_fem.sparse.SparseMatrix
+            the transpose of the sparse matrix
+        """
         return self.transpose()
     
     @property
     def requires_grad(self):
+        """
+        Returns
+        -------
+        bool
+            whether the sparse matrix requires gradient or not
+        """
         return self.edata.requires_grad
 
     @property
     def dtype(self):
+        """
+        Returns
+        -------
+        torch.dtype
+            the dtype of the sparse matrix
+        """
         return self.edata.dtype
     
     @property
     def device(self):
+        """
+        Returns
+        -------
+        torch.device
+            the device of the sparse matrix
+        """
         return self.edata.device
 
     @property
     def grad(self):
+        """
+        Returns
+        ------- 
+        torch_fem.sparse.SparseMatrix or None
+            if the sparse matrix requires gradient, return the grad for each element 
+            of the sparse matrix, otherwise return :obj:`None`
+        """
         if self.edata.grad is None:
             return None
         else:
@@ -122,6 +315,13 @@ class SparseMatrix(nn.Module):
 
     @property
     def grad_fn(self):
+        """
+        Returns
+        -------
+        torch.autograd.Function or None
+            if the sparse matrix requires gradient, return the grad_fn for each element 
+            of the sparse matrix, otherwise return :obj:`None`
+        """
         if self.edata.grad_fn is None:
             return None
         else:
@@ -129,42 +329,52 @@ class SparseMatrix(nn.Module):
 
     @property
     def nnz(self):
+        """
+        Returns
+        -------
+        int
+            the number of non-zero elements
+        """
         return self.edata.shape[0]
 
     @property
     def layout_mask(self):
+        """
+        Returns
+        -------
+        torch.Tensor
+            the mask of the layout, where the non-zero elements are 1, otherwise 0
+        """
         mask = torch.zeros(self.shape, device=self.edata.device)
         mask[self.row, self.col] = 1
         return mask
 
-    def double(self):
-        self.edata = self.edata.to(torch.double)
-        return self
-    
-    def float(self):
-        self.edata = self.edata.to(torch.float)
-        return self
-    
-    def cuda(self, device=None):
-        self.edata.cuda(device=device)
-        return self
-    
-    def cpu(self):
-        self.edata.cpu()
-        return self
-
     def type(self, dtype):
+        """
+        Returns
+        -------
+        torch_fem.sparse.SparseMatrix
+            the sparse matrix with dtype set to dtype
+        """
         self.edata.to_(dtype)
         return self
 
-    def to(self, arg):
-        self.edata.to_(arg)
-        return self
-
     def detach(self):
+        """
+        Returns
+        -------
+        torch_fem.sparse.SparseMatrix
+            the sparse matrix with requires_grad set to False
+        """
         return SparseMatrix(self.edata.detach(), self.row, self.col, self.shape).requires_grad_(False)
 
     def to_scipy_coo(self):
+        """
+        Returns
+        -------
+        scipy.sparse.coo_matrix
+            the scipy.sparse.coo_matrix of the sparse matrix
+        """
         return scipy.sparse.coo_matrix((
             self.edata.detach().cpu().numpy(),
             (
@@ -173,6 +383,12 @@ class SparseMatrix(nn.Module):
             )), shape=self.shape)
     
     def to_sparse_coo(self):
+        """Turn the sparse matrix into a torch.sparse_coo_tensor, the gradient will be lost
+        Returns
+        -------
+        torch.sparse_coo_tensor
+            the torch.sparse_coo_tensor of the sparse matrix
+        """
         return torch.sparse_coo_tensor(
             torch.stack([self.row, self.col]),
             self.edata,
@@ -180,11 +396,28 @@ class SparseMatrix(nn.Module):
         )
 
     def to_dense(self):
+        """Turn the sparse matrix into a dense matrix, the gradient will be maintained
+        Returns
+        -------
+        torch.Tensor
+            the dense tensor of the sparse matrix
+        """
         matrix = torch.zeros(self.shape, device=self.edata.device, dtype=self.edata.dtype)
         matrix[self.row, self.col] += self.edata
         return matrix
 
     def has_same_layout(self, obj):
+        """
+        Parameters
+        ----------
+        obj: SparseMatrix or str
+            the object to be compared with, if it is a str, it will be compared with the layout_hash of the sparse matrix
+
+        Returns
+        -------
+        bool
+            whether the two sparse matrices have the same layout
+        """
         assert isinstance(obj, (SparseMatrix,str)), f"matrix must be SparseMatrix or str, but got {type(obj)}"
         if  isinstance(obj, str):
             return self.layout_hash == obj
@@ -201,6 +434,17 @@ class SparseMatrix(nn.Module):
 
     @staticmethod
     def from_sparse_coo(matrix):
+        """
+        Parameters
+        ----------
+        matrix: torch.sparse_coo_tensor
+            the sparse matrix to be converted
+        
+        Returns
+        -------
+        torch_fem.sparse.SparseMatrix
+            the sparse matrix converted from the torch.sparse_coo_tensor
+        """
         edata = matrix.values()
         row   = matrix.indices()[0]
         col   = matrix.indices()[1]
@@ -209,17 +453,25 @@ class SparseMatrix(nn.Module):
 
     @staticmethod
     def from_block_coo(edata, row, col, shape):
-        """
-            Parameters:
-            -----------
-                edata: torch.Tensor of shape [n_edges, block_size, block_size]
-                    the block data
-                row: torch.Tensor of shape [n_edges]
-                    the row indices
-                col: torch.Tensor of shape [n_edges]
-                    the column indices
-                shape: tuple of int
-                    the shape of the sparse matrix of the first two dim
+        """Each element in a sparse matrix is a block matrix
+        Parameters
+        ----------
+        edata: torch.Tensor 
+            3D float tensor of shape :math:`[|\\mathcal E|, C, C]`, where :math:`|\mathcal E|` is the number of edges, :math:`C` is the size of the block data
+            the block data
+        row: torch.Tensor 
+            1D int tensor of shape :math:`[|\\mathcal E|]`, where :math:`|\mathcal E|` is the number of edges
+            the row indices
+        col: torch.Tensor 
+            1D int tensor of shape :math:`[|\\mathcal E|]`, where :math:`|\mathcal E|` is the number of edges
+            the column indices
+        shape: Tuple[int, int]
+            the shape of the sparse matrix of the first two dim
+
+        Returns
+        -------
+        torch_fem.sparse.SparseMatrix
+            the sparse matrix converted from the block coo format of shape
         """
         n_edges = edata.shape[0]
         block_size = edata.shape[1]
@@ -243,11 +495,47 @@ class SparseMatrix(nn.Module):
 
     @staticmethod
     def random(m,n, density=0.1, device="cpu", dtype=torch.float):
+        """randomly generate a sparse matrix
+        Parameters
+        ----------
+        m: int
+            the number of rows
+        n: int
+            the number of cols
+        density: float, optional
+            the density of the sparse matrix, default 0.1
+        device: str, optional
+            the device of the sparse matrix, default cpu
+        dtype: torch.dtype, optional
+            the dtype of the sparse matrix, default torch.float
+
+        Returns
+        -------
+        torch_fem.sparse.SparseMatrix
+            the sparse matrix of shape :math:`[m,n]` with density :obj:`density` and dtype :obj:`dtype`
+        """
         matrix = scipy.sparse.random(m, n, density, format="coo")
         return SparseMatrix.from_scipy_coo(matrix, device=device, dtype=dtype)
     
     @staticmethod
     def random_layout(m, n, density=0.1, device="cpu"):
+        """randomly generate a sparse matrix layout
+        Parameters
+        ----------
+        m: int
+            the number of rows
+        n: int
+            the number of cols
+        density: float, optional
+            the density of the sparse matrix, default 0.1
+        device: str, optional
+            the device of the sparse matrix, default cpu
+
+        Returns
+        -------
+        Tuple[torch.Tensor, torch.Tensor, Tuple[int, int]]
+            the layout of the sparse matrix of shape :math:`[m,n]` with density :obj:`density` and dtype :obj:`dtype`
+        """
         matrix = scipy.sparse.random(m, n, density, format="coo")
         row    = torch.from_numpy(matrix.row).to(device)
         col    = torch.from_numpy(matrix.col).to(device)
@@ -256,6 +544,21 @@ class SparseMatrix(nn.Module):
     
     @staticmethod
     def random_from_layout(layout, device="cpu", dtype=torch.float):
+        """randomly generate a sparse matrix from a layout
+        Parameters
+        ----------
+        layout: Tuple[torch.Tensor, torch.Tensor, Tuple[int, int]]
+            the layout of the sparse matrix
+        device: str, optional
+            the device of the sparse matrix, default cpu
+        dtype: torch.dtype, optional
+            the dtype of the sparse matrix, default torch.float
+            
+        Returns
+        -------
+        torch_fem.sparse.SparseMatrix
+            the sparse matrix of shape :math:`[m,n]` with density :obj:`density` and dtype :obj:`dtype`
+        """
         row, col, shape = layout
         edata = torch.rand(row.shape[0], device=device, dtype=dtype)
         return SparseMatrix(edata, row.to(device), col.to(device), shape)

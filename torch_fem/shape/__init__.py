@@ -27,8 +27,21 @@ with open(os.path.join(os.path.dirname(__file__), "dimension.toml"), "r") as f:
 with open(os.path.join(os.path.dirname(__file__), "order.toml"), "r") as f:
     element_type2order = toml.load(f)
 
+element_types = list(element_type2dimension.keys())
+
 
 def get_basis(element_type):
+    """get the basis information
+    Parameters
+    ----------
+    element_type : str
+        the type of the element
+    Returns
+    -------
+    basis : torch.Tensor
+        2D tensor of shape [n_basis, n_dim]
+        the basis of the element
+    """
     find_basis = {
         "triangle":tri3_basis_p1,
         "triangle6":tri6_basis_p2,
@@ -48,39 +61,47 @@ def get_basis(element_type):
 
 def get_boundary(element_type):
     """
-        Parameters:
-        -----------
-            element_type: str
-                the type of the element
-        Returns:
-        --------
-            boundary elements: torch.Tensor [n_boundary, n_boundary_basis]
+    Parameters
+    ----------
+    element_type: str
+        the type of the element
 
-        Examples:
-        >>> get_boundary("quad")
-        tensor([[1, 0],
-                [2, 1],
-                [3, 0],
-                [3, 2]])
+    Returns:
+    --------
+    torch.Tensor 
+        2D tensor of shape [n_boundary, n_boundary_basis]
+        the boundary/facets of the element
+
+    Examples
+    --------
+
+    >>> get_boundary("quad")
+    tensor([[1, 0],
+            [2, 1],
+            [3, 0],
+            [3, 2]])
     """
     basis  = get_basis(element_type)
     hull   = scipy.spatial.ConvexHull(basis)
     return torch.tensor(hull.simplices, dtype=torch.int64)
 
 def get_shape_val(element_type, quadrature_points):
-    """
-        Parameters:
-        -----------
-            element_type: str
-                the type of the element
-                must be one of ["tri3", "tri6"]
-            quadrature_points: torch.Tensor [n_quadrature, n_dim]
-                n_dim = 2 for triangle
-                the local coordinates of the quadrature points
-        Returns:
-        --------
-            phi: torch.Tensor of shape [n_quadrature, n_basis]
-                the base functions
+    """get the shape values
+    Parameters
+    ----------
+    element_type: str
+        the type of the element
+        must be one of ["tri3", "tri6"]
+    quadrature_points: torch.Tensor 
+        2D tensor of shape [n_quadrature, n_dim]
+        n_dim = 2 for triangle
+        the local coordinates of the quadrature points
+
+    Returns
+    -------
+    torch.Tensor 
+        2D tensor of shape [n_quadrature, n_basis]
+        the base function value at the quadrature points
     """
     find_shape_val = {
         "triangle":tri3_shape_val,
@@ -100,27 +121,33 @@ def get_shape_val(element_type, quadrature_points):
     return  find_shape_val[element_type](quadrature_points)
    
 def get_shape_grad(element_type, quadrature_weights, quadrature_points, element_coords):
-    """
-        Parameters:
-        -----------
-            element_type: str
-                the type of the element
-                must be one of ["tri3", "tri6"]
-            quadrature_weights: torch.Tensor [n_quadrature]
-                the quadrature weights
-            quadrature_points: torch.Tensor [n_quadrature, n_dim]
-                n_dim = 2 for triangle
-                the local coordinates of the quadrature points
-            element_coords: torch.Tensor [n_element, n_corner, n_dim]
-                n_dim = 2 for triangle
-                the coordinates of the element corners
+    """get the shape gradients
 
-        Returns:
-        --------
-            grad_phi: torch.Tensor of shape [n_element, n_quadrature, n_basis, n_dim]
-                the gradient of the base functions
-            jxw     : torch.Tensor of shape [n_element, n_quadrature]
-                the jacobian of the base functions multiplied by the quadrature weights
+    Parameters
+    ----------
+    element_type : str
+        the type of the element
+        must be one of ["tri3", "tri6"]
+    quadrature_weights : torch.Tensor 
+        1D tensor of shape [n_quadrature]
+        the quadrature weights
+    quadrature_points : torch.Tensor 
+        2D tensor of shape [n_quadrature, n_dim]
+        n_dim = 2 for triangle
+        the local coordinates of the quadrature points
+    element_coords : torch.Tensor 
+        3D tensor of shape [n_element, n_corner, n_dim]
+        n_dim = 2 for triangle
+        the coordinates of the element corners
+
+    Returns
+    -------
+    grad_phi : torch.Tensor 
+        4D torch.Tensor of shape [n_element, n_quadrature, n_basis, n_dim]
+        the gradient of the base functions
+    jxw     : 
+        2D torch.Tensor of shape [n_element, n_quadrature]
+        the jacobian of the base functions multiplied by the quadrature weights
     """
     find_shape_grad = {
         "triangle":tri3_shape_grad,

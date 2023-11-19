@@ -20,29 +20,42 @@ def gen_cube(chara_length=0.1,
              visualize=False,
              cache_path=None):
     """
-        Parameters:
-        -----------
-            chara_length: float
-                the characteristic length of the mesh
-            order: int
-                the order of the mesh
-            element_type: str
-                the type of the element, e.g., 'quad', 'tri'
-            left: float
-                the left boundary of the rectangle
-            right: float
-                the right boundary of the rectangle
-            bottom: float
-                the bottom boundary of the rectangle
-            top: float
-                the top boundary of the rectangle
-            visualize: bool
-                whether to visualize the mesh
-            cache_path: str
-                the path to store the mesh
-        Returns:
-        --------
-            None
+    Parameters
+    ----------
+    chara_length: float, optional
+        the characteristic length of the mesh,
+        default: :obj:`0.1`
+    order: int, optional
+        the order of the basis function,
+        default: :obj:`1`
+    left: float, optional
+        the left boundary of the cube,
+        default: :obj:`0.0`
+    right: float, optional
+        the right boundary of the cube,
+        default: :obj:`1.0`
+    bottom: float, optional
+        the bottom boundary of the cube,
+        default: :obj:`0.0`
+    top: float, optional
+        the top boundary of the cube,
+        default: :obj:`1.0`
+    front: float, optional
+        the front boundary of the cube,
+        default: :obj:`0.0`
+    back: float, optional
+        the back boundary of the cube,
+        default: :obj:`1.0`
+    visualize: bool, optional
+        whether to visualize the mesh,
+        default: :obj:`False`
+    cache_path: str, optional
+        the path to save the mesh, if :obj:`None`, it will be decided by :meth:`torch_fem.dataset.mesh.gen_cube`,
+        default: :obj:`None`
+    Returns
+    -------
+    torch_fem.mesh.Mesh
+        the mesh object
     """
     assert left < right, f"left must be smaller than right, but got {left} >= {right}"
     assert bottom < top, f"bottom must be smaller than top, but got {bottom} >= {top}"
@@ -114,6 +127,63 @@ def gen_hollow_cube(chara_length=0.1,
              inner_front=0.25, inner_back=0.75,
              visualize=False,
              cache_path=".gmsh_cache/tmp.msh"):
+    """
+    Parameters
+    ----------
+    chara_length: float, optional
+        the characteristic length of the mesh,
+        default: :obj:`0.1`
+    order: int, optional
+        the order of the basis function,
+        default: :obj:`1`
+    outer_left: float, optional
+        the left boundary of the outer cube,
+        default: :obj:`0.0`
+    outer_right: float, optional
+        the right boundary of the outer cube,
+        default: :obj:`1.0`
+    outer_bottom: float, optional
+        the bottom boundary of the outer cube,
+        default: :obj:`0.0`
+    outer_top: float, optional
+        the top boundary of the outer cube,
+        default: :obj:`1.0`
+    outer_front: float, optional
+        the front boundary of the outer cube,
+        default: :obj:`0.0`
+    outer_back: float, optional
+        the back boundary of the outer cube,
+        default: :obj:`1.0`
+    inner_left: float, optional
+        the left boundary of the inner cube,
+        default: :obj:`0.25`
+    inner_right: float, optional
+        the right boundary of the inner cube,
+        default: :obj:`0.75`
+    inner_bottom: float, optional
+        the bottom boundary of the inner cube,
+        default: :obj:`0.25`
+    inner_top: float, optional
+        the top boundary of the inner cube,
+        default: :obj:`0.75`
+    inner_front: float, optional
+        the front boundary of the inner cube,
+        default: :obj:`0.25`
+    inner_back: float, optional
+        the back boundary of the inner cube,
+        default: :obj:`0.75`
+    visualize: bool, optional
+        whether to visualize the mesh,
+        default: :obj:`False`
+    cache_path: str, optional
+        the path to save the mesh, if :obj:`None`, it will be decided by :meth:`torch_fem.dataset.mesh.gen_hollow_cube`,
+        default: :obj:`None`
+
+    Returns
+    -------
+    torch_fem.mesh.Mesh
+        the mesh object 
+    """
     assert outer_left < inner_left < inner_right < outer_right, f"outer_left < inner_left  < inner_right < outer_right, but got {outer_left} < {inner_left} < {inner_right} < {outer_right}"
     assert outer_bottom < inner_bottom < inner_top < outer_top, f"outer_bottom < inner_bottom < inner_top < outer_top, but got {outer_bottom} < {inner_bottom} < {inner_top} < {outer_top}"
     assert outer_front < inner_front < inner_back < outer_back, f"outer_front < inner_front < inner_back < outer_back, but got {outer_front} < {inner_front} < {inner_back} < {outer_back}"

@@ -11,6 +11,21 @@ import os
 quadrature_lookup = toml.load(os.path.join(os.path.dirname(__file__),"./quadrature.toml"))
 
 def get_quadrature(element_type, order:int=None):
+    """get the quadrature information
+    Parameters
+    ----------
+    element_type : str
+        the type of the element
+    order : int, optional
+        the order of the quadrature, by default None
+        
+    Returns
+    -------
+    weights : torch.Tensor
+        the weights of the quadrature
+    points : torch.Tensor
+        the points of the quadrature
+    """
     if element_type.startswith("line"): # line
         if order is None:
             order = 1

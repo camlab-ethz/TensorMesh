@@ -1,3 +1,4 @@
-from .heat import MultiFrequency as HeatMultiFrequency
-from .wave import MultiFrequency as WaveMultiFrequency
-from .poisson import MultiFrequency as PoissonMultiFrequency
+from .heat import HeatMultiFrequency 
+from .wave import WaveMultiFrequency
+from .poisson import PoissonMultiFrequency 
+

@@ -13,6 +13,57 @@ from ..shape import get_shape_val, get_shape_grad, element_type2order, element_t
 from ..nn import BufferDict
 
 class NodeAssembler(nn.Module):
+    """The NodeAssembler is used to assemble the operator on the nodes of the mesh
+
+    The output when calling the NodeAssembler is a vector, which is of shape :math:`[|\\mathcal V|]` or :math:`[|\\mathcal V|\\times H]`, 
+    where :math:`|\\mathcal V|` is the number of nodes and :math:`H` is the number of degrees of freedom per node.
+
+    
+    Attributes
+    ----------
+    quadrature_weights : BufferDict[str, torch.Tensor]
+        The element type is the key, which should be one of :meth:`torch_fem.shape.element_types`.
+        Each :obj:`element_type` corresponds to a 1D tensor of shape :math:`[Q]`, where :math:`Q` is the number of quadrature points`
+        quadrature_weights of each element type
+    quadrature_points : BufferDict[str, torch.Tensor]
+        The element type is the key, which should be one of :meth:`torch_fem.shape.element_types`.
+        Each :obj:`element_type` corresponds to a 2D tensor of shape :math:`[Q, D]`, where :math:`Q` is the number of quadrature points and :math:`D` is the dimension of the mesh
+        quadrature_points of each element type
+    shape_val : BufferDict[str, torch.Tensor]
+        The element type is the key, which should be one of :meth:`torch_fem.shape.element_types`.
+        Each :obj:`element_type` corresponds to a 2D tensor of shape :math:`[Q, B]`, where :math:`Q` is the number of quadrature points and :math:`B` is the number of basis functions
+        shape_val of each element type
+    projector : BufferDict[str, Projector]
+        The element type is the key, which should be one of :meth:`torch_fem.shape.element_types`.
+        Each :obj:`element_type` corresponds to a projector from element to nodes,
+        each  projector is a :meth:`torch_fem.assemble.Projector` object, could be considered as a sparse matrix
+        
+        .. math::
+
+            \\mathcal P_e: \\mathbb{R}_{\\text{sparse}}^{|\mathcal C_e| \\times B_e} \\rightarrow \\mathbb{R}^{|\mathcal V|}
+
+        where :math:`\mathcal C` is the set of elements, :math:`B` is the number of basis, :math:`\mathcal V` is the set of nodes/vertices/points.
+
+        projector from element to edge
+    elements : BufferDict[str, torch.Tensor]
+        The element type is the key, which should be one of :meth:`torch_fem.shape.element_types`.
+        Each :obj:`element_type` corresponds to a 2D tensor of shape :math:`[N, B]`, where :math:`N` is the number of elements and :math:`B` is the number of basis functions
+        element connectivity of each element type
+    n_points : int
+        number of points
+    dimension : int
+        dimension of the mesh, either :math:`1` or :math:`2` or :math:`3`
+    element_types : list[str]
+        element types, e.g. :obj:`["triangle6", "quad9"]`
+
+    """
+    __autodoc__ = [
+        '__call__',
+        'forward',
+        '__post_init__',
+        'from_assembler',
+        'from_mesh',
+    ]
     def __init__(self, 
                     quadrature_weights,
                    quadrature_points,
@@ -33,9 +84,9 @@ class NodeAssembler(nn.Module):
         self.dimension          = dimension
         self.element_types      = element_types
 
-        self.precompute()
+        self.__post_init__()
         
-    def integrate(self, batch_integral, jxw, n_element, n_basis, use_element_parallel):
+    def _integrate(self, batch_integral, jxw, n_element, n_basis, use_element_parallel):
         if not use_element_parallel:
             error_msg = f"the shape returned by forward function is {batch_integral.shape} which is not supported, should either be [batch_size,{n_basis}] or [batch_size,{n_basis}, dof_per_point]"
             assert batch_integral.shape[1] == n_basis, error_msg
@@ -49,7 +100,7 @@ class NodeAssembler(nn.Module):
             batch_integral = torch.einsum("eqb...,eq->eb...", batch_integral, jxw) # [n_element, n_basis, ...]
         return batch_integral
     
-    def build_output(self, integral):
+    def _build_output(self, integral):
         return integral.flatten()
     
     @property
@@ -61,6 +112,7 @@ class NodeAssembler(nn.Module):
         return self.quadrature_weights.dtype
 
     def type(self,  dtype):
+        super().__doc__
         if dtype == torch.float64:
             self.double()
         elif dtype == torch.float32:
@@ -71,19 +123,27 @@ class NodeAssembler(nn.Module):
     
     def __call__(self, points, func=None,point_data=None, batch_size=None):
         """
-            Parameters:
-            -----------
-                points: torch.Tensor of shape [n_point, n_dim]
-                    the coordinates of the points
-                func: function|None when it's None the forward function will be used
-                point_data: Dict[str, torch.Tensor] of shape [n_point, ...]
-                batch_size: int|None
-                    the batch size of quadrature points
-                    if int is given, the quadrature points will be divided into batches
-                    if None is given, the quadrature points will not be divided into batches
-            Returns:
-            --------
-                A: (edata, col, row)
+        Parameters
+        ----------
+        points: torch.Tensor 
+            2D tensor of shape :math:`[|\mathcal V|, D]`, where :math:`\mathcal V` is the set of nodes/vertices/points, :math:`D` is the dimension of the domain
+            the coordinates of the points
+        func: function or None, optional
+            the bilinear function, when it's None the forward function will be used,
+            if you want to reuse the same element assembler for different bilinear function, you can pass the bilinear function here
+        point_data: Dict[str, torch.Tensor], optional
+            tensor of shape :math:`[|\mathcal V|, ...]`, where :math:`\mathcal V` is the set of nodes/vertices/points
+        batch_size: int or None, optional
+            the batch size of quadrature points
+            if :obj:`int` is given, the quadrature points will be divided into batches
+            if :obj:`None` is given, the quadrature points will not be divided into batches
+
+        Returns
+        -------
+        torch.Tensor
+            a torch.sparse_matrix of shape :math:`[|\\mathcal V|]` or :math:`[|\\mathcal V|\\times H]`, 
+            where :math:`|\\mathcal V|` is the number of nodes and :math:`H` is the number of degrees of freedom per node.
+
         """
         if point_data is None:
             point_data = {}
@@ -182,7 +242,9 @@ class NodeAssembler(nn.Module):
 
         return self.build_output(integral)
 
-    def precompute(self):
+    def __post_init__(self):
+        """Override this function to precompute some data after the initialization
+        """
         pass
 
     def __str__(self):
@@ -203,10 +265,54 @@ class NodeAssembler(nn.Module):
 
     @abstractmethod
     def forward(self, *args):
+        """The weak form of the operator, you should override this function.
+        Similar to the :meth:`torch:torch.nn.Module.forward` function, you can use :method: `torch_fem.assemble.ElementAssembler.__call__` to call this function
+
+        Parameters
+        ----------
+        u : torch.Tensor, optional
+            1D tensor shape :math:`[B]`, where :math:`B` is the number of basis
+        v : torch.Tensor, optional
+            1D tensor shape :math:`[B]`, where :math:`B` is the number of basis
+        gradu : torch.Tensor, optional
+            2D tensor shape :math:`[B,D]`, where :math:`B` is the number of basis, :math:`D` is the dimension of the dimension
+        gradv : torch.Tensor, optional
+            2D tensor shape :math:`[B,D]`, where :math:`B` is the number of basis, :math:`D` is the dimension of the dimension
+        x : torch.Tensor, optional
+            2D tensor shape :math:`[B, D]`, where :math:`B` is the number of basis, :math:`D` is the dimension of the dimension
+        gradx : torch.Tensor, optional
+            3D tensor shape :math:`[B, D, D]`, where :math:`B` is the number of basis, :math:`D` is the dimension of the dimension
+        **point_data : Dict[str, torch.Tensor], optional
+            The point_data are passed by __call__
+            if the point data :obj:`"example_key"` passed in is of shape :math:`[|\\mathcal V|, ...]`, 
+            then the point data :obj:`"example_key"` passed in will be of shape :math:`[B, ...]`,
+            and the point data :obj:`"gradexample_key"` passed in will be of shape :math:`[B, ..., D]`,
+            where :math:`B` is the number of basis, :math:`D` is the dimension of the dimension
+
+        Returns
+        -------
+        torch.Tensor
+            1D tensor of shape :math:`[B]` or 2D tensor of shape :math:`[B, H]`, where :math:`B` is the number of basis, :math:`H` is the number of degree of freedom per point
+
+        """
         raise NotImplementedError(f"forward is not implemented")
     
     @classmethod
     def from_assembler(cls, obj):
+        """Build an NodeAssembler from another :meth:`torch_fem.assemble.NodeAssembler` or :meth:`torch_fem.assemble.ElementAssembler`.
+        It's much faster than :meth:`torch_fem.assemble.NodeAssembler.from_mesh`.
+        When you already have an NodeAssembler or ElementAssembler, you can use this function to build another NodeAssembler sharig the same mesh
+
+        Parameters
+        ----------
+        obj: torch_fem.assemble.NodeAssembler or torch_fem.assemble.ElementAssembler
+            an :meth:`torch_fem.assemble.NodeAssembler` or :meth:`torch_fem.assemble.ElementAssembler` object
+        
+        Returns
+        -------
+        torch_fem.assemble.NodeAssembler
+            the new node_assembler sharing the same mesh
+        """
         assert isinstance(obj, ElementAssembler)
         return cls(
                 obj.quadrature_weights,
@@ -218,6 +324,23 @@ class NodeAssembler(nn.Module):
 
     @classmethod
     def from_mesh(cls, mesh,  quadrature_order=None):
+        """Build an :meth:`torch_fem.assemble.NodeAssembler` from a mesh :meth:`torch_fem.mesh.Mesh`.
+        It's slower than :meth:`torch_fem.assemble.NodeAssembler.from_assembler`.
+        Because it will precompute the projection matrix $\mathcal P_{\mathcal V}$
+
+        Parameters
+        ----------
+        mesh: torch_fem.mesh.mesh.Mesh
+            a meth:`torch_fem.mesh.Mesh` object
+        quadrature_order: int or None
+            the order should be poisitive integer,
+            if :obj:`None`, the quadrature order will be determined by the :meth:`torch_fem.quadrature.get_quadrature`
+        
+        Returns
+        -------
+        torch_fem.assemble.NodeAssembler
+            the new node assembler use the topology of the mesh
+        """
         elements = mesh.elements()
         n_points = mesh.points.shape[0]
         if isinstance(elements, torch.Tensor):
@@ -251,3 +374,5 @@ class NodeAssembler(nn.Module):
                    shape_val,
                    projector, 
                    elements)
+
+NodeAssembler.type.__doc__ = nn.Module.type.__doc__

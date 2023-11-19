@@ -17,8 +17,7 @@ from collections import defaultdict
 from typing import Iterable
 
 
-from ..shape import get_basis, get_boundary
-from .dimension import topological_dimension
+from ..shape import get_basis, get_boundary, element_type2dimension as topological_dimension
 from ..sparse import SparseMatrix
 from ..nn import BufferDict
 
@@ -27,10 +26,41 @@ from ..nn import BufferDict
 
 
 class Mesh(nn.Module):
+    """
+    Attributes
+    ----------
+    points: torch.Tensor 
+        2D tensor of shape :math:`[|\\mathcal V|, D]`, where :math:`|\\mathcal V|` is the number of points and :math:`D` is the dimension of the space
+        the coordinates of the points
+    cells: BufferDict[str, torch.Tensor]
+        Each key is a :meth:`torch_fem.shape.element_type`, 
+        and for each :obj:`element_type`, there is a corresponding 2D tensor of shape :math:`[|\mathcal V, B]`, where :math:`B` is the number of basis functions
+        the cells of the mesh
+    point_data: BufferDict[str, torch.Tensor], optional
+        Each key is a :meth:`torch_fem.shape.element_type`, 
+        the point data
+    cell_data: BufferDict[str, BufferDict[int, torch.Tensor]], optional
+        Each key is a :meth:`torch_fem.shape.element_type`, 
+        the cell data
+    field_data: BufferDict[str, torch.Tensor], optional
+        Each key is a :meth:`torch_fem.shape.element_type`, 
+        the field data
+    cell_sets: dict, optional
+        Each key is a :meth:`torch_fem.shape.element_type`, 
+        the cell sets
+    dim2eletyp: Dict[int, List[str]]
+        Each key is a dimension, and the value is a list of element types of the dimension
+    default_eletyp: str
+        the default element type
+    default_element_type: str
+        the default element type
+
+    """
+
     def __init__(self, mesh):
         """
-            mesh: meshio.Mesh
-                a meshio mesh object
+        mesh: meshio.Mesh
+            a meshio mesh object
         """
         super().__init__()
         # turn is_... or ..._mask to bool
@@ -68,8 +98,6 @@ class Mesh(nn.Module):
         self.default_eletyp = self.dim2eletyp[max(self.dim2eletyp.keys())] 
         if len(self.default_eletyp) == 1: # if only one element type, use it as default
             self.default_eletyp = self.default_eletyp[0]
-        self.default_element_type = self.default_eletyp
-
 
         dimension = max(self.dim2eletyp.keys())
 
@@ -79,9 +107,26 @@ class Mesh(nn.Module):
         )
 
     def register_point_data(self, key, value):
+        """Add key-value pair to :attr:`point_data` buffer,
+        since the :attr:`point_data` is a :class:`torch_fem.nn.BufferDict`, you are recommended to use this method instead of :obj:`__setitem__`
+        
+        Parameters
+        ----------
+        key: str
+            the key of the value
+        value: torch.Tensor
+            1D tensor of shape :math:`[|\\mathcal V|,...]`, where :math:`\\mathcal V` is the number of nodes/vertices/points, the value to be registered
+
+        Returns
+        -------
+        torch_fem.mesh.Mesh
+            self will be returned
+        """
         assert key not in self.point_data.keys(), f"the key {key} already exists in point_data"
         assert value.shape[0] == self.points.shape[0], f"the first dimension of value should be {self.points.shape[0]}, but got {value.shape[0]}"
         self.point_data.register_buffer(key, value)
+
+        return self
       
     def __str__(self):
         return self.__repr__()
@@ -99,6 +144,12 @@ class Mesh(nn.Module):
         )
 
     def to_meshio(self):
+        """
+        Returns
+        -------
+        meshio.Mesh
+            the meshio mesh object
+        """
         
         mesh = meshio.Mesh(
             points = self.points.detach().cpu().numpy(),
@@ -112,16 +163,17 @@ class Mesh(nn.Module):
 
     def save(self, file_name:str, file_format:str=None):
         """
-            Parameters:
-            -----------
-                file_name: str
-                    the name of the file
-                file_format: str
-                    the format of the file, e.g., 'msh', 'vtk', 'obj'
-                    default is the file extension
-            Returns:
-            --------
-                Mesh
+        Parameters
+        ----------
+        file_name: str
+            the name of the file
+        file_format: str
+            the format of the file, e.g., 'msh', 'vtk', 'obj'
+            default is the file extension
+        Returns
+        -------
+        torch_fem.mesh.Mesh
+            self will be returned
         """
         mesh = self.to_meshio()
         # turn is_... or ..._mask to float
@@ -156,22 +208,33 @@ class Mesh(nn.Module):
         return self
 
     def to_file(self, file_name:str, file_format:str=None):
+        """
+        Parameters
+        ----------
+        file_name: str
+            the name of the file
+        file_format: str
+            the format of the file, e.g., 'msh', 'vtk', 'obj'
+            default is the file extension
+        Returns
+        -------
+        torch_fem.mesh.Mesh
+            self will be returned
+        """
         return self.save(file_name, file_format)
     
-    def write(self, file_name:str,file_format:str=None):
-        return self.save(file_name, file_format)
-
     def node_adjacency(self, element_type=None):
-        """
-            Parameters:
-            -----------
-                element_type: str or Iterable[str] or None
-                    the type of the elements
-                    if None is the default_eletyp
-                    default : None
-            Returns:
-            --------
-                SparseMatrix [n_point, n_point]
+        """get the node adjacency matrix, inside each element, the nodes are considered fully connected
+        Parameters
+        ----------
+        element_type : str or Iterable[str] or None
+            the type of the elements
+            if :obj:`None` is the :obj:`default_element_type`
+            default : :obj:`None`
+        Returns
+        -------
+        SparseMatrix 
+            the adjacency matrix of nodes :math:`[|\\mathcal V|,|\\mathcal V|]`, where :math:`|\\mathcal V|` is the number of nodes
         """
         elements = self.elements(element_type)
         if isinstance(elements, torch.Tensor):
@@ -189,16 +252,17 @@ class Mesh(nn.Module):
         return SparseMatrix(torch.ones(edges.shape[1]), edges[0], edges[1], (self.n_point, self.n_point))
 
     def element_adjacency(self, element_type=None):
-        """
-            Parameters:
-            -----------
-                element_type: str or Iterable[str] or None
-                    the type of the elements, should be of same dimension
-                    if None is the default_eletyp
-                    default : None
-            Returns:
-            --------
-                SparseMatrix [n_element, n_element]
+        """get the element adjacency matrix, the element are considered connected only if they share a boundary/facet
+        Parameters
+        ----------
+        element_type : str or Iterable[str] or None
+            the type of the elements, should be of same dimension
+            if :obj:`None` is the :obj:`default_element_type`
+            default : :obj:`None`
+        Returns
+        -------
+        SparseMatrix 
+            the adjacency matrix of elements :math:`[|\\mathcal C|,|\\mathcal C|]`, where :math:`|\\mathcal C|` is the number of elements
         """
 
         def get_element_adjacency(ele_ids, boundaries):
@@ -297,16 +361,18 @@ class Mesh(nn.Module):
 
     def elements(self, element_type=None):
         """
-            Parameters:
-            -----------
-                element_type: str or Iterable[str] or None
-                    the type of the elements
-                    if None is the default_eletyp
-                    default : None 
-            Returns:
-            --------
-                torch.Tensor [n_element, n_basis] if element_type is str
-                Dict[str, torch.Tensor [n_element, n_basis]] if element_type is Iterable[str]
+        Parameters
+        ----------
+        element_type: str or Iterable[str] or None
+            the type of the elements
+            if None is the :obj:`default_eletyp` will be used
+            default : None 
+        Returns
+        -------
+        torch.Tensor or Dict[str, torch.Tensor] 
+            if :obj:`element_type` is :obj:`str`, return the corresponding elements connections of shape :math:`[|\\mathcal C|, B]`, where :math:`|\\mathcal C|` is the number of elements and :math:`B` is the number of basis functions
+            if :obj:`element_typs` is :obj:`Iterable[str]`, return the mapping of corresponding elements connections of shape :math:`[|\\mathcal C|, B]`, where :math:`|\\mathcal C|` is the number of elements and :math:`B` is the number of basis functions
+            if :obj:`element_type` is :obj:`None`, the :obj:`element_type` will be the :obj:`default_element_type` and do as above
         """
         if element_type is None:
             element_type = self.default_eletyp
@@ -319,9 +385,26 @@ class Mesh(nn.Module):
     
     def plot(self, values= None, save_path=None, backend="matplotlib", dt=None, show_mesh=False):
         """
-            Parameters:
-            -----------
-                values: dict
+            Parameters
+            ----------
+                values: None or Dict[str, torch.Tensor] or Dict[str, List[torch.Tensor]]
+                    the values to plot, if None, only plot the mesh
+                    if :obj:`Dict[str, torch.Tensor]`, a static subplots will be plotted, the key is the name of the subplot, the value is of shape :math:`[|\\mathcal V|]`, where :math:`|\\mathcal V|` is the number of points
+                    if :obj:`Dict[str, List[torch.Tensor]]`, a mp4/gif will be plotted, the key is the name of the subplot, each item in the list is of shape :math:`[|\\mathcal V|]`, where :math:`|\\mathcal V|` is the number of points
+                    default: None
+                save_path: str or None
+                    the path to save the plot, if None, it will not be saved
+                    if the :obj:`values` is passed in as :obj:`Dict[str, List[torch.Tensor]]`, the :obj:`save_path` must endswith '.mp4' or '.gif'
+                    default: None
+                backend: str
+                    the backend of the plot, must be one of ['matplotlib', 'pyvista']
+                    default: 'matplotlib'
+                dt: float or None
+                    the time interval between each frame, only used when :obj:`values` is passed in as :obj:`Dict[str, List[torch.Tensor]]`
+                    default: None
+                show_mesh: bool
+                    whether to show the mesh, when :obj:`values` is passed in as :obj:`Dict[str, List[torch.Tensor]]` or :obj:`Dict[str, torch.Tensor]`
+                    default: False
                     
         """
         # from ..visualization import plot_value_matplotlib, plot_pyvista
@@ -343,10 +426,23 @@ class Mesh(nn.Module):
 
     @property
     def n_point(self):
+        """
+        Returns
+        -------
+        int
+            the number of nodes/vertices/points :math:`|\\mathcal V|`
+        """
         return self.points.shape[0]
 
     @property
     def boundary_mask(self):
+        """
+        Returns
+        -------
+        torch.Tensor 
+            1D tensor of shape :math:`[|\mathcal V|]`, where  :math:`|\mathcal V|` is the number of points
+            the mask of the boundary points, :obj:`"is_boundary"` key or :obj:`"boundary_mask"` key is required in :attr:`point_data`
+        """
         if "is_boundary" in self.point_data.keys():
             return self.point_data["is_boundary"]
         elif "boundary_mask" in self.point_data.keys():
@@ -355,44 +451,82 @@ class Mesh(nn.Module):
             raise Exception("'boundary_mask' or 'is_boundary' is not found in point_data")
 
     @property
+    def default_element_type(self):
+        """
+        Returns
+        -------
+        str or List[str]
+            the default element type, if the mesh is composed of mixed elements, it will return List[str],  
+            otherwise it will return str
+        """
+        return self.default_eletyp
+
+    @property
     def dtype(self):
+        """
+        Returns
+        -------
+        torch.dtype
+            the data type of the points, e.g., torch.float32, torch.float64
+        """
         return self.points.dtype
     
     @property 
     def device(self):
+        """
+        Returns
+        -------
+        torch.device
+            the device of the points, e.g., torch.device("cpu"), torch.device("cuda:0")
+        """
         return self.points.device
 
     @classmethod
     def from_meshio(cls,mesh):
         """
-            Parameters:
-            -----------
-                mesh: meshio.Mesh
-                    a meshio mesh object
-            Returns:
-            --------
-                Mesh
+        Parameters
+        ----------
+        mesh: meshio.Mesh
+            a meshio mesh object
+        Returns
+        -------
+        torch_fem.mesh.Mesh
+            the mesh object
         """
         return cls(mesh)
     
     @classmethod
-    def read_file(cls, file_name:str, file_format:str=None):
+    def read(cls, file_name:str, file_format:str=None):
         """
-            Parameters:
-            -----------
-                file_name: str
-                    the name of the file
-                file_format: str
-                    the format of the file, e.g., 'msh', 'vtk', 'obj'
-                    default is the file extension
-            Returns:
-            --------
-                Mesh
+        Parameters
+        ----------
+            file_name: str
+                the name of the file
+            file_format: str
+                the format of the file, e.g., 'msh', 'vtk', 'obj'
+                default is the file extension
+        Returns
+        -------
+        torch_fem.mesh.Mesh
+            the mesh object
         """
         return cls(meshio.read(file_name, file_format))
     
     @classmethod
     def from_file(cls, file_name:str, file_format:str=None):
+        """
+        Parameters
+        ----------
+            file_name: str
+                the name of the file
+            file_format: str
+                the format of the file, e.g., 'msh', 'vtk', 'obj'
+                default is the file extension
+        Returns
+        -------
+        torch_fem.mesh.Mesh
+            the mesh object
+        """
         return cls.read_file(file_name, file_format)
 
     @staticmethod
@@ -402,6 +536,41 @@ class Mesh(nn.Module):
              left=0.0, right=1.0, bottom=0.0, top=1.0,
              visualize=False,
              cache_path=None):
+        """
+        Parameters
+        ----------
+        chara_length: float, optional
+            the characteristic length of the mesh,
+            default: :obj:`0.1`
+        order: int, optional
+            the order of the basis function,
+            default: :obj:`1`
+        element_type: str, optional
+            the type of the element,
+            default: :obj:`"tri"`
+        left: float, optional
+            the left boundary of the rectangle,
+            default: :obj:`0.0`
+        right: float, optional
+            the right boundary of the rectangle,
+            default: :obj:`1.0`
+        bottom: float, optional
+            the bottom boundary of the rectangle,
+            default: :obj:`0.0`
+        top: float, optional
+            the top boundary of the rectangle,
+            default: :obj:`1.0`
+        visualize: bool, optional
+            whether to visualize the mesh,
+            default: :obj:`False`
+        cache_path: str, optional
+            the path to save the mesh, if :obj:`None`, it will be decided by :meth:`torch_fem.dataset.mesh.gen_rectangle`,
+            default: :obj:`None`
+        Returns
+        -------
+        torch_fem.mesh.Mesh
+            the mesh object
+        """
         from ..dataset import gen_rectangle
         return gen_rectangle(chara_length, order, element_type, left, right, bottom, top, visualize, cache_path)
 
@@ -416,6 +585,54 @@ class Mesh(nn.Module):
         visualize=False,
         cache_path=None
     ):
+        """
+        Parameters
+        ----------
+        chara_length: float, optional
+            the characteristic length of the mesh,
+            default: :obj:`0.1` 
+        order: int, optional
+            the order of the basis function,
+            default: :obj:`1`
+        element_type: str, optional
+            the type of the element,
+            default: :obj:`"quad"`
+        outer_left: float, optional
+            the left boundary of the outer rectangle,
+            default: :obj:`0.0`
+        outer_right: float, optional
+            the right boundary of the outer rectangle,
+            default: :obj:`1.0`
+        outer_bottom: float, optional
+            the bottom boundary of the outer rectangle,
+            default: :obj:`0.0`
+        outer_top: float, optional
+            the top boundary of the outer rectangle,
+            default: :obj:`1.0`
+        inner_left: float, optional
+            the left boundary of the inner rectangle,
+            default: :obj:`0.25`
+        inner_right: float, optional
+            the right boundary of the inner rectangle,
+            default: :obj:`0.75`
+        inner_bottom: float, optional
+            the bottom boundary of the inner rectangle,
+            default: :obj:`0.25`
+        inner_top: float, optional
+            the top boundary of the inner rectangle,
+            default: :obj:`0.75`
+        visualize: bool, optional
+            whether to visualize the mesh,
+            default: :obj:`False`
+        cache_path: str, optional
+            the path to save the mesh, if :obj:`None`, it will be decided by :meth:`torch_fem.dataset.mesh.gen_hollow_rectangle`,
+            default: :obj:`None`
+        Returns
+        -------
+        torch_fem.mesh.Mesh
+            the mesh object
+        """
+
         from ..dataset import gen_hollow_rectangle
         return gen_hollow_rectangle(chara_length,
              order,
@@ -433,6 +650,38 @@ class Mesh(nn.Module):
             cx = 0.0, cy = 0.0, r = 1.0,
             visualize=False,
             cache_path=None):
+        """
+        Parameters
+        ----------
+        chara_length: float, optional
+            the characteristic length of the mesh,
+            default: :obj:`0.1`
+        order: int, optional
+            the order of the basis function,
+            default: :obj:`1`
+        element_type: str, optional
+            the type of the element,
+            default: :obj:`"tri"`
+        cx: float, optional
+            the x coordinate of the center of the circle,
+            default: :obj:`0.0`
+        cy: float, optional
+            the y coordinate of the center of the circle,
+            default: :obj:`0.0`
+        r: float, optional
+            the radius of the circle,
+            default: :obj:`1.0`
+        visualize: bool, optional
+            whether to visualize the mesh,
+            default: :obj:`False`
+        cache_path: str, optional
+            the path to save the mesh, if :obj:`None`, it will be decided by :meth:`torch_fem.dataset.mesh.gen_circle`,
+            default: :obj:`None`
+        Returns
+        -------
+        torch_fem.mesh.Mesh
+            the mesh object
+        """
         from ..dataset import gen_circle
         return gen_circle(chara_length, order, element_type, cx, cy, r, visualize, cache_path)
 
@@ -443,6 +692,41 @@ class Mesh(nn.Module):
              cx = 0.0, cy = 0.0, r_inner = 1.0, r_outer = 2.0,
              visualize=False,
              cache_path=None):
+        """
+        Parameters
+        ----------
+        chara_length: float, optional
+            the characteristic length of the mesh,
+            default: :obj:`0.1`
+        order: int, optional
+            the order of the basis function,
+            default: :obj:`1`
+        element_type: str, optional
+            the type of the element,
+            default: :obj:`"quad"`
+        cx: float, optional
+            the x coordinate of the center of the circle,
+            default: :obj:`0.0`
+        cy: float, optional
+            the y coordinate of the center of the circle,
+            default: :obj:`0.0`
+        r_inner: float, optional
+            the inner radius of the circle,
+            default: :obj:`1.0`
+        r_outer: float, optional
+            the outer radius of the circle,
+            default: :obj:`2.0`
+        visualize: bool, optional
+            whether to visualize the mesh,
+            default: :obj:`False`
+        cache_path: str, optional
+            the path to save the mesh, if :obj:`None`, it will be decided by :meth:`torch_fem.dataset.mesh.gen_hollow_circle`,
+            default: :obj:`None`
+        Returns
+        -------
+        torch_fem.mesh.Mesh
+            the mesh object
+        """
         from ..dataset import gen_hollow_circle
         return gen_hollow_circle(chara_length,
              order,
@@ -460,6 +744,47 @@ class Mesh(nn.Module):
              right_inner=0.5,
              visualize=False,
              cache_path=None):
+        """
+        Parameters
+        ----------
+        chara_length: float, optional
+            the characteristic length of the mesh,
+            default: :obj:`0.1`
+        order: int, optional
+            the order of the basis function,
+            default: :obj:`1`
+        element_type: str, optional
+            the type of the element,
+            default: :obj:`"quad"`
+        left: float, optional
+            the left boundary of the rectangle,
+            default: :obj:`0.0`
+        right: float, optional
+            the right boundary of the rectangle,
+            default: :obj:`1.0`
+        bottom: float, optional
+            the bottom boundary of the rectangle,
+            default: :obj:`0.0`
+        top: float, optional
+            the top boundary of the rectangle,
+            default: :obj:`1.0`
+        top_inner: float, optional
+            the top inner boundary of the rectangle,
+            default: :obj:`0.5`
+        right_inner: float, optional
+            the right inner boundary of the rectangle,
+            default: :obj:`0.5`
+        visualize: bool, optional
+            whether to visualize the mesh,
+            default: :obj:`False`
+        cache_path: str, optional
+            the path to save the mesh, if :obj:`None`, it will be decided by :meth:`torch_fem.dataset.mesh.gen_L`,
+            default: :obj:`None`
+        Returns
+        -------
+        torch_fem.mesh.Mesh
+            the mesh object 
+        """
         from ..dataset import gen_L
         return gen_L(chara_length, order, element_type, left, right, bottom, top, top_inner, right_inner, visualize, cache_path)
 
@@ -471,6 +796,44 @@ class Mesh(nn.Module):
              front=0.0, back=1.0,
              visualize=False,
              cache_path=None):
+        """
+        Parameters
+        ----------
+        chara_length: float, optional
+            the characteristic length of the mesh,
+            default: :obj:`0.1`
+        order: int, optional
+            the order of the basis function,
+            default: :obj:`1`
+        left: float, optional
+            the left boundary of the cube,
+            default: :obj:`0.0`
+        right: float, optional
+            the right boundary of the cube,
+            default: :obj:`1.0`
+        bottom: float, optional
+            the bottom boundary of the cube,
+            default: :obj:`0.0`
+        top: float, optional
+            the top boundary of the cube,
+            default: :obj:`1.0`
+        front: float, optional
+            the front boundary of the cube,
+            default: :obj:`0.0`
+        back: float, optional
+            the back boundary of the cube,
+            default: :obj:`1.0`
+        visualize: bool, optional
+            whether to visualize the mesh,
+            default: :obj:`False`
+        cache_path: str, optional
+            the path to save the mesh, if :obj:`None`, it will be decided by :meth:`torch_fem.dataset.mesh.gen_cube`,
+            default: :obj:`None`
+        Returns
+        -------
+        torch_fem.mesh.Mesh
+            the mesh object
+        """
         from ..dataset import gen_cube
         return gen_cube(chara_length, order, left, right, bottom, top, front, back, visualize, cache_path)
     
@@ -485,6 +848,63 @@ class Mesh(nn.Module):
              inner_front=0.25, inner_back=0.75,
              visualize=False,
              cache_path=".gmsh_cache/tmp.msh"):
+        """
+        Parameters
+        ----------
+        chara_length: float, optional
+            the characteristic length of the mesh,
+            default: :obj:`0.1`
+        order: int, optional
+            the order of the basis function,
+            default: :obj:`1`
+        outer_left: float, optional
+            the left boundary of the outer cube,
+            default: :obj:`0.0`
+        outer_right: float, optional
+            the right boundary of the outer cube,
+            default: :obj:`1.0`
+        outer_bottom: float, optional
+            the bottom boundary of the outer cube,
+            default: :obj:`0.0`
+        outer_top: float, optional
+            the top boundary of the outer cube,
+            default: :obj:`1.0`
+        outer_front: float, optional
+            the front boundary of the outer cube,
+            default: :obj:`0.0`
+        outer_back: float, optional
+            the back boundary of the outer cube,
+            default: :obj:`1.0`
+        inner_left: float, optional
+            the left boundary of the inner cube,
+            default: :obj:`0.25`
+        inner_right: float, optional
+            the right boundary of the inner cube,
+            default: :obj:`0.75`
+        inner_bottom: float, optional
+            the bottom boundary of the inner cube,
+            default: :obj:`0.25`
+        inner_top: float, optional
+            the top boundary of the inner cube,
+            default: :obj:`0.75`
+        inner_front: float, optional
+            the front boundary of the inner cube,
+            default: :obj:`0.25`
+        inner_back: float, optional
+            the back boundary of the inner cube,
+            default: :obj:`0.75`
+        visualize: bool, optional
+            whether to visualize the mesh,
+            default: :obj:`False`
+        cache_path: str, optional
+            the path to save the mesh, if :obj:`None`, it will be decided by :meth:`torch_fem.dataset.mesh.gen_hollow_cube`,
+            default: :obj:`None`
+
+        Returns
+        -------
+        torch_fem.mesh.Mesh
+            the mesh object 
+        """
         from ..dataset import gen_hollow_cube
         return gen_hollow_cube(chara_length,
              order,
@@ -503,6 +923,38 @@ class Mesh(nn.Module):
                 cx = 0.0, cy = 0.0, cz=0.0, r = 1.0,
                 visualize=False,
                 cache_path=None):
+        """
+        Parameters
+        ----------
+        chara_length: float, optional
+            the characteristic length of the mesh,
+            default: :obj:`0.1`
+        order: int, optional
+            the order of the basis function,
+            default: :obj:`1`
+        cx: float, optional
+            the x coordinate of the center of the sphere,
+            default: :obj:`0.0`
+        cy: float, optional
+            the y coordinate of the center of the sphere,
+            default: :obj:`0.0`
+        cz: float, optional
+            the z coordinate of the center of the sphere,
+            default: :obj:`0.0`
+        r: float, optional
+            the radius of the sphere,
+            default: :obj:`1.0`
+        visualize: bool, optional
+            whether to visualize the mesh,
+            default: :obj:`False`
+        cache_path: str, optional
+            the path to save the mesh, if :obj:`None`, it will be decided by :meth:`torch_fem.dataset.mesh.gen_sphere`,
+            default: :obj:`None`
+        Returns
+        -------
+        torch_fem.mesh.Mesh
+            the mesh object
+        """
         from ..dataset import gen_sphere
         return gen_sphere(chara_length, order, cx, cy, cz, r, visualize, cache_path)
 
@@ -512,5 +964,43 @@ class Mesh(nn.Module):
               cx = 0.0, cy = 0.0, cz=0.0, r_inner = 1.0, r_outer = 2.0,
              visualize=False,
              cache_path=None):
+        """
+        Parameters
+        ----------
+        chara_length: float, optional
+            the characteristic length of the mesh,
+            default: :obj:`0.1`
+        order: int, optional
+            the order of the basis function,
+            default: :obj:`1`
+        cx: float, optional
+            the x coordinate of the center of the sphere,
+            default: :obj:`0.0`
+        cy: float, optional
+            the y coordinate of the center of the sphere,
+            default: :obj:`0.0`
+        cz: float, optional
+            the z coordinate of the center of the sphere,
+            default: :obj:`0.0`
+        r_inner: float, optional
+            the inner radius of the sphere,
+            default: :obj:`1.0`
+        r_outer: float, optional
+            the outer radius of the sphere,
+            default: :obj:`2.0`
+        visualize: bool, optional
+            whether to visualize the mesh,
+            default: :obj:`False`
+        cache_path: str, optional
+            the path to save the mesh, if :obj:`None`, it will be decided by :meth:`torch_fem.dataset.mesh.gen_hollow_sphere`,
+            default: :obj:`None`
+        Returns
+        -------
+        torch_fem.mesh.Mesh
+            the mesh object
+        """
         from ..dataset import gen_hollow_sphere
         return gen_hollow_sphere(chara_length, order, cx, cy, cz, r_inner, r_outer, visualize, cache_path)
+
+
+Mesh.__autodoc__ = [i for i in dir(Mesh) if not i.startswith("_")]

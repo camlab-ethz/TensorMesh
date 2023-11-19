@@ -3,7 +3,7 @@ import numpy as np
 from numpy.polynomial.legendre import Legendre
 
 
-basis_p1 = torch.tensor([0., 1.], dtype=torch.float64)
+basis_p1 = torch.tensor([[0.], [1.]], dtype=torch.float64)
 
 def shape_val_p1(quadrature):
     """
@@ -66,7 +66,7 @@ def shape_grad_p1(quadrature, element_coords, return_jac=False):
     else:
         return grad_phi
     
-basis_p2 = torch.tensor([0., 1., 0.5],dtype=torch.float64)
+basis_p2 = torch.tensor([[0.], [1.], [0.5]],dtype=torch.float64)
 
 
 def shape_val_p2(quadrature):

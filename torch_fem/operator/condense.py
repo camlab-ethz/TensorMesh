@@ -1,16 +1,33 @@
 import torch 
 from ..sparse import SparseMatrix
 
+# TODO: add dirichlet_value option for condense_rhs and __call__
+
 class Condenser:
+    """Static Condensing Operator for Dirichlet Boundary Condition
+
+    .. math::
+
+        K_{inner} u_{inner} = f_{inner} - K_{ou2in} u_{ou2in}
+    
+    Parameters
+    ----------
+    dirichlet_mask: torch.Tensor 
+        1D tensor of shape :math:`[n_{\\text{dof}}]`
+        the mask of the dirichlet boundary condition
+    dirichlet_value: torch.Tensor 
+        1D tensor of shape :math:`[n_{\\text{dof}}]` or :math:`[n_{\\text{outer_dof}}]`
+        the value of the dirichlet boundary condition
+
+    Attributes
+    ----------
+    dirichlet_mask: torch.Tensor of shape  :math:`[n_{\\text{dof}}]`
+        the mask of the dirichlet boundary condition
+    dirichlet_value: torch.Tensor of shape :math:`[n_{\\text{outer_dof}}]`
+        the value of the dirichlet boundary condition
+
+    """
     def __init__(self, dirichlet_mask:torch.Tensor, dirichlet_value:torch.Tensor = None):
-        """
-            Parameters:
-            -----------
-                dirichlet_mask: torch.Tensor of shape [n_dof]
-                    the mask of the dirichlet boundary condition
-                dirichlet_value: torch.Tensor of shape [n_dof] or [n_outer_dof]
-                    the value of the dirichlet boundary condition
-        """
         assert dirichlet_mask.dtype == torch.bool, "the dtype of dirichlet_mask must be torch.bool"
         assert dirichlet_mask.ndim == 1, "tDirichlet_mask must be 1D tensor"
         assert dirichlet_value is None or dirichlet_value.ndim == 1, "dirichlet_value must be 1D tensor"
@@ -33,7 +50,7 @@ class Condenser:
         self.layout_hash   = None
         self.K_ou2in       = None
 
-    def compute_layout(self, matrix:SparseMatrix):
+    def _compute_layout(self, matrix:SparseMatrix):
         """
         precompute the condensed components
         Parameters:
@@ -77,24 +94,26 @@ class Condenser:
 
     def __call__(self, matrix:SparseMatrix, rhs:torch.Tensor = None):
         """
-            Parameters:
-            -----------
-                matrix: SparseMatrix
-                    the matrix to be condensed
-                source_value: torch.Tensor of shape [n_dof]
-                    the right hand side of the linear system
-            Returns:
-            --------
-                matrix: SparseMatrix
-                    the condensed matrix
-                rhs: torch.Tensor of shape [n_dof]
-                    the condensed right hand side
+        Parameters:
+        -----------
+        matrix: SparseMatrix
+            the matrix to be condensed
+        source_value: torch.Tensor 
+            1D tensor of shape :math:`[n_{\\text{dof}}]`
+            the right hand side of the linear system
+        Returns:
+        --------
+        matrix: SparseMatrix
+            the condensed matrix
+        rhs: torch.Tensor 
+            1D tensor of shape :math:`[n_{\\text{dof}}]`
+            the condensed right hand side
         """
         if rhs is None:
             rhs = torch.zeros(matrix.shape[0])
 
         if self.inner_row is None:
-            self.compute_layout(matrix)
+            self._compute_layout(matrix)
 
         assert matrix.shape[0] == self.n_dof, f"the shape of matrix must be [{self.n_dof}, {self.n_dof}], but got {matrix.shape}"
         assert matrix.shape[1] == self.n_dof, f"the shape of matrix must be [{self.n_dof}, {self.n_dof}], but got {matrix.shape}"
@@ -117,6 +136,24 @@ class Condenser:
         return K_inner, rhs[self.is_inner_dof] - K_ou2in @ self.dirichlet_value
 
     def condense_rhs(self, rhs):
+        """only condense the right hand side
+        
+        .. math::
+
+            f_{inner} - K_{ou2in} u_{ou2in}
+        
+        Parameters
+        ----------
+        rhs: torch.Tensor
+            1D tensor of shape :math:`[n_{\\text{dof}}]`
+            the right hand side of the linear system
+
+        Returns
+        -------
+        torch.Tensor
+            1D tensor of shape :math:`[n_{\\text{inner_dof}}]`
+            the condensed right hand side
+        """
         assert self.K_ou2in is not None, f"please call __call__ first"
 
         self.dirichlet_value = self.dirichlet_value.type(rhs.dtype).to(rhs.device)
@@ -125,11 +162,19 @@ class Condenser:
         return rhs[self.is_inner_dof] - self.K_ou2in @ self.dirichlet_value
        
     def recover(self, u:torch.Tensor):
-        """
-            Parameters:
-            -----------
-                u: torch.Tensor of shape [n_inner_dof]
-                    the solution of the condensed linear system
+        """recovert the solution
+
+        Parameters
+        ----------
+        u: torch.Tensor 
+            1D tensor of shape :math:`[n_{\\text{inner_dof}}]`
+            the solution of the condensed linear system
+
+        Returns
+        -------
+        torch.Tensor
+            1D tensor of shape :math:`[n_{\\text{dof}}]`
+            the recovered solution of the linear system
         """
         assert u.ndim == 1, "u must be 1D tensor"
         assert u.shape[0] == self.n_inner_dof, f"the shape of u must be [{self.n_inner_dof}], but got {u.shape}"
@@ -139,3 +184,6 @@ class Condenser:
         u_full[self.is_outer_dof] += self.dirichlet_value
 
         return u_full
+    
+
+Condenser.__autodoc__ = ["__call__", "condense_rhs", "recover"]

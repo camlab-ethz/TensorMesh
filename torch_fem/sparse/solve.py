@@ -109,25 +109,32 @@ class SparseLUSolveCUDA(Function):
 
 
 def spsolve(edata, row, col, shape, b, verbose=True):
-    """
-        if the b of shape [n_node, n_batch], then a superLU will be used 
-        else it will use spsolve 
-        Parameters:
-        -----------
-            edata: torch.Tensor of shape [n_edge]
-                the edge data of the sparse matrix A
-            row: torch.Tensor of shape [n_edge]
-                the row index of the sparse matrix A
-            col: torch.Tensor of shape [n_edge]
-                the col index of the sparse matrix A
-            shape: list of length 2
-                the shape of the sparse matrix A
-            b: torch.Tensor of shape [n_node] or [n_node,batch]
-                the right hand side vector b
-        Returns:
-        --------
-            u: torch.Tensor of shape [n_node] or [n_node,batch]
-                the solution of the linear system
+    """solve the sparse linear system Ax = b
+
+    if the b of shape [n_node, n_batch], then a superLU will be used 
+    else it will use spsolve 
+
+    Parameters
+    ----------
+    edata: torch.Tensor 
+        1D tensor of shape [n_edge]
+        the edge data of the sparse matrix A
+    row: torch.Tensor 
+        1D tensor of shape [n_edge]
+        the row index of the sparse matrix A
+    col: torch.Tensor 
+        1D tensor of shape [n_edge]
+        the col index of the sparse matrix A
+    shape: Tuple[int, int]
+        the shape of the sparse matrix A
+    b: torch.Tensor 
+        1D or 2D tensor of shape [n_node] or [n_node,batch]
+        the right hand side vector b
+    Returns
+    -------
+    torch.Tensor 
+        1D or 2D tensor  of shape [n_node] or [n_node,batch]
+        the solution of the linear system
     """
     if edata.dtype != torch.float64:
         warnings.warn("Accuracy insufficient, float64 is recommended for better accuracy in spsolve")
