@@ -1,5 +1,4 @@
 import torch 
-import cupy as cp
 
 try:
     import petsc4py
