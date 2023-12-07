@@ -8,6 +8,7 @@ except ImportError:
     
 try:
     import cupy 
+    import cupy as cp
     is_cupy_available = True
 except ImportError:
     is_cupy_available = False
