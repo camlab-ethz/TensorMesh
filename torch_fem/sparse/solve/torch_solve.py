@@ -28,7 +28,7 @@ def csr_diagonal(A):
     return diag_value
 
 
-def cg(A, b, x0=None, tol=1e-5, max_iter=1000):
+def cg(A, b, x0=None, tol=1e-5, max_iter=5000):
     """
     Solves Ax = b using the Conjugate Gradient method.
 
@@ -48,40 +48,37 @@ def cg(A, b, x0=None, tol=1e-5, max_iter=1000):
         Maximum number of iterations. The default is 1000.
     """
     if x0 is None:
-        x0 = 1/csr_diagonal(A).view(-1, 1)
-        # x0 = torch.zeros_like(b)
+        # x0 = 1/csr_diagonal(A).view(-1, 1)
+        x0 = torch.zeros_like(b)
         # x0 = A.diagonal().clone()
 
     x0 = x0.view(-1, 1)
     b  = b.view(-1, 1)
 
-    r0 = b - A @ x0
-    p = r0.clone()
-    x = x0.clone()
+    r = b - A @ x0
+    p = r.clone()
+    x = x0
+    rs_old = r.T @ r
 
-    losses = []
     for i in range(max_iter):
         Ap = A @ p
-        alpha = (r0.T @ r0) / (p.T @ Ap)
+        alpha = rs_old / (p.T @ Ap)
         x = x + alpha * p
-        r = r0 - alpha * Ap
-        if torch.norm(r) < tol:
+        r = r - alpha * Ap
+        rs_new = r.T @ r
+
+        if torch.norm(rs_new) < tol:
             break
-        beta = (r.T @ r) / (r0.T @ r0)
-        p = r + beta * p
-        r0 = r
 
-        losses.append(torch.norm(r0))
-
-    import matplotlib.pyplot as plt
-    plt.plot(losses)  
-    plt.show()
+        p = r + (rs_new / rs_old) * p
+        rs_old = rs_new
+       
     if torch.norm(A @ x - b) > tol:
         warnings.warn(f"cg did not converge after {max_iter} iterations. with residual {torch.norm(A @ x - b)}")
 
-    return x
+    return x.view(-1)
 
-def bicgstab(A, b, x0=None, tol=1e-5, max_iter=1000):
+def bicgstab(A, b, x0=None, tol=1e-6, max_iter=1000):
     """
     Solves Ax = b using the Bi-Conjugate Gradient Stabilized method.
 
@@ -95,11 +92,13 @@ def bicgstab(A, b, x0=None, tol=1e-5, max_iter=1000):
     Returns:
         The approximate solution vector.
     """
-
     if x0 is None:
         x0 = torch.zeros_like(b)
-    
-    r0 = b - A.mv(x0)
+
+    x0 = x0.view(-1, 1)
+    b  = b.view(-1, 1)
+
+    r0 = b - A @ x0
     r0_hat = r0.clone()
     v = torch.zeros_like(b)
     p = torch.zeros_like(b)
@@ -107,21 +106,21 @@ def bicgstab(A, b, x0=None, tol=1e-5, max_iter=1000):
     x = x0.clone()
 
     for i in range(max_iter):
-        rho_new = r0_hat.dot(r0)
+        rho_new = r0_hat.T @ r0
         beta = (rho_new / rho) * (alpha / omega)
         rho = rho_new
 
         p = r0 + beta * (p - omega * v)
-        v = A.mv(p)
-        alpha = rho / r0_hat.dot(v)
+        v = A @ p
+        alpha = rho / (r0_hat.T @ v)
         h = x + alpha * p
 
-        if torch.norm(A.mv(h) - b) < tol:
-            return h
+        if torch.norm(A @ h - b) < tol:
+            return h.view(-1)
 
         s = r0 - alpha * v
-        t = A.mv(s)
-        omega = t.dot(s) / t.dot(t)
+        t = A @ s 
+        omega = (t.T @ s) / (t.T @ t)
         x = h + omega * s
 
         r0 = s - omega * t
@@ -129,17 +128,18 @@ def bicgstab(A, b, x0=None, tol=1e-5, max_iter=1000):
         if torch.norm(r0) < tol:
             break
 
-    if torch.norm(A.mv(x) - b) > tol:
+    if torch.norm(A @ x - b) > tol:
         warnings.warn(f"bicgstab did not converge after {max_iter} iterations. with residual {torch.norm(A.mv(x) - b)}")
+   
+    return x.view(-1)
 
-    return x
-
+lse_solver = bicgstab
 
 class SparseSolveTorch(Function):
     @staticmethod
     def forward(ctx, edata, row, col, shape, b):
         A = torch.sparse_coo_tensor(torch.stack([row, col]), edata, shape)
-        u = bicgstab(A, b)
+        u = lse_solver(A, b)
         ctx.save_for_backward(edata, row, col, u)
         ctx.A_shape = shape
         return u
@@ -148,7 +148,7 @@ class SparseSolveTorch(Function):
     def backward(ctx, grad_output):
         edata, row, col, u = ctx.saved_tensors
         A_T           = torch.sparse_coo_tensor(torch.stack([col, row]), edata, shapeT(ctx.A_shape))
-        b_grad        = bicgstab(A_T, grad_output)
+        b_grad        = lse_solver(A_T, grad_output)
         edata_grad      = - b_grad[row] * u[col]
 
         return edata_grad, None, None, None, b_grad

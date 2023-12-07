@@ -28,18 +28,50 @@ class MassElementAssembler(ElementAssembler):
         K = mul(u, v)
         return K
     
-class ConstNodeAssembler(NodeAssembler):
-    r"""The const node assembler
+def const_node_assembler(c=1):
+    class ConstNodeAssembler(NodeAssembler):
+        r"""The const node assembler
+        
+        .. math::
     
-    .. math::
+            f = \int_{\Omega} c\cdot v \mathrm{d}v
+        
+        """
+        def __post_init__(self, c=c):
+            self.c = c 
+        def forward(self, v):
+            f = self.c * v
+            return f
+    return ConstNodeAssembler
 
-        f = \int_{\Omega} c\cdot u \mathrm{d}v
+def func_node_assembler(f=lambda x: x):
+    class FuncNodeAssembler(NodeAssembler):
+        r"""The func node assembler
+        
+        .. math::
     
-    """
-    def __post_init__(self, c=1):
-        self.c = c
-    def forward(self, u, v):
-        f = self.c * u
-        return f
+            f = \int_{\Omega} f(x) v \mathrm{d}v
+        
+        """
+        def __post_init__(self, f=f):
+            self.f = f
+        def forward(self, x, v):
+            f = self.f(x) * v
+            return f
+    return FuncNodeAssembler
+
+# class ConstNodeAssembler(NodeAssembler):
+#     r"""The const node assembler
     
-__all__ = ["LaplaceElementAssembler", "MassElementAssembler", "ConstNodeAssembler"]
+#     .. math::
+
+#         f = \int_{\Omega} c\cdot v \mathrm{d}v
+    
+#     """
+#     def __post_init__(self, c=1):
+#         self.c = c
+#     def forward(self, v):
+#         f = self.c * v
+#         return f
+    
+__all__ = ["LaplaceElementAssembler", "MassElementAssembler", "const_node_assembler", "func_node_assembler"]

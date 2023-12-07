@@ -125,6 +125,9 @@ class SparseMatrix(nn.Module):
         """
         return spmm(self.edata, self.row, self.col, self.shape, x)
 
+    def __neg__(self):
+        return SparseMatrix(-self.edata, self.row, self.col, self.shape)
+
     def solve(self, x, backend=None):
         """
         Parameters

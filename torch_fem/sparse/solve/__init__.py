@@ -48,7 +48,7 @@ def spsolve(edata, row, col, shape, b, backend=None, verbose=True):
         the solution of the linear system
     """
     assert edata.device == row.device == col.device == b.device, f"edata, row, col b should be on the same device, but got {edata.device}, {row.device}, {col.device}, {b.device}"
-    assert backend  in [None, "scipy", "petsc", "cupy"], f"backend should be None, scipy, petsc or cupy, but got {backend}"
+    assert backend  in [None, "scipy", "petsc", "cupy", "torch"], f"backend should be None, scipy, petsc or cupy, but got {backend}"
     if edata.dtype != torch.float64:
         warnings.warn("Accuracy insufficient, float64 is recommended for better accuracy in spsolve")
     assert len(b.shape) <= 2, f"b should be of shape [n_node] or [n_node,batch], but got {b.shape}"
@@ -86,7 +86,7 @@ def spsolve(edata, row, col, shape, b, backend=None, verbose=True):
                 assert is_petsc_available, f"petsc is not available, please install petsc4py"
                 return SparseSolvePETSc.apply(edata, row, col, shape, b)
             elif backend == "torch":
-                return SparseSolverTorch.apply(edata, row, col, shape, b)
+                return SparseSolveTorch.apply(edata, row, col, shape, b)
             else:
                 raise NotImplementedError(f"backend {backend} not supported for CPU")
         elif edata.device.type == "cuda":
@@ -96,7 +96,7 @@ def spsolve(edata, row, col, shape, b, backend=None, verbose=True):
                 else:
                     return SparseSolveTorch.apply(edata, row, col, shape, b)
             elif backend == "torch":
-                return SparseSolverTorch.apply(edata, row, col, shape, b)
+                return SparseSolveTorch.apply(edata, row, col, shape, b)
             elif backend == "cupy":
                 assert is_cupy_available, f"cupy is not available, please install cupy"
                 return SparseSolveCupy.apply(edata, row, col, shape, b)

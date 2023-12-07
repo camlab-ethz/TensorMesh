@@ -16,32 +16,32 @@ from ..sparse import SparseMatrix
 
 
 class ElementAssembler(nn.Module):
-    """
+    r"""
     The :obj:`ElementAssembler` is inheritated from :class:`torch:torch.nn.Module`. Therefore, all the operation from :class:`torch:torch.nn.Module` is applicable to :obj:`ElementAssembler`
 
     You are not encouraged to build the ElementAssembler directly, instead, you should use :meth:`torch_fem.assemble.ElementAssembler.from_mesh` or :meth:`torch_fem.assemble.ElementAssembler.from_assembler` to build the ElementAssembler from a mesh
 
-    The output when calling the ElementAssembler is a sparse matrix, which is the global galerkin matrix of shape :math:`\\mathbb R_{\\text{sparse}}^{|\\mathcal V|, |\\mathcal V|}` or :math:`\\mathbb R_{\\text{sparse}}^[|\\mathcal V| \times  H, |\\mathcal V| \times  H]`,
-            where :math:`H` is the number of degree of freedom per point, :math:`|\\mathcal V|` is the number of points.
+    The output when calling the ElementAssembler is a sparse matrix, which is the global galerkin matrix of shape :math:`\mathbb R_{\text{sparse}}^{|\mathcal V|, |\mathcal V|}` or :math:`\mathbb R_{\text{sparse}}^[|\mathcal V| \times  H, |\mathcal V| \times  H]`,
+            where :math:`H` is the number of degree of freedom per point, :math:`|\mathcal V|` is the number of points.
 
     .. math::
 
-        K \overset{\\text{bsr matrix}}{\leftarrow}\hat K_\\text{global}
+        K \overset{\text{bsr matrix}}{\leftarrow}\hat K_\text{global}
 
-        \hat K_{\\text{global}}^{nkl} = \mathcal P_{\mathcal E}^{nhij} \hat K_{\\text{local}}^{hklij}
+        \hat K_{\text{global}}^{nkl} = \mathcal P_{\mathcal E}^{nhij} \hat K_{\text{local}}^{hklij}
 
-        \hat K_{ij} = \\int_\\Omega  f(u, v) \\text dv
+        \hat K_{ij} = \int_\Omega  f(u, v) \text dv
 
 
     :math:`f` is `forward` function which is defined by inheritating this class
 
-    * :math:`\\hat K_{\\text{global}}` : non zero value of the global galerkin matrix, :math:`K_{\\text{global}}\\in \\mathbb R^{|\\mathcal E|\\times  d\\times d}`
-    * :math:`\\hat K_{\\text{local}}` : local galerkin matrix for each element , :math:`K_{\\text{local}}\\in \\mathbb R^{|\\mathcal C|\\times h\\times h\\times d\\times d}` 
-    * :math:`\\mathcal P_{\mathcal E}` : projection (assemble) tensor from :math:`\hat K_{\\text{local}}` to :math:`\hat K_{\\text{global}}, `\\mathcal P_{\\mathcal E} \\in \\mathbb R_{\\text{sparse}}^{|\\mathcal E|\\times |\\mathcal C|\\times h\\times h}`
-    * :math:`\\mathcal C` : elements/cells 
+    * :math:`\hat K_{\text{global}}` : non zero value of the global galerkin matrix, :math:`K_{\text{global}}\in \mathbb R^{|\mathcal E|\times  d\times d}`
+    * :math:`\hat K_{\text{local}}` : local galerkin matrix for each element , :math:`K_{\text{local}}\in \mathbb R^{|\mathcal C|\times h\times h\times d\times d}` 
+    * :math:`\mathcal P_{\mathcal E}` : projection (assemble) tensor from :math:`\hat K_{\text{local}}` to :math:`\hat K_{\text{global}}, `\mathcal P_{\mathcal E} \in \mathbb R_{\text{sparse}}^{|\mathcal E|\times |\mathcal C|\times h\times h}`
+    * :math:`\mathcal C` : elements/cells 
     * :math:`h` : number of basis for each element/cell
-    * :math:`\\mathcal E` : connections for nodes/vertices/points
-    * :math:`\\mathcal V` : nodes/vertices/points 
+    * :math:`\mathcal E` : connections for nodes/vertices/points
+    * :math:`\mathcal V` : nodes/vertices/points 
 
 
     Examples:
@@ -51,7 +51,7 @@ class ElementAssembler(nn.Module):
 
     .. math:: 
 
-        M_{ij} = \\int_\\Omega u_i v_j \\text dv
+        M_{ij} = \int_\Omega u_i v_j \text dv
 
     .. code-block:: python
 
@@ -69,7 +69,7 @@ class ElementAssembler(nn.Module):
 
     .. math::
 
-        K_{ij} = \\int_\\Omega \\nabla u_i \\cdot \\nabla v_j \\text dv
+        K_{ij} = \int_\Omega \nabla u_i \cdot \nabla v_j \text dv
 
     .. code-block:: python
 
@@ -103,16 +103,16 @@ class ElementAssembler(nn.Module):
         
         .. math::
 
-            \\mathcal P_e: \\mathbb{R}_{\\text{sparse}}^{|\\mathcal C_e| \\times B_e \\times B_e} \\rightarrow \\mathbb{R}^{|\\mathcal E|}
+            \mathcal P_e: \mathbb{R}_{\text{sparse}}^{|\mathcal C_e| \times B_e \times B_e} \rightarrow \mathbb{R}^{|\mathcal E|}
 
-        where :math:`\\mathcal C` is the set of elements, :math:`B` is the number of basis, :math:`\\mathcal E` is the set of edges.
+        where :math:`\mathcal C` is the set of elements, :math:`B` is the number of basis, :math:`\mathcal E` is the set of edges.
 
     elements : BufferDict[str, torch.Tensor]
         The element type is the key, which should be one of :meth:`torch_fem.shape.element_types`.
-        Each :obj:`element_type` corresponds to a 2D tensor of shape :math:`[|\\mathcal C|, B]`, where :math:`\\mathcal C` is the set of elements, :math:`B` is the number of basis
+        Each :obj:`element_type` corresponds to a 2D tensor of shape :math:`[|\mathcal C|, B]`, where :math:`\mathcal C` is the set of elements, :math:`B` is the number of basis
         the element connectivity of each element type, e.g. :obj:`{"triangle6": torch.tensor([[0, 1, 2], [1, 2, 3]])}`
     edges : torch.Tensor
-        2D tensor of shape :math:`[2, |\\mathcal E|]`, where :math:`\\mathcal E` is the set of edges
+        2D tensor of shape :math:`[2, |\mathcal E|]`, where :math:`\mathcal E` is the set of edges
         edge connectivity considering all element_types, e.g. :obj:`torch.tensor([[0, 1, 2], [1, 2, 3]])`
     n_points : int
         number of points
@@ -154,7 +154,7 @@ class ElementAssembler(nn.Module):
 
     @property
     def device(self):
-        """
+        r"""
         Returns
         -------
         torch.device
@@ -164,7 +164,7 @@ class ElementAssembler(nn.Module):
 
     @property
     def dtype(self):
-        """
+        r"""
         Returns
         -------
         torch.dtype
@@ -203,7 +203,7 @@ class ElementAssembler(nn.Module):
         return batch_integral
     
     def _build_output(self, integral):
-        """
+        r"""
             Parameters:
             -----------
                 integral: torch.Tensor of shape [n_edge, ...]
@@ -220,7 +220,7 @@ class ElementAssembler(nn.Module):
             raise Exception(f"the shape of integral is supposed to be  1D or 3D, but got {integral.shape}")
 
     def __call__(self, points, func=None,point_data=None, batch_size=None):
-        """
+        r"""
         Parameters
         ----------
         points: torch.Tensor 
@@ -238,9 +238,10 @@ class ElementAssembler(nn.Module):
         Returns
         -------
         SparseMatrix
-            a torch.sparse_matrix of shape :math:`\\mathbb R_{\\text{sparse}}^{|\\mathcal V|, |\\mathcal V|}` or :math:`\\mathbb R_{\\text{sparse}}^[|\\mathcal V| *  H, |\\mathcal V| *  H]`,
-            where :math:`H` is the number of degree of freedom per point, :math:`|\\mathcal V|` is the number of points
+            a torch.sparse_matrix of shape :math:`\mathbb R_{\text{sparse}}^{|\mathcal V|, |\mathcal V|}` or :math:`\mathbb R_{\text{sparse}}^[|\mathcal V| *  H, |\mathcal V| *  H]`,
+            where :math:`H` is the number of degree of freedom per point, :math:`|\mathcal V|` is the number of points
         """
+        assert isinstance(point_data, dict) or point_data is None, f"point_data should be a dict, but got {type(point_data)}. Please pass  in extra parameter using key-value pairs"
         if point_data is None:
             point_data = {}
         point_data["x"] = points
@@ -282,9 +283,9 @@ class ElementAssembler(nn.Module):
                     elif key in ["gradu", "gradv"]:
                         args.append(shape_grad)
                     elif key in ele_point_data:
-                        args.append(torch.einsum("eb...,qb->eqb...",ele_point_data[key], shape_val))
+                        args.append(torch.einsum("eb...,qb->eq...",ele_point_data[key], shape_val))
                     elif key.startswith("grad") and key[4:] in ele_point_data:
-                        args.append(torch.einsum("eb...,eqbd->eqb...d",ele_point_data[key[4:]], shape_grad))
+                        args.append(torch.einsum("eb...,eqbd->eq...d",ele_point_data[key[4:]], shape_grad))
                     else:
                         raise NotImplementedError(f"key {key} is not implemented")
 
@@ -340,7 +341,7 @@ class ElementAssembler(nn.Module):
 
     @abstractmethod
     def forward(self, **kwargs):
-        """The weak form of the operator, you should override this function.
+        r"""The weak form of the operator, you should override this function.
         Similar to the :meth:`torch:torch.nn.Module.forward` function, you can use :meth: `torch_fem.assemble.ElementAssembler.__call__` to call this function
 
         Parameters
@@ -354,14 +355,14 @@ class ElementAssembler(nn.Module):
         gradv : torch.Tensor, optional
             2D tensor shape :math:`[B,D]`, where :math:`B` is the number of basis, :math:`D` is the dimension of the dimension
         x : torch.Tensor, optional
-            2D tensor shape :math:`[B, D]`, where :math:`B` is the number of basis, :math:`D` is the dimension of the dimension
+            2D tensor shape :math:`[D]`, where :math:`B` is the number of basis, :math:`D` is the dimension of the dimension
         gradx : torch.Tensor, optional
-            3D tensor shape :math:`[B, D, D]`, where :math:`B` is the number of basis, :math:`D` is the dimension of the dimension
+            3D tensor shape :math:`[D, D]`, where :math:`B` is the number of basis, :math:`D` is the dimension of the dimension
         **point_data : Dict[str, torch.Tensor], optional
             The point_data are passed by __call__
-            if the point data :obj:`"example_key"` passed in is of shape :math:`[|\\mathcal V|, ...]`, 
-            then the point data :obj:`"example_key"` passed in will be of shape :math:`[B, ...]`,
-            and the point data :obj:`"gradexample_key"` passed in will be of shape :math:`[B, ..., D]`,
+            if the point data :obj:`"example_key"` passed in is of shape :math:`[|\mathcal V|, ...]`, 
+            then the point data :obj:`"example_key"` passed in will be of shape :math:`[...]`,
+            and the point data :obj:`"gradexample_key"` passed in will be of shape :math:`[..., D]`,
             where :math:`B` is the number of basis, :math:`D` is the dimension of the dimension
 
         Returns
@@ -373,7 +374,7 @@ class ElementAssembler(nn.Module):
         raise NotImplementedError(f"forward is not implemented")
         
     def __post_init__(self):
-        """Override this function to precompute some data after the initialization
+        r"""Override this function to precompute some data after the initialization
         """
         pass
 
@@ -396,7 +397,7 @@ class ElementAssembler(nn.Module):
 
     @classmethod
     def from_assembler(cls, obj):
-        """Build an :meth:`torch_fem.assemble.ElementAssembler` from another :meth:`torch_fem.assemble.ElementAssembler`.
+        r"""Build an :meth:`torch_fem.assemble.ElementAssembler` from another :meth:`torch_fem.assemble.ElementAssembler`.
         It's much faster than :meth:`torch_fem.assemble.ElementAssembler.from_mesh`.
         When you already have an ElementAssembler, you can use this function to build another ElementAssembler sharig the same mesh
 
@@ -421,7 +422,7 @@ class ElementAssembler(nn.Module):
 
     @classmethod
     def from_mesh(cls, mesh, quadrature_order=None):
-        """Build an :meth:`torch_fem.assemble.ElementAssembler` from a mesh :meth:`torch_fem.mesh.Mesh`.
+        r"""Build an :meth:`torch_fem.assemble.ElementAssembler` from a mesh :meth:`torch_fem.mesh.Mesh`.
         It's much slower than :meth:`torch_fem.assemble.ElementAssembler.from_assembler`.
         Because it will precompute the projection matrix $\mathcal P_{\mathcal E}$
 
