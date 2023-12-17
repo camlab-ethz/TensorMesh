@@ -27,9 +27,9 @@ def relation_2d():
     chara_lengths = []
     dofs          = []
     mems          = []  
-    for chara_length in tqdm([0.2, 0.1, 0.05, 0.01, 0.005, 0.004]):
+    for chara_length in tqdm.tqdm([0.2, 0.1, 0.05, 0.01, 0.005, 0.004]):
         with CUDAProfiler() as cuda_profiler:
-            mesh = thfem.Mesh.gen_cube(chara_length=chara_length)
+            mesh = thfem.Mesh.gen_rectangle(chara_length=chara_length)
             th_fem = ThFEM(mesh.cuda())
             th_fem()
         mems.append(cuda_profiler.max())
@@ -64,7 +64,7 @@ def relation_3d():
     chara_lengths = []
     dofs          = []
     mems          = []  
-    for chara_length in tqdm([0.2, 0.1, 0.05, 0.04]):
+    for chara_length in tqdm.tqdm([0.2, 0.1, 0.05, 0.04]):
         with CUDAProfiler() as cuda_profiler:
             mesh = thfem.Mesh.gen_cube(chara_length=chara_length)
             th_fem = ThFEM(mesh.cuda())
@@ -96,6 +96,8 @@ def relation_3d():
     ax.set_title(f"Linear regression: {line.slope:.2f}x + {line.intercept:.2f}")
     fig.savefig("3D-dofs-chara-length.png")
 
+
 if __name__ == '__main__':
-    relation_2d()
-    relation_3d()
+    # relation_2d()
+    # relation_3d()
+    relation_cusolve()
