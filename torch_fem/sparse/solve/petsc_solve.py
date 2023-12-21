@@ -34,7 +34,7 @@ class SparseSolvePETSc(Function):
         ksp = PETSc.KSP().create()
         ksp.setOperators(A_petsc)
         ksp.setFromOptions()
-        ksp.setType('bcgs')
+        ksp.setType('cg')
         pc = ksp.getPC() # preconditioner
         pc.setType('ilu')
         x_petsc = b_petsc.duplicate()

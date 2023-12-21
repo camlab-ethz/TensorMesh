@@ -15,6 +15,7 @@ import fenics
 from torch_fem.profile import TimeProfiler, CPUProfiler, CUDAProfiler, get_max_memory_for_index, get_memory_for_index
 import argparse
 import numpy as np
+import gc
 
 class SkFEM:
     def __init__(self, mesh, element="tri"):
@@ -98,83 +99,150 @@ class feFEM:
         fenics.solve(a == L, u, bc)
         return u
 
-def plot_comparison(element_type, chara_lengths, n_times, csv_path, device="cuda:0"):
-    data = {
-        "degree of freedom":[],
-        "backend":[],
-        "time in s":[],
-        "chara length":[],
-        "CPU peak mem in GB":[],
-        "CPU mean mem in GB":[],
-        "GPU peak mem in GB":[],
-        "GPU mean mem in GB":[],
-    }
-    pbar = tqdm(total=len(chara_lengths)*n_times*4)
 
-    for chara_length in chara_lengths:
-        if element_type == "tri":
-            mesh = thfem.Mesh.gen_rectangle(chara_length=chara_length, element_type=element_type)
-        elif element_type == "tetra":
-            mesh = thfem.Mesh.gen_cube(chara_length=chara_length)
-        else:
-            raise NotImplementedError(f"element_type={element_type} is not supported")
-        # th_fem_cpu = ThFEM(mesh.clone())
-        th_fem_cpu_1 = ThFEM(mesh.clone())
-        # th_fem_gpu   = ThFEM(mesh.clone().to("cuda:0"))
-        th_fem_gpu_1 = ThFEM(mesh.clone().to(device))
-        sk_fem       = SkFEM(mesh, element=element_type)
-        fe_fem       = feFEM(mesh)
-        
-        for name, fem in zip([
-                                # "torch_fem cpu(None)", 
-                                "torch_fem cpu",
-                                # "torch_fem cuda(None)", 
-                                "torch_fem cuda",
-                                "scikit-fem", 
-                                "fenics"], [
-                                            # th_fem_cpu, 
-                                            th_fem_cpu_1,
-                                            # th_fem_gpu, 
-                                            th_fem_gpu_1,
-                                            sk_fem, 
-                                            fe_fem]):
-            for _ in range(n_times):
-                
-                with CPUProfiler() as cpu_profiler:
-                    fem()
-                data["CPU peak mem in GB"].append(cpu_profiler.max())
-                data["CPU mean mem in GB"].append(cpu_profiler.mean())
-                with CUDAProfiler() as cuda_profiler:
-                    fem()
-                data["GPU peak mem in GB"].append(cuda_profiler.max())
-                data["GPU mean mem in GB"].append(cuda_profiler.mean())
-                with TimeProfiler() as time_profiler:
-                    fem()
-                data["time in s"].append(time_profiler.time)
-                data["chara length"].append(chara_length)
-                data["degree of freedom"].append(mesh.points.shape[0])
-                data["backend"].append(name)
-                pbar.update(1)
-                pbar.set_postfix({
-                    "dofs":mesh.points.shape[0],
-                    "chara_length":chara_length,
-                    "backend":name,
-                })
+def benchmark_fem(data, element_type, chara_length, pbar, ntimes=5, target="torch_fem cpu", device="cpu"):
     
+    if element_type == "tri":
+        mesh = thfem.Mesh.gen_rectangle(chara_length=chara_length, element_type=element_type)
+    elif element_type == "tetra":
+        mesh = thfem.Mesh.gen_cube(chara_length=chara_length)
+    else:
+        raise NotImplementedError(f"element_type={element_type} is not supported")
+    
+    if target == "torch_fem cpu":
+        fem = ThFEM(mesh)
+    elif target == "torch_fem cuda":
+        fem = ThFEM(mesh.to(device))
+    elif target == "scikit-fem":
+        fem       = SkFEM(mesh, element=element_type)
+    elif target == "fenics":
+        fem       = feFEM(mesh)
+    else:
+        raise NotImplementedError(f"target={target} is not supported")
 
-    df = pd.DataFrame(data)
+    fem() # heat up
+    gpu_peak_mems = []
+    gpu_mean_mems = []
+    cpu_peak_mems = []
+    cpu_mean_mems = []
+    times = []
+
+    for _ in range(ntimes):
+        with CPUProfiler() as cpu_profiler:
+            fem()
+        cpu_peak_mems.append(cpu_profiler.max())
+        cpu_mean_mems.append(cpu_profiler.mean())
+       
+        with CUDAProfiler() as cuda_profiler:
+            fem()
+
+        gpu_peak_mems.append(cuda_profiler.max())
+        gpu_mean_mems.append(cuda_profiler.mean())
+        with TimeProfiler() as time_profiler:
+            fem()
+        times.append(time_profiler.time)
+       
+        pbar.update(1)
+        pbar.set_postfix({
+            "dofs":(~mesh.boundary_mask).sum().item(),
+            "chara_length":chara_length,
+            "backend":target,
+        })
+    gpu_peak_mems = np.array(gpu_peak_mems)
+    gpu_mean_mems = np.array(gpu_mean_mems)
+    cpu_peak_mems = np.array(cpu_peak_mems)
+    cpu_mean_mems = np.array(cpu_mean_mems)
+    times = np.array(times)
+
+    # remove the outlier by 3 sigma
+    values = cpu_peak_mems[(cpu_peak_mems != cpu_peak_mems.max()) & (cpu_peak_mems != cpu_peak_mems.min())]
+    valid_mask = np.abs( cpu_peak_mems - values.mean() ) < 3*values.std()
+
+    cpu_peak_mems = cpu_peak_mems[valid_mask]
+    cpu_mean_mems = cpu_mean_mems[valid_mask]
+    gpu_peak_mems = gpu_peak_mems[valid_mask]
+    gpu_mean_mems = gpu_mean_mems[valid_mask]
+    times = times[valid_mask]
+
+
+    data["CPU peak mem in MB"].extend(cpu_peak_mems.tolist())
+    data["CPU mean mem in MB"].extend(cpu_mean_mems.tolist())
+    data["GPU peak mem in MB"].extend(gpu_peak_mems.tolist())
+    data["GPU mean mem in MB"].extend(gpu_mean_mems.tolist())
+    data["time in s"].extend(times.tolist())
+    data["chara length"].extend([chara_length]*len(times))
+    data["degree of freedom"].extend([(~mesh.boundary_mask).sum().item()]*len(times))
+    data["backend"].extend([target]*len(times))
+
+
+def draw_error_bar(data, x,  y, hue, ax):
+    _line_styles = ["-", "--", "-.", ":"]
+    _markers = ["o", "s", "p", "^"]
+    _colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"]
+    groups = data.groupby(hue)
+    for i, (_hue, subdf) in enumerate(groups):
+        subgroups = subdf.groupby(x)
+        xs, means, stds = [], [], []
+        for _x, subsubdf in subgroups:
+            mean = subsubdf[y].mean()
+            std  = subsubdf[y].std()
+            xs.append(_x)
+            means.append(mean)
+            stds.append(std)
+        ax.errorbar(xs, means, yerr=np.array(stds)*3, 
+                    color=_colors[i], marker=_markers[i], linestyle=_line_styles[i], 
+                    capsize=1.0, 
+                    alpha=0.5,
+                    label=_hue)
+    ax.set_xscale("log")
+    ax.set_xlabel(x)
+    ax.set_ylabel(y)
+    ax.set_xlim(left=np.array(xs).min()/2, right=np.array(xs).max()*2)
+    ax.legend()
+
+def plot_comparison(element_type, 
+                    chara_lengths,
+                    backends,
+                    n_times, csv_path, force=False, device="cuda:0"):
+    if os.path.exists(csv_path):
+        df = pd.read_csv(csv_path, index_col=0).to_dict()
+        for key, value in df.items():
+            df[key] = list(value.values())
+    else:
+        df = {
+            "degree of freedom":[],
+            "backend":[],
+            "time in s":[],
+            "chara length":[],
+            "CPU peak mem in MB":[],
+            "CPU mean mem in MB":[],
+            "GPU peak mem in MB":[],
+            "GPU mean mem in MB":[],
+        }
+    pbar = tqdm(total=len(chara_lengths)*n_times*len(backends))
+    for chara_length in chara_lengths:
+        chara_indexes = set(np.where(np.array(df["chara length"]) == chara_length)[0].tolist())
+        for backend in backends:
+            backend_indexes = set(np.where(np.array(df["backend"]) == backend)[0].tolist())
+            if not force and len(chara_indexes.intersection(backend_indexes)) > 0:
+                for _ in range(n_times):
+                    pbar.update(1)
+                continue
+            gc.collect()
+            torch.cuda.empty_cache()
+            cp.get_default_memory_pool().free_all_blocks()
+            benchmark_fem(df, element_type, chara_length, pbar, n_times, backend, device)
+
+    
+    df = pd.DataFrame.from_dict(df)
+
     df.to_csv(csv_path)
    
     fig, ax = plt.subplots(ncols=3, figsize=(15, 4))
 
-    markers = ["o", "s", "p", "^"]
-    linestyles = ["--", "--", "--", "--"]
-    sns.pointplot(x="degree of freedom", y="time in s", hue="backend", markers=markers, linestyles=linestyles,  data=df, ax=ax[0])
-    sns.pointplot(x="degree of freedom", y="CPU peak mem in GB", hue="backend",markers=markers, linestyles=linestyles,  data=df, ax=ax[1])
-    sns.pointplot(x="degree of freedom", y="GPU peak mem in GB", hue="backend",markers=markers, linestyles=linestyles, data=df, ax=ax[2])
-    # for i in range(3):
-    #     ax[i].set_xscale("log")
-    #     ax[i].set_yscale("log")
+    draw_error_bar(df, "degree of freedom", "time in s", "backend", ax[0])
+    draw_error_bar(df, "degree of freedom", "CPU peak mem in MB", "backend", ax[1])
+    draw_error_bar(df, "degree of freedom", "GPU peak mem in MB", "backend", ax[2])
 
     fig.tight_layout()
 
@@ -251,68 +319,103 @@ if __name__ == '__main__':
     parser.add_argument("-d", "--device_index", type=int, default=0)
     parser.add_argument("-n", "--num_dofs", type=int ,  default=3)
     parser.add_argument("-t", "--times", type=int ,  default=5)
+    parser.add_argument("--only_2d", action="store_true")
+    parser.add_argument("--only_3d", action="store_true")
+    parser.add_argument("--force", action="store_true")
+    parser.add_argument("--backend", type=str,  default="torchfem_cpu",  choices=[
+                                "torchfem_cpu", 
+                                "torchfem_cuda",
+                                "fenics",
+                                "skfem"])   
+    parser.add_argument("--server", action="store_true", help="run on server")
     args = parser.parse_args()
 
     mem = get_max_memory_for_index(args.device_index) - get_memory_for_index(args.device_index)
 
-    class Rectangle:
-        @staticmethod
-        def mem2dof(mem):
-            return (50 + mem) / 0.02
-        @staticmethod
-        def dof2mem(dof):
-            return dof * 0.02 - 50
-        @staticmethod
-        def dof2chara_length(dof):
-            return 1/np.sqrt(dof) * 1.2
-        @staticmethod
-        def mem2chara_length(mem):
-            return Rectangle.dof2chara_length(Rectangle.mem2dof(mem))
     
-    # max_mem  = 0.9 * mem 
-    # max_dof= Rectangle.mem2dof(max_mem)
-    # dofs = np.linspace(100, max_dof, args.num_dofs)
-    # print(f"mems: {Rectangle.dof2mem(dofs)}")
-    # chara_lengths = Rectangle.dof2chara_length(dofs)
-    chara_lengths = [0.2, 0.1, 0.05, 0.01, 0.005, 0.002, 0.0015, 0.012]
+    if not args.only_3d:
+        if args.backend == "torchfem_cpu":
+            if args.server:
+                chara_lengths = [0.05, 0.01, 0.005, 0.002, 0.0015, 0.0005, 0.00025]
+            else:
+                chara_lengths = [0.05, 0.01, 0.005, 0.002, 0.0015, 0.0012]
+            backends = ["torch_fem cpu"]
+        elif args.backend == "torchfem_cuda":
+            if args.server:
+                chara_lengths = [0.05, 0.01, 0.005, 0.002, 0.0015, 0.0005, 0.00025]
+            else:
+                chara_lengths = [0.05, 0.01, 0.005, 0.002, 0.0015, 0.0012]
+            backends = ["torch_fem cuda"]
+        elif args.backend == "fenics":
+            if args.server:
+                chara_lengths = [0.05, 0.01, 0.005, 0.002, 0.0015]
+            else:
+                chara_lengths = [0.05, 0.01, 0.005, 0.002, 0.0015]
+            backends = ["fenics"]
+        elif args.backend == "skfem":
+            if args.server:
+                chara_lengths = [0.05, 0.01, 0.005, 0.002, 0.0015]
+            else:
+                chara_lengths = [0.05, 0.01, 0.005, 0.002, 0.0015]
+            backends = ["scikit-fem"]
+        else:
+            raise NotImplementedError(f"mode={args.mode} is not supported")
+           
+        fig = plot_comparison(
+            element_type="tri",
+            chara_lengths=chara_lengths,
+            backends=backends,
+            n_times=args.times,
+            csv_path="compare_linear_poisson_2d.csv",
+            force = args.force,
+            device=f"cuda:{args.device_index}"
+        )
+        fig.savefig("compare_linear_poisson_2d.png")
+        fig.savefig("compare_linear_poisson_2d.pdf")
 
-    fig = plot_comparison(
-        element_type="tri",
-        chara_lengths=chara_lengths,
-        n_times=args.times,
-        csv_path="compare_2d.csv",
-        device=f"cuda:{args.device_index}"
-    )
-    fig.savefig("compare_linear_poisson_2d.png")
+    if not args.only_2d:
 
-    class Cube:
-        @staticmethod
-        def mem2dof(mem):
-            return (50 + mem) / 0.04
-        @staticmethod
-        def dof2chara_length(dof):
-            return 1/(dof)**(1/3) * 1.33
-        @staticmethod
-        def mem2chara_length(mem):
-            return Cube.dof2chara_length(Cube.mem2dof(mem))
+        if args.backend == "torchfem_cpu":
+            if args.server:
+                chara_lengths = [0.2, 0.1, 0.05, 0.04, 0.02,0.015]
+            else:
+                chara_lengths = [0.2, 0.1, 0.05, 0.04, 0.02, 0.01, 0.008]
+            backends = ["torch_fem cpu"]
 
+        elif args.backend == "torchfem_cuda":
+            if args.server:
+                chara_lengths = [0.2, 0.1, 0.05, 0.04, 0.02,0.015]
+            else:
+                chara_lengths = [0.2, 0.1, 0.05, 0.04, 0.02, 0.01, 0.008]
+            backends = ["torch_fem cuda"]
 
-    # max_mem  = 0.9 * mem 
-    # max_dof= Cube.mem2dof(max_mem)
-    # print(f"dofs: {dofs}")
-    # dofs = np.linspace(100, max_dof, args.num_dofs)
-    # chara_lengths = Cube.dof2chara_length(dofs)
+        elif args.backend == "fenics":
+            if args.server:
+                chara_lengths = [0.2, 0.1, 0.05, 0.04, 0.02]
+            else:
+                chara_lengths = [0.2, 0.1, 0.05, 0.04, 0.02]
+            backends = ["fenics"]
 
-    chara_lengths = [0.2, 0.1, 0.05, 0.04, 0.02]
+        elif args.backend == "skfem":
+            if args.server:
+                chara_lengths = [0.2, 0.1, 0.05, 0.04]
+            else:
+                chara_lengths = [0.2, 0.1, 0.05, 0.04]
+            backends = ["scikit-fem"]
 
-    fig = plot_comparison(
-        element_type="tetra",
-        chara_lengths=chara_lengths,
-        n_times=args.times,
-        csv_path="compare_3d.csv",
-        device=f"cuda:{args.device_index}"
-    )
+        else:
+            raise NotImplementedError(f"mode={args.mode} is not supported")
 
-    fig.savefig("compare_linear_poisson_3d.png")
+        fig = plot_comparison(
+            element_type="tetra",
+            chara_lengths=chara_lengths,
+            backends=backends,
+            n_times=args.times,
+            csv_path="compare_linear_poisson_3d.csv",
+            force = args.force,
+            device=f"cuda:{args.device_index}"
+        )
 
-    # test()
+        fig.savefig("compare_linear_poisson_3d.png")
+        fig.savefig("compare_linear_poisson_3d.pdf")
+

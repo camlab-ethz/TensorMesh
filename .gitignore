@@ -20,6 +20,7 @@ experimental/
 # Ignore specific files and directories in benchmark,
 # but keep .py and .ipynb files and any specifically mentioned files
 benchmark/**/*.png
+benchmark/**/*.pdf
 benchmark/**/!(*.py|*.ipynb)
 examples/**/*.mp4
 examples/**/*.png
