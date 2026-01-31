@@ -47,12 +47,13 @@ def spmv(edata, row, col, shape, B, backend=None):
             if is_cupy_available:
                 return SparseMVCupy.apply(edata, row, col, shape, B)
             else:
-                return SparseMVScipy.apply(edata, row, col, shape, B)
+                # Use torch backend when cupy is not available (scipy doesn't support CUDA)
+                return SparseMVTorch.apply(edata, row, col, shape, B)
         elif backend == 'cupy':
             assert is_cupy_available, f"cupy is not available"
             return SparseMVCupy.apply(edata, row, col, shape, B)
         elif backend == 'torch':
-            return SparseMVScipy.apply(edata, row, col, shape, B)
+            return SparseMVTorch.apply(edata, row, col, shape, B)
         else:
             raise NotImplementedError(f"backend {backend} not supported for CUDA")
     else:
@@ -98,12 +99,13 @@ def spmm(edata, row, col, shape, B, backend=None):
             if is_cupy_available:
                 return SparseMMCupy.apply(edata, row, col, shape, B)
             else:
-                return SparseMMScipy.apply(edata, row, col, shape, B)
+                # Use torch backend when cupy is not available (scipy doesn't support CUDA)
+                return SparseMMTorch.apply(edata, row, col, shape, B)
         elif backend == 'cupy':
             assert is_cupy_available, f"cupy is not available"
             return SparseMMCupy.apply(edata, row, col, shape, B)
         elif backend == 'torch':
-            return SparseMMScipy.apply(edata, row, col, shape, B)
+            return SparseMMTorch.apply(edata, row, col, shape, B)
         else:
             raise NotImplementedError(f"backend {backend} not supported for CUDA")
     else:

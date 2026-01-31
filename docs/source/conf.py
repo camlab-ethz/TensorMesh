@@ -28,6 +28,7 @@ extensions = [
      'sphinx.ext.githubpages',
      'sphinx.ext.intersphinx',
      'sphinx.ext.autosummary',
+     'sphinx_design',
      'nbsphinx'
 ]
 
@@ -47,15 +48,32 @@ html_theme_options = {
             "icon": "fa-brands fa-github",
         },
     ],
+    # Navigation settings - fix sidebar behavior
     "show_toc_level": 2,
-    "navigation_depth": 4,
-    "show_nav_level": 2,
-    "collapse_navigation": False,
-    # "secondary_sidebar_items": ["page-toc", "edit-this-page", "sourcelink"], # Default is good
+    "navigation_depth": 3,
+    "show_nav_level": 1,
+    "collapse_navigation": True,
+    # Use section navigation in left sidebar
+    "secondary_sidebar_items": ["page-toc", "edit-this-page"],
+    # Top navbar configuration
+    "navbar_start": ["navbar-logo"],
+    "navbar_center": ["navbar-nav"],
+    "navbar_end": ["theme-switcher", "navbar-icon-links"],
+    "primary_sidebar_end": [],
+    "header_links_before_dropdown": 4,
+    # Persistent sidebar - prevent reset on navigation
+    "navigation_with_keys": True,
+    # Use section-based navigation
+    "use_edit_page_button": False,
 }
 
 html_sidebars = {
-    "**": ["sidebar-nav-bs"]
+    "**": ["sidebar-nav-bs", "sidebar-ethical-ads"]
+}
+
+# Context settings for navigation
+html_context = {
+    "default_mode": "auto",
 }
 
 # Remove RTD specific options

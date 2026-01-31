@@ -168,12 +168,14 @@ class NodeAssembler(nn.Module):
         return batch_integral
     
     @property
-    def device(self):
-        return self.quadrature_weights.device
+    def device(self) -> torch.device:
+        """Returns the device of the assembler."""
+        return next(iter(self.transformation.values())).device
 
     @property
-    def dtype(self):
-        return self.quadrature_weights.dtype
+    def dtype(self) -> torch.dtype:
+        """Returns the dtype of the assembler."""
+        return next(iter(self.transformation.values())).dtype
 
     def type(self,  dtype:torch.dtype):
         super().__doc__

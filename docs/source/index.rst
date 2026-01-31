@@ -1,4 +1,4 @@
-:github_url: https://github.com/walkerchi/torch_fem 
+:github_url: https://github.com/walkerchi/tensormesh 
 
 Tensormesh Document 
 ===================
@@ -94,44 +94,10 @@ Feature Comparison
 
 
 .. toctree::
-   :maxdepth: 1 
-   :caption: Get Started
-
-   get_started/installation
-   get_started/benchmark
-   get_started/element
-
-.. toctree::
    :maxdepth: 2
-   :caption: Examples
+   :hidden:
 
-   examples/mesh_gen
-   examples/adjacency
-   examples/basis
-   examples/values
-   examples/partition
-   examples/coloring
-   examples/poisson
-   examples/nonlinear
-   examples/wave
-   examples/linear_elasticity
-   examples/solid_mechanics
-   examples/inverse
-
-
-.. toctree::
-   :maxdepth: 5
-   :caption: API Reference
-
-   api_reference/dataset
-   api_reference/mesh
-   api_reference/element
-   api_reference/assemble
-   api_reference/sparse
-   api_reference/operator
-   api_reference/ode
-   api_reference/functional
-   api_reference/nn 
-   api_reference/optimizer
-   api_reference/visualization
+   get_started/index
+   examples/index
+   api_reference/index
    

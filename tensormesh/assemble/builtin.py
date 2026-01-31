@@ -1,5 +1,5 @@
 from .element_assembler import ElementAssembler
-from .facet_assmbler import FacetAssembler
+from .facet_assembler import FacetAssembler
 from .node_assembler import NodeAssembler
 from ..functional.elasticity import voigt_shape_grad, voigt_stiffness
 from ..element import Transformation
@@ -154,6 +154,7 @@ class LinearElasticityElementAssembler(ElementAssembler):
         Ba = voigt_shape_grad(gradu)
         Bb = voigt_shape_grad(gradv)
         C = voigt_stiffness(self.E, self.nu, dim)
+        C = C.to(dtype=gradu.dtype, device=gradu.device)
         return Ba.T @ C @ Bb
 
     def element_energy(self, graddisplacement):

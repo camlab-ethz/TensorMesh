@@ -1,4 +1,6 @@
 from .heat import HeatMultiFrequency 
 from .wave import WaveMultiFrequency
-from .poisson import PoissonMultiFrequency 
-
+from .poisson import PoissonMultiFrequency, PoissonMultiFrequency3D
+from .poisson_solver import BatchPoissonSolver, solve_poisson_batch
+from .linear_elasticity import LinearElasticityMultiFrequency, LinearElasticityMultiFrequency3D
+from .linear_elasticity_solver import BatchLinearElasticitySolver, solve_linear_elasticity_batch

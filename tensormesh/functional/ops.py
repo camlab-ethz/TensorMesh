@@ -127,21 +127,25 @@ def skew(x:torch.Tensor,
     assert dim in (2, 3), f"x vector must be of length 2 or 3, but got {dim}"
 
     if dim == 2:
-        y = torch.zeros_like(x)
-        y[0] = - x[1] if sign else x[1]
-        y[1] = x[0]
+        # Out-of-place construction for vmap compatibility
+        y0 = -x[1] if sign else x[1]
+        y1 = x[0]
+        y = torch.stack([y0, y1])
 
         if at_least2d:
             y = y[None, :]
 
     elif dim == 3:
-        y = torch.zeros(3, 3, device=x.device, dtype=x.dtype)
-        y[0, 1] = -x[2] if sign else x[2]
-        y[0, 2] =  x[1] if sign else x[1]
-        y[1, 0] =  x[2] if sign else x[2]
-        y[1, 2] = -x[0] if sign else x[0]
-        y[2, 0] = -x[1] if sign else x[1]
-        y[2, 1] =  x[0] if sign else x[0]
+        # Out-of-place construction for vmap compatibility
+        zero = torch.zeros_like(x[0])
+        s = -1.0 if sign else 1.0
+        # Row 0: [0, -x[2], x[1]] or [0, x[2], x[1]]
+        row0 = torch.stack([zero, s * x[2], x[1]])
+        # Row 1: [x[2], 0, -x[0]] or [x[2], 0, x[0]]  
+        row1 = torch.stack([x[2], zero, s * x[0]])
+        # Row 2: [-x[1], x[0], 0] or [x[1], x[0], 0]
+        row2 = torch.stack([s * x[1], x[0], zero])
+        y = torch.stack([row0, row1, row2])
     else:
         raise ValueError(f"dimension must be 2 or 3, but got {dim}")
     return y

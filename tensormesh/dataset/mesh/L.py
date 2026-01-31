@@ -88,7 +88,6 @@ def gen_L(chara_length=0.1,
         gmsh.option.setNumber("Mesh.ElementOrder", order)
 
         gmsh.model.mesh.setSize(gmsh.model.getEntities(0), chara_length)
-        breakpoint()
         boundary_lines_outer = gmsh.model.getBoundary([(2, rectangle_outer_cut)], oriented=False)
         boundary_lines_inner = gmsh.model.getBoundary([(2, rectangle_inner_cut)], oriented=False)
         boundary_lines = boundary_lines_outer + boundary_lines_inner

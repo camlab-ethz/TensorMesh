@@ -62,6 +62,13 @@ Static Plot
     :members:
     :show-inheritance:
 
+PyVista
+-------
+
+.. automodule:: tensormesh.visualization.pyvista
+    :members:
+    :show-inheritance:
+
 Utilities
 ---------
 

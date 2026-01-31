@@ -1,116 +1,80 @@
 # TODO List
 
+## Core Features
 
-## tests
-- [x] assemble
-  - [x] elemenet
-  - [x] node 
-- [x] sparse
-  - [x] solve
-    - [x] scipy solve
-    - [x] petsc solve
-    - [x] cupy(cusolve) solve
-  - [x] mm
-- [x] adjacency
-  - [x] node adjacency
-  - [x] element adjacency
+### Element Support
+- [x] Line (order 1-4)
+- [x] Triangle (order 1-4)
+- [x] Quadrilateral (order 1-4)
+- [x] Tetrahedron (order 1-4)
+- [x] Hexahedron (order 1-4)
+- [x] Pyramid (order 1-4)
+- [x] Prism (order 1-4)
 
+### Assemblers
+- [x] ElementAssembler (stiffness matrix assembly)
+- [x] NodeAssembler (load vector assembly)
+- [x] FacetAssembler (boundary integrals)
+- [x] Built-in assemblers (Laplace, Mass, LinearElasticity)
+- [x] Energy-based assembly (`ElementAssembler.energy()`)
 
-## benchmark
-- [x] assemble speed / memory
-- [x] pipeline speed / memory
+### Sparse Solvers
+- [x] SciPy backend
+- [x] PETSc backend
+- [x] CuPy/cuSOLVER backend
+- [ ] Distributed solving (MPI)
 
+### Mesh
+- [x] Mesh generation (rectangle, circle, L-shape, cube, sphere, etc.)
+- [x] Mixed element mesh support
+- [x] Node/element adjacency
+- [x] Graph partitioning
+- [ ] Adaptive mesh refinement
+- [ ] Distributed mesh
 
-## Example
-- [x] poisson
-  - [x] naive
-  - [x] adaptive mesh
-- [ ] heat
-  - [x] naive
-  - [ ] pinn
-- [ ] wave
-  - [x] naive
-  - [ ] pinn 
-- [ ] linear elasiticity
-  - [x] naive
-  - [ ] dynamic
-- [ ] Fluid mechanics
+### Visualization
+- [x] Matplotlib backend
+- [x] PyVista backend
+- [x] Animation support
+- [x] Static plotting
+- [ ] Interactive 3D visualization
 
-## torch_fem
-### Function
-- [x] condense
-- [ ] quadrature
-  - [x] infinite quadrature for euclidean element 
-  - [x] large enough quadrature for triangle
-  - [x] large enough quadrature for tetra 
-  - [ ] large enough quadrature for wedge
-- [ ] shape 
-  - [ ] line
-    - [x] 2 order of shape fn and shape grad 
-    - [ ] infinite order of shape fn and shape grad
-  - [ ] triangle
-    - [x] 2 order of shape fn and shape grad 
-    - [ ] infinite order of shape fn and shape grad
-  - [ ] quadliteral
-    - [x] 2 order of shape fn and shape grad 
-    - [ ] infinite order of shape fn and shape grad
-  - [ ] tetra
-    - [x] 2 order of shape fn and shape grad 
-    - [ ] infinite order of shape fn and shape grad 
-  - [ ] brick
-    - [ ] 2 order of shape fn and shape grad 
-    - [ ] infinite order of shape fn and shape grad
-  - [ ] wedge
-    - [ ] 2 order of shape fn and shape grad 
-    - [ ] infinite order of shape fn and shape grad
-- [x] mesh 
-  - [x] adjacency(for gnn)
-    - [x] node adjacency 
-    - [x] edge adjacency 
-  - [x] mixed mesh 
-  - [ ] gmsh order is different from the fenics
-    - [x] first order quadrilateral 
-    - [ ] high order and other elements
-- [x] assembler
-  - [x] element assembler 
-  - [x] node assembler
-- [ ] gnn 
-- [x] ODE
-  - [ ] explicit runge-kutta
-  - [ ] implicit linear runge-kutta
-- [ ] dataset
-  - [ ] mesh 
-    - [ ] generator
-      - [x] gmsh backend
-      - [ ] add more function
-      - [ ] add distmsh support, since gmsh requires complex dependencies
-    - [x] (hollow)rectangle
-    - [x] (hollow)circle 
-    - [x] Lshape
-    - [x] (hollow)cube
-    - [x] (hollow)sphere
-    - [ ] airfoil/aircraft
-- [ ] sparse matrix 
-  - [x] spmv/spmm 
-  - [x] spsolve
-  - [x] combine
-    - [x] combine vector
-    - [x] combine matrix
-  - [ ] elementwise-op
-    - [x] same layout 
-    - [ ] different layout 
-  - [ ] partition
-  - [ ] io
-  - [ ] det
-  - [ ] is_pos_definite 
-- [ ] strong form to weak form
+## Examples
 
-### Efficiency
-- [x] quadrature loop
-- [x] PETsc backend
-- [ ] distributed mesh 
-  - [ ] distributed mesh assemble 
-  - [ ] distributed linear system solve
+### Completed
+- [x] Poisson equation (2D/3D)
+- [x] Heat equation
+- [x] Wave equation
+- [x] Linear elasticity
+- [x] Nonlinear Poisson
+- [x] Solid mechanics (hyperelasticity, plasticity)
+- [x] Topology optimization
+- [x] Defect detection (inverse problem)
 
-### Bugs/others
-- [ ] retain-graph = True issue fix 
+### Planned
+- [ ] Heat equation PINN
+- [ ] Wave equation PINN
+- [ ] Dynamic elasticity
+- [ ] Fluid-structure interaction
+- [ ] Phase field fracture
+
+## Documentation
+- [x] API reference
+- [x] Installation guide
+- [x] Example tutorials
+- [ ] Theory documentation
+- [ ] Video tutorials
+
+## Testing
+- [x] Element tests
+- [x] Assembler tests
+- [x] Sparse solver tests
+- [x] Mesh tests
+- [ ] Integration tests
+- [ ] Performance benchmarks
+
+## Future
+- [ ] Strong form to weak form automation
+- [ ] Higher-order time integration
+- [ ] Model order reduction
+- [ ] Neural network integration examples

@@ -1,17 +1,55 @@
+# Python cache
 **/__pycache__
+*.pyc
+*.pyo
+*.pyd
 .pytest_cache
-**/.gmsh_cache
+
+# Virtual environment
+.venv
+.python-version
+
+# Build artifacts
+build/
+dist/
+**/*.egg-info/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS specific
 **/.DS_Store
+Thumbs.db
+
+# Mesh cache
+**/.gmsh_cache
+
+# Jupyter
+**/.ipynb_checkpoints
+
+# Output directories
+**/output/
+**/cache/
+**/.tmp
+
+# VTK/VTU files
 **/*.vtk
 **/*.vtu
 **/*.vtp
-**/*.vts
 **/*.vtr
-**/*.vts
-examples/**/*.txt
-examples/**/*.jpg 
-examples/**/*.md
-examples/**/*.stats
+
+# Data files
+*.csv
+*.npz
+*.npy
+*.msh 
+*.json
+*.xdmf
+*.h5
+
 # Documentation build artifacts
 docs/build/
 docs/html/
@@ -19,9 +57,6 @@ docs/_build/
 docs/_static/
 docs/_images/
 docs/_sources/
-# Keep custom static files if they exist in source/_static, but ignore generated ones in docs/
-# Actually, standard sphinx puts build in docs/build or docs/html.
-# If your Makefile moves them to docs/, we should ignore them.
 docs/*.html
 docs/*.js
 docs/*.inv
@@ -32,43 +67,31 @@ docs/searchindex.js
 !docs/make.bat
 !docs/requirements.txt
 
-**/.ipynb_checkpoints
-**/output/
-# Ignore specific file types globally
-*.csv
-*.npz
-*.npy
-*.msh 
-*.json
-*.xdmf
-*.h5
-**/.tmp
-**/cache
+# Benchmark outputs
 benchmark/
-
-# Ignore everything in the experimental directory
-experimental/
-
-# Ignore specific files and directories in benchmark,
-# but keep .py and .ipynb files and any specifically mentioned files
 benchmark/**/*.png
 benchmark/**/*.pdf
-benchmark/**/!(*.py|*.ipynb)
+benchmark/**/test*
+
+# Examples generated files
+examples/**/*.txt
+examples/**/*.jpg 
+examples/**/*.stats
 examples/**/*.mp4
 examples/**/*.png
-!examples/**/eth.png
 examples/**/*.pdf
-examples/**/*.jpg
+!examples/**/eth.png
+!examples/**/*.md
 
-*massif.*
-**/massif*
-benchmark/**/test*
+# Experimental
+experimental/
+
+# C++ build
 tensormesh/cpp/**/build/
 tensormesh/cpp/**/*.so
 tensormesh/cpp/**/*.dll
 
-# ignore pyenv
-.python-version
-.venv
-
-**/*.egg-info
+# Profiling
+*massif.*
+**/massif*
+**/*.stats

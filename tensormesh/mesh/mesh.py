@@ -15,7 +15,16 @@ from .partition import graph_partition
 from .. import element as E
 from .. import sparse
 from ..nn import BufferDict
-from .. import visualization as V
+
+# Lazy import visualization to avoid matplotlib dependency issues
+V = None
+
+def _get_visualization():
+    global V
+    if V is None:
+        from .. import visualization as _V
+        V = _V
+    return V
 
 
 def tri_reorder(elements: torch.Tensor) -> torch.Tensor:
@@ -223,13 +232,32 @@ class Mesh(nn.Module):
         # return f"Mesh(n_points={self.points.shape[0]}, cells=({','.join(f'{k}:{v.shape}' for k,v in self.cells.items())}))"
 
     def __repr__(self):
+        # Build cell_data string safely (handle empty nested dicts)
+        cell_data_strs = []
+        for k, v in self.cell_data.items():
+            if len(v) > 0:
+                first_val = next(iter(v.values()))
+                cell_data_strs.append(f'{k}({first_val.dtype}):{first_val.shape[-1] if first_val.dim() > 0 else 1}')
+        cell_data_str = ','.join(cell_data_strs) if cell_data_strs else ''
+        
+        # Build point_data and field_data strings safely
+        point_data_str = ','.join(
+            f'{k}({v.dtype}):{v.shape[-1] if v.dim() > 0 else 1}' 
+            for k, v in self.point_data.items()
+        ) if self.point_data else ''
+        
+        field_data_str = ','.join(
+            f'{k}({v.dtype}):{v.shape[-1] if v.dim() > 0 else 1}' 
+            for k, v in self.field_data.items()
+        ) if self.field_data else ''
+        
         return (
             f"Mesh(\n"
             f"    points: {self.points.shape}\n"
             f"    cells: {','.join(f'{k}:{v.shape}' for k,v in self.cells.items())}\n"
-            f"    point_data: {','.join(f'{k}({v.dtype}):{v.shape[-1]}' for k,v in self.point_data.items())}\n"
-            f"    cell_data: {','.join(f'{k}({next(iter(v.values())).dtype}):{next(iter(v.values())).shape[-1]}' for k,v in self.cell_data.items())}\n"
-            f"    field_data: {','.join(f'{k}({v.dtype}):{v.shape[-1]}' for k,v in self.field_data.items())}\n"
+            f"    point_data: {point_data_str}\n"
+            f"    cell_data: {cell_data_str}\n"
+            f"    field_data: {field_data_str}\n"
             f")"
         )
 
@@ -521,7 +549,7 @@ class Mesh(nn.Module):
         assert isinstance(elements, dict)
 
         if values is None:
-            ax = V.draw_mesh(self, **kwargs)
+            ax = _get_visualization().draw_mesh(self, **kwargs)
             save_path = "tmp.jpg" if save_path is None else save_path
             if "ax" not in kwargs:
                 plt.savefig(save_path)
@@ -533,14 +561,14 @@ class Mesh(nn.Module):
         elif isinstance(values, (tuple,list,torch.Tensor,np.ndarray)):
             if isinstance(values,(tuple,list)) or (isinstance(values, (torch.Tensor,np.ndarray))  and len(values.shape) == 2):
                 save_path = "tmp.mp4"  if save_path is None else save_path 
-                V.draw_mesh_2d_stream(points, elements, values, dt,  # type:ignore
+                _get_visualization().draw_mesh_2d_stream(points, elements, values, dt,  # type:ignore
                                     fix_colorbar=fix_clim,
                                     show_mesh   =show_mesh,
                                     filename =  save_path,
                                     **kwargs)
             elif len(values.shape) == 1:
                 save_path = "tmp.jpg" if save_path is None else save_path
-                V.draw_mesh_2d_static(points, elements, values, # type:ignore
+                _get_visualization().draw_mesh_2d_static(points, elements, values, # type:ignore
                                     show_mesh = show_mesh,
                                     filename=save_path,
                                     **kwargs)
@@ -551,14 +579,14 @@ class Mesh(nn.Module):
             v = next(iter(values.values()))
             if isinstance(v,(tuple,list)) or (isinstance(v, (torch.Tensor,np.ndarray))  and len(v.shape) == 2):
                 save_path = "tmp.mp4"  if save_path is None else save_path 
-                V.draw_mesh_2d_stream(points, elements, values, dt,  # type:ignore
+                _get_visualization().draw_mesh_2d_stream(points, elements, values, dt,  # type:ignore
                                     fix_colorbar=fix_clim,
                                     show_mesh   =show_mesh,
                                     filename =  save_path,
                                     **kwargs)
             elif isinstance(v, (torch.Tensor,np.ndarray)) and len(v.shape) == 1:
                 save_path = "tmp.jpg" if save_path is None else save_path
-                V.draw_mesh(points, elements, values, # type:ignore
+                _get_visualization().draw_mesh(points, elements, values, # type:ignore
                                     show_mesh = show_mesh,
                                     filename=save_path,
                                     **kwargs)

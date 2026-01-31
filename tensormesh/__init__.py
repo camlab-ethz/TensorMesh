@@ -15,7 +15,7 @@ from .element.element_type2dimension import element_type2dimension
 from .element import element_type2element,\
                         element_types
 from .assemble import ElementAssembler, NodeAssembler, FacetAssembler
-from .assemble import LaplaceElementAssembler, MassElementAssembler, const_node_assembler, func_node_assembler
+from .assemble import LaplaceElementAssembler, MassElementAssembler, LinearElasticityElementAssembler, const_node_assembler, func_node_assembler
 from .functional import *
 from .dataset import MeshGen
 from ._version import __version__
