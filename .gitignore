@@ -75,12 +75,21 @@ benchmark/**/test*
 
 # Examples generated files
 examples/**/*.txt
-examples/**/*.jpg 
+examples/**/*.jpg
 examples/**/*.stats
 examples/**/*.mp4
+examples/**/*.gif
 examples/**/*.png
 examples/**/*.pdf
-!examples/**/eth.png
+examples/**/*.vtu
+examples/**/*.vtk
+examples/**/*.npz
+examples/**/*.npy
+examples/**/*.msh
+examples/**/*.json
+examples/**/*.nc
+examples/**/*.xdmf
+examples/**/*.h5
 !examples/**/*.md
 
 # Experimental

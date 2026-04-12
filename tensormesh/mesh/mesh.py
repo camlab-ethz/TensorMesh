@@ -540,7 +540,15 @@ class Mesh(nn.Module):
         show_mesh: bool
             whether to show the mesh, when :obj:`values` is passed in as :obj:`Dict[str, List[torch.Tensor]]` or :obj:`Dict[str, torch.Tensor]`
             default: False
-                    
+        fix_clim: bool
+            whether to fix the color limits across all frames, only used when :obj:`values` is passed in as :obj:`Dict[str, List[torch.Tensor]]`.
+            If True, the color limits are determined by the global min and max across all frames, ensuring a consistent colorbar throughout the animation.
+            default: False
+        show: bool
+            whether to display the plot interactively (e.g., via :func:`matplotlib.pyplot.show`)
+            default: False
+        **kwargs
+            additional keyword arguments passed to the underlying visualization functions
         """
         points:torch.Tensor = self.points # type:ignore
         elements = self.elements()
@@ -586,7 +594,7 @@ class Mesh(nn.Module):
                                     **kwargs)
             elif isinstance(v, (torch.Tensor,np.ndarray)) and len(v.shape) == 1:
                 save_path = "tmp.jpg" if save_path is None else save_path
-                _get_visualization().draw_mesh(points, elements, values, # type:ignore
+                _get_visualization().draw_mesh_2d_static(points, elements, values, # type:ignore
                                     show_mesh = show_mesh,
                                     filename=save_path,
                                     **kwargs)

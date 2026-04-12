@@ -119,6 +119,14 @@ class Polynomial(nn.Module):
         self.n_vars  = exp.shape[0]
         self.n_terms = exp.shape[1]
 
+    @property
+    def device(self):
+        return self._coef.device
+
+    @property
+    def dtype(self):
+        return self._coef.dtype
+
     def __len__(self):
         """Get number of terms in polynomial.
 

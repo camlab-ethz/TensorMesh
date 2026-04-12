@@ -24,8 +24,8 @@ if __name__ == "__main__":
     f = equation.source_term(mesh.points,domain="rectangle")
     K = assembler(mesh.points)
     class FAssembler(NodeAssembler):
-        def forward(self, u, f):
-            return u*f
+        def forward(self, v, f):
+            return v * f
     F_asm = FAssembler.from_mesh(mesh)
     f = F_asm(mesh.points, point_data={"f":f})
     K, f = condenser(K, f)
@@ -35,12 +35,12 @@ if __name__ == "__main__":
     u = condenser.recover(u)
     f = condenser.recover(f)
     mesh.plot(
-        {"u_fem":u,
-         "f":f,
-         "u_analytical":u_analytical},
-        backend="matplotlib",
-        save_path="poisson.png",
-        show_mesh=False,
+        {
+            "f":f,
+            "u_fem":u,
+            "u_analytical":u_analytical
+        },
+        save_path="poisson.png"
     )
 
 

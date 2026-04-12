@@ -54,7 +54,7 @@ def coalesce(edges:torch.Tensor, n_points:int)->torch.Tensor:
         2D Tensor of shape [2, n_edge]
     """
     connections = torch.sparse_coo_tensor(
-        edges, torch.ones(edges.shape[1]), size=(n_points, n_points)
+        edges, torch.ones(edges.shape[1], device=edges.device), size=(n_points, n_points)
     ).coalesce()
     edges = connections.indices()
     return edges
@@ -132,9 +132,9 @@ def node_adjacency(elements:torch.Tensor | Iterator[torch.Tensor],
     edges = coalesce(edges, n_points)
 
     adjacency = sparse.SparseMatrix(
-        edata = torch.ones(edges.shape[1]), 
-        row   = edges[0], 
-        col   = edges[1], 
+        edata = torch.ones(edges.shape[1], device=edges.device),
+        row   = edges[0],
+        col   = edges[1],
         shape = (n_points, n_points)
     )
 
@@ -165,7 +165,7 @@ def element_adjacency(elements:Dict[str,torch.Tensor])->sparse.SparseMatrix:
             element   = E.element_type2element(element_type)
             order     = E.element_type2order[element_type]
             start, end = element_ids[element_type]
-            _element_ids = torch.arange(start, end).repeat_interleave(element.get_n_facet())
+            _element_ids = torch.arange(start, end, device=element_index.device).repeat_interleave(element.get_n_facet())
             if element.is_mix_facet:
                 local_tri_facet, local_quad_facet = element.get_facet(order)
                 global_tri_facet = element_index[:, local_tri_facet] # [n_element, n_tri_facet, n_node_per_facet]
@@ -205,9 +205,9 @@ def element_adjacency(elements:Dict[str,torch.Tensor])->sparse.SparseMatrix:
             edges.append(_edges)
         edges = torch.cat(edges, -1)
         adjacency = sparse.SparseMatrix(
-            edata = torch.ones(edges.shape[1]), 
-            row   = edges[0], 
-            col   = edges[1], 
+            edata = torch.ones(edges.shape[1], device=edges.device),
+            row   = edges[0],
+            col   = edges[1],
             shape = (n_elements, n_elements)
         )
         return adjacency

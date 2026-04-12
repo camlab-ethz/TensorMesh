@@ -50,10 +50,9 @@ class HeatMultiFrequency:
         assert points.shape[-1] == 2, f"the shape of points must be [n_points, 2], but got {points.shape}"
         assert ((points<=1.0) &(points>=-1)).all(), f"the points must be in [-1,1]^2, but got {points}"
 
-        mu = self.mu
+        mu = self.mu.to(device=points.device, dtype=points.dtype)
         d  = self.d
-        m = torch.arange(1, d+1)
-        m = m.type(mu.dtype).to(mu.device)
+        m = torch.arange(1, d+1, dtype=points.dtype, device=points.device)
         if len(mu.shape) == 1:
             mu = mu[None, :] # (1, d)
             m  = m[None, :]  # (1, d)
@@ -62,7 +61,7 @@ class HeatMultiFrequency:
             mu = mu[:, None, ...] # (N, 1, d)
             m  = m[None, None, ...] # (1, 1, d)
             x, y = points[:, 0][None, :, None], points[:, 1][None, :, None] # (1, n_points, 1)
-        
+
         u0 = - (mu * torch.sin(torch.pi * m * x) * torch.sin(torch.pi * m * y) / torch.sqrt(m) / d).sum(-1)
 
         return u0
@@ -90,10 +89,9 @@ class HeatMultiFrequency:
         assert ((points<=1.0) & (points>=-1.0)).all(), f"the points must be in [-1,1]^2, but got {points}"
         assert t >= 0, f"t must be non-negative, but got {t}"
 
-        mu = self.mu
+        mu = self.mu.to(device=points.device, dtype=points.dtype)
         d  = self.d
-        m = torch.arange(1, d+1)
-        m = m.type(mu.dtype).to(mu.device)
+        m = torch.arange(1, d+1, dtype=points.dtype, device=points.device)
         if len(mu.shape) == 1:
             mu = mu[None, ...] # (1, d)
             m  = m[None, ...]  # (1, d)

@@ -41,7 +41,7 @@ def _load_module(mod_path, mod_name):
     return mod
 
 
-_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
 
 # Load Poisson equation generators
 _poisson_mod = _load_module(
@@ -76,7 +76,7 @@ class SimpleBatchPoissonSolver:
     """
     
     def __init__(self, mesh, device: Optional[str] = None):
-        from tensormesh.assemble import LaplaceElementAssembler, NodeAssembler
+        from tensormesh.assemble import LaplaceElementAssembler, MassElementAssembler
         from tensormesh.operator import Condenser
         
         if device is None:
@@ -100,14 +100,10 @@ class SimpleBatchPoissonSolver:
             torch.zeros(self.mesh.n_points, device=self.device)
         )
         
-        # Source term assembler
-        class _FAssembler(NodeAssembler):
-            def forward(self, u, fs):
-                # u: basis function value, fs: source term values [n_nodes, batch]
-                return u[:, None] * fs[None, :]
-        
-        self._f_assembler = _FAssembler.from_mesh(self.mesh)
-        
+        # Mass matrix for RHS assembly: F = M @ f  (i.e. ∫ v*f dΩ)
+        mass_assembler = MassElementAssembler.from_mesh(self.mesh)
+        self.M = mass_assembler()
+
         self.n_points = self.mesh.n_points
         self.n_inner = self.K.shape[0]
     
@@ -133,20 +129,25 @@ class SimpleBatchPoissonSolver:
         if squeeze:
             f = f.unsqueeze(0)
         
-        # f: [batch, n_nodes] -> [n_nodes, batch] for NodeAssembler
+        # f: [batch, n_nodes] -> [n_nodes, batch]
         f_T = f.T
+
+        # Assemble RHS: F = M @ f  (∫ v*f dΩ for each batch)
+        F = self.M @ f_T  # [n_nodes, batch]
+
+        # Condense RHS (K already condensed in __init__)
+        F_cond = self.condenser.condense_rhs(F)
         
-        # Assemble RHS
-        F = self._f_assembler(self.mesh.points, point_data={"fs": f_T})
-        
-        # Condense (apply BC)
-        _, F_cond = self.condenser(self.K, F)
-        
-        # Solve K @ u = F
-        u_inner = self.K.solve(F_cond, tol=tol, max_iter=max_iter)
-        
+        # Solve K @ u = F (column by column, as solve only accepts 1D rhs)
+        if F_cond.dim() == 1:
+            u_inner = self.K.solve(F_cond, tol=tol, maxiter=max_iter)
+        else:
+            cols = [self.K.solve(F_cond[:, i], tol=tol, maxiter=max_iter)
+                    for i in range(F_cond.shape[1])]
+            u_inner = torch.stack(cols, dim=1)  # [n_inner, batch]
+
         # Recover full solution
-        u_full = self.condenser.recover(u_inner)  # [n_nodes, batch]
+        u_full = self.condenser.recover(u_inner)  # [n_nodes] or [n_nodes, batch]
         u = u_full.T  # [batch, n_nodes]
         
         if squeeze:
@@ -220,12 +221,11 @@ def example_2d():
         idx = 0
         mesh.to('cpu').plot(
             {
+                "f": f[idx].cpu(),
                 "u_fem": u_fem[idx].cpu(),
                 "u_analytical": u_analytical[idx].cpu(),
                 "error": error[idx].cpu() * 100,
-                "f": f[idx].cpu(),
             },
-            backend="matplotlib",
             save_path="poisson_batch_solver_2d.png",
             show_mesh=False,
         )
@@ -250,7 +250,7 @@ def example_3d():
     # Parameters
     batch_size = 16
     K = 4
-    chara_length = 0.1
+    chara_length = 0.02
     
     # Create mesh
     print(f"\nCreating 3D mesh (chara_length={chara_length})...")
@@ -285,10 +285,12 @@ def example_3d():
     # Compare with analytical solution
     u_analytical = equation.solution(points)
     error = (u_fem - u_analytical).abs()
+    rel_error = error / (u_analytical.abs().max(dim=1, keepdim=True).values + 1e-10)
     
     print(f"\nResults:")
     print(f"  Max absolute error: {error.max():.6e}")
     print(f"  Mean absolute error: {error.mean():.6e}")
+    print(f"  Max relative error: {rel_error.max():.6e}")
     
     # Save to VTK
     try:

@@ -41,28 +41,28 @@ def read_version():
 setup(
     name="tensormesh",
     version=read_version(),
-    author="walkerchi,shizhengwen",
-    author_email="walker.chi.000@gmail.com",
-    description="Differentialable Numerical Method for Partial Differential Equation Library for PyTorch",
+    author="Mingyuan Chi, Shizheng Wen",
+    author_email="walker.chi.000@gmail.com, shizheng.wen@sam.math.ethz.ch",
+    description="Differentiable Finite Element Method Library for PyTorch",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    url="https://torch-fem.readthedocs.io",
+    license="GPL-3.0",
+    url="https://github.com/camlab-ethz/TensorMesh",
     project_urls={
-        "Documentation": "https://torch-fem.readthedocs.io",
-        "Source": "https://github.com/walkerchi/torch-fem.git",
-        "Changelog": "https://github.com/walkerchi/torch-fem/blob/master/CHANGELOG.md",
+        "Documentation": "https://camlab-ethz.github.io/TensorMesh/",
+        "Source": "https://github.com/camlab-ethz/TensorMesh",
     },
     packages=find_packages(),
     install_requires=[
         "tqdm",
         "numpy",
         "scipy",
-        "torch>=1.8.0",
+        "torch>=2.0.0",
+        "torch-sla>=0.1.4",
         "meshio",
-        "matplotlib", 
+        "matplotlib",
         "psutil",
         "toml",
-        # "functorch"  # Removed: PyTorch 2.0+ has functorch built-in
     ],
     extras_require={
         "petsc":[
@@ -81,12 +81,11 @@ setup(
     },
     classifiers=[
         "Development Status :: 5 - Production/Stable",
-        "License :: OSI Approved :: MIT License",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3 :: Only",
     ],
     keywords=[
@@ -101,5 +100,5 @@ setup(
         "graph-neural-networks",
         "graph-convolutional-networks",
     ],
-    python_requires=">=3.8",
+    python_requires=">=3.10",
 )

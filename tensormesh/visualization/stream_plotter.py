@@ -315,18 +315,19 @@ def draw_mesh_2d_stream(
                     plotter.fig.suptitle(f"t={t*dt:7.5f}s")
                 for i, (k,v) in enumerate(point_values.items()):
                     if len(point_values) == 1:
-                        ax = plotter.axes 
+                        ax = plotter.axes
                     else: # axes is a sequence
                         ax = plotter.axes[i]
                     plotter.draw_mesh_2d(points,
-                                         elements, 
-                                         v[t], 
-                                         ax=ax, 
+                                         elements,
+                                         v[t],
+                                         ax=ax,
                                          show_colorbar=show_colorbar,
                                          show_mesh  = show_mesh,
                                          update=False,
-                                         **_kwargs[k], 
+                                         **_kwargs[k],
                                          **kwargs)
+                    ax.set_title(k)
                 plotter.update()
 
     else:

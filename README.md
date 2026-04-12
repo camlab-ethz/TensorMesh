@@ -1,224 +1,177 @@
-![TensorMesh Logo](assets/logo.png)
+<p align="center">
+  <img src="assets/logo.png" alt="TensorMesh Logo" width="400"/>
+</p>
 
-```bash
+<h1 align="center">TensorMesh</h1>
 
-    ████████╗███████╗███╗   ██╗███████╗ ██████╗ ██████╗ ███╗   ███╗███████╗███████╗██╗  ██╗
-    ╚══██╔══╝██╔════╝████╗  ██║██╔════╝██╔═══██╗██╔══██╗████╗ ████║██╔════╝██╔════╝██║  ██║
-       ██║   █████╗  ██╔██╗ ██║███████╗██║   ██║██████╔╝██╔████╔██║█████╗  ███████╗███████║
-       ██║   ██╔══╝  ██║╚██╗██║╚════██║██║   ██║██╔══██╗██║╚██╔╝██║██╔══╝  ╚════██║██╔══██║
-       ██║   ███████╗██║ ╚████║███████║╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗███████║██║  ██║
-       ╚═╝   ╚══════╝╚═╝  ╚═══╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝
-```                                                                              
+<p align="center">
+  A differentiable, GPU-accelerated Finite Element Method library built on PyTorch.
+</p>
 
-# TensorMesh🚀
+<p align="center">
+  <a href="https://camlab-ethz.github.io/TensorMesh/">Documentation</a> |
+  <a href="#installation">Installation</a> |
+  <a href="#quick-start">Quick Start</a> |
+  <a href="#examples">Examples</a>
+</p>
 
-   A fast🚀, differentiable🎯, cross-platform💻, jit-free📌, debugging-friendly🚨 FEM library
-         
-   We only provide pythonic api for user-friendly use  🤗
+---
 
+## Highlights
 
-## Why use TensorMesh 🤗
-
-| Feature      | FEniCS  | scikit-fem | JAX-FEM  | TensorMesh |
-|--------------|---------|------------|----------|------------|
-| Flexibility  | ❌      | ✅         | ❌        | ✅         |
-| Easy Install | ❌      | ✅         | ✅        | ✅         |
-| Easy Debug   | ❌      | ✅         | ❌        | ✅         |
-| Easy IO      | ❌      | ❌         | ❌        | ✅         |
-| Large Mesh   | ✅      | ✅         | ❌        | ✅         |
-| GPU Support  | ✅      | ❌         | ✅        | ✅         |
-| Efficiency   | ✅      | ❌         | ✅        | ✅         |
-| Auto-diff    | ✅      | ❌         | ✅        | ✅         |
-| DL Integrity | ❌      | ❌         | ✅        | ✅         |
-
-
-
-
-The table above compares key features of TensorMesh with other popular FEM libraries:
-
-- **Flexibility**: TensorMesh and scikit-fem provide flexible APIs for customizing weak form implementations. In contrast, FEniCS has strict prerequisites that limit cross-platform compatibility, while JAX-FEM only supports a fixed set of predefined problems.
-
-- **Easy Debug**: Due to their straightforward execution flow and clear error messages, TensorMesh and scikit-fem enable effective debugging. FEniCS and JAX-FEM are more challenging to debug because they rely on JIT compilation.
-
-- **Easy IO**: Thanks to [meshio](https://github.com/nschloe/meshio). TensorMesh provides simple and intuitive APIs for mesh import/export across multiple formats (GMSH, XDMF, etc). Other libraries often have more complex or limited IO capabilities.
-
-- **GPU Support**: TensorMesh, FEniCS, and JAX-FEM leverage GPU acceleration for high-performance computing, while scikit-fem is limited to CPU execution.
-
-- **Efficiency**: Through optimized implementations, TensorMesh achieves computational efficiency on par with mature libraries like FEniCS and JAX-FEM.
-
-- **Auto-diff**: TensorMesh, FEniCS and JAX-FEM all support automatic differentiation, making them suitable for gradient-based optimization and machine learning applications.
-
-- **DL Integration**: TensorMesh and JAX-FEM are designed with deep learning in mind, offering native PyTorch/JAX compatibility. Other libraries typically require additional wrapper code for deep learning workflows.
-
-## Performance 
-
-### Mac M2 Pro
-
-Zero Boundary Poisson
-
-![img](assets/comparison_3d_cpu_mac.png)
-
-
-
+- **Pure Python** — no JIT compilation, no DSL; debug with standard Python tools
+- **GPU-accelerated** — assembly, solve, and differentiation all run on CUDA
+- **Differentiable** — full PyTorch autograd support for inverse problems and optimization
+- **Flexible weak forms** — define your PDE by writing a short `forward()` method
+- **Mixed elements** — triangles, quads, tetrahedra, hexahedra, pyramids, prisms (up to order 4)
+- **Batch solve** — solve thousands of PDE instances simultaneously via multi-RHS sparse LU
 
 ## Installation
 
-To install TensorMesh via pip, follow these steps:
+**Requirements:** Python >= 3.10, PyTorch >= 2.0
 
-1. Install the package directly from GitHub using pip:
-   ```bash
-   pip install git+https://github.com/walkerchi/tensormesh.git@main
-   ```
-
-2. Or clone and install locally:
-   ```bash
-   git clone https://github.com/walkerchi/tensormesh.git
-   cd tensormesh
-   pip install -e .
-   ```
-
-Note: Make sure you have Python 3.8+ and pip installed on your system before proceeding with the installation.
-
-### Optional Dependencies
-
-For GPU support with CUDA:
 ```bash
-pip install torch --index-url https://download.pytorch.org/whl/cu118
+pip install torch-sla>=0.1.4
+pip install git+https://github.com/camlab-ethz/TensorMesh.git
 ```
 
-For visualization with PyVista:
+Or install from source:
+
 ```bash
-pip install pyvista
+git clone https://github.com/camlab-ethz/TensorMesh.git
+cd TensorMesh
+pip install -e .
 ```
 
-## Features
+### Optional dependencies
 
-- **Mesh Generation**: Automatic mesh generation for common geometries (rectangles, circles, L-shapes, cubes, spheres, etc.)
-- **Element Types**: Support for various element types including triangles, quadrilaterals, tetrahedra, hexahedra, pyramids, and prisms
-- **High-Order Elements**: Support for polynomial orders up to 4 for most element types
-- **Assemblers**: Flexible assembly system with `ElementAssembler`, `NodeAssembler`, and `FacetAssembler`
-- **Sparse Solvers**: Multiple backend options (SciPy, PETSc, CuPy/cuSOLVER)
-- **Visualization**: Integrated visualization with matplotlib and PyVista support
-- **Automatic Differentiation**: Full PyTorch integration for gradient-based optimization
-- **ODE Solvers**: Built-in time integration schemes for transient problems
+```bash
+pip install gmsh          # mesh generation
+pip install pyvista       # 3D visualization
+pip install petsc4py      # PETSc sparse solver backend
+pip install cupy-cuda12x  # GPU sparse solver backend
+```
 
 ## Quick Start
 
 ### Poisson Equation
 
+Solve $-\Delta u = f$ on a unit square with homogeneous Dirichlet boundary conditions:
+
 ```python
-import tensormesh as tm
+from tensormesh import ElementAssembler, NodeAssembler, Mesh, Condenser
 
-# Create mesh
-mesh = tm.Mesh.gen_rectangle(chara_length=0.05)
+# Generate mesh
+mesh = Mesh.gen_rectangle(chara_length=0.05)
 
-# Define assemblers
-class LaplaceAssembler(tm.ElementAssembler):
+# Define weak form: a(u,v) = integral of grad(u) . grad(v)
+class LaplaceAssembler(ElementAssembler):
     def forward(self, gradu, gradv):
         return gradu @ gradv
 
-class SourceAssembler(tm.NodeAssembler):
+# Define load: l(v) = integral of f * v
+class SourceAssembler(NodeAssembler):
     def forward(self, v, f):
         return f * v
 
-# Assemble system
-K_asm = LaplaceAssembler.from_mesh(mesh)
-f_asm = SourceAssembler.from_mesh(mesh)
+# Assemble
+K = LaplaceAssembler.from_mesh(mesh)()
+f = SourceAssembler.from_mesh(mesh)(point_data={"f": source_term})
 
-K = K_asm()
-f = f_asm(point_data={'f': source_term})
-
-# Apply boundary conditions and solve
-condenser = tm.Condenser(mesh.boundary_mask)
+# Apply BCs and solve
+condenser = Condenser(mesh.boundary_mask)
 K_, f_ = condenser(K, f)
 u = condenser.recover(K_.solve(f_))
 ```
 
-### Quadrature Order
+### Heat Equation (Implicit Euler)
 
-- line: `[1, ∞)`
-- triangle: `[1, 20)`
-- quad: `[1, ∞)`
-- tetra: `[1, 10)`
+```python
+from tensormesh import ElementAssembler, Mesh, Condenser
 
-### Shape Function Order
+mesh = Mesh.gen_rectangle(chara_length=0.02)
 
-- line: `[1, 4]`
-- triangle: `[1, 4]`
-- quad: `[1, 4]`
-- tetra: `[1, 4]`
-- hexahedron: `[1, 4]`
-- pyramid: `[1, 4]`
-- prism: `[1, 4]`
+class MassAssembler(ElementAssembler):
+    def forward(self, u, v):
+        return u * v
+
+class StiffnessAssembler(ElementAssembler):
+    def forward(self, gradu, gradv):
+        return gradu @ gradv
+
+M = MassAssembler.from_mesh(mesh)()
+A = StiffnessAssembler.from_mesh(mesh)()
+
+dt = 5e-5
+K = M + dt * A                        # SparseMatrix arithmetic
+condenser = Condenser(mesh.boundary_mask)
+K_ = condenser(K)[0]
+
+for step in range(100):
+    F_ = condenser.condense_rhs(M @ U)
+    U  = condenser.recover(K_.solve(F_))
+```
+
+## Architecture
+
+The core workflow: **Mesh → Assembler → SparseMatrix → Condenser → Solve**
+
+| Module | Description |
+|--------|-------------|
+| `tensormesh.mesh` | Mesh data structure, generation (`gen_rectangle`, `gen_circle`, `gen_cube`, ...), I/O |
+| `tensormesh.element` | Shape functions, quadrature rules, element transformations (order 1-4) |
+| `tensormesh.assemble` | `ElementAssembler`, `NodeAssembler`, `FacetAssembler` for matrix/vector assembly |
+| `tensormesh.sparse` | `SparseMatrix` with multiple solver backends (SciPy, PETSc, CuPy, cuDSS) |
+| `tensormesh.operator` | `Condenser` for Dirichlet boundary conditions via static condensation |
+| `tensormesh.ode` | Time integrators: explicit/implicit Euler, midpoint, Runge-Kutta |
+| `tensormesh.dataset` | Parametric PDE dataset generation (Poisson, Heat, Wave, Elasticity) |
+| `tensormesh.visualization` | Matplotlib and PyVista plotting backends |
 
 ## Examples
 
-### Heat Equation
+<!-- TODO: add example figures/animations -->
 
-```bash
-cd examples/heat
-python heat.py
-```
+| Category | Examples | Description |
+|----------|----------|-------------|
+| **Basics** | `examples/basics/` | Mesh visualization, basis functions, element gallery |
+| **Poisson** | `examples/poisson/` | 2D/3D Poisson, batch solver, h-adaptivity |
+| **Diffusion** | `examples/diffusion/` | Heat equation, Allen-Cahn phase field |
+| **Wave** | `examples/wave/` | Wave equation with central difference scheme |
+| **Dataset** | `examples/dataset/` | Batch dataset generation for ML (heat, wave) |
+| **Fluid** | `examples/fluid/` | Lid-driven cavity, cylinder flow, Rayleigh-Benard, Taylor-Green |
+| **Solid** | `examples/solid/` | Cantilever beam, hyperelasticity, contact, plasticity |
+| **Distributed** | `examples/distributed/` | Graph coloring, mesh partitioning, multi-GPU assembly |
 
-![img](assets/heat.gif)
+## Supported Elements
 
-
-
-### Wave Equation
-
-```bash
-cd examples/wave
-python wave.py
-```
-
-![img](assets/wave.gif)
-
-### More Examples
-
-- **Poisson**: `examples/poisson/` - Various Poisson equation examples including optimization
-- **Linear Elasticity**: `examples/linear_elasticity/` - Stress analysis and plate bending
-- **Solid Mechanics**: `examples/solid mechanics/` - Hyperelasticity and plasticity
-- **Inverse Problems**: `examples/inverse/` - Topology optimization and material design
-- **Fluid Mechanics**: `examples/fluid/` - Navier-Stokes examples
+| Element | Geometric Order | Quadrature Order |
+|---------|:-:|:-:|
+| Line | 1-4 | 1+ |
+| Triangle | 1-4 | 1-19 |
+| Quadrilateral | 1-4 | 1+ |
+| Tetrahedron | 1-4 | 1-9 |
+| Hexahedron | 1-4 | 1+ |
+| Pyramid | 1-4 | 1+ |
+| Prism | 1-4 | 1+ |
 
 ## Documentation
 
-Full documentation is available at the [TensorMesh Documentation](https://walkerchi.github.io/tensormesh/).
-
-## Benchmark
-
-See the `tensormesh-bench` repository for comprehensive benchmarks comparing TensorMesh with FEniCS, scikit-fem, and JAX-FEM.
-
-## Contribution
-
-Contributions are welcome! Please feel free to submit issues or pull requests.
-
-### Development Setup
-
-```bash
-git clone https://github.com/walkerchi/tensormesh.git
-cd tensormesh
-pip install -e ".[dev]"
-pytest tests/
-```
-
-### Code Style
-
-We follow PEP 8 guidelines. Please ensure your code passes linting before submitting.
+Full documentation: [camlab-ethz.github.io/TensorMesh](https://camlab-ethz.github.io/TensorMesh/)
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU General Public License v3.0 — see [LICENSE](LICENSE) for details.
 
 ## Citation
 
 If you use TensorMesh in your research, please cite:
 
 ```bibtex
-@software{tensormesh,
-  author = {Walker Chi},
-  title = {TensorMesh: A PyTorch-based Finite Element Library},
-  year = {2023},
-  url = {https://github.com/walkerchi/tensormesh}
+@article{wen2026tensorgalerkin,
+  title={Learning, Solving and Optimizing PDEs with TensorGalerkin: 
+         an Efficient High-Performance Galerkin Assembly Algorithm},
+  author={Wen, Shizheng and Chi, Mingyuan and Yu, Tianwei and Moseley, Ben and Michelis, Mike Yan and Ren, Pu and Sun, Hao and Mishra, Siddhartha},
+  journal={arXiv preprint arXiv:2602.05052},
+  year={2026}
 }
 ```

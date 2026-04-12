@@ -124,49 +124,62 @@ class SparseMatrix(SparseTensor):
             self.values.grad, self.row_indices, self.col_indices, self.shape
         )
 
+    # ==================== Type-Preserving Helpers ====================
+
+    def _wrap(self, result):
+        """Wrap a SparseTensor result back into SparseMatrix."""
+        if isinstance(result, SparseTensor):
+            return SparseMatrix(result.values, result.row_indices, result.col_indices, result.shape)
+        return result
+
+    # ==================== Arithmetic (preserve SparseMatrix type) ====================
+
+    def __add__(self, other):
+        return self._wrap(super().__add__(other))
+
+    def __radd__(self, other):
+        return self._wrap(super().__radd__(other))
+
+    def __sub__(self, other):
+        return self._wrap(super().__sub__(other))
+
+    def __rsub__(self, other):
+        return self._wrap(super().__rsub__(other))
+
+    def __mul__(self, other):
+        return self._wrap(super().__mul__(other))
+
+    def __rmul__(self, other):
+        return self._wrap(super().__rmul__(other))
+
+    def __matmul__(self, other):
+        result = super().__matmul__(other)
+        if isinstance(result, SparseTensor):
+            return self._wrap(result)
+        return result
+
     # ==================== Device/Dtype Methods (preserve type) ====================
 
     def to(self, *args, **kwargs) -> 'SparseMatrix':
-        """Move to device/dtype while preserving SparseMatrix type."""
-        result = super().to(*args, **kwargs)
-        return SparseMatrix(
-            result.values, result.row_indices, result.col_indices, result.shape
-        )
+        return self._wrap(super().to(*args, **kwargs))
 
     def cuda(self, device=None) -> 'SparseMatrix':
-        """Move to CUDA device while preserving SparseMatrix type."""
-        result = super().cuda(device)
-        return SparseMatrix(
-            result.values, result.row_indices, result.col_indices, result.shape
-        )
+        return self._wrap(super().cuda(device))
 
     def cpu(self) -> 'SparseMatrix':
-        """Move to CPU while preserving SparseMatrix type."""
-        result = super().cpu()
-        return SparseMatrix(
-            result.values, result.row_indices, result.col_indices, result.shape
-        )
+        return self._wrap(super().cpu())
 
     def float(self) -> 'SparseMatrix':
-        """Convert to float32 while preserving SparseMatrix type."""
-        result = super().float()
-        return SparseMatrix(
-            result.values, result.row_indices, result.col_indices, result.shape
-        )
+        return self._wrap(super().float())
 
     def double(self) -> 'SparseMatrix':
-        """Convert to float64 while preserving SparseMatrix type."""
-        result = super().double()
-        return SparseMatrix(
-            result.values, result.row_indices, result.col_indices, result.shape
-        )
+        return self._wrap(super().double())
 
     def half(self) -> 'SparseMatrix':
-        """Convert to float16 while preserving SparseMatrix type."""
-        result = super().half()
-        return SparseMatrix(
-            result.values, result.row_indices, result.col_indices, result.shape
-        )
+        return self._wrap(super().half())
+
+    def detach(self) -> 'SparseMatrix':
+        return self._wrap(super().detach())
 
     # ==================== FEM-Specific Methods ====================
 
