@@ -65,11 +65,11 @@ docs/_build/
 /*.fls
 /*.fdb_latexmk
 
-# Benchmark outputs
-benchmark/
-benchmark/**/*.png
-benchmark/**/*.pdf
-benchmark/**/test*
+# Benchmark outputs (root-level only — does NOT shadow docs/source/_static/benchmark/)
+/benchmark/
+/benchmark/**/*.png
+/benchmark/**/*.pdf
+/benchmark/**/test*
 
 # Examples generated files
 examples/**/*.txt
