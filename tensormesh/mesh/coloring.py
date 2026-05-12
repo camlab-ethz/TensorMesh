@@ -76,38 +76,13 @@ def graph_coloring(adjacency: sparse.SparseMatrix, max_iter: int = 100) -> torch
             
         unique_nodes_to_update = torch.unique(nodes_to_update)
         
-        # 3. Assign new minimal valid colors
-        # For each node to update, find forbidden colors from neighbors
-        
-        # We need to gather neighbor colors.
-        # This is the tricky part in pure tensor.
-        # A simple heuristic: increment color of conflict nodes.
-        # Or: Randomized selection?
-        # A robust way: colors[nodes] += 1 + verify. 
-        # But simply incrementing might oscillate.
-        
-        # Strategy: "Jones-Plassmann" style usually picks MAX independent set then colors.
-        # Strategy: "Speculative": just pick mex (minimum excluded).
-        
-        # Implementing efficient mex on GPU for irregular graph is hard without kernel.
-        # Simple heuristic for GPU: Randomly pick a new color from a candidate pool, 
-        # or just increment color.
-        # Let's try: new_color = current_color + random_step (to break symmetry)
-        # Or simpler: colors[nodes] = random_int
-        
-        # Let's use a "stochastic increment" to find a hole.
-        # Add a random integer between [1, 5] to the current color.
-        # This eventually separates them.
-        # Adaptive Color Selection Strategy (Minimize colors)
-        # Instead of incrementing (which drifts up), we try to pick a random color in a small range.
-        # Range expands slowly to guarantee convergence.
-        # This keeps the total color count low (typically 5-8 for planar graphs).
+        # 3. Re-color conflicting nodes from a small random palette.
+        # The palette [0, limit) widens slowly with i to guarantee convergence
+        # while keeping the total color count low (~5-8 for planar graphs).
+        # We only need *a* valid coloring for FEM assembly; minimizing color
+        # count is secondary (though fewer colors → better GPU occupancy).
         limit = 6 + (i // 5)
         new_colors = torch.randint(0, limit, (unique_nodes_to_update.shape[0],), device=device)
         colors[unique_nodes_to_update] = new_colors
-        
-        # Optimization: To prevent colors growing indefinitely, we could try to reduce them later,
-        # but for FEM assembly coloring, we just need *a* valid coloring, 
-        # minimizing number of colors is secondary (though fewer is better for occupancy).
-        
+
     return colors

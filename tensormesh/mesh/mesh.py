@@ -1,14 +1,9 @@
-from fileinput import filename
-import os
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Iterable, Dict, List
 import numpy as np
-import torch 
+import torch
 import torch.nn as nn
 import meshio
-import warnings
-import matplotlib.pyplot as plt
 from collections import defaultdict
-from typing import Iterable, Dict, Optional,List
 from .adjacency import node_adjacency, element_adjacency
 from .coloring import graph_coloring
 from .partition import graph_partition
@@ -27,94 +22,49 @@ def _get_visualization():
     return V
 
 
-def tri_reorder(elements: torch.Tensor) -> torch.Tensor:
-    """
-    (Deprecated) Reorder triangle connectivity from Gmsh/VTK ordering to TensorMesh internal ordering.
-
-    This is kept for backward compatibility. The canonical implementation lives in
-    :meth:`tensormesh.element.Element.reorder`.
-    """
-    return E.Triangle.reorder(elements, to_gmsh=False)
-
-def quad_reorder(elements: torch.Tensor) -> torch.Tensor:
-    """
-    (Deprecated) Reorder quadrilateral connectivity from Gmsh/VTK ordering to TensorMesh internal ordering.
-
-    This is kept for backward compatibility. The canonical implementation lives in
-    :meth:`tensormesh.element.Element.reorder`.
-    """
-    return E.Quadrilateral.reorder(elements, to_gmsh=False)
-    
-
-def tet_reorder(elements: torch.Tensor) -> torch.Tensor:
-    """
-    (Deprecated) Reorder tetrahedron connectivity from Gmsh/VTK ordering to TensorMesh internal ordering.
-
-    This is kept for backward compatibility. The canonical implementation lives in
-    :meth:`tensormesh.element.Element.reorder`.
-    """
-    return E.Tetrahedron.reorder(elements, to_gmsh=False)
-    
-def hex_reorder(elements: torch.Tensor) -> torch.Tensor:
-    """
-    (Deprecated) Reorder hexahedron connectivity from Gmsh/VTK ordering to TensorMesh internal ordering.
-
-    Note: Hexahedron gmsh permutation is currently identity unless implemented in
-    :class:`tensormesh.element.Hexahedron`. This wrapper removes the old breakpoint-based code.
-    """
-    return E.Hexahedron.reorder(elements, to_gmsh=False)
-
-
-def pyr_reorder(elements: torch.Tensor) -> torch.Tensor:
-    """
-    (Deprecated) Reorder pyramid connectivity from Gmsh/VTK ordering to TensorMesh internal ordering.
-    """
-    return E.Pyramid.reorder(elements, to_gmsh=False)
-        
-
-
-def pri_reorder(elements:torch.Tensor)->torch.Tensor:
-    """
-    (Deprecated) Reorder prism connectivity from Gmsh/VTK ordering to TensorMesh internal ordering.
-    """
-    return E.Prism.reorder(elements, to_gmsh=False)
-
-
 class Mesh(nn.Module):
-    r"""
+    r"""FEM mesh — vertex coordinates, per-element-type connectivity, and
+    point/cell/field data attached to either. Mixed-element meshes are
+    supported via :attr:`cells` being a :class:`~tensormesh.nn.BufferDict`
+    keyed by element type string (e.g. ``"triangle"``, ``"quad"``,
+    ``"tetra"``).
+
     Parameters
     ----------
-    mesh: :meth:`meshio.Mesh`
-        a meshio mesh object
-    
+    mesh : meshio.Mesh
+        A meshio mesh object to wrap.
+    reorder : bool, default=False
+        Whether to convert connectivity from Gmsh/VTK ordering to TensorMesh
+        internal ordering (delegates to
+        :meth:`tensormesh.element.Element.reorder`).
 
     Attributes
     ----------
-    points: torch.Tensor 
-        2D tensor of shape :math:`[|\mathcal V|, D]`, where :math:`|\mathcal V|` is the number of points and :math:`D` is the dimension of the space
-        the coordinates of the points
+    points: torch.Tensor
+        2D tensor of shape :math:`[|\mathcal V|, D]`, where :math:`|\mathcal V|`
+        is the number of points and :math:`D` is the spatial dimension —
+        vertex coordinates.
     cells: BufferDict[str, torch.Tensor]
-        Each key is a :meth:`tensormesh.shape.element_type`, 
-        and for each :obj:`element_type`, there is a corresponding 2D tensor of shape :math:`[|\mathcal V, B]`, where :math:`B` is the number of basis functions
-        the cells of the mesh
+        Each key is an :obj:`element_type` string (see
+        :mod:`tensormesh.element`); the value is a 2D tensor of shape
+        :math:`[|\mathcal C|, B]`, where :math:`|\mathcal C|` is the number
+        of elements and :math:`B` is the number of basis functions.
     point_data: BufferDict[str, torch.Tensor], optional
-        Each key is a :meth:`tensormesh.shape.element_type`, 
-        the point data
-    cell_data: BufferDict[str, BufferDict[int, torch.Tensor]], optional
-        Each key is a :meth:`tensormesh.shape.element_type`, 
-        the cell data
+        Per-point fields, keyed by name.
+    cell_data: ModuleDict[str, BufferDict[str, torch.Tensor]], optional
+        Per-element fields. The outer key is an :obj:`element_type`; the
+        inner key is the field name.
     field_data: BufferDict[str, torch.Tensor], optional
-        Each key is a :meth:`tensormesh.shape.element_type`, 
-        the field data
+        Global named fields.
     cell_sets: dict, optional
-        Each key is a :meth:`tensormesh.shape.element_type`, 
-        the cell sets
+        Named subsets of cells, kept in meshio's native format.
     dim2eletyp: Dict[int, List[str]]
-        Each key is a dimension, and the value is a list of element types of the dimension
-    default_eletyp: str
-        the default element type
-    default_element_type: str
-        the default element type
+        Each key is a spatial dimension, and the value is a list of element
+        types of that dimension present in the mesh.
+    default_eletyp: str or List[str]
+        The default element type — a single string for homogeneous meshes,
+        a list of strings for mixed-element meshes. Exposed publicly via the
+        :attr:`default_element_type` property.
 
     """
 
@@ -557,6 +507,7 @@ class Mesh(nn.Module):
         assert isinstance(elements, dict)
 
         if values is None:
+            import matplotlib.pyplot as plt
             ax = _get_visualization().draw_mesh(self, **kwargs)
             save_path = "tmp.jpg" if save_path is None else save_path
             if "ax" not in kwargs:
@@ -600,25 +551,8 @@ class Mesh(nn.Module):
                                     **kwargs)
             else:
                 raise NotImplementedError(f"{type(values)} is not implemented for plot")
-        else:   
+        else:
             raise NotImplementedError(f"{type(values)} is not implemented for plot")
-        
-        # from ..visualization import plot_value_matplotlib, plot_pyvista
-
-        # plot_fns = {
-        #     "pyvista":plot_pyvista,
-        #     "matplotlib":plot_matplotlib,
-        # }
-        # assert  backend in plot_fns.keys(), f"backend must be one of {list(plot_fns.keys())}, but got {backend}"
-
-        # return plot_fns[backend](kwargs, self,  save_path, dt, show_mesh)
-             
-        # from ..visualization import plot_value_matplotlib, plot_mesh_matplotlib
-
-        # if values is None:
-        #     return plot_mesh_matplotlib(self, save_path)
-        # else:
-        #     return plot_value_matplotlib(values, self, save_path, dt, show_mesh, fix_clim)
 
     @property
     def n_points(self)->int:
@@ -702,7 +636,9 @@ class Mesh(nn.Module):
         mesh: meshio.Mesh
             a meshio mesh object
         reorder: bool
-            whether to turn [0,1,2,3] -> [0,1,3,2]
+            whether to convert connectivity from Gmsh/VTK ordering to
+            TensorMesh internal ordering (delegates to
+            :meth:`tensormesh.element.Element.reorder`).
         Returns
         -------
         tensormesh.mesh.Mesh
@@ -717,13 +653,16 @@ class Mesh(nn.Module):
         """
         Parameters
         ----------
-            file_name: str
-                the name of the file
-            file_format: str
-                the format of the file, e.g., 'msh', 'vtk', 'obj'
-                default is the file extension
-            reorder: bool
-                whether to turn [0,1,2,3] -> [0,1,3,2]
+        file_name: str
+            the name of the file
+        file_format: str
+            the format of the file, e.g., 'msh', 'vtk', 'obj'
+            default is the file extension
+        reorder: bool
+            whether to convert connectivity from Gmsh/VTK ordering to
+            TensorMesh internal ordering (delegates to
+            :meth:`tensormesh.element.Element.reorder`).
+
         Returns
         -------
         tensormesh.mesh.Mesh
@@ -770,7 +709,7 @@ class Mesh(nn.Module):
             whether to visualize the mesh,
             default: :obj:`False`
         cache_path: str, optional
-            the path to save the mesh, if :obj:`None`, it will be decided by :meth:`tensormesh.dataset.mesh.gen_rectangle`,
+            the path to save the mesh, if :obj:`None`, it will be decided by :func:`~tensormesh.dataset.gen_rectangle`,
             default: :obj:`None`
         Returns
         -------
@@ -782,15 +721,16 @@ class Mesh(nn.Module):
 
     @staticmethod
     def gen_hollow_rectangle(
-        chara_length=0.1,
-        order=1,
-        element_type="quad",
-        outer_left=0.0, outer_right=1.0, outer_bottom=0.0, outer_top=1.0,
-        inner_left = 0.25,  inner_right=0.75,
-        inner_bottom =0.25, inner_top=0.75,
-        visualize=False,
-        cache_path=None
-    ):
+        chara_length:float=0.1,
+        order:int=1,
+        element_type:str="quad",
+        outer_left:float=0.0, outer_right:float=1.0,
+        outer_bottom:float=0.0, outer_top:float=1.0,
+        inner_left:float=0.25,  inner_right:float=0.75,
+        inner_bottom:float=0.25, inner_top:float=0.75,
+        visualize:bool=False,
+        cache_path:Optional[str]=None,
+    )->'Mesh':
         """
         Parameters
         ----------
@@ -831,7 +771,7 @@ class Mesh(nn.Module):
             whether to visualize the mesh,
             default: :obj:`False`
         cache_path: str, optional
-            the path to save the mesh, if :obj:`None`, it will be decided by :meth:`tensormesh.dataset.mesh.gen_hollow_rectangle`,
+            the path to save the mesh, if :obj:`None`, it will be decided by :func:`~tensormesh.dataset.gen_hollow_rectangle`,
             default: :obj:`None`
         Returns
         -------
@@ -850,12 +790,12 @@ class Mesh(nn.Module):
              cache_path)
 
     @staticmethod
-    def gen_circle(chara_length=0.1,
-            order=1,
-            element_type="tri",
-            cx = 0.0, cy = 0.0, r = 1.0,
-            visualize=False,
-            cache_path=None):
+    def gen_circle(chara_length:float=0.1,
+            order:int=1,
+            element_type:str="tri",
+            cx:float=0.0, cy:float=0.0, r:float=1.0,
+            visualize:bool=False,
+            cache_path:Optional[str]=None)->'Mesh':
         """
         Parameters
         ----------
@@ -881,7 +821,7 @@ class Mesh(nn.Module):
             whether to visualize the mesh,
             default: :obj:`False`
         cache_path: str, optional
-            the path to save the mesh, if :obj:`None`, it will be decided by :meth:`tensormesh.dataset.mesh.gen_circle`,
+            the path to save the mesh, if :obj:`None`, it will be decided by :func:`~tensormesh.dataset.gen_circle`,
             default: :obj:`None`
         Returns
         -------
@@ -892,12 +832,13 @@ class Mesh(nn.Module):
         return gen_circle(chara_length, order, element_type, cx, cy, r, visualize, cache_path)
 
     @staticmethod
-    def gen_hollow_circle(chara_length=0.1,
-             order=1,
-             element_type="quad",
-             cx = 0.0, cy = 0.0, r_inner = 1.0, r_outer = 2.0,
-             visualize=False,
-             cache_path=None):
+    def gen_hollow_circle(chara_length:float=0.1,
+             order:int=1,
+             element_type:str="quad",
+             cx:float=0.0, cy:float=0.0,
+             r_inner:float=1.0, r_outer:float=2.0,
+             visualize:bool=False,
+             cache_path:Optional[str]=None)->'Mesh':
         """
         Parameters
         ----------
@@ -926,7 +867,7 @@ class Mesh(nn.Module):
             whether to visualize the mesh,
             default: :obj:`False`
         cache_path: str, optional
-            the path to save the mesh, if :obj:`None`, it will be decided by :meth:`tensormesh.dataset.mesh.gen_hollow_circle`,
+            the path to save the mesh, if :obj:`None`, it will be decided by :func:`~tensormesh.dataset.gen_hollow_circle`,
             default: :obj:`None`
         Returns
         -------
@@ -942,14 +883,15 @@ class Mesh(nn.Module):
              cache_path)
 
     @staticmethod
-    def gen_L(chara_length=0.1,
-             order=1,
-             element_type="quad",
-             left=0.0, right=1.0, bottom=0.0, top=1.0, 
-             top_inner=0.5,
-             right_inner=0.5,
-             visualize=False,
-             cache_path=None):
+    def gen_L(chara_length:float=0.1,
+             order:int=1,
+             element_type:str="quad",
+             left:float=0.0, right:float=1.0,
+             bottom:float=0.0, top:float=1.0,
+             top_inner:float=0.5,
+             right_inner:float=0.5,
+             visualize:bool=False,
+             cache_path:Optional[str]=None)->'Mesh':
         """
         Parameters
         ----------
@@ -984,7 +926,7 @@ class Mesh(nn.Module):
             whether to visualize the mesh,
             default: :obj:`False`
         cache_path: str, optional
-            the path to save the mesh, if :obj:`None`, it will be decided by :meth:`tensormesh.dataset.mesh.gen_L`,
+            the path to save the mesh, if :obj:`None`, it will be decided by :func:`~tensormesh.dataset.gen_L`,
             default: :obj:`None`
         Returns
         -------
@@ -995,13 +937,13 @@ class Mesh(nn.Module):
         return gen_L(chara_length, order, element_type, left, right, bottom, top, top_inner, right_inner, visualize, cache_path)
 
     @staticmethod
-    def gen_cube(chara_length=0.1, 
-             order=1,
-             left=0.0, right=1.0,
-             bottom=0.0, top=1.0,
-             front=0.0, back=1.0,
-             visualize=False,
-             cache_path=None):
+    def gen_cube(chara_length:float=0.1,
+             order:int=1,
+             left:float=0.0, right:float=1.0,
+             bottom:float=0.0, top:float=1.0,
+             front:float=0.0, back:float=1.0,
+             visualize:bool=False,
+             cache_path:Optional[str]=None)->'Mesh':
         """
         Parameters
         ----------
@@ -1033,7 +975,7 @@ class Mesh(nn.Module):
             whether to visualize the mesh,
             default: :obj:`False`
         cache_path: str, optional
-            the path to save the mesh, if :obj:`None`, it will be decided by :meth:`tensormesh.dataset.mesh.gen_cube`,
+            the path to save the mesh, if :obj:`None`, it will be decided by :func:`~tensormesh.dataset.gen_cube`,
             default: :obj:`None`
         Returns
         -------
@@ -1044,16 +986,16 @@ class Mesh(nn.Module):
         return gen_cube(chara_length, order, left, right, bottom, top, front, back, visualize, cache_path)
     
     @staticmethod
-    def gen_hollow_cube(chara_length=0.1,
-             order=1,
-             outer_left=0.0, outer_right=1.0, 
-             outer_bottom=0.0, outer_top=1.0,
-             outer_front=0.0, outer_back=1.0,
-             inner_left=0.25, inner_right=0.75,
-             inner_bottom=0.25, inner_top=0.75,
-             inner_front=0.25, inner_back=0.75,
-             visualize=False,
-             cache_path=".gmsh_cache/tmp.msh"):
+    def gen_hollow_cube(chara_length:float=0.1,
+             order:int=1,
+             outer_left:float=0.0, outer_right:float=1.0,
+             outer_bottom:float=0.0, outer_top:float=1.0,
+             outer_front:float=0.0, outer_back:float=1.0,
+             inner_left:float=0.25, inner_right:float=0.75,
+             inner_bottom:float=0.25, inner_top:float=0.75,
+             inner_front:float=0.25, inner_back:float=0.75,
+             visualize:bool=False,
+             cache_path:Optional[str]=None)->'Mesh':
         """
         Parameters
         ----------
@@ -1103,7 +1045,7 @@ class Mesh(nn.Module):
             whether to visualize the mesh,
             default: :obj:`False`
         cache_path: str, optional
-            the path to save the mesh, if :obj:`None`, it will be decided by :meth:`tensormesh.dataset.mesh.gen_hollow_cube`,
+            the path to save the mesh, if :obj:`None`, it will be decided by :func:`~tensormesh.dataset.gen_hollow_cube`,
             default: :obj:`None`
 
         Returns
@@ -1124,11 +1066,11 @@ class Mesh(nn.Module):
              cache_path)
     
     @staticmethod
-    def gen_sphere(chara_length=0.1,
-                order=1,
-                cx = 0.0, cy = 0.0, cz=0.0, r = 1.0,
-                visualize=False,
-                cache_path=None):
+    def gen_sphere(chara_length:float=0.1,
+                order:int=1,
+                cx:float=0.0, cy:float=0.0, cz:float=0.0, r:float=1.0,
+                visualize:bool=False,
+                cache_path:Optional[str]=None)->'Mesh':
         """
         Parameters
         ----------
@@ -1154,7 +1096,7 @@ class Mesh(nn.Module):
             whether to visualize the mesh,
             default: :obj:`False`
         cache_path: str, optional
-            the path to save the mesh, if :obj:`None`, it will be decided by :meth:`tensormesh.dataset.mesh.gen_sphere`,
+            the path to save the mesh, if :obj:`None`, it will be decided by :func:`~tensormesh.dataset.gen_sphere`,
             default: :obj:`None`
         Returns
         -------
@@ -1165,11 +1107,12 @@ class Mesh(nn.Module):
         return gen_sphere(chara_length, order, cx, cy, cz, r, visualize, cache_path)
 
     @staticmethod
-    def gen_hollow_sphere(chara_length=0.1,
-             order=1,
-              cx = 0.0, cy = 0.0, cz=0.0, r_inner = 1.0, r_outer = 2.0,
-             visualize=False,
-             cache_path=None):
+    def gen_hollow_sphere(chara_length:float=0.1,
+             order:int=1,
+             cx:float=0.0, cy:float=0.0, cz:float=0.0,
+             r_inner:float=1.0, r_outer:float=2.0,
+             visualize:bool=False,
+             cache_path:Optional[str]=None)->'Mesh':
         """
         Parameters
         ----------
@@ -1198,7 +1141,7 @@ class Mesh(nn.Module):
             whether to visualize the mesh,
             default: :obj:`False`
         cache_path: str, optional
-            the path to save the mesh, if :obj:`None`, it will be decided by :meth:`tensormesh.dataset.mesh.gen_hollow_sphere`,
+            the path to save the mesh, if :obj:`None`, it will be decided by :func:`~tensormesh.dataset.gen_hollow_sphere`,
             default: :obj:`None`
         Returns
         -------

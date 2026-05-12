@@ -1,10 +1,7 @@
-from matplotlib.pyplot import connect
-from sympy import N
 import torch
 import numpy as np
-from functools import reduce
-from typing import Optional, Iterator, Tuple, Dict
-from .. import sparse 
+from typing import Iterable, Tuple, Dict
+from .. import sparse
 from .. import element as E
 from ..vmap import vmap
 
@@ -28,11 +25,12 @@ def cum_dict(d:Dict[str,int])->Dict[str,Tuple[int,int]]:
     return {k:(int(v1),int(v2)) for k,v1, v2 in zip(keys, cum_values[:-1], cum_values[1:])}
 
 def dense_connect(x:torch.Tensor)->torch.Tensor:
-    """
+    """Build the dense edge list of an all-pairs connection within each element.
+
     Parameters
     ----------
     x : torch.Tensor
-        1D Tensor of shape [n_batch, n_node]
+        2D Tensor of shape [n_batch, n_node]
     Returns
     -------
     torch.Tensor
@@ -43,15 +41,19 @@ def dense_connect(x:torch.Tensor)->torch.Tensor:
     return parallel_dense(x).reshape(-1, 2).T # [2, n_batch * n**2]
 
 def coalesce(edges:torch.Tensor, n_points:int)->torch.Tensor:
-    """
+    """Deduplicate an edge list by round-tripping through a sparse COO tensor.
+
     Parameters
     ----------
-    edge : torch.Tensor
-        2D Tensor of shape [2, n_edge]
+    edges : torch.Tensor
+        2D Tensor of shape [2, n_edge] — possibly with duplicate columns.
+    n_points : int
+        Number of nodes; only used to size the intermediate sparse tensor.
+
     Returns
     -------
     torch.Tensor
-        2D Tensor of shape [2, n_edge]
+        2D Tensor of shape [2, n_unique_edge] — duplicate columns removed.
     """
     connections = torch.sparse_coo_tensor(
         edges, torch.ones(edges.shape[1], device=edges.device), size=(n_points, n_points)
@@ -106,20 +108,22 @@ def facet_connect(facet:torch.Tensor, element_ids:torch.Tensor)->torch.Tensor:
     connection = torch.cat([connection, torch.stack([connection[1], connection[0]])], -1) # [2, 2*n_unique_facet]
     return connection
 
-
-
-def node_adjacency(elements:torch.Tensor | Iterator[torch.Tensor],
+def node_adjacency(elements:torch.Tensor | Iterable[torch.Tensor],
                    n_points:int
                    )->sparse.SparseMatrix:
     """get the node adjacency matrix, inside each element, the nodes are considered fully connected
 
     Parameters
     ----------
-    elements: torch.Tensor or Iterator[torch.Tensor]
-        2D Tensor of shape [n_element, n_node] or Iterator of 2D Tensor of shape [n_node]
+    elements: torch.Tensor or Iterable[torch.Tensor]
+        2D Tensor of shape [n_element, n_node], or an iterable of such
+        tensors (one per element type for mixed-element meshes).
+    n_points : int
+        the total number of nodes :math:`|\\mathcal V|` in the mesh.
+
     Returns
     -------
-    SparseMatrix 
+    SparseMatrix
         the adjacency matrix of nodes :math:`[|\\mathcal V|,|\\mathcal V|]`, where :math:`|\\mathcal V|` is the number of nodes
     """
     dense_connect = lambda y: vmap(lambda x:torch.stack(torch.meshgrid(x,x),-1))(y).reshape(-1, 2).T
@@ -142,17 +146,18 @@ def node_adjacency(elements:torch.Tensor | Iterator[torch.Tensor],
 
 def element_adjacency(elements:Dict[str,torch.Tensor])->sparse.SparseMatrix:
         """get the element adjacency matrix, the element are considered connected only if they share a boundary/facet
-        
+
         Parameters
         ----------
-        element_type : str or Iterable[str] or None
-            the type of the elements, should be of same dimension
-            if :obj:`None` is the :obj:`default_element_type`
-            default : :obj:`None`
+        elements : Dict[str, torch.Tensor]
+            Mapping from element type string (e.g. ``"triangle"``,
+            ``"quad"``) to a 2D connectivity tensor of shape
+            ``[n_element, n_node]``. All element types must have the same
+            spatial dimension so they can share facets.
 
         Returns
         -------
-        SparseMatrix 
+        SparseMatrix
             the adjacency matrix of elements :math:`[|\\mathcal C|,|\\mathcal C|]`, where :math:`|\\mathcal C|` is the number of elements
         """
         n_elements = sum([v.shape[0] for v in elements.values()])

@@ -50,7 +50,7 @@ def gen_cube(chara_length=0.1,
         whether to visualize the mesh,
         default: :obj:`False`
     cache_path: str, optional
-        the path to save the mesh, if :obj:`None`, it will be decided by :meth:`tensormesh.dataset.mesh.gen_cube`,
+        the path to save the mesh, if :obj:`None`, it will be decided by :func:`~tensormesh.dataset.gen_cube`,
         default: :obj:`None`
     Returns
     -------
@@ -176,7 +176,7 @@ def gen_hollow_cube(chara_length=0.1,
         whether to visualize the mesh,
         default: :obj:`False`
     cache_path: str, optional
-        the path to save the mesh, if :obj:`None`, it will be decided by :meth:`tensormesh.dataset.mesh.gen_hollow_cube`,
+        the path to save the mesh, if :obj:`None`, it will be decided by :func:`~tensormesh.dataset.gen_hollow_cube`,
         default: :obj:`None`
 
     Returns
