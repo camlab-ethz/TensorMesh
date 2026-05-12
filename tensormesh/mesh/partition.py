@@ -90,15 +90,26 @@ def _compute_element_centroids(mesh) -> Tuple[torch.Tensor, List[str], List[int]
     centroids = torch.cat(centroid_list, dim=0)  # [total_elements, dim]
     return centroids, target_types, cell_counts
 
-def _spectral_bisection_gpu(adjacency: sparse.SparseMatrix, indices: torch.Tensor) -> torch.Tensor:
+def _spectral_bisection_gpu(adjacency: sparse.SparseMatrix, indices: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
     """
     Partition a subgraph using Fiedler vector computed via LOBPCG on GPU.
+
+    Returns
+    -------
+    Tuple[torch.Tensor, torch.Tensor]
+        ``(part0_global, part1_global)`` — two 1D index tensors that together
+        cover the input ``indices``. Either side may be empty when the
+        bisection degenerates; the caller in :func:`graph_partition` then
+        falls back to a manual median split.
     """
     n = indices.shape[0]
     device = adjacency.device
-    
-    if n <= 1:
-        return torch.zeros(n, dtype=torch.long, device=device)
+    empty = torch.empty(0, dtype=indices.dtype, device=device)
+
+    if n == 0:
+        return empty, empty
+    if n == 1:
+        return indices, empty
     
     # 1. Extract subgraph Laplacian
     # Filter edges: both u and v must be in indices
@@ -151,8 +162,11 @@ def _spectral_bisection_gpu(adjacency: sparse.SparseMatrix, indices: torch.Tenso
             fiedler = vecs[:, 1]
             
     except Exception as e:
-        # Fallback to random if solver fails
-        return (torch.rand(n, device=device) > 0.5).long()
+        # Fallback to random bisection if the eigensolver fails
+        labels = (torch.rand(n, device=device) > 0.5).long()
+        part0_local = torch.nonzero(labels == 0).squeeze(1)
+        part1_local = torch.nonzero(labels == 1).squeeze(1)
+        return indices_sorted[part0_local], indices_sorted[part1_local]
 
     # Median cut
     median = torch.median(fiedler)
