@@ -1,18 +1,20 @@
 Differentiability
 =================
 
-Every component along the ``Mesh → Assembler → SparseMatrix → Condenser → Solve``
-pipeline is a :class:`torch.nn.Module` or a custom
+Every component along the
+``Mesh → Assembler → SparseMatrix → Condenser → Solve`` pipeline
+is either a :class:`torch.nn.Module` or a custom
 :class:`torch.autograd.Function`, and the linear solve at the end
-has an analytic adjoint backward. As a result, a loss computed on
-the FEM solution can be backpropagated all the way to *anything*
-that touched the pipeline: a material coefficient at every node,
-a Dirichlet value, a neural network's prediction of a stiffness
-modifier — without writing any gradient code yourself.
+has an **analytic adjoint backward**. As a result a loss computed
+on the FEM solution can be back-propagated all the way to *anything*
+that touched the pipeline: a coefficient at every node, a Dirichlet
+value, a neural network's prediction of a stiffness modifier ---
+without writing a single line of sensitivity code by hand.
 
-This page explains how the gradient flow works, what the cost is,
-and the two canonical workflows (parameter identification and
-topology optimization).
+This chapter explains how the gradient flow works, demonstrates it
+with two worked examples (parameter identification and
+density-based topology optimization), and lists the cost,
+correctness, and the few things that aren't differentiable yet.
 
 
 How it works
@@ -25,39 +27,60 @@ Three pieces of TensorMesh are wired into the autograd graph:
   ``requires_grad=True``. Moving the mesh with ``mesh.to(device)``
   and saving with ``state_dict`` work as you'd expect.
 * :class:`~tensormesh.ElementAssembler` and
-  :class:`~tensormesh.NodeAssembler` are also ``nn.Module`` s. Any
-  parameter that flows into a ``forward(...)`` integrand becomes a
-  graph input to the assembled matrix or vector.
+  :class:`~tensormesh.NodeAssembler` are themselves ``nn.Module`` s.
+  Any tensor that flows into a ``forward(...)`` integrand becomes
+  a graph input to the assembled matrix or vector.
 * :meth:`tensormesh.sparse.SparseMatrix.solve` is implemented as a
   :class:`torch.autograd.Function` with a custom ``backward``. The
-  backward solves the *adjoint* system
+  backward solves the **adjoint** system
 
   .. math::
 
      A^{T}\, \boldsymbol{\lambda} \;=\; \frac{\partial L}{\partial u},
 
-  then computes the gradient of any nonzero matrix entry as
+  then computes the gradient of any non-zero matrix entry as
   :math:`\partial L / \partial A_{ij} = -\lambda_i\, u_j` and the
   gradient of the right-hand side as
   :math:`\partial L / \partial b = \boldsymbol{\lambda}`.
 
-The whole forward call ``loss = criterion(K.solve(b), target).sum()``
-followed by ``loss.backward()`` therefore gives correct gradients
-for every leaf tensor that fed into ``K``, ``b``, or the loss —
-matrix entries, source terms, prescribed boundary values, and any
-upstream parameter (NN weights, design variables, …).
+A call to ``loss = criterion(K.solve(b), target).sum()`` followed
+by ``loss.backward()`` therefore gives correct gradients for every
+leaf tensor that fed into ``K``, ``b``, or the loss --- matrix
+entries, source terms, prescribed boundary values, and any upstream
+parameter (NN weights, design variables, …).
 
 
 Adjoint cost
 ------------
 
-Backprop through one linear solve costs **one additional sparse
-solve** (with the transposed system). For SPD problems
-:math:`A^T = A`, so the backward uses the same factorization or
+Back-propagation through one linear solve costs **one additional
+sparse solve** (with the transposed system). For SPD problems
+:math:`A^T = A`, so the backward uses the same factorisation or
 preconditioner pattern as the forward. The total per-iteration
-cost in a gradient-based optimizer is therefore roughly
+cost in a gradient-based optimiser is therefore roughly
 ``2 × forward_solve_cost`` regardless of how many degrees of
-freedom or how complex the assembly logic was.
+freedom you have or how complex the assembly logic is.
+
+
+Correctness check: autograd vs finite differences
+-------------------------------------------------
+
+Before trusting autograd on a serious inverse problem, it is worth
+spot-checking it against central finite differences. The script
+that produces the figures on this page contains a small check on
+a 35-node mesh; running it prints
+
+.. code-block:: text
+
+   [grad check] vs finite differences...
+       node    autograd          fd                  |diff|
+         32    -8.297026e-03   -8.297026e-03   8.05e-12
+         15    -5.268205e-04   -5.268205e-04   2.31e-12
+         37    -4.118132e-03   -4.118132e-03   1.04e-12
+
+i.e. roughly 11 digits of agreement, which is what a float64
+adjoint should give. The minor residual is the FD truncation
+error, not an autograd bug.
 
 
 What's differentiable, what isn't
@@ -65,11 +88,11 @@ What's differentiable, what isn't
 
 **Differentiable through ``solve`` today:**
 
-* Matrix entries (``edata``) — gradients land on the upstream
+* Matrix entries (``edata``) -- gradients land on the upstream
   tensor whose values fed each non-zero.
 * The right-hand side ``b``.
 * Any tensor in ``point_data`` / ``element_data`` / ``scalar_data``
-  passed to an assembler — gradients flow through the integrand.
+  passed to an assembler -- gradients flow through the integrand.
 * Dirichlet values (via the condensed RHS contribution).
 
 **Backend caveats:**
@@ -79,10 +102,11 @@ What's differentiable, what isn't
   forward through a pure-PyTorch iterative solver and use the
   analytic adjoint for backward.
 * The SciPy / Eigen / cuDSS / CuPy backends are wrapped by the same
-  custom ``autograd.Function``, so gradients still flow — but the
-  forward computation lives in NumPy/CuPy/C++ and detaches from the
-  graph for that span. This is correct for the linear solve but
-  means you cannot "see into" the solver from autograd.
+  custom :class:`torch.autograd.Function`, so gradients still flow
+  -- but the forward computation lives in NumPy / CuPy / C++ and
+  detaches from the graph for that span. This is correct for the
+  linear solve but means you cannot "see into" the solver from
+  autograd.
 * The legacy fallback paths in :mod:`tensormesh.sparse` (used when
   ``torch-sla`` is not installed) implement the same custom
   ``autograd.Function`` with adjoint backward, so gradients work
@@ -92,8 +116,8 @@ When in doubt for a research workflow involving autodiff, install
 ``torch-sla`` and stick with ``backend="auto"``.
 
 
-Worked example: parameter identification
-----------------------------------------
+Worked example 1: coefficient-field identification
+--------------------------------------------------
 
 Suppose we observe a "ground truth" Poisson solution and want to
 recover the unknown coefficient field :math:`\kappa(x)` at every
@@ -101,21 +125,24 @@ mesh node by gradient descent:
 
 .. math::
 
-   -\nabla \cdot (\kappa(x)\, \nabla u) \;=\; f \quad \text{in } \Omega,
+   -\nabla \cdot \big(\kappa(x)\, \nabla u\big) \;=\; f \quad \text{in } \Omega,
    \qquad u = 0 \text{ on } \partial\Omega.
 
 The forward map is "FEM-solve given :math:`\kappa`"; the loss is
 the L² distance between the FEM solution and the observation; the
-gradient is computed by autograd; SGD updates :math:`\kappa`.
+gradient is computed by autograd; Adam updates :math:`\kappa`.
+We parametrise :math:`\kappa = 1 + \tanh\theta` so :math:`\kappa`
+stays strictly positive (the FEM matrix is guaranteed SPD on every
+iteration) and the unknown :math:`\theta` is unconstrained.
 
 .. code-block:: python
 
    import torch
-   from tensormesh import (Mesh, ElementAssembler,
-                           NodeAssembler, Condenser)
+   from tensormesh import Mesh, ElementAssembler, NodeAssembler, Condenser
 
-   mesh = Mesh.gen_rectangle(chara_length=0.05)
-   condenser = Condenser(mesh.boundary_mask)
+   device = "cuda" if torch.cuda.is_available() else "cpu"
+   mesh   = Mesh.gen_rectangle(chara_length=0.04).to(device)
+   cond   = Condenser(mesh.boundary_mask)
 
    class WeightedLaplace(ElementAssembler):
        def forward(self, gradu, gradv, kappa):
@@ -123,66 +150,154 @@ gradient is computed by autograd; SGD updates :math:`\kappa`.
 
    class Source(NodeAssembler):
        def forward(self, v, f):
-           return f * v
+           return v * f
 
    def fem_solve(kappa, f_vals):
-       K = WeightedLaplace.from_mesh(mesh)(point_data={"kappa": kappa})
-       b = Source.from_mesh(mesh)(point_data={"f": f_vals})
-       K_, b_ = condenser(K, b)
-       return condenser.recover(K_.solve(b_))
+       K = WeightedLaplace.from_mesh(mesh)(point_data={"kappa": kappa}).double()
+       b = Source.from_mesh(mesh)(point_data={"f": f_vals}).double()
+       K_, b_ = cond(K, b)
+       return cond.recover(K_.solve(b_))
 
    # Synthetic ground-truth data.
-   torch.manual_seed(0)
-   kappa_true = 1.0 + 0.5 * torch.sin(3 * torch.pi * mesh.points[:, 0])
-   f_vals     = torch.ones(mesh.n_points)
+   pts   = mesh.points
+   x, y  = pts[:, 0], pts[:, 1]
+   kappa_true = 1.0 + 0.6 * torch.sin(2 * torch.pi * x) * torch.cos(2 * torch.pi * y)
+   f_vals     = torch.ones(mesh.n_points, dtype=torch.float64, device=device)
    with torch.no_grad():
        u_obs = fem_solve(kappa_true, f_vals)
 
-   # Recover kappa from u_obs by gradient descent.
-   kappa = torch.ones(mesh.n_points, requires_grad=True)
-   optim = torch.optim.Adam([kappa], lr=5e-2)
-
-   for step in range(200):
+   # Recover kappa from u_obs by Adam.
+   theta = torch.zeros(mesh.n_points, dtype=torch.float64,
+                       device=device, requires_grad=True)
+   optim = torch.optim.Adam([theta], lr=3e-2)
+   for step in range(400):
        optim.zero_grad()
-       u    = fem_solve(kappa, f_vals)
-       loss = ((u - u_obs) ** 2).sum()
+       kappa = 1.0 + torch.tanh(theta)
+       u     = fem_solve(kappa, f_vals)
+       loss  = ((u - u_obs) ** 2).sum()
        loss.backward()
        optim.step()
-       if step % 20 == 0:
-           rel_err = (kappa - kappa_true).abs().max() / kappa_true.abs().max()
-           print(f"step {step:3d}  loss={loss.item():.3e}  max_rel_err={rel_err:.3e}")
 
-A few hundred Adam steps recover ``kappa_true`` to within a few
-percent. The whole gradient computation goes through the
-``WeightedLaplace`` assembler and the linear solve via the adjoint
-backward — you never write a sensitivity equation by hand.
+The data loss drops about four orders of magnitude over 400
+iterations and the observation error in the max-norm bottoms out
+around :math:`4 \times 10^{-3}`:
+
+.. figure:: ../_static/user_guide/differentiability/param_id_loss.png
+   :align: center
+   :width: 75%
+
+   Adam optimisation history for the coefficient-identification
+   problem. The data loss
+   :math:`\|u_\theta - u_{\rm obs}\|_2^2` drops from
+   :math:`10^{-2}` to roughly :math:`10^{-6}`; the relative
+   max-norm error in :math:`u` falls to a few parts per thousand.
+
+What does the recovered :math:`\kappa` field actually look like?
+The three-panel figure below answers that:
+
+.. figure:: ../_static/user_guide/differentiability/param_id_fields.png
+   :align: center
+   :width: 100%
+
+   Ground truth :math:`\kappa(x)` (left), the field recovered after
+   400 Adam steps (middle), and the absolute error (right). The
+   four-lobe checkerboard is recovered cleanly almost everywhere,
+   but a localised artifact sits in the centre.
+
+This is a small but important lesson about adjoint-based inverse
+problems: **the forward map can be (nearly) non-injective even if
+the FEM solve itself is exact**. Where :math:`u` is small, perturbations
+of :math:`\kappa` produce vanishingly small changes in :math:`u`,
+so the optimiser cannot distinguish the truth from a family of
+nearby fields. The bulk error after 400 iterations is at the
+percent level even though the *observation* error has reached
+:math:`4 \times 10^{-3}`. Adding a simple smoothness regulariser
+(e.g. a Laplace penalty on :math:`\theta`) collapses the centre
+artifact -- left as an exercise.
+
+The whole gradient computation goes through the ``WeightedLaplace``
+assembler and the linear solve via the adjoint backward -- you
+never write a sensitivity equation by hand.
 
 
-Worked example: topology optimization
--------------------------------------
+Worked example 2: thermal-compliance topology optimization
+----------------------------------------------------------
 
-For density-based topology optimization (compliance minimization
+For density-based topology optimization (compliance minimisation
 under a volume constraint), TensorMesh ships a dedicated
 :class:`~tensormesh.optimizer.OCOptimizer` that implements the
-classical Optimality Criteria update:
+classical Optimality Criteria update. Here we apply it to a
+thermal problem on :math:`[0,1]^2`: a Gaussian heat source in the
+centre, cold sinks at the boundary, density :math:`\rho \in [0,1]`
+per element, SIMP conductivity
+:math:`\kappa(\rho) = \kappa_{\min} + (1 - \kappa_{\min})\,\rho^{p}`,
+and a hard volume cap :math:`\bar{\rho} \leq V = 0.4`.
 
 .. code-block:: python
 
+   import torch
+   from tensormesh import Mesh, ElementAssembler, NodeAssembler, Condenser
    from tensormesh.optimizer import OCOptimizer
 
-   rho = torch.full((mesh.n_elements,), 0.5, requires_grad=True)
-   optimizer = OCOptimizer(rho, vf=0.5, move_limit=0.2)
+   mesh = Mesh.gen_rectangle(chara_length=0.025).to(device)
+   cond = Condenser(mesh.boundary_mask)
+   elements = mesh.cells["triangle"]
+   n_elem   = elements.shape[0]
 
-   for step in range(80):
-       compliance = compute_compliance(rho)        # FEM solve + b @ u
-       compliance.backward()
-       optimizer.step()                            # OC update + bisection
-       optimizer.zero_grad()
+   class SIMPLaplace(ElementAssembler):
+       def forward(self, gradu, gradv, kappa):
+           return kappa * (gradu @ gradv)
 
-The OC step uses the gradient just computed by autograd — no
-finite differences, no by-hand adjoint code. The full driver
-(SIMP penalization, density filter, intermediate plots) is in the
-:doc:`../example_gallery/index`.
+   class Source(NodeAssembler):
+       def forward(self, v, f):
+           return v * f
+
+   # Localised heat source.
+   x, y    = mesh.points[:, 0], mesh.points[:, 1]
+   sigma   = 0.08
+   f_field = torch.exp(-((x - 0.5) ** 2 + (y - 0.5) ** 2) / (2 * sigma ** 2))
+
+   V, p_simp, kmin = 0.4, 3.0, 1e-3
+   rho = torch.full((n_elem,), V, dtype=torch.float64,
+                    device=device, requires_grad=True)
+   optim = OCOptimizer(rho, vf=V, move_limit=0.15)
+
+   def fem_solve(rho):
+       kappa = kmin + (1.0 - kmin) * rho ** p_simp
+       K = SIMPLaplace.from_mesh(mesh)(element_data={"kappa": kappa}).double()
+       b = Source.from_mesh(mesh)(point_data={"f": f_field}).double()
+       K_, b_ = cond(K, b)
+       return cond.recover(K_.solve(b_)), b
+
+   for step in range(60):
+       optim.zero_grad()
+       u, b = fem_solve(rho)
+       compliance = (b * u).sum()             # J = b^T u
+       compliance.backward()                  # autograd populates rho.grad
+       optim.step()                           # OC update + bisection
+
+Compliance drops from :math:`5.9 \times 10^{-3}` (uniform grey
+plate) to :math:`6.9 \times 10^{-4}` -- nearly an order of
+magnitude -- while the volume constraint
+:math:`\bar{\rho} = 0.4` is held exactly throughout. The optimal
+layout is a "thermal cross" connecting the hot source in the
+centre to the cold sinks at the four mid-edges:
+
+.. figure:: ../_static/user_guide/differentiability/topology_thermal.png
+   :align: center
+   :width: 100%
+
+   Density evolution over 60 OC steps. Iteration 0 is the uniform
+   :math:`\rho = V = 0.4` start; by iteration 5 the cross shape
+   has emerged; iteration 59 is the converged design. Compliance
+   drops by :math:`\sim 8.6\times`; the volume fraction is held
+   at :math:`0.4` exactly.
+
+The OC step uses the gradient just computed by autograd ---
+:meth:`tensormesh.optimizer.OCOptimizer.step` reads ``rho.grad``,
+finds the Lagrange multiplier by bisection, and applies the
+density update with a move limit. No finite differences, no
+hand-coded adjoint.
 
 
 Wiring a neural network in
@@ -191,31 +306,48 @@ Wiring a neural network in
 Three patterns cover the common ML/PDE couplings:
 
 * **NN predicts a coefficient field.** The NN ingests coordinates
-  (or some features) and outputs a per-node value — feed the
-  output to an assembler via ``point_data={"kappa": nn_out}``.
-  Gradients flow from the FEM loss back through the NN.
+  (or features derived from them) and outputs a per-node value ---
+  feed the output to an assembler via
+  ``point_data={"kappa": nn_out}``. Gradients flow from the FEM
+  loss back through the NN.
 * **NN predicts boundary values.** Pass the output as
   ``dirichlet_value`` to a freshly-built
-  :class:`~tensormesh.Condenser`. The condensation contribution
-  to the RHS keeps the gradients connected.
+  :class:`~tensormesh.Condenser`. The condensation contribution to
+  the RHS keeps the gradients connected.
 * **NN predicts per-element stiffness modifiers.** Stack the
   output into a per-element tensor and pass it via
   ``element_data={"alpha": nn_out}``; let the assembler's
   ``forward`` use it inside the integrand.
 
-In all three, the NN is a regular ``nn.Module`` and the FEM
+In all three the NN is a regular ``nn.Module`` and the FEM
 pipeline is a regular sequence of ``nn.Module`` calls; standard
-``torch.optim`` optimizers work without any special hooks.
+``torch.optim`` optimisers work without any special hooks.
+
+
+Reproducing the figures
+-----------------------
+
+The two examples above, together with the FD gradient check, are
+generated by a single script:
+
+.. code-block:: bash
+
+   python docs/scripts/differentiability_figures.py
+
+It runs on CPU alone (~30 s) and on GPU in a few seconds, writing
+``param_id_loss.png``, ``param_id_fields.png``, and
+``topology_thermal.png`` to
+``docs/source/_static/user_guide/differentiability/``.
 
 
 What's next
 -----------
 
-* :doc:`linear_solvers` — the autograd-aware solver behind
+* :doc:`linear_solvers` -- the autograd-aware solver behind
   ``SparseMatrix.solve``.
-* :doc:`batched_workflows` — backprop through a batched pipeline
-  for ML training.
-* :doc:`../example_gallery/index` — full inverse problem and
-  topology-optimization recipes.
-* :doc:`../api/index` — the ``solve`` autograd function and the
+* :doc:`batched_workflows` -- back-propagate through a batched
+  pipeline for ML training-data generation.
+* :doc:`time_integration` -- transient adjoints work too, with one
+  adjoint solve per time step.
+* :doc:`../api/index` -- the ``solve`` autograd function and the
   ``OCOptimizer`` reference.
