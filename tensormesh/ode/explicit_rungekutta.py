@@ -116,18 +116,21 @@ class ExplicitRungeKutta:
             the value of the solution at time :math:`t_0 + \\text{d}t`
         """
         assert u0.dim() == 1, f"expected u0 to be 1D tensor, got {u0.dim()}"
+        a = self.a.type(u0.dtype).to(u0.device)
+        b = self.b.type(u0.dtype).to(u0.device)
+        c = self.c.type(u0.dtype).to(u0.device)
         D = u0.shape[0]
         h = dt
-        k = torch.zeros((self.s, D))
+        k = torch.zeros((self.s, D), dtype=u0.dtype, device=u0.device)
         for i in range(self.s):
-            ci = self.c[i]
-          
+            ci = c[i]
+
             if i == 0:
                 f = self.forward(t0 + ci * h, u0)
             else:
-                f = self.forward(t0 + ci * h, u0 + h * self.a[i, :i] @ k[:i])
-            k[i] += f 
-        u = u0 + h * self.b @ k
+                f = self.forward(t0 + ci * h, u0 + h * a[i, :i] @ k[:i])
+            k[i] += f
+        u = u0 + h * b @ k
         return u
     
 

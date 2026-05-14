@@ -211,7 +211,7 @@ class ImplicitLinearRungeKutta:
         c = self.c.type(u0.dtype).to(u0.device)
         D = u0.shape[0]
         h = dt 
-        ts = t0 + dt * self.c
+        ts = t0 + dt * c
         lhs = [[None for _ in range(self.s)] for _ in range(self.s)]  
         rhs = [None for _ in range(self.s)]
         use_sparse = None
@@ -234,14 +234,20 @@ class ImplicitLinearRungeKutta:
                     assert not isinstance(Mi, SparseMatrix), f"expected M to be torch.Tensor or None, got {type(Mi)}"
             
             # convert Mi, Ai to torch.Tensor or SparseMatrix
-            if isinstance(Mi, (int, float)): 
+            if isinstance(Mi, (int, float)):
                 Mi = float(Mi)
-                Mi = SparseMatrix.eye(D, value=Mi) if use_sparse else torch.eye(D) * Mi
+                Mi = (SparseMatrix.eye(D, value=Mi, device=u0.device, dtype=u0.dtype)
+                      if use_sparse
+                      else torch.eye(D, device=u0.device, dtype=u0.dtype) * Mi)
             if isinstance(Ai, (int, float)):
                 Ai = float(Ai)
-                Ai = SparseMatrix.eye(D, value=Ai) if use_sparse else torch.eye(D) * Ai
+                Ai = (SparseMatrix.eye(D, value=Ai, device=u0.device, dtype=u0.dtype)
+                      if use_sparse
+                      else torch.eye(D, device=u0.device, dtype=u0.dtype) * Ai)
             Mi = Mi.type(u0.dtype).to(u0.device)
             Ai = Ai.type(u0.dtype).to(u0.device)
+            if isinstance(Bi, torch.Tensor):
+                Bi = Bi.type(u0.dtype).to(u0.device)
 
             # main logic
             for j  in range(self.s):
