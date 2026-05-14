@@ -82,59 +82,27 @@ class NonLinearSolveFunction(Function):
         params = ctx.saved_tensors[1:]
         f = ctx.f
         j = ctx.j
-        
-        # 1. Recompute Jacobian at solution
+
         with torch.no_grad():
             J = j(u, *params)
-        
-        # 2. Solve adjoint system: J^T * lambda = grad_output
-        # This implies lambda = J^{-T} * grad_output
-        # Check if J is SparseMatrix
+
         if not isinstance(J, SparseMatrix):
             raise TypeError(f"Jacobian function j must return a SparseMatrix, got {type(J)}")
-            
-        # Solve J.T @ lam = grad_output
-        # We use J.T.solve(grad_output)
+
+        # Adjoint solve: J^T lam = grad_output.
         lam = J.T.solve(grad_output)
-        
-        # 3. Compute VJP: dL/dparams = - lambda^T * dF/dparams
-        # We use autograd to compute (dF/dparams)^T * (-lambda)
-        # which is equivalent to vector-Jacobian product with vector = -lam
-        
+
+        # VJP via autograd: dL/dparams = -lam^T dF/dparams.
         with torch.enable_grad():
-            # We need to trace F(u, params) w.r.t params
-            # u is treated as constant (detached)
-            u_detached = u.detach()
-            
-            # We rely on params being captured from forward and having requires_grad status preserved
-            # But saved_tensors might not automatically track if we are in a no_grad block in backward?
-            # Actually, backward runs in no_grad by default? No.
-            # But we want to differentiate F w.r.t params.
-            
-            # We must explicitly enable grad if we are in a no_grad context, which backward is NOT by default,
-            # but usually it's safer to use torch.enable_grad() explicitly if we are re-running forward code.
-            
-            # We need to extract params that require grad to avoid errors?
-            # autograd.grad can handle it if we pass allow_unused=True
-            
-            # We assume params in saved_tensors are the same tensor objects as input
-            # We need to ensure they are connected to the graph?
-            # saved_tensors returns the tensors. If they required grad in forward, they still do (unless detached).
-            # But in forward we didn't use them in a graph (we used no_grad).
-            # So the tensors themselves are fine, but F needs to build a graph.
-            
-            # Critical: We must enable grad to build the graph for F
-            res = f(u_detached, *params)
-            
+            res = f(u.detach(), *params)
             grads = torch.autograd.grad(
                 outputs=res,
                 inputs=params,
                 grad_outputs=-lam,
-                allow_unused=True
+                allow_unused=True,
             )
-            
-        # Return gradients for (f, j, u0, solver_config, *params)
-        # None for f, j, u0, solver_config
+
+        # Signature: (f, j, u0, solver_config, *params).
         return (None, None, None, None) + grads
 
 def nonlinear_solve(

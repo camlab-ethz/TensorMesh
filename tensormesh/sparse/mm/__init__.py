@@ -37,9 +37,9 @@ def spmv(edata, row, col, shape, B, backend=None):
     assert B.dim() == 1
     if edata.device.type == 'cpu':
         if backend is None or backend == 'scipy':
-            return SparseMVTorch.apply(edata, row, col, shape, B)
-        elif backend == 'torch':
             return SparseMVScipy.apply(edata, row, col, shape, B)
+        elif backend == 'torch':
+            return SparseMVTorch.apply(edata, row, col, shape, B)
         else:
             raise NotImplementedError(f"backend {backend} not supported for CPU")
     elif edata.device.type == 'cuda':
@@ -89,9 +89,9 @@ def spmm(edata, row, col, shape, B, backend=None):
     assert B.dim() == 2
     if edata.device.type == 'cpu':
         if backend is None or backend == 'scipy':
-            return SparseMMTorch.apply(edata, row, col, shape, B)
-        elif backend == 'torch':
             return SparseMMScipy.apply(edata, row, col, shape, B)
+        elif backend == 'torch':
+            return SparseMMTorch.apply(edata, row, col, shape, B)
         else:
             raise NotImplementedError(f"backend {backend} not supported for CPU")
     elif edata.device.type == 'cuda':

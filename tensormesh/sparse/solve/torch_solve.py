@@ -1,16 +1,14 @@
-import os 
+import os
 import math
-from sys import breakpointhook 
-import torch 
+import torch
 from torch.autograd import Function
 import warnings
-from ..utils import tensor2cupy, cupy2tensor, shapeT
+from ..utils import shapeT
 try:
     from ...cpp.spsolve import spsolve_cpp
     is_cpp_backend_available = True
 except ImportError:
     is_cpp_backend_available = False
-import torch
 
 def coo_diagonal(A, at_least=1):
     """
