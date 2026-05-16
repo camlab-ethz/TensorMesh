@@ -1,8 +1,7 @@
 import meshio
 import numpy as np
 import torch
-import os 
-import gmsh 
+import os
 import re
 import warnings
 if __name__ == '__main__':
@@ -51,7 +50,8 @@ def gen_sphere(chara_length=0.1,
         os.makedirs(os.path.dirname(cache_path))
 
     if not os.path.exists(cache_path):
-   
+        import gmsh
+
         gmsh.initialize()
         gmsh.model.add("cube")
 
@@ -125,6 +125,7 @@ def gen_hollow_sphere(chara_length=0.1,
         os.makedirs(os.path.dirname(cache_path))
 
     if not os.path.exists(cache_path):
+        import gmsh
 
         gmsh.initialize()
         gmsh.model.add("cube")

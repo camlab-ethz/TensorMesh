@@ -1,8 +1,7 @@
 import meshio
 import numpy as np
 import torch
-import os 
-import gmsh 
+import os
 import re
 import warnings
 if __name__ == '__main__':
@@ -56,6 +55,7 @@ def gen_rectangle(chara_length=0.1,
         os.makedirs(os.path.dirname(cache_path))
 
     if not os.path.exists(cache_path):
+        import gmsh
 
         width, height = right - left, top - bottom
 
@@ -166,6 +166,7 @@ def gen_hollow_rectangle(chara_length=0.1,
         os.makedirs(os.path.dirname(cache_path))
 
     if not os.path.exists(cache_path):
+        import gmsh
 
         width, height = outer_right - outer_left, outer_top - outer_bottom
         inner_width, inner_height = inner_right - inner_left, inner_top - inner_bottom

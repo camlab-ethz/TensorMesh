@@ -1,8 +1,32 @@
-import gmsh 
+import importlib.util
 import os
+import sys
 from warnings import warn
 from ...mesh import Mesh
 from ...element import element_type2dimension, element_type2order
+
+
+def _lazy_import(name):
+    """Defer loading a native module until first attribute access.
+    """
+    spec = importlib.util.find_spec(name)
+    if spec is None:
+        class _Missing:
+            def __getattr__(self, attr):
+                raise ImportError(
+                    f"{name!r} is required for this functionality. "
+                    f"Install it with: pip install {name}"
+                )
+        return _Missing()
+    loader = importlib.util.LazyLoader(spec.loader)
+    spec.loader = loader
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
+    loader.exec_module(module)
+    return module
+
+
+gmsh = _lazy_import("gmsh")
 
 
 abbr2element_type = {
@@ -56,10 +80,10 @@ class MeshGen:
 
 
     """
-    def __init__(self, element_type=None, 
-                 dimension:int=2, 
-                 order:int=1, 
-                 chara_length:float=0.1, 
+    def __init__(self, element_type=None,
+                 dimension:int=2,
+                 order:int=1,
+                 chara_length:float=0.1,
                  cache_path:str="./tmp.msh",
                  verbose:bool = False):
         if element_type is not None:
@@ -303,11 +327,11 @@ class MeshGen:
             the mesh generator itself
         """
         assert self.dimension == 3, f"dimension must be 3, but got {self.dimension}"
-        
+
         # Check if we're trying to use hex elements
         if self.element_type == "hexahedron" or any(obj in self.hex_objects for obj in self.default_objects):
             warn("Spheres cannot be properly meshed with hexahedral elements. Using tetrahedral elements instead.")
-        
+
         sphere = gmsh.model.occ.addSphere(x, y, z, r)
         gmsh.model.occ.synchronize()
         name = f"[{len(self.objects)}]sphere({x},{y},{z},{r})"
@@ -345,7 +369,7 @@ class MeshGen:
 
     def gen(self, show=False):
         """generate the mesh from the geometry
-        
+
         Parameters
         ----------
         show: bool, optional
@@ -356,7 +380,7 @@ class MeshGen:
         -------
         tensormesh.Mesh
             the generated mesh
-        
+
         """
         # for obj in self.quad_objects:
         #     gmsh.model.mesh.setRecombine(*self.objects[obj])

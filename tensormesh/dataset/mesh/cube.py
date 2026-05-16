@@ -1,8 +1,7 @@
 import meshio
 import numpy as np
 import torch
-import os 
-import gmsh 
+import os
 import re
 import warnings
 if __name__ == '__main__':
@@ -69,6 +68,8 @@ def gen_cube(chara_length=0.1,
         os.makedirs(os.path.dirname(cache_path))
 
     if not os.path.exists(cache_path):
+        import gmsh
+
         width, height,depth = right - left, top - bottom, back - front
 
         gmsh.initialize()
@@ -195,6 +196,7 @@ def gen_hollow_cube(chara_length=0.1,
         os.makedirs(os.path.dirname(cache_path))
 
     if not os.path.exists(cache_path):
+        import gmsh
 
         outer_width, outer_height, outer_depth = outer_right - outer_left, outer_top - outer_bottom, outer_back - outer_front
         inner_width, inner_height, inner_depth = inner_right - inner_left, inner_top - inner_bottom, inner_back - inner_front

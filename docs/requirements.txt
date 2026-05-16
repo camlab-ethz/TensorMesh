@@ -3,4 +3,3 @@ sphinx_design
 sphinx-intl
 furo
 nbsphinx
-gmsh
