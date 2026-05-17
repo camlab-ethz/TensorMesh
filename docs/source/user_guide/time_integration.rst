@@ -21,16 +21,17 @@ TensorMesh exposes two complementary styles:
    operator yourself, call :class:`~tensormesh.Condenser` once for the
    boundary conditions, and write a Python ``for`` loop that does one
    linear solve per step. Short, explicit, and the path of least
-   resistance for a one-off problem — especially one with Dirichlet
-   boundaries that need static condensation.
+   resistance for a one-off problem.
 
 2. **The integrator classes in** :mod:`tensormesh.ode`. You override
    ``forward(t, u)`` (explicit) or ``forward_M`` / ``forward_A`` /
    ``forward_B`` (linear-implicit), and call ``step(t, u, dt)``.
-   Useful when you want a generic transient driver that lets you
-   swap one scheme for another without rewriting the loop, and ideal
-   for problems whose state lives in a dense vector with no boundary
-   surgery required.
+   Useful when you want a generic transient driver that lets you swap
+   one scheme for another without rewriting the loop. The
+   linear-implicit family composes with
+   :class:`~tensormesh.Condenser` through three boundary-condition
+   hooks (see :ref:`ti-boundaries`), so static condensation of
+   Dirichlet DOFs works inside the integrator too.
 
 Both styles compose with :mod:`torch.autograd`, so gradients flow back
 through every step into initial conditions, material parameters, and
@@ -315,8 +316,15 @@ Composing with boundary conditions
 
 Static condensation via :class:`~tensormesh.Condenser` (see
 :doc:`boundary_conditions`) is the recommended way to enforce
-Dirichlet conditions in TensorMesh. In a manual time loop the pattern
-is:
+Dirichlet conditions in TensorMesh. Both time-integration styles
+support it; the only difference is *where* the three condenser calls
+go.
+
+In a manual loop
+~~~~~~~~~~~~~~~~
+
+The pattern is the same one used in
+:ref:`Worked example 2 <ti-heat-manual>`:
 
 * call ``condenser(A, _)`` *once*, before the loop, to factorise the
   time-stepped operator on the interior DOFs;
@@ -329,14 +337,121 @@ For time-varying boundary data, swap in the new values between steps
 with :meth:`~tensormesh.Condenser.update_dirichlet` — the sparsity
 layout is cached and survives the update, so this call is cheap.
 
-A note on the integrator classes: condensation re-sizes the linear
-system from ``D`` (all DOFs) to ``D_inner`` (interior DOFs), and the
-current ``step()`` implementation in :mod:`tensormesh.ode` assumes the
-pre-/post-solve hooks preserve dimension. For problems that need
-Dirichlet boundaries, prefer the manual loop pattern above; reserve
-the integrator classes for ODE-shaped problems and for FEM problems
-where boundary conditions can be expressed without reducing the system
-size (e.g. Robin, weak penalty, or strong row-replacement).
+Through the integrator classes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:class:`~tensormesh.ode.ImplicitLinearRungeKutta` (and its concrete
+subclasses) exposes three hooks that the ``step()`` method calls in
+the right places for static condensation to work end-to-end. Each
+hook is a no-op by default — override only the ones you need.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 22 30 48
+
+   * - Hook
+     - Called by ``step()``
+     - For ``Condenser``-based BCs, return ...
+   * - ``pre_solve_lhs(K)``
+     - once per ``[i][j]`` block of the stage system
+     - the condensed inner block, ``condenser(K)[0]``
+   * - ``pre_solve_rhs(f)``
+     - once per stage RHS
+     - the *restriction* to inner DOFs, ``condenser.restrict(f)`` —
+       **not** ``condense_rhs(f)``: a stage slope is zero on the
+       boundary by construction, so the
+       :math:`-K_{io}\,u_o` correction term in
+       ``condense_rhs`` would over-apply the BC.
+   * - ``recover_stage(k_i)``
+     - once per stage, after the solve
+     - the prolongation to full DOF with zero in the boundary slots,
+       ``condenser.prolong(k_i)`` — **not** ``recover``, which would
+       write the Dirichlet value into the boundary slots and break
+       the increment ``u_{n+1} = u_n + h\sum_i b_i k_i``.
+
+The fourth hook, ``post_solve(u)``, runs after the stage slopes have
+already been lifted and combined with :math:`u_0`, so ``u`` is
+always full-DOF when it sees you. Use it for things that act on the
+final state (clamping, normalisation, projection onto a manifold)
+rather than for boundary recovery.
+
+Putting them together, a heat-equation driver becomes:
+
+.. code-block:: python
+
+   import torch
+   from tensormesh import Mesh, ElementAssembler, Condenser
+   from tensormesh.ode import ImplicitLinearEuler
+
+   class MassAssembler(ElementAssembler):
+       def forward(self, u, v):      return u * v
+   class StiffnessAssembler(ElementAssembler):
+       def forward(self, gradu, gradv): return gradu @ gradv
+
+   class HeatStepper(ImplicitLinearEuler):
+       """M du/dt = -kappa^2 K u, with homogeneous Dirichlet via Condenser."""
+       def __init__(self, M, A, kappa, condenser):
+           super().__init__()
+           self._M, self._A, self._cd = M, -kappa * kappa * A, condenser
+
+       def forward_M(self, t):   return self._M
+       def forward_A(self, t):   return self._A
+       def forward_B(self, t):   return 0.0
+
+       def pre_solve_lhs(self, K):  return self._cd(K)[0]
+       def pre_solve_rhs(self, f):  return self._cd.restrict(f)
+       def recover_stage(self, k):  return self._cd.prolong(k)
+
+   mesh    = Mesh.gen_rectangle(chara_length=0.025, order=1)
+   M       = MassAssembler.from_mesh(mesh)()
+   K       = StiffnessAssembler.from_mesh(mesh)()
+   stepper = HeatStepper(M, K, kappa=1.0, condenser=Condenser(mesh.boundary_mask))
+
+   u, t = u0, 0.0
+   for _ in range(100):
+       u = stepper.step(t, u, dt=5e-4); t += dt
+
+The ``examples/diffusion/heat/`` directory ships both versions:
+``heat.py`` (manual loop) and ``heat_ode.py`` (integrator class).
+They produce identical snapshots to machine precision — try them
+side by side.
+
+Why ``restrict`` / ``prolong`` and not ``condense_rhs`` / ``recover``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The two integrator hooks operate on the **stage slope**
+:math:`k_i \approx \dot u`, not on the state :math:`u` itself. At a
+Dirichlet DOF :math:`u` is held fixed in time, so :math:`\dot u = 0`
+there *regardless* of the prescribed value. The two BC-value-aware
+methods on :class:`~tensormesh.Condenser` are designed for the
+state:
+
+* :meth:`~tensormesh.Condenser.condense_rhs` subtracts
+  :math:`K_{io}\,u_o` from the inner RHS to account for the
+  state's prescribed boundary values;
+* :meth:`~tensormesh.Condenser.recover` writes :math:`u_o` into the
+  boundary slots of the lifted solution.
+
+Use those when condensing the state-space system (the manual loop).
+For stage slopes inside the integrator, use the BC-value-free
+projections :meth:`~tensormesh.Condenser.restrict` and
+:meth:`~tensormesh.Condenser.prolong`, which apply zero on the
+boundary in both directions. The difference vanishes for homogeneous
+Dirichlet (where :math:`u_o = 0`), but matters as soon as the
+prescribed values are non-zero.
+
+Explicit schemes
+~~~~~~~~~~~~~~~~
+
+:class:`~tensormesh.ode.ExplicitRungeKutta` has no linear solve and
+therefore no condensation hooks. The natural place for boundary
+conditions is inside the user-supplied ``forward(t, u)``: return
+:math:`f` with ``f[boundary] = 0`` and the update
+:math:`u_{n+1} = u_n + h \sum_i b_i k_i` preserves
+:math:`u_{\text{boundary}}` automatically. For time-varying
+Dirichlet data, write the analytical :math:`\dot u_{\text{b}}(t)`
+into ``f[boundary]`` instead of zero, or overwrite the boundary
+slots of ``u`` between ``step()`` calls.
 
 
 Differentiability

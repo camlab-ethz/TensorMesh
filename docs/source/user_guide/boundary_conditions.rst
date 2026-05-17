@@ -88,6 +88,13 @@ Three methods cover the common workflow:
    * - ``condenser.recover(u_inner)``
      - Glue the interior solution and the prescribed boundary values
        back together into a full ``[n_dof]`` vector.
+   * - ``condenser.restrict(f)`` / ``condenser.prolong(f_inner)``
+     - BC-value-free linear projections (drop / scatter with zero on
+       the boundary). The ones to use when the quantity being lifted
+       should be zero on the boundary regardless of the Dirichlet
+       value — e.g. per-stage slopes in
+       :class:`~tensormesh.ode.ImplicitLinearRungeKutta`. See
+       :ref:`ti-boundaries` for the integrator-class pattern.
 
 For time-dependent BCs, ``condenser.update_dirichlet(new_values)``
 swaps in a new boundary-value vector (accepting either the full

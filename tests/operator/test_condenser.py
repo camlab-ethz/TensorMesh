@@ -99,6 +99,44 @@ class TestCondenserOperations:
         assert torch.allclose(condenser.dirichlet_value, new_values)
 
 
+class TestCondenserRestrictProlong:
+    """``restrict`` / ``prolong`` are pure linear projections (no Dirichlet correction)."""
+
+    def test_restrict_drops_boundary_entries(self):
+        mask  = torch.tensor([True, False, False, True])
+        cd    = Condenser(mask, torch.tensor([99.0, 99.0]))  # nonzero dirichlet
+        f     = torch.tensor([10., 1., 2., 20.]).double()
+        # restrict must not subtract any Dirichlet correction term.
+        assert torch.allclose(cd.restrict(f), torch.tensor([1., 2.]).double())
+
+    def test_prolong_zeros_the_boundary(self):
+        mask  = torch.tensor([True, False, False, True])
+        cd    = Condenser(mask, torch.tensor([99.0, 99.0]))  # nonzero dirichlet
+        f_in  = torch.tensor([1., 2.]).double()
+        # boundary slots must be 0, not the Dirichlet value.
+        assert torch.allclose(cd.prolong(f_in), torch.tensor([0., 1., 2., 0.]).double())
+
+    def test_restrict_prolong_inverse_on_inner(self):
+        mask = torch.tensor([True, False, False, True, False])
+        cd   = Condenser(mask)
+        f    = torch.tensor([10., 1., 2., 20., 3.]).double()
+        # restrict followed by prolong zeroes the boundary entries but
+        # leaves inner entries untouched.
+        f_round = cd.prolong(cd.restrict(f))
+        expected = f.clone(); expected[mask] = 0.
+        assert torch.allclose(f_round, expected)
+
+    def test_layout_not_required(self):
+        """restrict / prolong only need dirichlet_mask, not a prior __call__."""
+        mask = torch.tensor([True, False, False, True])
+        cd   = Condenser(mask)
+        # __call__ was never invoked: layout buffers are still None.
+        assert cd.is_inner_dof is None
+        f = torch.tensor([10., 1., 2., 20.]).double()
+        cd.restrict(f)
+        cd.prolong(torch.tensor([1., 2.]).double())
+
+
 class TestCondenserWithMesh:
     """Integration tests with actual mesh."""
     

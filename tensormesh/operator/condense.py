@@ -367,5 +367,77 @@ class Condenser(nn.Module):
 
         return u_full
 
+    def restrict(self, f:torch.Tensor)->torch.Tensor:
+        """Project a full-DOF vector down to inner DOFs.
 
-Condenser.__autodoc__ = ["__call__", "condense_rhs", "recover", "update_dirichlet"]
+        Pure linear restriction :math:`f_i \\leftarrow f|_{\\text{inner}}`,
+        with **no** Dirichlet-value correction. Use this when the
+        right-hand side has no implicit Dirichlet contribution to
+        subtract — for example, the per-stage right-hand side of a
+        time-integration scheme such as
+        :class:`tensormesh.ode.ImplicitLinearRungeKutta`, where the
+        time-derivative at a Dirichlet DOF is zero by construction
+        and so the :math:`-K_{io}\\,u_o` term in :meth:`condense_rhs`
+        would over-apply the boundary correction.
+
+        Unlike ``Condenser.__call__`` / :meth:`condense_rhs`,
+        ``restrict`` does not require the matrix layout to be cached
+        first: it only needs ``dirichlet_mask``.
+
+        Parameters
+        ----------
+        f : torch.Tensor
+            Full-DOF vector of shape
+            :math:`[n_{\\text{dof}}, \\ldots]`.
+
+        Returns
+        -------
+        torch.Tensor
+            Inner-DOF vector of shape
+            :math:`[n_{\\text{inner\\_dof}}, \\ldots]`.
+        """
+        assert f.shape[0] == self.dirichlet_mask.shape[0], \
+            f"the shape of f must be [{self.dirichlet_mask.shape[0]}, ...], but got {f.shape}"
+        return f[~self.dirichlet_mask]
+
+    def prolong(self, f_inner:torch.Tensor)->torch.Tensor:
+        """Lift an inner-DOF vector up to full DOF with zeros on the boundary.
+
+        Pure linear prolongation: inner entries are scattered into the
+        free-DOF slots, constrained slots are filled with **zero** —
+        not with ``dirichlet_value``. Use this when the quantity being
+        lifted should vanish on the boundary regardless of the
+        prescribed Dirichlet value, e.g. the per-stage slope of a
+        time integrator (since a fixed-value DOF has zero
+        time-derivative).
+
+        Like :meth:`restrict`, ``prolong`` only needs
+        ``dirichlet_mask`` and does not require the matrix layout to
+        be cached first.
+
+        Parameters
+        ----------
+        f_inner : torch.Tensor
+            Inner-DOF vector of shape
+            :math:`[n_{\\text{inner\\_dof}}, \\ldots]`.
+
+        Returns
+        -------
+        torch.Tensor
+            Full-DOF vector of shape
+            :math:`[n_{\\text{dof}}, \\ldots]` with zeros in the
+            constrained slots.
+        """
+        n_inner = int((~self.dirichlet_mask).sum())
+        assert f_inner.shape[0] == n_inner, \
+            f"the shape of f_inner must be [{n_inner}, ...], but got {f_inner.shape}"
+        shape    = list(f_inner.shape)
+        shape[0] = self.dirichlet_mask.shape[0]
+        f_full   = torch.zeros(shape, dtype=f_inner.dtype, device=f_inner.device)
+        f_full[~self.dirichlet_mask] = f_inner
+        return f_full
+
+
+Condenser.__autodoc__ = [
+    "__call__", "condense_rhs", "recover", "restrict", "prolong", "update_dirichlet",
+]

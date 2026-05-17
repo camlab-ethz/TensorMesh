@@ -187,21 +187,58 @@ class ImplicitLinearRungeKutta:
         """
         return f
 
-    def post_solve(self, u):
-        r"""Postprocess the combined solution after the linear solve.
+    def recover_stage(self, k_i):
+        r"""Lift one stage slope back from the solve space to full DOF.
 
-        Hook for boundary-condition recovery (or similar).
+        Default: identity. Override when :meth:`pre_solve_lhs` /
+        :meth:`pre_solve_rhs` *reduce* the system size — e.g. static
+        condensation via :class:`~tensormesh.Condenser`. In that case
+        each stage value :math:`k_i` is solved in the inner-DOF
+        subspace and must be prolonged back to the full DOF layout
+        before being combined with :math:`u_0`.
+
+        For Dirichlet boundary conditions the boundary entries of
+        :math:`k_i` must be **zero**, regardless of the prescribed value
+        of :math:`u` there: a Dirichlet DOF is fixed, so its
+        time-derivative is zero. Use
+        :meth:`~tensormesh.Condenser.prolong` (or an equivalent
+        scatter-with-zero-boundary) here, *not*
+        :meth:`~tensormesh.Condenser.recover` (which writes the
+        prescribed Dirichlet value into the boundary slots).
 
         Parameters
         ----------
-        u : torch.Tensor
-            Solution of shape ``[D]``.
+        k_i : torch.Tensor
+            One stage slope from the solve, shape ``[D_solve]``.
 
         Returns
         -------
         torch.Tensor
-            The (possibly recovered) solution. Default returns ``u``
-            unchanged.
+            The lifted stage slope of shape ``[D]``. Default returns
+            ``k_i`` unchanged.
+        """
+        return k_i
+
+    def post_solve(self, u):
+        r"""Postprocess the combined solution after the linear solve.
+
+        Runs after the stage slopes have already been lifted by
+        :meth:`recover_stage` and combined with :math:`u_0`, so ``u``
+        is always full-DOF here. Use this hook for things that act on
+        the final state — clamping, normalization, projecting onto a
+        manifold, etc. For static-condensation BCs, override
+        :meth:`recover_stage` instead.
+
+        Parameters
+        ----------
+        u : torch.Tensor
+            Combined solution of shape ``[D]``.
+
+        Returns
+        -------
+        torch.Tensor
+            The (possibly post-processed) solution. Default returns
+            ``u`` unchanged.
         """
         return u
 
@@ -287,11 +324,18 @@ class ImplicitLinearRungeKutta:
             rhs[i] = Bi + Ai @ u0 
 
 
-        # pre_solve 
+        # pre_solve
         for i in range(self.s):
             for j in range(self.s):
                 lhs[i][j] = self.pre_solve_lhs(lhs[i][j])
             rhs[i] = self.pre_solve_rhs(rhs[i])
+
+        # pre_solve_* may reduce the system size (static condensation,
+        # row/column elimination, ...) — track the post-reduction stage
+        # size so the reshape and per-stage recovery use the correct
+        # dimension instead of the original ``D``.
+        D_solve = rhs[0].shape[0]
+
         # combine lhs and rhs
         if use_sparse:
             lhs = SparseMatrix.combine(lhs)
@@ -305,10 +349,17 @@ class ImplicitLinearRungeKutta:
         else:
             k = torch.linalg.solve(lhs, rhs)
 
-        k = k.reshape(self.s, D)
+        k = k.reshape(self.s, D_solve)
+
+        # Lift each stage back to full DOF. Default ``recover_stage`` is
+        # identity, so the no-condensation case is unchanged.
+        k = torch.stack(
+            [self.recover_stage(k[i]) for i in range(self.s)], dim=0,
+        )
+
         u = u0 + h * b @ k
 
         # post_solve
         u = self.post_solve(u)
-    
-        return u 
+
+        return u
