@@ -21,7 +21,7 @@ setup(
     description="Differentiable Finite Element Method Library for PyTorch",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
-    license="GPL-3.0",
+    license="Apache-2.0",
     url="https://github.com/camlab-ethz/TensorMesh",
     project_urls={
         "Documentation": "https://camlab-ethz.github.io/TensorMesh/",
@@ -56,7 +56,7 @@ setup(
     },
     classifiers=[
         "Development Status :: 4 - Beta",
-        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+        "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",

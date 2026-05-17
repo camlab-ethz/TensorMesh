@@ -6,7 +6,7 @@ The full contributor guide — dev environment setup, running the test
 suite, building the docs, code style, and the PR review process —
 lives in the rendered documentation:
 
-**→ [docs.camlab-ethz.github.io/TensorMesh/community/contributing](https://camlab-ethz.github.io/TensorMesh/community/contributing.html)**
+**→ [docs.tensor-mesh.com/community/contributing](https://docs.tensor-mesh.com/community/contributing.html)**
 
 A 30-second summary if you're in a hurry:
 
@@ -20,5 +20,9 @@ A 30-second summary if you're in a hurry:
    before writing the PR for larger features.
 4. **Sending a patch?** → see the [full contributing guide][full] for
    setup, tests, docs build, and PR conventions.
+5. **Sign off your commits.** TensorMesh uses the [Developer Certificate
+   of Origin](DCO); every commit must end with
+   `Signed-off-by: Your Name <your@email>`. Just pass `-s` to `git
+   commit` and Git adds the line for you.
 
-[full]: https://camlab-ethz.github.io/TensorMesh/community/contributing.html
+[full]: https://docs.tensor-mesh.com/community/contributing.html

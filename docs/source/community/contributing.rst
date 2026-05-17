@@ -182,6 +182,49 @@ PR has been silent for more than a week or two, a polite ping on
 :doc:`discord` ``#dev`` is welcome.
 
 
+Sign-off and the Developer Certificate of Origin
+------------------------------------------------
+
+Every commit that lands on ``main`` must be signed off under the
+`Developer Certificate of Origin <https://developercertificate.org/>`_
+(DCO) — the same lightweight contribution policy used by the Linux
+kernel, PyTorch, vLLM, and most Apache-licensed projects. The full
+text lives in the ``DCO`` file at the repository root; the gist is
+that you certify the code is yours to contribute (or that it came
+from a properly-licensed source) and that you are submitting it under
+the project's Apache 2.0 license.
+
+The mechanics are trivial — pass ``-s`` to ``git commit`` and Git
+appends the line for you:
+
+.. code-block:: bash
+
+   git commit -s -m "fix(ode): propagate dtype through step()"
+
+producing a trailer of the form::
+
+   Signed-off-by: Your Name <your@email>
+
+Use your real legal name and an email you control. A pull request
+whose commits lack a valid ``Signed-off-by`` trailer will not be
+merged.
+
+If you forget the sign-off on a commit you have already pushed:
+
+.. code-block:: bash
+
+   # for the latest commit only
+   git commit --amend -s --no-edit
+   git push --force-with-lease
+
+   # for an older commit, or the whole branch
+   git rebase --signoff main
+   git push --force-with-lease
+
+A maintainer cannot sign on your behalf — sign-off is the contributor's
+own certification.
+
+
 Project layout
 --------------
 

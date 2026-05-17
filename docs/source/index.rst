@@ -182,7 +182,7 @@ For collaborations and partnerships, please contact us at
 License
 -------
 
-TensorMesh is released under the `GNU General Public License v3.0
+TensorMesh is released under the `Apache License 2.0
 <https://github.com/camlab-ethz/TensorMesh/blob/main/LICENSE>`_.
 
 .. grid:: 3

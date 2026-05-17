@@ -19,7 +19,7 @@
   <img src="https://img.shields.io/badge/PyPI-coming%20soon-lightgrey" alt="PyPI placeholder"/>
   <img src="https://img.shields.io/badge/python-3.10%2B-blue" alt="Python 3.10+"/>
   <img src="https://img.shields.io/badge/PyTorch-2.0%2B-ee4c2c?logo=pytorch&logoColor=white" alt="PyTorch 2.0+"/>
-  <img src="https://img.shields.io/badge/license-GPL--3.0-blue" alt="License: GPL-3.0"/>
+  <img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="License: Apache-2.0"/>
   <img src="https://img.shields.io/badge/docs-passing-brightgreen" alt="Docs placeholder"/>
   <img src="https://img.shields.io/badge/CI-pending-lightgrey" alt="CI placeholder"/>
 </p>
@@ -301,7 +301,7 @@ please additionally cite:
 
 ## License
 
-TensorMesh is released under the [GNU General Public License v3.0](LICENSE).
+TensorMesh is released under the [Apache License 2.0](LICENSE).
 
 ## Acknowledgements
 
