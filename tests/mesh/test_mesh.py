@@ -202,6 +202,27 @@ class TestMeshPointData:
             mesh.register_point_data("bad_data", data)
 
 
+class TestMeshPlot:
+    """Tests for Mesh.plot static visualization."""
+
+    def test_plot_single_field_dict(self):
+        """plot with a one-key dict must not fail (ncols=1 Axes handling)."""
+        mesh = Mesh.gen_rectangle(chara_length=0.2, element_type="tri")
+        x, y = mesh.points[:, 0], mesh.points[:, 1]
+        u = torch.sin(2 * np.pi * x) * torch.sin(2 * np.pi * y)
+
+        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as f:
+            save_path = f.name
+
+        try:
+            mesh.plot({"u": u}, save_path=save_path, show_mesh=True, show=False)
+            assert os.path.isfile(save_path)
+            assert os.path.getsize(save_path) > 0
+        finally:
+            if os.path.exists(save_path):
+                os.remove(save_path)
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
 

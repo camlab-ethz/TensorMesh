@@ -198,6 +198,8 @@ def draw_mesh_2d_static(points:torch.Tensor|np.ndarray,
 
         ncols = len(point_values)
         fig, ax = plt.subplots(ncols=ncols, figsize=(ncols*5, 5))
+        if not isinstance(ax, np.ndarray):
+            ax = [ax]
         for i,(k,v) in enumerate(point_values.items()):
             img,_ = draw_point_value_2d(
                         points,  # 
