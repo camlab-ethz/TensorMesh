@@ -81,9 +81,12 @@ A few choices reflect the user-guide patterns:
   side-by-side animation.
 
 The same scheme expressed with TensorMesh's
-:class:`~tensormesh.ode.builtin.ImplicitLinearEuler` integrator is shown in
-:doc:`../user_guide/time_integration`; this script is the lower-level
-"by hand" version.
+:class:`~tensormesh.ode.builtin.ImplicitLinearEuler` integrator ships
+alongside as ``heat/heat_ode.py`` — same problem, with ``Condenser``
+wired through the three boundary-condition hooks instead of the manual
+loop. The two scripts produce identical snapshots to machine precision;
+:doc:`../user_guide/time_integration` walks through the integrator
+version, and this script is the lower-level "by hand" one.
 
 .. raw:: html
 
@@ -202,7 +205,8 @@ Running the examples
 .. code-block:: bash
 
    cd examples/diffusion/heat
-   python heat.py            # writes heat.mp4
+   python heat.py            # manual loop -> heat.mp4
+   python heat_ode.py        # integrator hooks -> heat_ode.mp4
 
    cd ../allen-cahn
    python ac.py              # writes Allen-Cahn.mp4

@@ -320,6 +320,48 @@ Dirichlet conditions in TensorMesh. Both time-integration styles
 support it; the only difference is *where* the three condenser calls
 go.
 
+.. admonition:: Mental model — what each solve is *for*
+   :class: important
+
+   The two styles differ in **what the linear solve is solving for**,
+   and that single fact dictates which ``Condenser`` calls are correct:
+
+   * **Manual loop** → the unknown is the **state** :math:`u^{n+1}`. It
+     takes the prescribed value :math:`u_o` on the boundary, so you use
+     the BC-value-aware calls (``condense_rhs`` subtracts
+     :math:`K_{io}\,u_o`; ``recover`` writes :math:`u_o` back into the
+     boundary slots).
+   * **Integrator hooks** → the unknown is a **stage slope**
+     :math:`k_i \approx \dot u`. A Dirichlet DOF is fixed in time, so
+     :math:`\dot u = 0` there *whatever* :math:`u_o` is — the slope is
+     zero on the boundary. You use the BC-value-free projections
+     (``restrict`` / ``prolong``, which apply zero on the boundary in
+     both directions).
+
+   The full-DOF state's boundary value is carried along by :math:`u_0`
+   through the RK update :math:`u_{n+1} = u_0 + h\sum_i b_i k_i`; it is
+   *not* re-imposed by the stage recovery.
+
+At a glance, the same three operations map across the two styles like
+this — the rest of this section is just the detail behind each row:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 28 36 36
+
+   * - Operation
+     - Manual loop (state :math:`u`)
+     - Integrator hooks (slope :math:`k`)
+   * - Condense the operator
+     - ``condenser(A)[0]`` once, before the loop
+     - ``pre_solve_lhs(K)`` → ``condenser(K)[0]``
+   * - Project the RHS down
+     - ``condense_rhs(f)`` — subtracts :math:`K_{io}\,u_o`
+     - ``pre_solve_rhs(f)`` → ``restrict(f)`` — **no** correction
+   * - Lift the solution back
+     - ``recover(u_in)`` — writes :math:`u_o` on the boundary
+     - ``recover_stage(k)`` → ``prolong(k)`` — **zero** on the boundary
+
 In a manual loop
 ~~~~~~~~~~~~~~~~
 
@@ -375,41 +417,48 @@ always full-DOF when it sees you. Use it for things that act on the
 final state (clamping, normalisation, projection onto a manifold)
 rather than for boundary recovery.
 
+The same three hooks cover multi-stage schemes unchanged: ``step()``
+calls them once per stage (``pre_solve_lhs`` once per ``[i][j]``
+block), so a :class:`~tensormesh.ode.MidPointLinearEuler` or a custom
+:class:`~tensormesh.ode.ImplicitLinearRungeKutta` tableau wires up
+exactly like the backward-Euler example below.
+
 Putting them together, a heat-equation driver becomes:
 
 .. code-block:: python
 
    import torch
-   from tensormesh import Mesh, ElementAssembler, Condenser
+   from tensormesh import (Mesh, MassElementAssembler,
+                           LaplaceElementAssembler, Condenser)
    from tensormesh.ode import ImplicitLinearEuler
 
-   class MassAssembler(ElementAssembler):
-       def forward(self, u, v):      return u * v
-   class StiffnessAssembler(ElementAssembler):
-       def forward(self, gradu, gradv): return gradu @ gradv
-
    class HeatStepper(ImplicitLinearEuler):
-       """M du/dt = -kappa^2 K u, with homogeneous Dirichlet via Condenser."""
-       def __init__(self, M, A, kappa, condenser):
+       """M du/dt = -kappa^2 K u, homogeneous Dirichlet via Condenser."""
+       def __init__(self, M, K, kappa, condenser):
            super().__init__()
-           self._M, self._A, self._cd = M, -kappa * kappa * A, condenser
+           self._M, self._A, self._cd = M, -kappa * kappa * K, condenser
 
-       def forward_M(self, t):   return self._M
-       def forward_A(self, t):   return self._A
-       def forward_B(self, t):   return 0.0
+       def forward_M(self, t):  return self._M
+       def forward_A(self, t):  return self._A
+       def forward_B(self, t):  return 0.0
 
-       def pre_solve_lhs(self, K):  return self._cd(K)[0]
-       def pre_solve_rhs(self, f):  return self._cd.restrict(f)
-       def recover_stage(self, k):  return self._cd.prolong(k)
+       def pre_solve_lhs(self, K):  return self._cd(K)[0]       # condense stage block
+       def pre_solve_rhs(self, f):  return self._cd.restrict(f)   # NOT condense_rhs
+       def recover_stage(self, k):  return self._cd.prolong(k)    # NOT recover
 
+   # Same mesh and initial condition as Worked example 2.
    mesh    = Mesh.gen_rectangle(chara_length=0.025, order=1)
-   M       = MassAssembler.from_mesh(mesh)()
-   K       = StiffnessAssembler.from_mesh(mesh)()
-   stepper = HeatStepper(M, K, kappa=1.0, condenser=Condenser(mesh.boundary_mask))
+   M       = MassElementAssembler.from_mesh(mesh)().double()
+   K       = LaplaceElementAssembler.from_mesh(mesh)().double()
+   stepper = HeatStepper(M, K, kappa=1.0,
+                         condenser=Condenser(mesh.boundary_mask))
 
-   u, t = u0, 0.0
-   for _ in range(100):
-       u = stepper.step(t, u, dt=5e-4); t += dt
+   x, y = mesh.points.double()[:, 0], mesh.points.double()[:, 1]
+   u    = torch.sin(torch.pi * x) * torch.sin(torch.pi * y)
+
+   dt = 5e-4
+   for step in range(100):
+       u = stepper.step(step * dt, u, dt)
 
 The ``examples/diffusion/heat/`` directory ships both versions:
 ``heat.py`` (manual loop) and ``heat_ode.py`` (integrator class).
@@ -440,6 +489,41 @@ boundary in both directions. The difference vanishes for homogeneous
 Dirichlet (where :math:`u_o = 0`), but matters as soon as the
 prescribed values are non-zero.
 
+.. admonition:: The bug is invisible under homogeneous Dirichlet
+   :class: warning
+
+   Mixing up the two pairs costs nothing when :math:`u_o = 0`, which is
+   exactly why it slips through. Make it non-zero and it shows
+   immediately. Take the heat problem above but hold the whole boundary
+   at :math:`u_o = 1` (interior starting at zero), backward Euler,
+   :math:`\Delta t = 10^{-2}`, 40 steps, and measure against the manual
+   state-space loop (``condense_rhs`` / ``recover``) as the reference:
+
+   .. list-table::
+      :header-rows: 1
+      :widths: 44 30 26
+
+      * - Hook wiring
+        - Interior error vs reference
+        - Boundary (should stay ``1.0``)
+      * - ``restrict`` + ``prolong`` (correct)
+        - ``4e-16`` — machine precision
+        - ``1.0``
+      * - ``condense_rhs`` + ``prolong``
+        - ``6e-3`` — wrong interior
+        - ``1.0``
+      * - ``restrict`` + ``recover``
+        - ``0.4`` — drifts
+        - ``1.4`` after 40 steps
+
+   ``condense_rhs`` subtracts a :math:`-K_{io}\,u_o` term that the slope
+   RHS never had, polluting the interior solution. ``recover`` writes
+   :math:`u_o` into the slope's boundary slots, so the RK update adds
+   :math:`h\,u_o` to the boundary *every* step (here
+   :math:`40 \times 10^{-2} \times 1 = 0.4` of drift), breaking
+   :math:`u_{n+1} = u_n + h\sum_i b_i k_i`. The ``restrict`` / ``prolong``
+   pair reproduces the manual loop to machine precision.
+
 Explicit schemes
 ~~~~~~~~~~~~~~~~
 
@@ -448,7 +532,35 @@ therefore no condensation hooks. The natural place for boundary
 conditions is inside the user-supplied ``forward(t, u)``: return
 :math:`f` with ``f[boundary] = 0`` and the update
 :math:`u_{n+1} = u_n + h \sum_i b_i k_i` preserves
-:math:`u_{\text{boundary}}` automatically. For time-varying
+:math:`u_{\text{boundary}}` automatically.
+
+.. code-block:: python
+
+   import torch
+   from tensormesh import Mesh, MassElementAssembler, LaplaceElementAssembler
+   from tensormesh.ode import ExplicitEuler
+
+   mesh  = Mesh.gen_rectangle(chara_length=0.08, order=1)
+   M     = MassElementAssembler.from_mesh(mesh)().double()
+   K     = LaplaceElementAssembler.from_mesh(mesh)().double()
+   bmask = mesh.boundary_mask
+
+   class HeatExplicit(ExplicitEuler):
+       """du/dt = M^{-1}(-kappa^2 K u), homogeneous Dirichlet."""
+       def forward(self, t, u):
+           f = M.solve(-(K @ u))     # semi-discrete RHS (lump M in production)
+           f[bmask] = 0.0            # Dirichlet DOFs have zero time-derivative
+           return f
+
+   x, y = mesh.points.double()[:, 0], mesh.points.double()[:, 1]
+   u    = torch.sin(torch.pi * x) * torch.sin(torch.pi * y)
+
+   dt = 5e-5                         # explicit -> small (CFL-limited) step
+   for step in range(50):
+       u = HeatExplicit().step(step * dt, u, dt)
+
+Because the boundary slope is forced to zero, ``u`` stays at its
+initial boundary value (``0`` here) for free. For time-varying
 Dirichlet data, write the analytical :math:`\dot u_{\text{b}}(t)`
 into ``f[boundary]`` instead of zero, or overwrite the boundary
 slots of ``u`` between ``step()`` calls.
