@@ -18,6 +18,7 @@ Three figures, all built around the canonical pattern in the chapter
 """
 
 import gc
+import math
 import os
 import time
 import warnings
@@ -205,42 +206,63 @@ def fig_memory_chunking():
 
     print("[fig 3] memory chunking...")
     device = "cuda"
-    # Quadratic triangle, fine mesh -- per-element integrand is now [6, 6, n_q]
-    # which is large enough that chunking gives a visible memory win.
+    # ``batch_size`` chunks the QUADRATURE dimension n_q, so the knob only
+    # bites while batch_size < n_q -- and at the default quadrature order n_q
+    # is tiny (3 for an order-2 triangle), small enough that the per-element
+    # matrix and the COO index buffers dominate the peak. Use a higher
+    # quadrature order so the chunkable integrand
+    # [n_elem, n_q, n_basis, n_basis] is the dominant allocation and the
+    # memory win is visible.
     mesh = Mesh.gen_rectangle(chara_length=0.005, order=2).to(device)
-    asm = LaplaceElementAssembler.from_mesh(mesh)
+    quad_order = 5
 
-    bs_values = [-1, 1, 2, 4]
-    times, peaks = [], []
+    def assemble(bs):
+        return LaplaceElementAssembler.from_mesh(
+            mesh, quadrature_order=quad_order)(batch_size=bs).double()
 
-    # Reference matrix (un-chunked).
+    asm0 = LaplaceElementAssembler.from_mesh(mesh, quadrature_order=quad_order)
+    n_q = asm0.transformation[asm0.element_types[0]].n_quadrature
+
+    # All batch_size values strictly below n_q (batch_size >= n_q is identical
+    # to no chunking), ordered so the memory bars descend left -> right.
+    bs_values = [-1, 4, 2, 1]
+
+    # Reference matrix (un-chunked). Keep only its edata, on the CPU, so a full
+    # second GPU matrix is not resident while we measure the peaks.
     torch.cuda.empty_cache()
-    torch.cuda.reset_peak_memory_stats()
     torch.cuda.synchronize()
-    K_ref = asm(batch_size=-1).double()
-    torch.cuda.synchronize()
+    K_ref = assemble(-1)
+    ref_edata = K_ref.edata.detach().cpu()
+    del K_ref
+    gc.collect()
+    torch.cuda.empty_cache()
 
-    diffs = []
+    times, peaks, diffs = [], [], []
     for bs in bs_values:
         torch.cuda.empty_cache()
         torch.cuda.reset_peak_memory_stats()
         torch.cuda.synchronize()
         t0 = time.perf_counter()
-        K = asm(batch_size=bs).double()
+        K = assemble(bs)
         torch.cuda.synchronize()
         dt = time.perf_counter() - t0
         peak = torch.cuda.max_memory_allocated() / 1e6  # MB
 
-        diff = (K.edata - K_ref.edata).abs().max().item()
+        diff = (K.edata.detach().cpu() - ref_edata).abs().max().item()
         diffs.append(diff)
 
         times.append(dt * 1e3)
         peaks.append(peak)
-        print(f"    batch_size={str(bs):>3}   time={dt*1e3:7.2f}ms   "
-              f"peak={peak:7.1f}MB   max|K - K_ref|={diff:.2e}")
+        n_chunk = 1 if bs == -1 else math.ceil(n_q / bs)
+        print(f"    batch_size={str(bs):>3}  ({n_chunk} chunk(s))  "
+              f"time={dt*1e3:7.2f}ms   peak={peak:7.1f}MB   "
+              f"max|K - K_ref|={diff:.2e}")
+        del K
+        gc.collect()
+        torch.cuda.empty_cache()
 
-    # The first entry is the reference (-1); plot it as a dashed line so the
-    # eye reads "no chunking" as a baseline rather than a data point.
+    # The first entry is the un-chunked reference; the rest are decreasing
+    # chunk sizes, so peak memory drops left -> right while time rises.
     labels = ["full"] + [str(b) for b in bs_values[1:]]
     xs = np.arange(len(labels))
 
@@ -262,7 +284,8 @@ def fig_memory_chunking():
     ax2.set_ylabel("peak GPU memory  [MB]", color=color_mem)
     ax2.tick_params(axis="y", labelcolor=color_mem)
 
-    ax1.set_title(f"Memory chunking on a {mesh.n_points}-node quadratic mesh\n"
+    ax1.set_title(f"Memory chunking on a {mesh.n_points}-node quadratic mesh "
+                  f"($n_q={n_q}$ quadrature pts)\n"
                   f"max$|K - K_{{full}}| <$ {max(diffs):.0e}",
                   fontsize=10)
     ax1.grid(True, axis="y", alpha=0.3)
