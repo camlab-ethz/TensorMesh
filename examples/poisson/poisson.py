@@ -25,7 +25,8 @@ F_asm = FAssembler.from_mesh(mesh)
 b     = F_asm(mesh.points, point_data={"f": f})
 
 K_, b_       = condenser(K, b)
-u            = condenser.recover(K_.solve(b_))
+u_           = K_.solve(b_, verbose=True)
+u            = condenser.recover(u_)
 u_analytical = equation.solution(mesh.points)
 
 mesh.plot({"f": f, "u_fem": u, "u_analytical": u_analytical},

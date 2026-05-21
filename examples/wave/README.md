@@ -19,3 +19,4 @@ python wave.py
 ## Output
 
 - `wave.mp4`: animation comparing FEM prediction with analytical ground truth
+- `wave_energy.png`: kinetic / potential / total mechanical energy vs time — the total stays flat, confirming the central-difference scheme conserves energy under the CFL condition

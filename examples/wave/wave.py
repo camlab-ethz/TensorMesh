@@ -2,6 +2,7 @@ import sys
 sys.path.append("../..")
 
 import torch
+import matplotlib.pyplot as plt
 from tqdm import tqdm
 from tensormesh import ElementAssembler, Mesh, Condenser
 from tensormesh.sparse import SparseMatrix
@@ -85,6 +86,40 @@ if __name__ == '__main__':
 
         Us.append(U)
 
+    # ---- Energy diagnostics.
+    # The undamped wave equation conserves the mechanical energy
+    #   E = 1/2 v^T M v  +  1/2 u^T A u      (A already holds c^2),
+    def energy_quad(mat, x):
+        return 0.5 * torch.dot(x, mat @ x)
+
+    times, ke, pe = [], [], []
+    for i, Ui in enumerate(Us):
+        if i == 0:
+            v = v0                                    # zero initial velocity
+        elif i == len(Us) - 1:
+            v = (Us[i] - Us[i - 1]) / dt              # backward difference at the end
+        else:
+            v = (Us[i + 1] - Us[i - 1]) / (2.0 * dt)  # centered difference
+        times.append(dt * i)
+        ke.append(energy_quad(M, v).item())
+        pe.append(energy_quad(A, Ui).item())
+
+    ke = torch.tensor(ke); pe = torch.tensor(pe); E = ke + pe
+    drift = ((E[-1] - E[0]) / E[0]).item()
+    print(f"Energy: E0 = {E[0]:.6e}, E_final = {E[-1]:.6e}, relative drift = {drift:+.2e}")
+
+    plt.figure(figsize=(6.4, 4.2))
+    plt.plot(times, ke, label=r"kinetic  $\frac{1}{2}\,v^\top M v$", color="#2980b9")
+    plt.plot(times, pe, label=r"potential  $\frac{1}{2}\,u^\top A u$", color="#27ae60")
+    plt.plot(times, E,  label="total", color="#c0392b", linewidth=2)
+    plt.xlabel("time"); plt.ylabel("energy")
+    plt.title(f"Wave energy (relative drift {drift:+.1e})")
+    plt.grid(True, alpha=0.3); plt.legend(loc="center right")
+    plt.tight_layout()
+    plt.savefig("wave_energy.png", dpi=150)
+    plt.close()
+    print("Saved wave_energy.png")
+
     Us_gt = [dataset.solution(mesh.points, dt*i) for i in tqdm(range(n), desc="Ground truth")]
 
     mesh_cpu = mesh.to('cpu')
@@ -92,8 +127,8 @@ if __name__ == '__main__':
     Us_gt_cpu = [u.cpu() for u in Us_gt]
 
     mesh_cpu.plot({
-        "prediction":Us_cpu,
-        "ground truth":Us_gt_cpu},
+        "FEM solution":Us_cpu,
+        "Analytical solution":Us_gt_cpu},
         save_path="wave.mp4",
         dt=dt,
         show_mesh=False,

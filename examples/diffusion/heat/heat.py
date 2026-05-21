@@ -18,7 +18,8 @@ class MAssembler(ElementAssembler):
 
 if __name__ == '__main__':
     torch.random.manual_seed(3)
-    mesh = Mesh.gen_rectangle(chara_length=0.02,order=2, element_type="tri")
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    mesh = Mesh.gen_rectangle(chara_length=0.02,order=2, element_type="tri").to(device=device)
     #mesh = Mesh.gen_L(chara_length=0.008, element_type="tri")
     dataset = HeatMultiFrequency(d=16)
 
@@ -58,7 +59,7 @@ if __name__ == '__main__':
     Us_gt = [dataset.solution(mesh.points, dt*i) for i in tqdm(range(n), desc="Ground truth")]
 
     mesh.plot(
-        {"prediction":Us, "ground truth":Us_gt},
+        {"FEM solution":Us, "Analytical solution":Us_gt},
         save_path="heat.mp4",
         dt=dt,
         show_mesh=False,

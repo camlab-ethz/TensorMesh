@@ -41,7 +41,7 @@ community is just getting started.
 
 **Information** — read-only announcements and ground rules.
 
-* ``#welcome`` — start here. Introduce yourself, say what you work on.
+* ``#welcome`` — start here.
 * ``#announcements`` — releases, breaking changes, and event notices.
   Maintainer-posted; turn on notifications if you depend on the library.
 * ``#rules`` — server etiquette (see :ref:`etiquette` below).

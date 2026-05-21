@@ -127,13 +127,41 @@ throughout the run; central differences preserve energy as long as
 the CFL condition is satisfied.*
 
 
+Energy conservation
+-------------------
+
+The undamped wave equation conserves the mechanical energy
+
+.. math::
+
+   E \;=\; \underbrace{\tfrac12\, v^\top M\, v}_{\text{kinetic}}
+        \;+\; \underbrace{\tfrac12\, u^\top (c^2 A)\, u}_{\text{potential}},
+
+with the velocity :math:`v = u_t` taken as the centered difference of
+the stored displacement history. ``wave.py`` evaluates this at every
+step and writes ``wave_energy.png`` — a direct check on the time
+stepping, since the central-difference scheme conserves a discrete
+energy up to :math:`\mathcal{O}(\Delta t^2)` whenever the CFL condition
+holds.
+
+.. figure:: /_static/wave/wave_energy.png
+   :align: center
+   :width: 80%
+
+   Kinetic and potential energy exchange out of phase while the total
+   (red) stays flat: the relative drift over the 100-step run is about
+   :math:`1.5\times10^{-3}`. The motion starts as pure potential energy
+   (zero initial velocity) and equipartitions as the standing wave
+   develops.
+
+
 Running the example
 -------------------
 
 .. code-block:: bash
 
    cd examples/wave
-   python wave.py        # writes wave.mp4 (FEM vs analytical)
+   python wave.py        # writes wave.mp4 (FEM vs analytical) and wave_energy.png
 
 
 What's next

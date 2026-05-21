@@ -45,11 +45,11 @@ def run_wave_stepping(M, cA, M_, condenser, U1, U2, n, device, desc=""):
     if device.type == "cuda":
         torch.cuda.synchronize()
     t0 = time.perf_counter()
-    for _ in tqdm(range(n - 2), desc=desc):
+    for i in tqdm(range(n - 2), desc=desc):
         U_prev, U_curr = Us[-2], Us[-1]
         F = 2.0 * (M @ U_curr) - (M @ U_prev) - (cA @ U_curr)
         F_ = condenser.condense_rhs(F)
-        U_ = M_.solve(F_)
+        U_ = M_.solve(F_, verbose=(i == 0))
         U  = condenser.recover(U_)
         Us.append(U)
     if device.type == "cuda":
@@ -66,10 +66,10 @@ if __name__ == '__main__':
     c  = 2.0
     n  = 100
     K  = 16
-    batch_size = 100
+    batch_size = 1000
 
     #mesh = Mesh.gen_rectangle(chara_length=0.01).to(device)
-    mesh = Mesh.gen_circle(chara_length=0.015, cx=0.5, cy=0.5, r=0.5).to(device)
+    mesh = Mesh.gen_circle(chara_length=0.008, cx=0.5, cy=0.5, r=0.5).to(device)
 
     # Batched dataset: a has shape [batch_size, K, K]
     a = torch.zeros((batch_size, K, K)).uniform_(-1, 1)
@@ -140,8 +140,11 @@ if __name__ == '__main__':
     # ---- Visualize (first sample from batch) ----
     mesh_cpu = mesh.cpu()
     mesh_cpu.plot(
-        {"prediction-gpu": [u[:, 0].cpu() for u in Us_gpu],
-         "prediction-cpu": [u[:, 0].cpu() for u in Us_cpu]},
+        {"sample 0": [u[:, 0].cpu() for u in Us_gpu],
+         "sample 1": [u[:, 1].cpu() for u in Us_gpu],
+         "sample 2": [u[:, 2].cpu() for u in Us_gpu],
+         "sample 3": [u[:, 3].cpu() for u in Us_gpu],
+         "sample 4": [u[:, 4].cpu() for u in Us_gpu]},
         save_path="wave_dataset.mp4",
         dt=dt,
         show_mesh=False,

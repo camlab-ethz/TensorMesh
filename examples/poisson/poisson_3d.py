@@ -73,7 +73,7 @@ def main():
     rhs = F_asm(mesh.points, point_data={"f": f})
 
     Kc, rhsc = condenser(K, rhs)
-    uc = Kc.solve(rhsc)
+    uc = Kc.solve(rhsc, verbose=True)
     u = condenser.recover(uc)
 
     # --------------------

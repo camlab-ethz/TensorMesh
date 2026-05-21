@@ -122,7 +122,8 @@ b = SourceAssembler.from_mesh(mesh)(point_data={"f": f_vals})
 # 6. Apply Dirichlet BCs by static condensation, then solve.
 condenser = Condenser(mesh.boundary_mask)
 K_, b_ = condenser(K, b)
-u = condenser.recover(K_.solve(b_))
+u_ = K_.solve(b_, verbose = True)
+u = condenser.recover(u_)
 
 # 7. Compare against the analytical solution.
 u_exact = torch.sin(math.pi * x) * torch.sin(math.pi * y)

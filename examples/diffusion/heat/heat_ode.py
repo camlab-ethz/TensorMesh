@@ -1,17 +1,4 @@
 """Same heat problem as ``heat.py``, but driven through ``tensormesh.ode``.
-
-``heat.py`` writes the backward-Euler step out by hand, which is the
-clearest pattern when you only have one scheme in mind. This file is
-the integrator-class version: subclass
-:class:`tensormesh.ode.ImplicitLinearEuler`, wire ``Condenser`` through
-the three boundary-condition hooks, and the time loop becomes a single
-``stepper.step(t, U, dt)`` call.
-
-The two scripts produce identical snapshots to machine precision —
-this file exists so the reader can compare the two patterns side by
-side. Switch between them freely; pick the manual loop when the
-scheme is fixed, pick this one when you want to swap integrators
-(e.g. backward Euler ↔ midpoint) without rewriting the loop.
 """
 import sys
 sys.path.append("../../..")
@@ -78,7 +65,8 @@ class HeatStepper(ImplicitLinearEuler):
 
 if __name__ == '__main__':
     torch.random.manual_seed(3)
-    mesh = Mesh.gen_rectangle(chara_length=0.02, order=2, element_type="tri")
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    mesh = Mesh.gen_rectangle(chara_length=0.02, order=2, element_type="tri").to(device=device)
     dataset = HeatMultiFrequency(d=16)
 
     u0 = dataset.initial_condition(mesh.points)
@@ -106,7 +94,7 @@ if __name__ == '__main__':
     Us_gt = [dataset.solution(mesh.points, dt * i) for i in tqdm(range(n), desc="Ground truth")]
 
     mesh.plot(
-        {"prediction": Us, "ground truth": Us_gt},
+        {"FEM solution": Us, "Analytical solution": Us_gt},
         save_path="heat_ode.mp4",
         dt=dt,
         show_mesh=False,

@@ -5,27 +5,24 @@ Batch generation of Poisson equation solutions for machine learning workflows.
 ## Problem Setup
 
 - **PDE:** $-\Delta u = f$ in $\Omega$, $u = 0$ on $\partial\Omega$
-- **Geometry:** Unit square (2D) or unit cube (3D)
-- **Source Term:** Multi-frequency Fourier series via `PoissonMultiFrequency` / `PoissonMultiFrequency3D`
+- **Geometry:** Disk of radius $0.5$ centered at $(0.5, 0.5)$ (triangular mesh, $h = 0.008$)
 - **Boundary Conditions:** Homogeneous Dirichlet ($u = 0$ on $\partial\Omega$)
+- **Source Term:** 1000 random samples from `PoissonMultiFrequency` with $K = 16$ Fourier modes
 
 ## Features
 
-- **Batch solve:** Solves all samples simultaneously using multi-RHS sparse LU (one factorization, many back-substitutions)
-- **GPU acceleration:** Automatic GPU detection with CuPy backend
-- **Analytical comparison:** Exact solution available from the same Fourier series
-- **Benchmarking:** Sweeps batch sizes from 1 to 1024 and reports per-problem timing
+- **Batch solve:** Builds the load for all 1000 samples at once via the consistent mass-matrix form $b = M f^\top$, then solves the condensed system with a multi-RHS direct solve (one factorization, many back-substitutions)
+- **GPU acceleration:** Automatic GPU detection; torch-sla auto-dispatches the sparse solve (cuDSS on GPU, scipy on CPU)
+- **Benchmarking:** Compares GPU vs CPU solve time and reports the max GPU–CPU discrepancy
+- **Self-check:** Verifies the batched load $M f^\top$ matches the per-sample `NodeAssembler` load before solving
 
 ## Usage
 
 ```bash
-python poisson_dataset.py --mode 2d      # 2D batch
-python poisson_dataset.py --mode 3d      # 3D batch
-python poisson_dataset.py --mode bench   # batch-size scaling benchmark
-python poisson_dataset.py --mode all     # all of the above
+python poisson_dataset.py
 ```
 
 ## Output
 
-- `poisson_batch_solver_2d.png`: source term, FEM solution, analytical solution, error (sample 0)
-- `poisson_batch_solver_3d.vtu`: 3D solution (open with ParaView)
+- `poisson_dataset.npz`: `solutions` array of shape `(batch_size, n_dofs)`, `sources`, mesh `points`, the Fourier coefficients `a`, and parameters (`chara_length`, `K_modes`, `batch_size`)
+- `poisson_dataset.png`: visualization of 5 samples

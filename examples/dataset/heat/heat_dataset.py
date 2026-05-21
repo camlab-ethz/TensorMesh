@@ -42,10 +42,10 @@ def run_time_stepping(M, K_, condenser, U, n, device, desc=""):
     if device.type == "cuda":
         torch.cuda.synchronize()
     t0 = time.perf_counter()
-    for _ in tqdm(range(n-1), desc=desc):
+    for i in tqdm(range(n-1), desc=desc):
         F = M @ U
         F_ = condenser.condense_rhs(F)
-        U_ = K_.solve(F_)
+        U_ = K_.solve(F_,verbose=(i == 0))
         U  = condenser.recover(U_)
         Us.append(U)
     if device.type == "cuda":
@@ -120,8 +120,11 @@ if __name__ == '__main__':
     
     # ---- Visualize results (pick first sample from batch) ----
     mesh.plot(
-        {"prediction-gpu": [u[:, 0].cpu() for u in Us_gpu],
-         "prediction-cpu": [u[:, 0] for u in Us_cpu]},
+        {"sample 0": [u[:, 0].cpu() for u in Us_gpu],
+         "sample 1": [u[:, 1].cpu() for u in Us_gpu],
+         "sample 2": [u[:, 2].cpu() for u in Us_gpu],
+         "sample 3": [u[:, 3].cpu() for u in Us_gpu],
+         "sample 4": [u[:, 4].cpu() for u in Us_gpu]},
         save_path="heat_dataset.mp4",
         dt=dt,
         show_mesh=False,

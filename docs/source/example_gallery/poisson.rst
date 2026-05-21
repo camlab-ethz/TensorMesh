@@ -68,7 +68,8 @@ in 25 lines:
    b     = F_asm(mesh.points, point_data={"f": f})
 
    K_, b_       = condenser(K, b)
-   u            = condenser.recover(K_.solve(b_))
+   u_           = K_.solve(b_, verbose=True)
+   u            = condenser.recover(u_)
    u_analytical = equation.solution(mesh.points)
 
    mesh.plot({"f": f, "u_fem": u, "u_analytical": u_analytical},
@@ -87,6 +88,19 @@ A few details worth pointing out:
   applies the Dirichlet boundary mask and folds prescribed values
   into the RHS. ``recover(...)`` glues the boundary values back on
   after the solve.
+* ``K_.solve(b_)`` is inherited from ``torch-sla``'s ``SparseTensor``;
+  it inspects the matrix and dispatches to the best available backend
+  automatically. Passing ``verbose=True`` prints that decision, e.g.:
+
+  .. code-block:: text
+
+     [torch-sla] solve: n=2814, nnz=19300, dtype=float64, device=cuda,
+                 symmetric=True, spd=False, backend=cudss, method=ldlt
+
+  Here torch-sla detected a symmetric (but not SPD) system on CUDA and
+  routed it through cuDSS with an :math:`LDL^{T}` factorization. On CPU,
+  or without cuDSS installed, it falls back to a different backend; the
+  ``backend=`` field always tells you which one ran.
 
 .. figure:: /_static/poisson/poisson.png
    :alt: 2D Poisson — source term, FEM solution, and analytical solution

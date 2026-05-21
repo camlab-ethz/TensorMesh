@@ -177,12 +177,37 @@ Two things that make this easy to write:
   and the alternative (computing analytical Jacobians by hand)
   would require pages of additional code.
 
-For nonlinear problems where you would rather hand the whole
-residual to a packaged driver, ``torch-sla``'s
-``SparseMatrix.nonlinear_solve`` (Newton / Picard / Anderson with
-Armijo line search; see :doc:`../user_guide/linear_solvers`) takes a
-single residual closure, builds the Jacobian via autograd, and gives
-you a correct adjoint backward through the converged solution.
+If you would rather hand the whole step to a packaged driver,
+``allen-cahn/ac_torch_sla.py`` solves the *same* problem with
+``torch-sla``'s ``nonlinear_solve`` (Newton / Picard / Anderson with
+Armijo line search; see :doc:`../user_guide/linear_solvers`). The
+per-step ``while`` loop above collapses to one call:
+
+.. code-block:: python
+   :caption: examples/diffusion/allen-cahn/ac_torch_sla.py (essence)
+
+   from torch_sla import nonlinear_solve
+
+   def residual_fn(c, cold):                       # F(c) = 0 is the BE step
+       return R_asm(mesh.points, point_data={"c": c, "cold": cold})
+
+   def jacobian_fn(c, cold):                        # KAssembler gives K = -J,
+       K = K_asm(mesh.points, point_data={"c": c, "cold": cold})
+       return (-K.values, K.row, K.col, K.shape)    # so hand back J = -K
+
+   for step in range(steps):
+       cold = nonlinear_solve(residual_fn, cold, cold, jacobian_fn=jacobian_fn,
+                              method="newton", linear_solver="auto")
+
+Two points worth noting. First, ``nonlinear_solve`` can build the
+Jacobian by autograd, but here we pass the FEM consistent tangent
+explicitly as ``jacobian_fn`` — it is already assembled, so this is
+both cheaper and exact. Second, the sign: ``KAssembler`` assembles the
+*negative* tangent :math:`K = -\partial R/\partial c`, so ``jacobian_fn``
+returns ``-K.values`` to hand back the true Jacobian :math:`J`, which
+``nonlinear_solve`` then steps with :math:`J\,\delta u = -R`. The two
+scripts agree to round-off, and ``nonlinear_solve`` additionally gives a
+correct adjoint backward through the converged solution.
 
 .. raw:: html
 
@@ -209,7 +234,8 @@ Running the examples
    python heat_ode.py        # integrator hooks -> heat_ode.mp4
 
    cd ../allen-cahn
-   python ac.py              # writes Allen-Cahn.mp4
+   python ac.py              # hand-written Newton loop -> Allen-Cahn.mp4
+   python ac_torch_sla.py    # via torch_sla.nonlinear_solve -> Allen-Cahn-torch-sla.mp4
 
 
 What's next

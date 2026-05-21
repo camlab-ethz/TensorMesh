@@ -7,13 +7,18 @@ adjacency graph, spectral domain decomposition, and a
 single-GPU-vs-multi-GPU assembly benchmark on a structured
 tetrahedral cube.
 
-.. note::
+.. caution::
 
-   The distributed layer is a research-grade path. It works, the
-   benchmarks are real, but the public API is still settling — the
-   :doc:`../user_guide/index` deliberately does not document it as a
-   first-class workflow yet. Treat the examples below as recipes
-   to learn from, not as a stable interface.
+   The distributed layer is still under active development. The
+   building blocks below (coloring, partitioning, multi-GPU
+   assembly) work and the benchmarks are real, but the public API is
+   not yet stable and the :doc:`../user_guide/index` deliberately
+   does not document it as a first-class workflow. The next step is
+   to couple it with ``torch-sla``'s distributed linear solver, so
+   that assembly *and* solve both run across multiple GPUs — the
+   goal being to tackle very large-scale industrial problems that do
+   not fit on a single device. Until then, treat the examples here
+   as recipes to learn from, not as a stable interface.
 
 
 Element-graph coloring — ``graph_coloring.py``

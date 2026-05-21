@@ -61,7 +61,7 @@ msgid "**Information** — read-only announcements and ground rules."
 msgstr ""
 
 #: ../../source/community/discord.rst:44 ebb2c0324896470db645e8837ad21f63
-msgid "``#welcome`` — start here. Introduce yourself, say what you work on."
+msgid "``#welcome`` — start here."
 msgstr ""
 
 #: ../../source/community/discord.rst:45 64a36e975cc246cfb4320d58d206cd9d

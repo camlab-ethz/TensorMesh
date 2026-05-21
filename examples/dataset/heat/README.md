@@ -25,4 +25,4 @@ python heat_dataset.py
 ## Output
 
 - `heat_dataset.npz`: snapshots array of shape `(n_steps, n_dofs, batch_size)`, mesh points, and parameters
-- `heat_dataset.mp4`: animation of the first sample (GPU vs CPU comparison)
+- `heat_dataset.mp4`: animation of the five samples
