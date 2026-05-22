@@ -23,6 +23,7 @@ stabilizes.
    .. grid-item-card:: Lid-Driven Cavity
       :link: cavity
       :link-type: doc
+      :img-top: /_static/fluid/cavity_results.png
 
       Steady NS at Re=100, SUPG/PSPG stabilization, Picard iteration —
       in 2D and 3D with one dimension-generic assembler.
@@ -30,24 +31,28 @@ stabilizes.
    .. grid-item-card:: Cylinder Flow (Vortex Shedding)
       :link: cylinder_flow
       :link-type: doc
+      :img-top: /_static/fluid/vortex_street.gif
 
       Transient DFG benchmark, implicit Euler, drag/lift/Strouhal post-processing.
 
    .. grid-item-card:: Flow Past Multiple Obstacles
       :link: flow_obstacles
       :link-type: doc
+      :img-top: /_static/fluid/flow_obstacles.png
 
       Steady channel flow at Re=150 around six circular obstacles via MeshGen CSG.
 
    .. grid-item-card:: Rayleigh-Bénard Convection
       :link: rayleigh_benard
       :link-type: doc
+      :img-top: /_static/fluid/rayleigh_benard.png
 
       Boussinesq-coupled momentum + heat transport, buoyancy-driven flow.
 
    .. grid-item-card:: Taylor-Green Vortex
       :link: taylor_green
       :link-type: doc
+      :img-top: /_static/fluid/taylor_green_vortex_final.png
 
       Decaying vortex with exact solution — the convergence-study showcase.
 

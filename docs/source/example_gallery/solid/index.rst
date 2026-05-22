@@ -33,24 +33,28 @@ The order below mirrors solver complexity.
    .. grid-item-card:: Cantilever Beam
       :link: cantilever_beam
       :link-type: doc
+      :img-top: /_static/solid_mechanics/cantilever_steel.png
 
       Linear elasticity, steel cantilever with a tip load — the simplest end-to-end recipe.
 
    .. grid-item-card:: Hyperelastic Beam
       :link: hyperelastic_beam
       :link-type: doc
+      :img-top: /_static/solid_mechanics/hyperelastic_rubber.png
 
       Rubber beam under torsion, compressible Neo-Hookean, L-BFGS load stepping.
 
    .. grid-item-card:: Hertzian Contact
       :link: hertzian_contact
       :link-type: doc
+      :img-top: /_static/solid_mechanics/hertzian_contact.png
 
       Penalty contact between a circular indenter and an elastic block, checked against the Hertz solution.
 
    .. grid-item-card:: Plasticity (J2)
       :link: plasticity_strip
       :link-type: doc
+      :img-top: /_static/solid_mechanics/plasticity_strip.gif
 
       Plane-strain J2 plasticity with isotropic hardening, load / unload cycle, plus a 3D cube.
 
