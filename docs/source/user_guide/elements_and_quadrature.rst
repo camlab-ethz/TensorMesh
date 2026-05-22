@@ -87,7 +87,6 @@ the *string* ``"wedge"``.
 Higher-order elements
 ---------------------
 
-Higher-order is a generator-time decision, not a different class.
 Pass ``order=2`` (or ``3``, …) to a built-in mesh generator:
 
 .. code-block:: python

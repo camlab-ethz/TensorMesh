@@ -175,15 +175,10 @@ please additionally cite:
 Contact Us
 ----------
 
-For collaborations and partnerships, please contact us at
-`tensormesh.dev@gmail.com <mailto:tensormesh.dev@gmail.com>`_.
-
-
-License
--------
-
 TensorMesh is released under the `Apache License 2.0
-<https://github.com/camlab-ethz/TensorMesh/blob/main/LICENSE>`_.
+<https://github.com/camlab-ethz/TensorMesh/blob/main/LICENSE>`_. For
+collaborations and partnerships, please contact Shizheng Wen at
+`shizheng.wen@sam.math.ethz.ch <mailto:shizheng.wen@sam.math.ethz.ch>`_.
 
 .. grid:: 3
    :gutter: 3

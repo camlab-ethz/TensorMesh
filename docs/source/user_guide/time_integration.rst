@@ -242,37 +242,6 @@ For an animated version, see the rendered ``heat.mp4`` in the
 ``examples/diffusion/heat/`` in the source tree.
 
 
-.. _ti-stability:
-
-Stability: why "implicit" matters
----------------------------------
-
-Forward (explicit) Euler is the simplest possible time scheme, but for
-stiff problems — anything diffusive at meaningful mesh resolution — it
-imposes a *CFL constraint*: the step size has to shrink with the
-square of the mesh size, :math:`\Delta t \lesssim h^{2}/\lambda_{\max}`.
-Backward (implicit) Euler has no such restriction. The plot below
-takes the same heat problem on a coarse :math:`h = 0.1` mesh, adds a
-small high-frequency perturbation to the initial condition, and runs
-three schemes:
-
-.. figure:: /_static/user_guide/time_integration/stability.png
-   :alt: Forward vs backward Euler stability on the 2D heat equation.
-   :align: center
-   :width: 80%
-
-   ``max|u|`` over time. Forward Euler at a safe ``dt`` (green) and
-   backward Euler at a large ``dt`` (blue) both decay smoothly; forward
-   Euler at the same large ``dt`` (red) amplifies the high-frequency
-   mode by roughly :math:`6 \times` every step and blows up.
-
-The takeaway: if the problem is stiff, pay the per-step linear solve
-and use an implicit scheme. Forward Euler is for problems where
-:math:`\Delta t \le h^{2}/\lambda_{\max}` is *cheap enough*, which in
-practice means hyperbolic problems (wave, transient elasticity) at
-their natural CFL — not parabolic ones.
-
-
 .. _ti-custom-tableau:
 
 Custom Butcher tableaux

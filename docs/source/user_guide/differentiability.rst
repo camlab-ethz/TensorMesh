@@ -8,8 +8,9 @@ is either a :class:`torch.nn.Module` or a custom
 has an **analytic adjoint backward**. As a result a loss computed
 on the FEM solution can be back-propagated all the way to *anything*
 that touched the pipeline: a coefficient at every node, a Dirichlet
-value, a neural network's prediction of a stiffness modifier ---
-without writing a single line of sensitivity code by hand.
+value, or a neural network that parameterises the material
+coefficient field --- without writing a single line of sensitivity
+code by hand.
 
 This chapter explains how the gradient flow works, demonstrates it
 with two worked examples (parameter identification and
@@ -32,18 +33,23 @@ Three pieces of TensorMesh are wired into the autograd graph:
   a graph input to the assembled matrix or vector.
 * :meth:`tensormesh.sparse.SparseMatrix.solve` is inherited unchanged
   from ``torch_sla.SparseTensor`` (see :doc:`linear_solvers`), so the
-  adjoint lives in ``torch-sla`` rather than in TensorMesh: the solve is
-  a :class:`torch.autograd.Function` whose custom ``backward`` solves the
-  **adjoint** system
+  adjoint lives in ``torch-sla`` rather than in TensorMesh. The forward
+  solve produces :math:`u` from :math:`A\,u = b`. For a scalar loss
+  :math:`L(u)`, reverse-mode autograd hands the solve the upstream
+  gradient :math:`\partial L/\partial u`; rather than differentiate
+  through the solver's internals, the solve is wrapped in a
+  :class:`torch.autograd.Function` whose custom ``backward`` solves a
+  single **adjoint** system for the adjoint variable
+  :math:`\boldsymbol{\lambda}`,
 
   .. math::
 
      A^{T}\, \boldsymbol{\lambda} \;=\; \frac{\partial L}{\partial u},
 
-  then computes the gradient of any non-zero matrix entry as
-  :math:`\partial L / \partial A_{ij} = -\lambda_i\, u_j` and the
-  gradient of the right-hand side as
-  :math:`\partial L / \partial b = \boldsymbol{\lambda}`.
+  and then assembles the input gradients in closed form — for each
+  non-zero matrix entry
+  :math:`\partial L / \partial A_{ij} = -\lambda_i\, u_j`, and for the
+  right-hand side :math:`\partial L / \partial b = \boldsymbol{\lambda}`.
 
 A call to ``loss = criterion(K.solve(b), target).sum()`` followed
 by ``loss.backward()`` therefore gives correct gradients for every
