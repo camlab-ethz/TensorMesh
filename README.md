@@ -15,13 +15,11 @@
 </p>
 
 <p align="center">
-  <!-- TODO: replace with real shields.io badges once PyPI / CI / docs are live -->
-  <img src="https://img.shields.io/badge/PyPI-coming%20soon-lightgrey" alt="PyPI placeholder"/>
-  <img src="https://img.shields.io/badge/python-3.10%2B-blue" alt="Python 3.10+"/>
+  <a href="https://pypi.org/project/tensormesh-fem/"><img src="https://img.shields.io/pypi/v/tensormesh-fem?color=blue" alt="PyPI version"/></a>
+  <a href="https://pypi.org/project/tensormesh-fem/"><img src="https://img.shields.io/pypi/pyversions/tensormesh-fem" alt="Python versions"/></a>
   <img src="https://img.shields.io/badge/PyTorch-2.0%2B-ee4c2c?logo=pytorch&logoColor=white" alt="PyTorch 2.0+"/>
-  <img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="License: Apache-2.0"/>
-  <img src="https://img.shields.io/badge/docs-passing-brightgreen" alt="Docs placeholder"/>
-  <img src="https://img.shields.io/badge/CI-pending-lightgrey" alt="CI placeholder"/>
+  <a href="https://github.com/camlab-ethz/TensorMesh/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="License: Apache-2.0"/></a>
+  <a href="https://docs.tensor-mesh.com/"><img src="https://github.com/camlab-ethz/TensorMesh/actions/workflows/docs.yml/badge.svg" alt="Documentation"/></a>
 </p>
 
 ---
