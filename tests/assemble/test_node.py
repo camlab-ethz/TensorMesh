@@ -7,24 +7,21 @@ import meshio
 sys.path.append("../..")
 
 from tensormesh import ElementAssembler, NodeAssembler,  Mesh
-from tensormesh import dot, mul
 import skfem
 
 
 class TestAssembler(NodeAssembler):
-    def forward(self, u, x):
+    def forward(self, v):
         """
             Parameters:
             -----------
-                u: torch.tensor[]
-                x: torch.tensor[n_dim]
+                v: torch.tensor[]
 
             Returns:
             --------
                 y: torch.tensor[]
         """
-        # return (torch.cos(x[...,0]) + torch.sin(x[...,1])) * u 
-        return u
+        return v
 
 @skfem.LinearForm
 def test_assembler(u, w):

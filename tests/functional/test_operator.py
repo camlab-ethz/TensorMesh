@@ -2,7 +2,7 @@ import sys
 sys.path.append("../..")
 import torch
 import pytest
-from tensormesh.tensormesh.functional.ops import skew, sym
+from tensormesh.functional.ops import skew, sym
 
 
 def test_sym():

@@ -68,6 +68,7 @@ example = ["plotly"]
 test = [
     "pytest",
     "pytest-cov",
+    "scikit-fem",
 ]
 
 [project.urls]

@@ -8,7 +8,6 @@ import meshio
 sys.path.append("../..")
 
 from tensormesh import ElementAssembler, NodeAssembler,  Mesh
-from tensormesh import dot, mul
 from pytest import mark
 import skfem
 

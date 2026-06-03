@@ -3,7 +3,6 @@ sys.path.append("../..")
 import torch
 import pytest
 from tensormesh.functional import elasticity
-from ..vmap import vmap
 
 def test_isotropic_stress():
 
@@ -13,7 +12,7 @@ def test_isotropic_stress():
     nu = 0.3
     def fn(strain_2d):
         return elasticity.isotropic_stress(strain_2d, E, nu)
-    stress_2d = vmap(fn)(strain_2d)
+    stress_2d = torch.vmap(fn)(strain_2d)
 
 
 
