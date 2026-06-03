@@ -2,6 +2,8 @@ import sys
 import torch 
 sys.path.append("../..")
 
+import pytest
+
 from tensormesh.sparse import SparseMatrix
 
 
@@ -27,6 +29,7 @@ def test_add_backward_cpu(n_times=10):
         assert torch.allclose(A.edata.grad, torch.ones_like(A.edata.grad))
         assert torch.allclose(B.edata.grad, torch.ones_like(B.edata.grad))
 
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA required")
 def test_add_forward_gpu(n_times=10):
     for _ in range(n_times):
         layout = SparseMatrix.random_layout(10, 10)
@@ -36,6 +39,7 @@ def test_add_forward_gpu(n_times=10):
         
         assert torch.allclose(C.to_dense(), A.to_dense() + B.to_dense())
 
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA required")
 def test_add_backward_gpu(n_times=10):
     for _ in range(n_times):
         layout = SparseMatrix.random_layout(10, 10)

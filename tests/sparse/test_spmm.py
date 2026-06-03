@@ -2,6 +2,8 @@ import sys
 import torch 
 sys.path.append("../..")
 
+import pytest
+
 from tensormesh.sparse import SparseMatrix
 
 """
@@ -62,6 +64,7 @@ def test_spmv_backward_cpu(n_times=10):
     GPU Test
 """
 
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA required")
 def test_spmm_forward_gpu(n_times=10):
     for _ in range(n_times):
         A      = SparseMatrix.random(16, 10, 0.3).cuda()
@@ -70,6 +73,7 @@ def test_spmm_forward_gpu(n_times=10):
        
         assert torch.allclose(C, A.to_dense() @ B)
 
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA required")
 def test_spmv_forward_gpu(n_times=10):
     for _ in range(n_times):
         A      = SparseMatrix.random(16, 10, 0.3).cuda()
@@ -78,6 +82,7 @@ def test_spmv_forward_gpu(n_times=10):
         
         assert torch.allclose(C, A.to_dense() @ B)
 
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA required")
 def test_spmm_backward_gpu(n_times=10):
     for _ in range(n_times):
         A      = SparseMatrix.random(16, 10, 0.3).cuda().requires_grad_()
@@ -95,6 +100,7 @@ def test_spmm_backward_gpu(n_times=10):
         assert torch.allclose(A.grad.to_dense(), A_dense.grad * A.layout_mask)
         assert torch.allclose(B.grad.to_dense(), B_dense.grad)
 
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA required")
 def test_spmv_backward_gpu(n_times=10):
     for _ in range(n_times):
         A      = SparseMatrix.random(20, 10, 0.3).cuda().requires_grad_()
