@@ -28,13 +28,15 @@ Scope note: scalar complex Helmholtz (complex Lagrange) covers acoustics and 2D 
 
 ## 3. P0, then Raviart–Thomas (H(div)) and Nédélec (H(curl)) elements
 
-TensorMesh today ships **continuous Lagrange elements only** (`Line`, `Triangle`, `Quadrilateral`, `Tetrahedron`, `Hexahedron`, `Pyramid`, `Prism`, plus higher-order nodal variants), and the element abstraction is **nodal-Lagrange to the core**: scalar basis with the nodal interpolation property (`φᵢ(xⱼ) = δᵢⱼ`, see `element.py`), the standard covariant (gradient) map `∇ₓφ = J⁻ᵀ∇_ξφ`, and node-based global DOFs.
+TensorMesh today ships **continuous Lagrange nodal elements only** (`Line`, `Triangle`, `Quadrilateral`, `Tetrahedron`, `Hexahedron`, `Pyramid`, `Prism`, plus higher-order nodal variants), and the element abstraction is **nodal-Lagrange to the core**: scalar basis with the nodal interpolation property (`φᵢ(xⱼ) = δᵢⱼ`, see `element.py`), the standard covariant (gradient) map `∇ₓφ = J⁻ᵀ∇_ξφ`, and node-based global DOFs.
 
-**P0 (cell-constant, discontinuous).** One DOF per cell, no continuity, no orientation — a small addition that mostly needs a "cell-DOF" carrier alongside the existing node-DOF model. P0 is the natural pressure/multiplier space, e.g. the lowest-order RT–P0 mixed Poisson / Darcy pair.
+To enable structure-preserving discretization of problems that are naturally posed on H(div) and H(curl) (e.g. Maxwell's equations, Darcy's flow) the following types of elements will be implemented: 
 
-**Raviart–Thomas (H(div)), then Nédélec (H(curl)).** The substantial step — it extends three core assumptions, not a new subclass:
-- **Vector-valued, non-nodal basis** — RT basis functions are vector-valued (`shape_val` gains a component dimension, `[n_q, n_basis, dim]`) and defined by facet-flux moments `∫_facet v·n = δ`, not nodal interpolation. Weak forms use the field `v` and its `div`, not a scalar gradient.
-- **Piola map** — RT needs the contravariant Piola map `v = (1/det J) J v̂` to preserve normal continuity, distinct from the covariant gradient map `Transformation` implements today (no Piola exists yet).
-- **Facet DOFs + orientation/sign** — global DOFs move from nodes to facets, needing a unique-facet enumeration as DOF carriers and a per-element ±1 sign convention so shared-facet normals agree. The geometric facet machinery (`get_facet`, `get_edge`, facet quadrature, `Transformation.facets`) already exists; the missing piece is the facet-DOF / orientation layer (the projector currently scatters to node indices, and `reorder` handles node permutations only).
+- **Nédélec element**: H(curl)-conforming; tangential continuity across elements; DoFs defined on edges, faces and elements;
+- **Raviart-Thomas**: H(div)-conforming; normal continuity across elements; DoFs defined on faces and elements;
+- **Discontinous**: $L^2$-conforming; no continuity across elements; DoFs on elements.
 
-This is comparable in scope to what scikit-fem built deliberately for H(div)/H(curl). Item 1 (block assembly) and P0 bring us to the doorstep of RT–P0; the RT/Nédélec vector-basis + Piola + facet-DOF work is the genuinely new part, and Nédélec is what unlocks full-vector 3D electromagnetics for item 2.
+This entails extension in the following three aspects:
+- **Vector-valued** — `shape_val` gains a component dimension `[n_q, n_basis, dim]` and are defined by facet-flux moments `∫_facet v·n = δ`.
+- **Piola transform** — The pullbacks of these vector-valued elements are different from the one for the nodal element.
+- **Facet DOFs + orientation/sign** — global DOFs extends to facets of all dimensions, not just nodes. This requires a unique-facet enumeration as DOF carriers and a per-element ±1 sign convention so shared-facet normals agree. The geometric facet machinery (`get_facet`, `get_edge`, facet quadrature, `Transformation.facets`) already exists; the missing piece is the facet-DOF / orientation layer (the projector currently scatters to node indices, and `reorder` handles node permutations only).
