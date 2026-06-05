@@ -1,7 +1,7 @@
 Solid Mechanics
 ===============
 
-Four worked solid-mechanics examples in ``examples/solid/``, built
+Five worked solid-mechanics examples in ``examples/solid/``, built
 as a progressive ladder — each rung adds exactly one new concept on
 top of the previous one:
 
@@ -14,6 +14,9 @@ top of the previous one:
 #. **Plasticity (J2)** — adds path-dependence: per-quadrature
    history variables and a variational constitutive update, in 2D
    and 3D.
+#. **Geomechanics (Drucker-Prager)** — adds pressure-dependent
+   yield, reusing the J2 history-variable pattern in an
+   example-local constitutive driver for soils and weak rock.
 
 Together they cover the two solver patterns TensorMesh uses for
 solid problems:
@@ -58,6 +61,12 @@ The order below mirrors solver complexity.
 
       Plane-strain J2 plasticity with isotropic hardening, load / unload cycle, plus a 3D cube.
 
+   .. grid-item-card:: Geomechanics: Drucker-Prager
+      :link: drucker_prager_triaxial
+      :link-type: doc
+
+      Pressure-dependent Drucker-Prager plasticity in a small triaxial-compression driver.
+
 
 .. toctree::
    :hidden:
@@ -67,3 +76,4 @@ The order below mirrors solver complexity.
    hyperelastic_beam
    hertzian_contact
    plasticity_strip
+   drucker_prager_triaxial
