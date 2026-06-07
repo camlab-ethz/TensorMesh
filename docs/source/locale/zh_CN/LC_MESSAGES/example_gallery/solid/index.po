@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-22 23:00+0200\n"
+"POT-Creation-Date: 2026-06-07 15:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_CN <LL@li.org>\n"
@@ -27,10 +27,11 @@ msgstr "固体力学"
 #: ../../source/example_gallery/solid/index.rst:4
 #: e68cf17c677b49a28e5b614c73833fb3
 msgid ""
-"Four worked solid-mechanics examples in ``examples/solid/``, built as a "
+"Five worked solid-mechanics examples in ``examples/solid/``, built as a "
 "progressive ladder — each rung adds exactly one new concept on top of the "
 "previous one:"
-msgstr "``examples/solid/`` 中的四个固体力学完整示例，按照渐进的阶梯式组织——每一级都恰好在上一级之上增加一个新概念："
+msgstr ""
+"五个完整的固体力学算例位于 ``examples/solid/`` 中，它们构成一个循序渐进的阶梯——每一级都在前一级的基础上恰好增加一个新概念："
 
 #: ../../source/example_gallery/solid/index.rst:8
 #: e0fdfb7a49114a7e9486fdbcca1208a4
@@ -59,21 +60,30 @@ msgid ""
 " and a variational constitutive update, in 2D and 3D."
 msgstr "**塑性（J2）** —— 增加了路径相关性：逐求积点的历史变量和变分本构更新，分别在二维和三维中实现。"
 
-#: ../../source/example_gallery/solid/index.rst:18
+#: ../../source/example_gallery/solid/index.rst:17
+#: c40df2b55aac4b8e894f0cc7e565e3b2
+msgid ""
+"**Geomechanics (Drucker-Prager)** — adds pressure-dependent yield, reusing "
+"the J2 history-variable pattern in an example-local constitutive driver for "
+"soils and weak rock."
+msgstr ""
+"**岩土力学 (Drucker-Prager)** —— 增加了压力相关的屈服，复用 J2 历史变量模式，在面向土体和软岩的算例专属本构驱动程序中实现。"
+
+#: ../../source/example_gallery/solid/index.rst:21
 #: 37ddee47191045aaa85a33a5050ea5f6
 msgid ""
 "Together they cover the two solver patterns TensorMesh uses for solid "
 "problems:"
 msgstr "它们合在一起涵盖了 TensorMesh 用于固体问题的两种求解模式："
 
-#: ../../source/example_gallery/solid/index.rst:21
+#: ../../source/example_gallery/solid/index.rst:24
 #: 30b5eb9b03ca4e4bb2d74fc759690e65
 msgid ""
 "**Direct linear solve** for small-strain linear elasticity "
 "(``cantilever_beam``)."
 msgstr "**直接线性求解**\\ ，用于小应变线弹性（\\ ``cantilever_beam``\\ ）。"
 
-#: ../../source/example_gallery/solid/index.rst:23
+#: ../../source/example_gallery/solid/index.rst:26
 #: b695f9369853492199f5dfb3f369545d
 msgid ""
 "**L-BFGS energy minimization** for nonlinear problems where the potential "
@@ -83,57 +93,69 @@ msgstr ""
 "**L-BFGS 能量最小化**\\ ，用于势能有良好定义的非线性问题——超弹性、接触和塑性（\\ ``hyperelastic_beam``\\ "
 "、\\ ``hertzian_contact``\\ 、\\ ``plasticity_strip``\\ ）。"
 
-#: ../../source/example_gallery/solid/index.rst:28
+#: ../../source/example_gallery/solid/index.rst:31
 #: e573fa8234c64a7ebb080754ec562e1a
 msgid "The order below mirrors solver complexity."
 msgstr "下面的顺序对应求解器复杂度的递增。"
 
-#: ../../source/example_gallery/solid/index.rst:33
+#: ../../source/example_gallery/solid/index.rst:36
 #: f9918fdea1d14b2ea5a739052db74900
 msgid "Cantilever Beam"
 msgstr "悬臂梁"
 
-#: ../../source/example_gallery/solid/index.rst:38
+#: ../../source/example_gallery/solid/index.rst:41
 #: 097965d4324248dd8ed9250d1b4a0fb0
 msgid ""
 "Linear elasticity, steel cantilever with a tip load — the simplest end-to-"
 "end recipe."
 msgstr "线弹性，端部受载的钢制悬臂梁——最简单的端到端流程。"
 
-#: ../../source/example_gallery/solid/index.rst:40
+#: ../../source/example_gallery/solid/index.rst:43
 #: bf343b5c52fb4589acf9e9f7ce8c5a20
 msgid "Hyperelastic Beam"
 msgstr "超弹性梁"
 
-#: ../../source/example_gallery/solid/index.rst:45
+#: ../../source/example_gallery/solid/index.rst:48
 #: 35bfe430e52841b788acbeee306f4b24
 msgid ""
 "Rubber beam under torsion, compressible Neo-Hookean, L-BFGS load stepping."
 msgstr "扭转下的橡胶梁，可压缩新胡克，L-BFGS 载荷步进。"
 
-#: ../../source/example_gallery/solid/index.rst:47
+#: ../../source/example_gallery/solid/index.rst:50
 #: 0af782fecdce4117b5f8ab0ee626f229
 msgid "Hertzian Contact"
 msgstr "赫兹接触"
 
-#: ../../source/example_gallery/solid/index.rst:52
+#: ../../source/example_gallery/solid/index.rst:55
 #: eed739db7cde4eaa9ac19451b8aa0a70
 msgid ""
 "Penalty contact between a circular indenter and an elastic block, checked "
 "against the Hertz solution."
 msgstr "圆形压头与弹性体之间的罚函数接触，并与赫兹解进行对照。"
 
-#: ../../source/example_gallery/solid/index.rst:54
+#: ../../source/example_gallery/solid/index.rst:57
 #: c7dc601db2ed4f83bd420436d9795ef7
 msgid "Plasticity (J2)"
 msgstr "塑性（J2）"
 
-#: ../../source/example_gallery/solid/index.rst:59
+#: ../../source/example_gallery/solid/index.rst:62
 #: a1d139a4458749bc85a4549c1faa8c98
 msgid ""
 "Plane-strain J2 plasticity with isotropic hardening, load / unload cycle, "
 "plus a 3D cube."
 msgstr "带各向同性硬化的平面应变 J2 塑性，加载/卸载循环，外加一个三维立方体。"
+
+#: ../../source/example_gallery/solid/index.rst:64
+#: 5eb629297a6a4a0da86f63fdabe26c2d
+msgid "Geomechanics: Drucker-Prager"
+msgstr "岩土力学：Drucker-Prager"
+
+#: ../../source/example_gallery/solid/index.rst:68
+#: 14361fa8abb748b3a3cc24d5eb132175
+msgid ""
+"Pressure-dependent Drucker-Prager plasticity in a small triaxial-compression"
+" driver."
+msgstr "小型三轴压缩驱动程序中的压力相关 Drucker-Prager 塑性。"
 
 #~ msgid ""
 #~ "Seven worked solid-mechanics examples in ``examples/solid/``, walking from "
