@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Auto-fill untranslated / fuzzy prose ``.po`` entries (EN -> zh_CN) via Claude.
+"""Auto-fill untranslated / fuzzy prose ``.po`` entries (EN -> zh_CN) via an LLM.
 
 This automates step 3 of ``docs/TRANSLATION_GUIDE.md`` — instead of pasting each
 catalog into an LLM by hand, it walks the Sphinx gettext catalogs under
@@ -10,22 +10,26 @@ rules, writes the result back, and runs the CJK escaped-space post-process.
 It is **incremental and idempotent**: only empty/fuzzy entries are touched, so a
 re-run after ``make intl-update-prose`` translates just the newly-changed
 strings (existing human translations are never overwritten). ``api/`` (autodoc
-docstrings) and ``_archive/`` (archived examples) are skipped, matching the
-guide's scope.
+docstrings) and ``_archive/`` (archived examples) are skipped.
+
+Two providers (auto-detected from whichever API key is set, or via --provider):
+  * ``anthropic`` (default) — ``claude-sonnet-4-6``, needs ``ANTHROPIC_API_KEY``.
+  * ``kimi`` — Moonshot ``kimi-k2.6`` (strong for Chinese), needs
+    ``MOONSHOT_API_KEY``. Kimi speaks the OpenAI API, so this path uses the
+    ``openai`` SDK and plain JSON output (Kimi can't force a tool call).
 
 Usage (run from ``docs/``)::
 
-    export ANTHROPIC_API_KEY=sk-ant-...
+    pip install -r requirements-translate.txt
+    export ANTHROPIC_API_KEY=sk-ant-...        # …or MOONSHOT_API_KEY=sk-...
     python scripts/translate_po.py                 # translate every prose catalog
     python scripts/translate_po.py --dry-run       # list the gaps, call nothing
-    python scripts/translate_po.py --files getting_started/index.po user_guide/meshes.po
-    python scripts/translate_po.py --no-cjk-fix    # skip the spacing pass
+    python scripts/translate_po.py --provider kimi # force Kimi
+    python scripts/translate_po.py --files getting_started/index.po
 
 Or via the Makefile (refreshes the catalogs first, then translates)::
 
     make intl-translate
-
-Deps: ``pip install -r requirements-translate.txt`` (anthropic + polib).
 """
 
 from __future__ import annotations
@@ -50,23 +54,34 @@ LOCALE_DIR = DOCS_DIR / "source" / "locale" / "zh_CN" / "LC_MESSAGES"
 # Skip auto-extracted API docstrings and archived examples (see TRANSLATION_GUIDE.md).
 SKIP_PARTS = ("api", "_archive")
 
-# The user explicitly chose Sonnet for this incremental-translation workload
-# (good enough for glossary-constrained technical translation, far cheaper than
-# Opus). Bare model string — do NOT append a date suffix.
-MODEL = "claude-sonnet-4-6"
+MODEL_ANTHROPIC = "claude-sonnet-4-6"   # bare string — do NOT append a date suffix
+MODEL_KIMI = "kimi-k2.6"                # current Moonshot chat model
+KIMI_BASE_URL = "https://api.moonshot.ai/v1"   # .cn endpoint via MOONSHOT_BASE_URL
+
 MAX_TOKENS = 8192
 BATCH_SIZE = 40          # entries per API call; translation strings are short
 
-SYSTEM = """\
+# --- Shared prompt pieces (the I/O instruction differs per provider) ---------
+
+_TASK = """\
 You are a professional technical translator localizing the documentation of
 TensorMesh -- a PyTorch-based finite element method (FEM) library -- from English
-into Simplified Chinese (zh_CN).
+into Simplified Chinese (zh_CN)."""
 
+_IO_ANTHROPIC = """\
 You receive a JSON array of entries, each {"i": <int>, "en": "<English>"}.
 Translate each "en" into natural, professional Simplified Chinese as a native FEM
 researcher would write it, and return them through the submit_translations tool
-as {"i": <same int>, "zh": "<translation>"}. Return exactly one zh per input i.
+as {"i": <same int>, "zh": "<translation>"}. Return exactly one zh per input i."""
 
+_IO_KIMI = """\
+You receive a JSON array of entries, each {"i": <int>, "en": "<English>"}.
+Translate each "en" into natural, professional Simplified Chinese as a native FEM
+researcher would write it. Reply with ONLY a JSON object of the form
+{"translations": [{"i": <same int>, "zh": "<translation>"}, ...]} -- exactly one
+object per input i, no markdown code fences, no commentary before or after."""
+
+_RULES = """\
 Rules:
 1. Preserve reStructuredText / Sphinx inline markup verbatim, with the exact
    backtick / colon / asterisk counts:
@@ -110,9 +125,12 @@ Rules:
    forward/backward pass -> 前向/反向传播; GPU acceleration -> GPU 加速.
 
 Do NOT insert CJK spacing escapes (the `\\ ` backslash-space between markup and
-Chinese characters) -- a separate post-processing step handles that.
-"""
+Chinese characters) -- a separate post-processing step handles that."""
 
+SYSTEM_ANTHROPIC = f"{_TASK}\n\n{_IO_ANTHROPIC}\n\n{_RULES}\n"
+SYSTEM_KIMI = f"{_TASK}\n\n{_IO_KIMI}\n\n{_RULES}\n"
+
+# Anthropic structured-output tool (Kimi can't force tool calls, so it uses JSON).
 TOOL = {
     "name": "submit_translations",
     "description": "Return the Simplified-Chinese translation for each given entry.",
@@ -193,34 +211,119 @@ def discover(files: list[str] | None) -> list[Path]:
 
 
 # ---------------------------------------------------------------------------
-# Translation
+# Providers — each returns {index_in_batch: chinese} for a batch of entries
 # ---------------------------------------------------------------------------
 
-def translate_batch(client, batch: list[polib.POEntry]) -> dict[int, str]:
-    """Translate one batch; return {index_in_batch: chinese}."""
-    payload = json.dumps(
-        [{"i": idx, "en": e.msgid} for idx, e in enumerate(batch)],
-        ensure_ascii=False,
-    )
-    resp = client.messages.create(
-        model=MODEL,
-        max_tokens=MAX_TOKENS,
-        thinking={"type": "disabled"},          # translation needs no reasoning
-        output_config={"effort": "low"},        # Sonnet 4.6 defaults to high; rein it in
-        system=[{"type": "text", "text": SYSTEM, "cache_control": {"type": "ephemeral"}}],
-        tools=[TOOL],
-        tool_choice={"type": "tool", "name": "submit_translations"},
-        messages=[{"role": "user", "content": "Translate these entries:\n\n" + payload}],
-    )
-    out: dict[int, str] = {}
-    for block in resp.content:
-        if block.type == "tool_use" and block.name == "submit_translations":
-            for t in block.input.get("translations", []):
+def _payload(batch: list[polib.POEntry]) -> str:
+    arr = [{"i": idx, "en": e.msgid} for idx, e in enumerate(batch)]
+    return "Translate these entries:\n\n" + json.dumps(arr, ensure_ascii=False)
+
+
+def _extract_json(text: str) -> dict:
+    """Parse a JSON object from model text, tolerating ``` fences / stray prose."""
+    text = text.strip()
+    if text.startswith("```"):
+        text = re.sub(r"^```[a-zA-Z0-9]*\s*", "", text)
+        text = re.sub(r"\s*```$", "", text).strip()
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        start, end = text.find("{"), text.rfind("}")
+        if 0 <= start < end:
+            return json.loads(text[start:end + 1])
+        raise
+
+
+def make_anthropic_translator(model: str):
+    if not os.environ.get("ANTHROPIC_API_KEY"):
+        raise SystemExit("error: set ANTHROPIC_API_KEY for --provider anthropic.")
+    import anthropic
+    client = anthropic.Anthropic()
+
+    def translate(batch: list[polib.POEntry]) -> dict[int, str]:
+        resp = client.messages.create(
+            model=model,
+            max_tokens=MAX_TOKENS,
+            thinking={"type": "disabled"},          # translation needs no reasoning
+            output_config={"effort": "low"},        # Sonnet 4.6 defaults to high; rein it in
+            system=[{"type": "text", "text": SYSTEM_ANTHROPIC,
+                     "cache_control": {"type": "ephemeral"}}],
+            tools=[TOOL],
+            tool_choice={"type": "tool", "name": "submit_translations"},
+            messages=[{"role": "user", "content": _payload(batch)}],
+        )
+        out: dict[int, str] = {}
+        for block in resp.content:
+            if block.type == "tool_use" and block.name == "submit_translations":
+                for t in block.input.get("translations", []):
+                    out[int(t["i"])] = t["zh"]
+        return out
+
+    return translate
+
+
+def make_kimi_translator(model: str):
+    key = os.environ.get("MOONSHOT_API_KEY") or os.environ.get("KIMI_API_KEY")
+    if not key:
+        raise SystemExit("error: set MOONSHOT_API_KEY (or KIMI_API_KEY) for --provider kimi.")
+    from openai import OpenAI    # Kimi is OpenAI-API-compatible
+    client = OpenAI(api_key=key, base_url=os.environ.get("MOONSHOT_BASE_URL", KIMI_BASE_URL))
+
+    def translate(batch: list[polib.POEntry]) -> dict[int, str]:
+        kwargs = dict(
+            model=model,
+            max_tokens=MAX_TOKENS,
+            messages=[
+                {"role": "system", "content": SYSTEM_KIMI},
+                {"role": "user", "content": _payload(batch)},
+            ],
+        )
+        # k2.6/k2.5 tie temperature to think/non-think mode; let the user opt in.
+        temp = os.environ.get("KIMI_TEMPERATURE")
+        if temp:
+            kwargs["temperature"] = float(temp)
+        resp = client.chat.completions.create(**kwargs)
+        content = resp.choices[0].message.content or ""
+        try:
+            data = _extract_json(content)
+        except (json.JSONDecodeError, ValueError):
+            print("    ! could not parse JSON from this Kimi batch (will re-run on next pass)",
+                  file=sys.stderr)
+            return {}
+        out: dict[int, str] = {}
+        for t in data.get("translations", []):
+            try:
                 out[int(t["i"])] = t["zh"]
-    return out
+            except (KeyError, TypeError, ValueError):
+                continue
+        return out
+
+    return translate
 
 
-def process_file(client, path: Path, do_cjk: bool) -> int:
+def detect_provider() -> str | None:
+    if os.environ.get("ANTHROPIC_API_KEY"):
+        return "anthropic"
+    if os.environ.get("MOONSHOT_API_KEY") or os.environ.get("KIMI_API_KEY"):
+        return "kimi"
+    return None
+
+
+def build_translator(provider: str, model: str | None):
+    if provider == "anthropic":
+        m = model or MODEL_ANTHROPIC
+        return make_anthropic_translator(m), m
+    if provider == "kimi":
+        m = model or os.environ.get("KIMI_MODEL") or MODEL_KIMI
+        return make_kimi_translator(m), m
+    raise SystemExit(f"error: unknown provider {provider!r}")
+
+
+# ---------------------------------------------------------------------------
+# Driver
+# ---------------------------------------------------------------------------
+
+def process_file(translate, path: Path, do_cjk: bool) -> int:
     po = polib.pofile(str(path))
     todo = [e for e in po if needs_translation(e)]
     if not todo:
@@ -229,7 +332,7 @@ def process_file(client, path: Path, do_cjk: bool) -> int:
     filled = 0
     for start in range(0, len(todo), BATCH_SIZE):
         batch = todo[start:start + BATCH_SIZE]
-        translations = translate_batch(client, batch)
+        translations = translate(batch)
         for idx, entry in enumerate(batch):
             zh = translations.get(idx)
             if not zh:
@@ -245,13 +348,11 @@ def process_file(client, path: Path, do_cjk: bool) -> int:
     return filled
 
 
-# ---------------------------------------------------------------------------
-# CLI
-# ---------------------------------------------------------------------------
-
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--files", nargs="*", help="catalogs relative to the locale dir (default: all prose)")
+    ap.add_argument("--provider", choices=["anthropic", "kimi"], help="LLM backend (default: auto-detect from API key env)")
+    ap.add_argument("--model", help="override the model id for the chosen provider")
     ap.add_argument("--dry-run", action="store_true", help="report the gaps; make no API calls")
     ap.add_argument("--no-cjk-fix", action="store_true", help="skip the CJK escaped-space pass")
     args = ap.parse_args()
@@ -265,7 +366,7 @@ def main() -> int:
         print("No prose catalogs found.", file=sys.stderr)
         return 1
 
-    # Tally the gaps first so --dry-run needs neither anthropic nor a key.
+    # Tally the gaps first so --dry-run needs no SDK and no key.
     gaps = {p: sum(needs_translation(e) for e in polib.pofile(str(p))) for p in catalogs}
     total = sum(gaps.values())
     pending = {p: n for p, n in gaps.items() if n}
@@ -280,17 +381,20 @@ def main() -> int:
     if total == 0:
         print("\nNothing to translate. ✔")
         return 0
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        print("\nerror: set ANTHROPIC_API_KEY before translating.", file=sys.stderr)
+
+    provider = args.provider or detect_provider()
+    if provider is None:
+        print("\nerror: no API key found. Set ANTHROPIC_API_KEY (Claude) or "
+              "MOONSHOT_API_KEY (Kimi), or pass --provider.", file=sys.stderr)
         return 1
 
-    import anthropic  # lazy: keeps --dry-run dependency-free
+    translate, model = build_translator(provider, args.model)
+    print(f"\nProvider: {provider}   model: {model}")
 
-    client = anthropic.Anthropic()
     filled = 0
     for path in sorted(pending):
-        print(f"\n-> {path.relative_to(LOCALE_DIR)}")
-        filled += process_file(client, path, do_cjk=not args.no_cjk_fix)
+        print(f"-> {path.relative_to(LOCALE_DIR)}")
+        filled += process_file(translate, path, do_cjk=not args.no_cjk_fix)
 
     print(f"\nTranslated {filled}/{total} entries across {len(pending)} catalogs. ✔")
     print("Next: `make zh` and verify the ZH build adds zero warnings over `make html`.")
