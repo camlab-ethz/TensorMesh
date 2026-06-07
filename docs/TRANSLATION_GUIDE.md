@@ -19,24 +19,45 @@ This guide is for translating the TensorMesh documentation from English (canonic
 
 When the English source changes later, run `make intl-update-prose` again — `sphinx-intl` preserves existing translations and marks changed entries as `fuzzy` (you'll see `#, fuzzy` comments in the .po), so you only need to re-review those.
 
+## Automated translation (recommended)
+
+Steps 3–4 above (filling `msgstr`, then the CJK-spacing pass) are automated by `docs/scripts/translate_po.py`. It translates **only empty or `fuzzy`** entries with Claude — using the glossary and markup rules from this guide — then runs the escaped-space pass, so it never overwrites a human translation and is safe to re-run after every `make intl-update-prose`.
+
+```bash
+pip install -r requirements-translate.txt   # anthropic + polib
+export ANTHROPIC_API_KEY=sk-ant-...
+
+make intl-translate                          # refresh prose .po, then translate the gaps
+# …or drive the engine directly:
+python scripts/translate_po.py --dry-run     # list the gaps, call nothing
+python scripts/translate_po.py               # translate all prose catalogs
+python scripts/translate_po.py --files getting_started/index.po
+```
+
+It skips `api/` and `_archive/` automatically (same scope as below) and uses `claude-sonnet-4-6`. Always finish with `make zh` and the quality checklist — the ZH build must add **zero** warnings over the EN baseline. The manual prompt-template path further down remains the reference for the glossary and the exact rules the script encodes.
+
 ## Scope
 
-The `.po` files cover **every** translatable string Sphinx finds — including Python docstrings extracted by autodoc. There are 30 `.po` files total:
+The `.po` files cover **every** translatable string Sphinx finds — including Python docstrings extracted by autodoc. There are 72 `.po` files total:
 
 | Section | Files | Recommended |
 |---|---|---|
 | `index.po` | 1 | Translate |
-| `get_started/*.po` | 3 | Translate |
-| `examples/*.po` | 13 | Translate |
-| `api_reference/*.po` | 12 | **Skip** (leave `msgstr ""` — falls back to English) |
+| `getting_started/*.po` | 4 | Translate |
+| `user_guide/*.po` | 10 | Translate |
+| `example_gallery/*.po` | 21 | Translate |
+| `performance/*.po` | 4 | Translate |
+| `community/*.po` | 6 | Translate |
+| `api/*.po` | 14 | **Skip** (leave `msgstr ""` — falls back to English) |
+| `example_gallery/_archive/*.po` | 12 | **Skip** (archived/unpublished examples) |
 
-**Why skip `api_reference/`:** these are auto-extracted from Python docstrings. Translating them (a) is several times more work than translating the prose pages, (b) creates a maintenance burden every time a docstring changes, (c) most Chinese-speaking devs prefer to read API docs in English so the terminology lines up with the code they're calling. PyTorch's Chinese community follows this same pattern.
+**Why skip `api/`:** these are auto-extracted from Python docstrings. Translating them (a) is several times more work than translating the prose pages, (b) creates a maintenance burden every time a docstring changes, (c) most Chinese-speaking devs prefer to read API docs in English so the terminology lines up with the code they're calling. PyTorch's Chinese community follows this same pattern.
 
-The `make intl-update-prose` target (in `docs/Makefile`) refreshes `index.po`, `get_started/*.po`, and `examples/*.po` only — it does not touch `api_reference/*.po`.
+The `make intl-update-prose` target (in `docs/Makefile`) refreshes the prose sections only (`index`, `getting_started/`, `user_guide/`, `example_gallery/`, `performance/`, `community/`) — it does not touch `api/*.po`.
 
 ## Glossary
 
-Use these consistently across all 17 prose `.po` files. Mixing translations of the same FEM term (e.g. "element" as both 单元 and 元素) reads as unprofessional.
+Use these consistently across all 46 prose `.po` files. Mixing translations of the same FEM term (e.g. "element" as both 单元 and 元素) reads as unprofessional.
 
 | English | 中文 | Notes |
 |---|---|---|
