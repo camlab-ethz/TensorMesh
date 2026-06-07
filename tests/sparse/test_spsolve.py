@@ -9,25 +9,35 @@ from tensormesh.sparse import SparseMatrix
 
 """
     CPU Test
+
+The CPU backend (scipy SuperLU) handles general, non-symmetric matrices via
+pivoted LU, so these build a general — but guaranteed invertible — sparse matrix:
+random off-diagonals made strongly diagonally dominant with n*I. This replaces an
+old ``while A.to_dense().det() != 0`` reject loop, which only rejected *exactly*
+singular draws and let numerically-singular ones slip through, so CI flaked when
+scipy spsolve / torch.linalg.solve then raised "matrix is singular".
 """
+
+
+def _nonsingular_sparse(n=16, density=0.3):
+    """Well-conditioned general (non-symmetric) sparse matrix; always invertible."""
+    A = torch.rand(n, n, dtype=torch.float64)
+    A[A < (1 - density)] = 0.0
+    A = A + n * torch.eye(n, dtype=torch.float64)
+    return SparseMatrix.from_dense(A)
+
 
 def test_spsolve_forward_cpu(n_times=10):
     
     for _ in range(n_times):
-        while True:
-            A      = SparseMatrix.random(16, 16, 0.3).double()
-            if A.to_dense().det() != 0:
-                break
+        A      = _nonsingular_sparse(16)
         b      = torch.rand(16).double()
         u      = A.solve(b)
         assert torch.allclose(A @ u - b, torch.zeros_like(b))
 
 def test_splusolve_forward_cpu(n_times = 10):
     for _ in range(n_times):
-        while True:
-            A      = SparseMatrix.random(16, 16, 0.3).double()
-            if A.to_dense().det() != 0:
-                break
+        A      = _nonsingular_sparse(16)
         b      = torch.rand(16, 8).double()
         u      = A.solve(b)
 
@@ -35,10 +45,7 @@ def test_splusolve_forward_cpu(n_times = 10):
 
 def test_spsolve_backward_cpu(n_times=10):
     for _ in range(n_times):
-        while True:
-            A     = SparseMatrix.random(16, 16, 0.3).double().requires_grad_()
-            if A.to_dense().det() != 0:
-                break
+        A     = _nonsingular_sparse(16).requires_grad_()
         b     = torch.rand(16).double().requires_grad_()
         u     = A.solve(b)
         u.sum().backward()
@@ -56,10 +63,7 @@ def test_spsolve_backward_cpu(n_times=10):
 
 def test_splusolve_backward_cpu(n_times = 10):
     for _ in range(n_times):
-        while True:
-            A     = SparseMatrix.random(16, 16, 0.3).double().requires_grad_()
-            if A.to_dense().det() != 0:
-                break
+        A     = _nonsingular_sparse(16).requires_grad_()
         b     = torch.rand(16, 8).double().requires_grad_()
         u     = A.solve(b)
         u.sum().backward()
