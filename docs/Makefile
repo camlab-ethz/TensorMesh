@@ -12,7 +12,7 @@ BUILDDIR      = _build
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
-.PHONY: help Makefile gettext intl-update intl-update-prose zh html-all
+.PHONY: help Makefile gettext intl-update intl-update-prose intl-translate zh html-all
 
 # Extract translatable strings to _build/gettext/*.pot
 gettext:
@@ -22,13 +22,21 @@ gettext:
 intl-update: gettext
 	@sphinx-intl update -p $(BUILDDIR)/gettext -l zh_CN
 
-# Same as intl-update, but skips api_reference/ (autodoc docstrings).
+# Same as intl-update, but skips api/ (autodoc docstrings).
 # Use this when you only want to refresh translations for prose pages
-# (get_started/, examples/, index.rst); the Chinese site will then fall
-# back to English for the API reference. See docs/TRANSLATION_GUIDE.md.
+# (getting_started/, user_guide/, example_gallery/, performance/,
+# community/, index.rst); the Chinese site will then fall back to English
+# for the API reference. See docs/TRANSLATION_GUIDE.md.
 intl-update-prose: gettext
-	@rm -rf "$(BUILDDIR)/gettext/api_reference"
+	@rm -rf "$(BUILDDIR)/gettext/api"
 	@sphinx-intl update -p $(BUILDDIR)/gettext -l zh_CN
+
+# Auto-fill empty / fuzzy zh translations via Claude (needs ANTHROPIC_API_KEY).
+# Refreshes the prose catalogs, translates the gaps, then runs the CJK-spacing
+# pass. Deps: pip install -r requirements-translate.txt. See
+# docs/TRANSLATION_GUIDE.md and docs/scripts/translate_po.py.
+intl-translate: intl-update-prose
+	@python scripts/translate_po.py
 
 # Build the Chinese site into _build/html/zh/
 zh:
