@@ -22,12 +22,13 @@ gettext:
 intl-update: gettext
 	@sphinx-intl update -p $(BUILDDIR)/gettext -l zh_CN
 
-# Same as intl-update, but skips api_reference/ (autodoc docstrings).
+# Same as intl-update, but skips api/ (autodoc docstrings).
 # Use this when you only want to refresh translations for prose pages
-# (get_started/, examples/, index.rst); the Chinese site will then fall
-# back to English for the API reference. See docs/TRANSLATION_GUIDE.md.
+# (getting_started/, user_guide/, example_gallery/, performance/,
+# community/, index.rst); the Chinese site will then fall back to English
+# for the API reference. See docs/TRANSLATION_GUIDE.md.
 intl-update-prose: gettext
-	@rm -rf "$(BUILDDIR)/gettext/api_reference"
+	@rm -rf "$(BUILDDIR)/gettext/api"
 	@sphinx-intl update -p $(BUILDDIR)/gettext -l zh_CN
 
 # Build the Chinese site into _build/html/zh/
