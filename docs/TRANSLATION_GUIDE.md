@@ -19,6 +19,23 @@ This guide is for translating the TensorMesh documentation from English (canonic
 
 When the English source changes later, run `make intl-update-prose` again — `sphinx-intl` preserves existing translations and marks changed entries as `fuzzy` (you'll see `#, fuzzy` comments in the .po), so you only need to re-review those.
 
+## Automated translation (recommended)
+
+Steps 3–4 above (filling `msgstr`, then the CJK-spacing pass) are automated by `docs/scripts/translate_po.py`. It translates **only empty or `fuzzy`** entries with Claude — using the glossary and markup rules from this guide — then runs the escaped-space pass, so it never overwrites a human translation and is safe to re-run after every `make intl-update-prose`.
+
+```bash
+pip install -r requirements-translate.txt   # anthropic + polib
+export ANTHROPIC_API_KEY=sk-ant-...
+
+make intl-translate                          # refresh prose .po, then translate the gaps
+# …or drive the engine directly:
+python scripts/translate_po.py --dry-run     # list the gaps, call nothing
+python scripts/translate_po.py               # translate all prose catalogs
+python scripts/translate_po.py --files getting_started/index.po
+```
+
+It skips `api/` and `_archive/` automatically (same scope as below) and uses `claude-sonnet-4-6`. Always finish with `make zh` and the quality checklist — the ZH build must add **zero** warnings over the EN baseline. The manual prompt-template path further down remains the reference for the glossary and the exact rules the script encodes.
+
 ## Scope
 
 The `.po` files cover **every** translatable string Sphinx finds — including Python docstrings extracted by autodoc. There are 72 `.po` files total:

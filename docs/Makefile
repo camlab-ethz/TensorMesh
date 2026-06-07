@@ -12,7 +12,7 @@ BUILDDIR      = _build
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
-.PHONY: help Makefile gettext intl-update intl-update-prose zh html-all
+.PHONY: help Makefile gettext intl-update intl-update-prose intl-translate zh html-all
 
 # Extract translatable strings to _build/gettext/*.pot
 gettext:
@@ -30,6 +30,13 @@ intl-update: gettext
 intl-update-prose: gettext
 	@rm -rf "$(BUILDDIR)/gettext/api"
 	@sphinx-intl update -p $(BUILDDIR)/gettext -l zh_CN
+
+# Auto-fill empty / fuzzy zh translations via Claude (needs ANTHROPIC_API_KEY).
+# Refreshes the prose catalogs, translates the gaps, then runs the CJK-spacing
+# pass. Deps: pip install -r requirements-translate.txt. See
+# docs/TRANSLATION_GUIDE.md and docs/scripts/translate_po.py.
+intl-translate: intl-update-prose
+	@python scripts/translate_po.py
 
 # Build the Chinese site into _build/html/zh/
 zh:
