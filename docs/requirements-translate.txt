@@ -1,5 +1,8 @@
 # Dependencies for the auto-translation engine (docs/scripts/translate_po.py).
 # Not needed to *build* the docs — only to fill zh_CN translations.
 #   pip install -r requirements-translate.txt
-anthropic   # needs a recent release for output_config/effort + claude-sonnet-4-6
-polib>=1.2  # reads/writes the gettext .po catalogs
+polib>=1.2   # reads/writes the gettext .po catalogs (always needed)
+
+# Install the SDK for your provider (auto-detected from the API key env):
+anthropic    # --provider anthropic (default): claude-sonnet-4-6, ANTHROPIC_API_KEY
+openai       # --provider kimi: Moonshot kimi-k2.6 (OpenAI-compatible), MOONSHOT_API_KEY

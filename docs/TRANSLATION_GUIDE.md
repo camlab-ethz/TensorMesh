@@ -34,7 +34,12 @@ python scripts/translate_po.py               # translate all prose catalogs
 python scripts/translate_po.py --files getting_started/index.po
 ```
 
-It skips `api/` and `_archive/` automatically (same scope as below) and uses `claude-sonnet-4-6`. Always finish with `make zh` and the quality checklist — the ZH build must add **zero** warnings over the EN baseline. The manual prompt-template path further down remains the reference for the glossary and the exact rules the script encodes.
+It skips `api/` and `_archive/` automatically (same scope as below). Always finish with `make zh` and the quality checklist — the ZH build must add **zero** warnings over the EN baseline. The manual prompt-template path further down remains the reference for the glossary and the exact rules the script encodes.
+
+**Provider.** The engine auto-detects the backend from whichever API key is set (or pass `--provider`):
+
+- **Claude** (default) — `claude-sonnet-4-6`, set `ANTHROPIC_API_KEY` (`pip install anthropic`). Uses strict tool use for guaranteed-valid JSON.
+- **Kimi** — Moonshot `kimi-k2.6` (strong for Chinese), set `MOONSHOT_API_KEY` (`pip install openai`; Kimi is OpenAI-API-compatible). Override the model with `KIMI_MODEL`, the endpoint with `MOONSHOT_BASE_URL` (e.g. `https://api.moonshot.cn/v1` for the China site), and optionally `KIMI_TEMPERATURE`. Kimi can't force a tool call, so this path uses plain JSON output with tolerant parsing.
 
 ## Scope
 

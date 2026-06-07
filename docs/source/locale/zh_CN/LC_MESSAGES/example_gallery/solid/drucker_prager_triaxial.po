@@ -1,0 +1,183 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, TensorMesh Contributors
+# This file is distributed under the same license as the TensorMesh package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: TensorMesh 0.1.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-07 15:56+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:2
+#: f9299d395b664ce7be442be66333ddec
+msgid "Geomechanics: Drucker-Prager triaxial compression"
+msgstr "岩土力学：Drucker-Prager 三轴压缩"
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:4
+#: 11222677ced54716a84d368ffd26bad6
+msgid ""
+"This example introduces a small geomechanics application inside the solid-"
+"mechanics example family.  It implements an example-only Drucker-Prager "
+"plasticity assembler for a pressure-dependent soil or weak-rock material and"
+" drives it through a simple triaxial-compression strain path."
+msgstr ""
+"本示例在固体力学示例系列中介绍了一个小型岩土力学应用。它针对一种压力相关的土体或软岩材料，实现了一个仅作示例用的 Drucker-Prager "
+"塑性装配器，并通过一条简单的三轴压缩应变路径进行驱动。"
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:9
+#: 9ea68c48c2274b00a6047850efde1c10
+msgid ""
+"The goal is deliberately modest: demonstrate TensorMesh conventions for "
+"geomechanics without adding a public API.  The local assembler lives in "
+"``examples/solid/geomechanics/drucker_prager_triaxial/drucker_prager_triaxial.py``."
+msgstr ""
+"目标有意保持简单：在不增加公共 API 的前提下，演示 TensorMesh 在岩土力学中的使用约定。局部装配器位于 "
+"``examples/solid/geomechanics/drucker_prager_triaxial/drucker_prager_triaxial.py``\\"
+" 。"
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:14
+#: e98f084760e941b7b3f447820d37e783
+msgid "Problem"
+msgstr "问题"
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:16
+#: d1151108e9234e578c58fafc39d7759a
+msgid ""
+"The model is small-strain, associated Drucker-Prager plasticity with linear "
+"isotropic hardening.  TensorMesh keeps the internal solid-mechanics "
+"convention stress tension-positive.  For geomechanics reporting, the script "
+"prints axial stress and mean pressure as compression-positive quantities."
+msgstr ""
+"模型为小应变、关联 Drucker-Prager 塑性，并带有线性各向同性硬化。TensorMesh "
+"内部保持固体力学约定：应力以受拉为正。为便于岩土力学报告，脚本将轴向应力和平均压力以受压为正的形式输出。"
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:21
+#: 880edccf9dee4d95bdad74f8f21fd431
+msgid "The yield function is written internally as"
+msgstr "屈服函数在内部写为"
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:23
+#: 7bb9d5bca3284c029b9ae72376ac61b1
+msgid "f(\\sigma, \\alpha) = q + \\eta I_1 - (k + H\\alpha) \\le 0,"
+msgstr "f(\\sigma, \\alpha) = q + \\eta I_1 - (k + H\\alpha) \\le 0,"
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:27
+#: 21eadc3dc1ba48b0b9f40f4db36d4012
+msgid "where"
+msgstr "其中"
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:29
+#: 807e96d7ad8a47248c4608b4ff3c3140
+msgid ""
+"I_1 = \\mathrm{tr}(\\sigma), \\qquad\n"
+"q = \\sqrt{\\frac{3}{2}\\,s:s}, \\qquad\n"
+"p = -\\frac{I_1}{3}."
+msgstr ""
+"I_1 = \\mathrm{tr}(\\sigma), \\qquad\n"
+"q = \\sqrt{\\frac{3}{2}\\,s:s}, \\qquad\n"
+"p = -\\frac{I_1}{3}."
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:35
+#: 03dd1c226e8f487ab0f9376e3667cf3c
+msgid ""
+"Because compression gives negative ``I1`` in the tension-positive "
+"convention, higher confinement lowers ``f`` and delays yielding."
+msgstr "由于在受拉为正约定下受压会导致 ``I1`` 为负，更高的围压会降低 ``f`` 并延迟屈服。"
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:39
+#: ff1eb9b6dd2a4c038fd1e547a552bb3f
+msgid "History variables"
+msgstr "历史变量"
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:41
+#: 9e98d9dfde9e44be97c96b763569ed98
+msgid ""
+"The example follows the same pattern as the existing J2 plasticity example:"
+msgstr "本示例遵循现有 J2 塑性示例的相同模式："
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:43
+#: 84cf6eb5a20949f5804aa991b465ef2c
+msgid ""
+"per-quadrature history variables are stored in ``self.history[etype]``;"
+msgstr "逐求积点的历史变量存储在 ``self.history[etype]`` 中；"
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:44
+#: e9969a1ad4f6480ea27848e732825142
+msgid ""
+"previous-step ``eps_p`` and ``alpha`` are passed through ``element_data``;"
+msgstr "上一步的 ``eps_p`` 和 ``alpha`` 通过 ``element_data`` 传递；"
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:45
+#: 7aa3214f128b4e699529f91195289895
+msgid ""
+"``update_state(u)`` is called after each converged load step under "
+"``torch.no_grad()``."
+msgstr "``update_state(u)`` 在每个收敛的载荷步结束后，于 ``torch.no_grad()`` 上下文中被调用。"
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:48
+#: 430868300bb64032a8a4d27d1c5823d7
+msgid ""
+"The example remains local to the script so the public API can be discussed "
+"after the convention-setting example has been reviewed."
+msgstr "本示例仅保留在脚本内部，以便在确立约定的示例经过审阅后，再讨论公共 API。"
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:52
+#: bbbde41046494e61a0acb94966bcd715
+msgid "Sanity check"
+msgstr "合理性检验"
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:54
+#: 4d64c215fba04414acdd73b91b91bfe1
+msgid "Two confinement levels are run:"
+msgstr "运行两种围压水平："
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:56
+#: 1bb6792689064fc286591860fd76bb84
+msgid "``p0 = 0 kPa``;"
+msgstr "``p0 = 0 kPa``\\ ；"
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:57
+#: a2db93ab73be4269893059981c9d8103
+msgid "``p0 = 100 kPa``."
+msgstr "``p0 = 100 kPa``\\ 。"
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:59
+#: 532919342edd471ba17e5225bcd64c2e
+msgid ""
+"The script checks that the higher-confinement case reaches the elastic trial"
+" yield surface later and that the committed plastic history variable is "
+"monotonic."
+msgstr "脚本验证更高围压的情况更晚到达弹性试探屈服面，且提交的塑性历史变量是单调的。"
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:63
+#: 8ddb22eb5fbe4071bbfdf6b1038b80ef
+msgid "Running it"
+msgstr "运行"
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:70
+#: 6b946f0a874343f9bfe0891c496ceea0
+msgid "For a fast numerical-only run without writing the plot:"
+msgstr "若仅进行快速数值计算而不输出图像："
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:76
+#: e49a1a83c45d4c0c9da54b50ec8418d0
+msgid ""
+"The default run writes ``drucker_prager_triaxial.png`` with axial stress and"
+" plastic-history curves."
+msgstr "默认运行会写入 ``drucker_prager_triaxial.png``\\ ，其中包含轴向应力与塑性历史曲线。"
+
+#: ../../source/example_gallery/solid/drucker_prager_triaxial.rst:80
+#: 716c341deb8f42348636e1d373bb7b5b
+msgid "Core implementation"
+msgstr "核心实现"
