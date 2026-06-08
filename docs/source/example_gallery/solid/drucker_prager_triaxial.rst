@@ -76,6 +76,15 @@ For a fast numerical-only run without writing the plot:
 The default run writes ``drucker_prager_triaxial.png`` with axial stress and
 plastic-history curves.
 
+.. figure:: /_static/solid_mechanics/drucker_prager_triaxial.png
+   :alt: Drucker-Prager triaxial compression response showing axial stress and plastic history for two confinement levels
+   :width: 100%
+
+   Output of ``drucker_prager_triaxial.py``. The left panel shows the
+   compression-positive axial stress response; the right panel shows the
+   committed plastic history variable. The higher-confinement case yields
+   later, matching the pressure-dependent Drucker-Prager sanity check.
+
 Core implementation
 -------------------
 

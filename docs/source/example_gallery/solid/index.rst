@@ -64,6 +64,7 @@ The order below mirrors solver complexity.
    .. grid-item-card:: Geomechanics: Drucker-Prager
       :link: drucker_prager_triaxial
       :link-type: doc
+      :img-top: /_static/solid_mechanics/drucker_prager_triaxial.png
 
       Pressure-dependent Drucker-Prager plasticity in a small triaxial-compression driver.
 
