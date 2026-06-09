@@ -1,0 +1,1686 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
+        <link rel="prefetch" href="../../../_static/logo.png" as="image">
+        <link rel="prefetch" href="../../../_static/logo.png" as="image">
+
+    <link rel="shortcut icon" href="../../../_static/logo.png"><!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>tensormesh.mesh.mesh - TensorMesh</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=95a110e3" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #5B6EE8;
+  --color-brand-content: #149B8E;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">TensorMesh</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../../_static/logo.png" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../../_static/logo.png" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">TensorMesh</span>
+  
+</a><div class="sidebar-language-switcher">
+  <span class="active">English</span>
+  <span class="sep">·</span>
+  <a href="../../../zh/_modules/tensormesh/mesh/mesh.html" rel="alternate" hreflang="zh-CN" title="中文">中文</a>
+</div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../getting_started/index.html">Get Started</a><input aria-label="Toggle navigation of Get Started" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../getting_started/quickstart.html">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../getting_started/verify_install.html">Verify Install</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a><input aria-label="Toggle navigation of User Guide" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/concepts.html">Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/meshes.html">Meshes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/elements_and_quadrature.html">Elements and Quadrature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/forms.html">Forms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/boundary_conditions.html">Boundary Conditions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/linear_solvers.html">Sparse Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/time_integration.html">Time Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/batched_workflows.html">Batched Workflows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/differentiability.html">Differentiability</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../example_gallery/index.html">Example Gallery</a><input aria-label="Toggle navigation of Example Gallery" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/basics.html">Basics &amp; Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/poisson.html">Poisson Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/diffusion.html">Diffusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/wave.html">Wave Equation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../example_gallery/solid/index.html">Solid Mechanics</a><input aria-label="Toggle navigation of Solid Mechanics" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/solid/cantilever_beam.html">Cantilever Beam</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/solid/hyperelastic_beam.html">Hyperelastic Beam (Neo-Hookean)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/solid/hertzian_contact.html">Hertzian Contact</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/solid/plasticity_strip.html">Plasticity (J2 with Isotropic Hardening)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/solid/drucker_prager_triaxial.html">Geomechanics: Drucker-Prager triaxial compression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/solid/elastic_footing.html">Geomechanics: elastic strip footing</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../example_gallery/fluid/index.html">Fluid Mechanics</a><input aria-label="Toggle navigation of Fluid Mechanics" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/fluid/cavity.html">Lid-Driven Cavity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/fluid/cylinder_flow.html">Cylinder Flow (Vortex Shedding)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/fluid/flow_obstacles.html">Flow Past Multiple Obstacles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/fluid/rayleigh_benard.html">Rayleigh-Bénard Convection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/fluid/taylor_green.html">Taylor-Green Vortex (Convergence Study)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/maxwell.html">Magnetostatics (Maxwell)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/inverse_design.html">Inverse Design &amp; Identification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/physics_informed.html">Physics-Informed Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/dataset.html">ML Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/distributed.html">Distributed FEM</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/index.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/mesh.html">tensormesh.mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/element.html">tensormesh.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/assemble.html">tensormesh.assemble</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/operator.html">tensormesh.operator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/sparse.html">tensormesh.sparse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/ode.html">tensormesh.ode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/functional.html">tensormesh.functional</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/optimizer.html">tensormesh.optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/material.html">tensormesh.material</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/distributed.html">tensormesh.distributed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/nn.html">tensormesh.nn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/dataset.html">tensormesh.dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/visualization.html">tensormesh.visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../performance/index.html">Performance</a><input aria-label="Toggle navigation of Performance" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../performance/benchmarks.html">Benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../performance/scaling_guide.html">Scaling Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../performance/profiling.html">Profiling</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../community/index.html">Community</a><input aria-label="Toggle navigation of Community" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../community/discord.html">Discord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../community/github_discussions.html">GitHub Discussions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../community/github_issues.html">GitHub Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../community/contributing.html">Contributing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../community/citing.html">Citing TensorMesh</a></li>
+</ul>
+</li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for tensormesh.mesh.mesh</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">meshio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.adjacency</span><span class="w"> </span><span class="kn">import</span> <span class="n">node_adjacency</span><span class="p">,</span> <span class="n">element_adjacency</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.coloring</span><span class="w"> </span><span class="kn">import</span> <span class="n">graph_coloring</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.partition</span><span class="w"> </span><span class="kn">import</span> <span class="n">graph_partition</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">element</span> <span class="k">as</span> <span class="n">E</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">sparse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">BufferDict</span>
+
+<span class="c1"># Lazy import visualization to avoid matplotlib dependency issues</span>
+<span class="n">V</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_visualization</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">V</span>
+    <span class="k">if</span> <span class="n">V</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">visualization</span> <span class="k">as</span> <span class="n">_V</span>
+        <span class="n">V</span> <span class="o">=</span> <span class="n">_V</span>
+    <span class="k">return</span> <span class="n">V</span>
+
+
+<div class="viewcode-block" id="Mesh">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Mesh</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;FEM mesh — interpolation-node coordinates, per-element-type</span>
+<span class="sd">    connectivity, and point/cell/field data attached to either.</span>
+<span class="sd">    Mixed-element meshes are supported via :attr:`cells` being a</span>
+<span class="sd">    :class:`~tensormesh.nn.BufferDict` keyed by element type string</span>
+<span class="sd">    (e.g. ``&quot;triangle&quot;``, ``&quot;quad&quot;``, ``&quot;tetra&quot;``).</span>
+
+<span class="sd">    A &quot;point&quot; throughout the API means an interpolation node / degree of</span>
+<span class="sd">    freedom — for ``order=1`` this is the corner vertex of an element,</span>
+<span class="sd">    for ``order&gt;=2`` it also includes mid-edge, mid-face, and interior</span>
+<span class="sd">    nodes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mesh : meshio.Mesh</span>
+<span class="sd">        A meshio mesh object to wrap.</span>
+<span class="sd">    reorder : bool, default=False</span>
+<span class="sd">        Whether to convert connectivity from Gmsh/VTK ordering to TensorMesh</span>
+<span class="sd">        internal ordering (delegates to</span>
+<span class="sd">        :meth:`tensormesh.Element.reorder`).</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    points: torch.Tensor</span>
+<span class="sd">        2D tensor of shape :math:`[|\mathcal V|, D]`, where :math:`|\mathcal V|`</span>
+<span class="sd">        is the number of interpolation nodes and :math:`D` is the spatial</span>
+<span class="sd">        dimension. Includes high-order nodes (mid-edge / mid-face /</span>
+<span class="sd">        interior) when the mesh uses ``order &gt;= 2`` elements.</span>
+<span class="sd">    cells: BufferDict[str, torch.Tensor]</span>
+<span class="sd">        Each key is an ``element_type`` string (see</span>
+<span class="sd">        :mod:`tensormesh.element`); the value is a 2D tensor of shape</span>
+<span class="sd">        :math:`[|\mathcal C|, B]`, where :math:`|\mathcal C|` is the number</span>
+<span class="sd">        of elements and :math:`B` is the number of basis functions.</span>
+<span class="sd">    point_data: BufferDict[str, torch.Tensor], optional</span>
+<span class="sd">        Per-point fields, keyed by name.</span>
+<span class="sd">    cell_data: ModuleDict[str, BufferDict[str, torch.Tensor]], optional</span>
+<span class="sd">        Per-element fields. The outer key is an ``element_type``; the</span>
+<span class="sd">        inner key is the field name.</span>
+<span class="sd">    field_data: BufferDict[str, torch.Tensor], optional</span>
+<span class="sd">        Global named fields.</span>
+<span class="sd">    cell_sets: dict, optional</span>
+<span class="sd">        Named subsets of cells, kept in meshio&#39;s native format.</span>
+<span class="sd">    dim2eletyp: Dict[int, List[str]]</span>
+<span class="sd">        Each key is a spatial dimension, and the value is a list of element</span>
+<span class="sd">        types of that dimension present in the mesh.</span>
+<span class="sd">    default_eletyp: str or List[str]</span>
+<span class="sd">        The default element type — a single string for homogeneous meshes,</span>
+<span class="sd">        a list of strings for mixed-element meshes. Exposed publicly via the</span>
+<span class="sd">        :attr:`default_element_type` property.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cells</span><span class="p">:</span><span class="n">BufferDict</span> <span class="c1"># str-&gt;torch.Tensor[n_element,n_basis]</span>
+    <span class="n">point_data</span><span class="p">:</span><span class="n">BufferDict</span> <span class="c1"># str-&gt;torch.Tensor[n_point,...]</span>
+    <span class="n">cell_data</span><span class="p">:</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleDict</span> <span class="c1"># str-&gt;Dict[str,torch.Tensor[n_element,...]]</span>
+    <span class="n">field_data</span><span class="p">:</span><span class="n">BufferDict</span> <span class="c1"># str-&gt;torch.Tensor[n_field,...]</span>
+    <span class="n">cell_sets</span><span class="p">:</span><span class="n">Dict</span>
+    <span class="n">points</span><span class="p">:</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="c1"># [n_point, n_dim]</span>
+    <span class="n">dim2eletyp</span><span class="p">:</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> 
+    <span class="n">default_eletyp</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+
+<div class="viewcode-block" id="Mesh.__init__">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">:</span><span class="n">meshio</span><span class="o">.</span><span class="n">Mesh</span><span class="p">,</span> <span class="n">reorder</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        
+    
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cell</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">cells</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">reorder</span><span class="p">:</span>
+                <span class="c1"># Centralized reorder implementation lives in tensormesh.Element.reorder</span>
+                <span class="c1"># Convert from Gmsh/VTK ordering -&gt; TensorMesh internal ordering.</span>
+                <span class="n">elem_cls</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">element_type2element</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+                <span class="n">data_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+                <span class="n">data_t</span> <span class="o">=</span> <span class="n">elem_cls</span><span class="o">.</span><span class="n">reorder</span><span class="p">(</span><span class="n">data_t</span><span class="p">,</span> <span class="n">to_gmsh</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data_t</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+            
+           
+
+        <span class="c1"># turn is_... or ..._mask to bool</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">point_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;is_&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">key</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_mask&quot;</span><span class="p">):</span>
+                <span class="n">mesh</span><span class="o">.</span><span class="n">point_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">point_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">cell_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">cell_data</span><span class="p">[</span><span class="n">key</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;is_&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">key</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_mask&quot;</span><span class="p">):</span>
+                    <span class="n">mesh</span><span class="o">.</span><span class="n">cell_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_v</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">field_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;is_&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">key</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_mask&quot;</span><span class="p">):</span>
+                <span class="n">mesh</span><span class="o">.</span><span class="n">field_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">field_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+        
+        <span class="c1"># cells</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cells</span>  <span class="o">=</span> <span class="n">BufferDict</span><span class="p">({</span><span class="n">k</span><span class="p">:</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">long</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cells_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
+        
+        <span class="c1"># point data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">point_data</span> <span class="o">=</span> <span class="n">BufferDict</span><span class="p">({</span><span class="n">k</span><span class="p">:</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">point_data</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
+
+        <span class="c1"># cell data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell_data</span>  <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleDict</span><span class="p">({</span>
+            <span class="n">k</span><span class="p">:</span><span class="n">BufferDict</span><span class="p">({</span><span class="n">i</span><span class="p">:</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">_v</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">_v</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cell_data_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">})</span>
+   
+        <span class="c1"># field data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field_data</span> <span class="o">=</span> <span class="n">BufferDict</span><span class="p">({</span><span class="n">k</span><span class="p">:</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">field_data</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
+
+        <span class="c1"># cell setes useless</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell_sets</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cell_sets</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dim2eletyp</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span> <span class="c1"># Dict[int, List[str]]</span>
+        <span class="k">for</span> <span class="n">element_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dim2eletyp</span><span class="p">[</span><span class="n">E</span><span class="o">.</span><span class="n">element_type2dimension</span><span class="p">[</span><span class="n">element_type</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element_type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_eletyp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim2eletyp</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim2eletyp</span><span class="o">.</span><span class="n">keys</span><span class="p">())]</span> 
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_eletyp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># if only one element type, use it as default</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_eletyp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_eletyp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">dimension</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim2eletyp</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span>
+            <span class="s2">&quot;points&quot;</span><span class="p">,</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="p">:</span><span class="n">dimension</span><span class="p">])</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Mesh.register_point_data">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh.register_point_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_point_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register a per-point field on :attr:`point_data`.</span>
+
+<span class="sd">        :attr:`point_data` is a :class:`tensormesh.nn.BufferDict`, so prefer</span>
+<span class="sd">        this method over ``__setitem__`` to make sure the tensor is tracked</span>
+<span class="sd">        as a buffer of the underlying :class:`torch.nn.Module`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        key: str</span>
+<span class="sd">            the key of the value</span>
+<span class="sd">        value: torch.Tensor</span>
+<span class="sd">            tensor of shape :math:`[|\\mathcal V|, ...]`, where :math:`|\\mathcal V|` is the number of interpolation nodes (``mesh.n_points``)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tensormesh.Mesh</span>
+<span class="sd">            self will be returned</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_data</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="sa">f</span><span class="s2">&quot;the key </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> already exists in point_data&quot;</span>
+        <span class="k">assert</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;the first dimension of value should be </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">, but got </span><span class="si">{</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">point_data</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+      
+<div class="viewcode-block" id="Mesh.register_element_data">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh.register_element_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_element_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register a per-element field on :attr:`cell_data`.</span>
+
+<span class="sd">        For homogeneous meshes ``value`` may be a single tensor; for</span>
+<span class="sd">        mixed-element meshes pass a dict keyed by element type with one</span>
+<span class="sd">        tensor per type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">(),</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Only for homogenous elements, value can be passed as torch.Tensor, else it should be Dict[element_type,torch.Tensor]&quot;</span>
+            <span class="k">assert</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;the first dimension of value should be </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">, but got </span><span class="si">{</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cell_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">default_element_type</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span>  <span class="n">value</span>    
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;The value should be either torch.Tensor or Dict[element_type, torch.Tensor]&quot;</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_element_type</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;The keys of value should be exactly the same as default_element_type, but got </span><span class="si">{</span><span class="n">value</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+
+            <span class="k">for</span> <span class="n">element_type</span><span class="p">,</span> <span class="n">_value</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">assert</span> <span class="n">_value</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">(</span><span class="n">element_type</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;the first dimension of value should be </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">(</span><span class="n">element_type</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">, but got </span><span class="si">{</span><span class="n">_value</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cell_data</span><span class="p">[</span><span class="n">element_type</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_value</span>  
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+        <span class="c1"># return f&quot;Mesh(n_points={self.points.shape[0]}, cells=({&#39;,&#39;.join(f&#39;{k}:{v.shape}&#39; for k,v in self.cells.items())}))&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Build cell_data string safely (handle empty nested dicts)</span>
+        <span class="n">cell_data_strs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">first_val</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+                <span class="n">cell_data_strs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">first_val</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s1">):</span><span class="si">{</span><span class="n">first_val</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">first_val</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">cell_data_str</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cell_data_strs</span><span class="p">)</span> <span class="k">if</span> <span class="n">cell_data_strs</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        
+        <span class="c1"># Build point_data and field_data strings safely</span>
+        <span class="n">point_data_str</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s1">):</span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">v</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span> 
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_data</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        
+        <span class="n">field_data_str</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s1">):</span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">v</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span> 
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_data</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Mesh(</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;    points: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;    cells: </span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="o">.</span><span class="n">items</span><span class="p">())</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;    point_data: </span><span class="si">{</span><span class="n">point_data_str</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;    cell_data: </span><span class="si">{</span><span class="n">cell_data_str</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;    field_data: </span><span class="si">{</span><span class="n">field_data_str</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;)&quot;</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="Mesh.to_meshio">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh.to_meshio">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_meshio</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reorder</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">meshio</span><span class="o">.</span><span class="n">Mesh</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Export this mesh as an in-memory ``meshio.Mesh``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        reorder : bool, default=False</span>
+<span class="sd">            If :obj:`True`, convert connectivity from the internal ordering</span>
+<span class="sd">            back to Gmsh/VTK ordering before returning (delegates to</span>
+<span class="sd">            :meth:`tensormesh.Element.reorder`).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        meshio.Mesh</span>
+<span class="sd">            The meshio mesh object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1"># Build cells (optionally reorder to Gmsh/VTK for export)</span>
+        <span class="n">cells_out</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">conn</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">reorder</span><span class="p">:</span>
+                <span class="n">elem_cls</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">element_type2element</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+                <span class="n">conn</span> <span class="o">=</span> <span class="n">elem_cls</span><span class="o">.</span><span class="n">reorder</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">to_gmsh</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">cells_out</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+        <span class="n">mesh</span> <span class="o">=</span> <span class="n">meshio</span><span class="o">.</span><span class="n">Mesh</span><span class="p">(</span>
+            <span class="n">points</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span>
+            <span class="n">cells</span>  <span class="o">=</span> <span class="n">cells_out</span><span class="p">,</span>
+            <span class="n">point_data</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">v</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_data</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+            <span class="n">cell_data</span>  <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:[</span><span class="n">_v</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> <span class="k">for</span> <span class="n">_v</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_data</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+            <span class="n">field_data</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">v</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_data</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+            <span class="n">cell_sets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_sets</span>
+        <span class="p">)</span>  
+        <span class="k">return</span> <span class="n">mesh</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Spatial dimension of the mesh (``2`` for surface meshes, ``3`` for volume meshes).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Mesh.save">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh.save">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">file_format</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write this mesh to disk via ``meshio.write``.</span>
+
+<span class="sd">        Boolean point/cell/field arrays are cast to ``float`` before writing</span>
+<span class="sd">        (meshio does not support ``bool``). For ``.vtk`` / ``.vtu`` outputs</span>
+<span class="sd">        2-D meshes are padded to 3-D and connectivity is reordered to the</span>
+<span class="sd">        Gmsh/VTK convention.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        file_name: str</span>
+<span class="sd">            the name of the file</span>
+<span class="sd">        file_format: str</span>
+<span class="sd">            the format of the file, e.g., &#39;msh&#39;, &#39;vtk&#39;, &#39;obj&#39;</span>
+<span class="sd">            default is the file extension</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tensormesh.Mesh</span>
+<span class="sd">            self will be returned</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">do_reorder</span> <span class="o">=</span> <span class="n">file_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s2">&quot;.vtk&quot;</span><span class="p">,</span> <span class="s2">&quot;.vtu&quot;</span><span class="p">))</span>
+        <span class="n">mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_meshio</span><span class="p">(</span><span class="n">reorder</span><span class="o">=</span><span class="n">do_reorder</span><span class="p">)</span>
+        <span class="c1"># turn is_... or ..._mask to float</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">point_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;is_&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">key</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_mask&quot;</span><span class="p">):</span>
+                <span class="n">mesh</span><span class="o">.</span><span class="n">point_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">point_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">cell_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">cell_data</span><span class="p">[</span><span class="n">key</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;is_&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">key</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_mask&quot;</span><span class="p">):</span>
+                    <span class="n">mesh</span><span class="o">.</span><span class="n">cell_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_v</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">field_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;is_&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">key</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_mask&quot;</span><span class="p">):</span>
+                <span class="n">mesh</span><span class="o">.</span><span class="n">field_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">field_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+        
+        <span class="c1"># assert no bool variables, since file cannot save bool</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">point_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">assert</span> <span class="n">mesh</span><span class="o">.</span><span class="n">point_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="nb">bool</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;PointData: bool is not supported in meshio, but got </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">cell_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">cell_data</span><span class="p">[</span><span class="n">key</span><span class="p">]):</span>
+                <span class="k">assert</span> <span class="n">_v</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="nb">bool</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;CellData: bool is not supported in meshio, but got </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">field_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">assert</span> <span class="n">mesh</span><span class="o">.</span><span class="n">field_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="nb">bool</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;FieldData: bool is not supported in meshio, but got </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span>
+        
+        <span class="k">if</span> <span class="n">file_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.vtk&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">file_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.vtu&quot;</span><span class="p">):</span>
+            <span class="c1"># if vtk/vtu turn 2d to 3d </span>
+            <span class="k">if</span> <span class="n">mesh</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">mesh</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">mesh</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">mesh</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">))],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;u&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">point_data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">mesh</span><span class="o">.</span><span class="n">point_data</span><span class="p">[</span><span class="s2">&quot;u&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">mesh</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">))</span> 
+
+            <span class="c1"># they don&#39;t support cell_sets either</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cell_sets</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">mesh</span><span class="o">.</span><span class="n">cell_sets</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+         
+        <span class="n">meshio</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">file_format</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+    <span class="n">to_file</span> <span class="o">=</span> <span class="n">save</span>
+    
+<div class="viewcode-block" id="Mesh.node_adjacency">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh.node_adjacency">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">node_adjacency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_type</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">sparse</span><span class="o">.</span><span class="n">SparseMatrix</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;get the node adjacency matrix, inside each element, the nodes are considered fully connected</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        element_type : str or Iterable[str] or None</span>
+<span class="sd">            the type of the elements</span>
+<span class="sd">            if :obj:`None` is the ``default_element_type``</span>
+<span class="sd">            default : :obj:`None`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        SparseMatrix </span>
+<span class="sd">            the adjacency matrix of points :math:`[|\\mathcal V|,|\\mathcal V|]`, where :math:`|\\mathcal V|` is the number of interpolation nodes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">elements</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">(</span><span class="n">element_type</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">elements</span> <span class="o">=</span> <span class="n">elements</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">node_adjacency</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_points</span><span class="p">)</span> <span class="c1"># type:ignore</span></div>
+
+
+<div class="viewcode-block" id="Mesh.element_adjacency">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh.element_adjacency">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">element_adjacency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_type</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">sparse</span><span class="o">.</span><span class="n">SparseMatrix</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;get the element adjacency matrix, the element are considered connected only if they share a boundary/facet</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        element_type : str or Iterable[str] or None</span>
+<span class="sd">            the type of the elements, should be of same dimension</span>
+<span class="sd">            if :obj:`None` is the ``default_element_type``</span>
+<span class="sd">            default : :obj:`None`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        SparseMatrix </span>
+<span class="sd">            the adjacency matrix of elements :math:`[|\\mathcal C|,|\\mathcal C|]`, where :math:`|\\mathcal C|` is the number of elements</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">elements</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">(</span><span class="n">element_type</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="n">elements</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">default_element_type</span><span class="p">:</span><span class="n">elements</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">element_adjacency</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span> <span class="c1"># type:ignore</span></div>
+
+
+<div class="viewcode-block" id="Mesh.partition">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh.partition">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">partition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_parts</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s2">&quot;spectral&quot;</span><span class="p">,</span> <span class="n">element_type</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Partition the mesh into n_parts</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_parts : int</span>
+<span class="sd">            Number of partitions</span>
+<span class="sd">        method : str, optional</span>
+<span class="sd">            Partition method: &#39;spectral&#39; or &#39;metis&#39;. Default is &#39;spectral&#39;.</span>
+<span class="sd">        element_type : str or Iterable[str] or None</span>
+<span class="sd">            the type of the elements to partition based on connectivity.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            IntTensor of shape [n_elements] containing partition ID</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">adj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element_adjacency</span><span class="p">(</span><span class="n">element_type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">graph_partition</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">n_parts</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Mesh.color">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh.color">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_type</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Color the mesh elements such that no adjacent elements share the same color.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        element_type : str or Iterable[str] or None</span>
+<span class="sd">            the type of the elements.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            IntTensor of shape [n_elements] containing color ID</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">adj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element_adjacency</span><span class="p">(</span><span class="n">element_type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">graph_coloring</span><span class="p">(</span><span class="n">adj</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Mesh.elements">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh.elements">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_type</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span><span class="o">=</span><span class="kc">None</span>
+                 <span class="p">)</span><span class="o">-&gt;</span><span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the element connectivity for specified element types.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        1. Get elements of default type:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            import tensormesh</span>
+<span class="sd">            mesh = tensormesh.Mesh.gen_rectangle()</span>
+<span class="sd">            elements = mesh.elements() # Returns tensor of shape [n_elements, n_basis]</span>
+
+<span class="sd">        2. Get elements of specific type:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            elements = mesh.elements(&quot;tri6&quot;) # Returns tensor for triangle elements</span>
+<span class="sd">            </span>
+<span class="sd">        3. Get elements of multiple types:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            elements = mesh.elements([&quot;tri6&quot;, &quot;quad9&quot;]) # Returns dict of tensors</span>
+<span class="sd">            </span>
+<span class="sd">        4. Get all element types:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            elements = mesh.elements(&quot;all&quot;) # Returns dict of all element tensors</span>
+
+<span class="sd">        5. Get elements of specific dimension:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            # Get all 2D elements (triangles, quads)</span>
+<span class="sd">            elements = mesh.elements(2) # Returns dict of 2D element tensors</span>
+<span class="sd">            </span>
+<span class="sd">            # Get all elements matching mesh dimension</span>
+<span class="sd">            elements = mesh.elements(-1) # Same as mesh.elements(mesh.dim)</span>
+<span class="sd">            </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        element_type: str or Iterable[str] or int or None </span>
+<span class="sd">            the type of the elements:</span>
+
+<span class="sd">            - if :obj:`all`, return dict of all elements</span>
+<span class="sd">            - if :obj:`int`, return dict of elements of that dimension</span>
+<span class="sd">            - if :obj:`str`, return elements of that type</span>
+<span class="sd">            - if ``Iterable[str]``, return elements of those types</span>
+<span class="sd">            - if :obj:`None`, use :obj:`default_eletyp` (default)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor or Dict[str, torch.Tensor] </span>
+
+<span class="sd">            - if ``element_type`` is :obj:`str`, return the corresponding elements connections of shape :math:`[|\\mathcal C|, B]`, where :math:`|\\mathcal C|` is the number of elements and :math:`B` is the number of basis functions</span>
+<span class="sd">            - if ``element_type`` is :obj:`int`, return dict of elements of that dimension</span>
+<span class="sd">            - if ``element_type`` is ``Iterable[str]``, return the mapping of corresponding elements connections of shape :math:`[|\\mathcal C|, B]`, where :math:`|\\mathcal C|` is the number of elements and :math:`B` is the number of basis functions</span>
+<span class="sd">            - if ``element_type`` is :obj:`None`, the ``element_type`` will be the ``default_element_type`` and do as above</span>
+<span class="sd">            - if ``element_type`` is ``&quot;all&quot;``, return all elements as a dictionary</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">element_type</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span>
+        <span class="k">elif</span> <span class="n">element_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_eletyp</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">default_eletyp</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_eletyp</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_element_type</span><span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;default_eletyp must be str or list, but got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_eletyp</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element_type</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">element_type</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">element_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim2eletyp</span><span class="p">[</span><span class="n">element_type</span><span class="p">]}</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element_type</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">element_type</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element_type</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">element_type</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;element_type must be str or Iterable[str], but got </span><span class="si">{</span><span class="n">element_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="Mesh.clone">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh.clone">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="s1">&#39;Mesh&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a deep copy of the mesh that preserves the autograd graph.</span>
+
+<span class="sd">        Calling :obj:`torch.Tensor.clone` on the underlying buffers detaches</span>
+<span class="sd">        them from the computation graph, so gradients flowing through</span>
+<span class="sd">        ``points`` / ``cell_data`` would vanish. This method round-trips</span>
+<span class="sd">        through ``meshio`` to reconstruct the mesh while keeping the</span>
+<span class="sd">        connectivity and metadata intact.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tensormesh.Mesh</span>
+<span class="sd">            The cloned mesh.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Mesh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_meshio</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="Mesh.plot">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh.plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">|</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="n">Iterable</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]]</span><span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+                   <span class="n">save_path</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+                   <span class="n">dt</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+                   <span class="n">show_mesh</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> 
+                   <span class="n">fix_clim</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                   <span class="n">show</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                   <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot the mesh, optionally overlaying scalar fields or animations.</span>
+
+<span class="sd">        With no ``values`` only the mesh wireframe is drawn. Passing</span>
+<span class="sd">        ``Dict[str, torch.Tensor]`` produces a static multi-panel figure;</span>
+<span class="sd">        passing ``Dict[str, List[torch.Tensor]]`` produces an mp4/gif</span>
+<span class="sd">        animation (one frame per list element).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        values: None or Dict[str, torch.Tensor] or Dict[str, List[torch.Tensor]]</span>
+<span class="sd">            the values to plot, if None, only plot the mesh</span>
+<span class="sd">            if ``Dict[str, torch.Tensor]``, a static subplots will be plotted, the key is the name of the subplot, the value is of shape :math:`[|\\mathcal V|]`, where :math:`|\\mathcal V|` is the number of interpolation nodes</span>
+<span class="sd">            if ``Dict[str, List[torch.Tensor]]``, a mp4/gif will be plotted, the key is the name of the subplot, each item in the list is of shape :math:`[|\\mathcal V|]`, where :math:`|\\mathcal V|` is the number of interpolation nodes</span>
+<span class="sd">            default: None</span>
+<span class="sd">        save_path: str or None</span>
+<span class="sd">            the path to save the plot, if None, it will not be saved</span>
+<span class="sd">            if the ``values`` is passed in as ``Dict[str, List[torch.Tensor]]``, the ``save_path`` must endswith &#39;.mp4&#39; or &#39;.gif&#39;</span>
+<span class="sd">            default: None</span>
+<span class="sd">        dt: float or None</span>
+<span class="sd">            the time interval between each frame, only used when ``values`` is passed in as ``Dict[str, List[torch.Tensor]]``</span>
+<span class="sd">            default: None</span>
+<span class="sd">        show_mesh: bool</span>
+<span class="sd">            whether to overlay the mesh wireframe (and, at ``order &gt;= 2``,</span>
+<span class="sd">            the interpolation nodes) on top of the colour-filled field.</span>
+<span class="sd">            Only takes effect when ``values`` is given.</span>
+<span class="sd">            default: False</span>
+<span class="sd">        fix_clim: bool</span>
+<span class="sd">            whether to fix the color limits across all frames, only used when ``values`` is passed in as ``Dict[str, List[torch.Tensor]]``.</span>
+<span class="sd">            If True, the color limits are determined by the global min and max across all frames, ensuring a consistent colorbar throughout the animation.</span>
+<span class="sd">            default: False</span>
+<span class="sd">        show: bool</span>
+<span class="sd">            whether to display the plot interactively (e.g., via :func:`matplotlib.pyplot.show`)</span>
+<span class="sd">            default: False</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            additional keyword arguments passed to the underlying visualization functions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">points</span><span class="p">:</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="c1"># type:ignore</span>
+        <span class="n">elements</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="n">elements</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">default_element_type</span><span class="p">:</span><span class="n">elements</span><span class="p">}</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">_get_visualization</span><span class="p">()</span><span class="o">.</span><span class="n">draw_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">save_path</span> <span class="o">=</span> <span class="s2">&quot;tmp.jpg&quot;</span> <span class="k">if</span> <span class="n">save_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">save_path</span>
+            <span class="k">if</span> <span class="s2">&quot;ax&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_path</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">ax</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span><span class="nb">list</span><span class="p">,</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,(</span><span class="nb">tuple</span><span class="p">,</span><span class="nb">list</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span>  <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
+                <span class="n">save_path</span> <span class="o">=</span> <span class="s2">&quot;tmp.mp4&quot;</span>  <span class="k">if</span> <span class="n">save_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">save_path</span> 
+                <span class="n">_get_visualization</span><span class="p">()</span><span class="o">.</span><span class="n">draw_mesh_2d_stream</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span>  <span class="c1"># type:ignore</span>
+                                    <span class="n">fix_colorbar</span><span class="o">=</span><span class="n">fix_clim</span><span class="p">,</span>
+                                    <span class="n">show_mesh</span>   <span class="o">=</span><span class="n">show_mesh</span><span class="p">,</span>
+                                    <span class="n">filename</span> <span class="o">=</span>  <span class="n">save_path</span><span class="p">,</span>
+                                    <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">save_path</span> <span class="o">=</span> <span class="s2">&quot;tmp.jpg&quot;</span> <span class="k">if</span> <span class="n">save_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">save_path</span>
+                <span class="n">_get_visualization</span><span class="p">()</span><span class="o">.</span><span class="n">draw_mesh_2d_static</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="c1"># type:ignore</span>
+                                    <span class="n">show_mesh</span> <span class="o">=</span> <span class="n">show_mesh</span><span class="p">,</span>
+                                    <span class="n">filename</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+                                    <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="si">}</span><span class="s2"> is not implemented for plot&quot;</span><span class="p">)</span>
+        
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="nb">dict</span><span class="p">):</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,(</span><span class="nb">tuple</span><span class="p">,</span><span class="nb">list</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span>  <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
+                <span class="n">save_path</span> <span class="o">=</span> <span class="s2">&quot;tmp.mp4&quot;</span>  <span class="k">if</span> <span class="n">save_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">save_path</span> 
+                <span class="n">_get_visualization</span><span class="p">()</span><span class="o">.</span><span class="n">draw_mesh_2d_stream</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span>  <span class="c1"># type:ignore</span>
+                                    <span class="n">fix_colorbar</span><span class="o">=</span><span class="n">fix_clim</span><span class="p">,</span>
+                                    <span class="n">show_mesh</span>   <span class="o">=</span><span class="n">show_mesh</span><span class="p">,</span>
+                                    <span class="n">filename</span> <span class="o">=</span>  <span class="n">save_path</span><span class="p">,</span>
+                                    <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">save_path</span> <span class="o">=</span> <span class="s2">&quot;tmp.jpg&quot;</span> <span class="k">if</span> <span class="n">save_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">save_path</span>
+                <span class="n">_get_visualization</span><span class="p">()</span><span class="o">.</span><span class="n">draw_mesh_2d_static</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="c1"># type:ignore</span>
+                                    <span class="n">show_mesh</span> <span class="o">=</span> <span class="n">show_mesh</span><span class="p">,</span>
+                                    <span class="n">filename</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+                                    <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="si">}</span><span class="s2"> is not implemented for plot&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="si">}</span><span class="s2"> is not implemented for plot&quot;</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">n_points</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of interpolation nodes :math:`|\\mathcal V|` in the mesh.</span>
+
+<span class="sd">        Equals ``mesh.points.shape[0]``. For ``order &gt;= 2`` this counts</span>
+<span class="sd">        high-order nodes (mid-edge, mid-face, interior) as well, not</span>
+<span class="sd">        only corner vertices.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            the number of interpolation nodes :math:`|\\mathcal V|`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">n_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of elements :math:`|\\mathcal C|` of the :attr:`default_element_type`.</span>
+
+<span class="sd">        For mixed-element meshes this sums element counts across every</span>
+<span class="sd">        type in ``default_element_type``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            the number of elements :math:`|\\mathcal C|`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_element_type</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">default_element_type</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_element_type</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">boundary_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Boolean mask flagging boundary points.</span>
+
+<span class="sd">        Looked up from :attr:`point_data` under the key ``&quot;is_boundary&quot;``</span>
+<span class="sd">        (preferred) or ``&quot;boundary_mask&quot;``. Mesh generators in</span>
+<span class="sd">        :mod:`tensormesh.dataset` populate this automatically.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            1D bool tensor of shape :math:`[|\mathcal V|]`, where  :math:`|\mathcal V|` is the number of interpolation nodes;</span>
+<span class="sd">            requires ``&quot;is_boundary&quot;`` or ``&quot;boundary_mask&quot;`` to live in :attr:`point_data`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;is_boundary&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_data</span><span class="p">[</span><span class="s2">&quot;is_boundary&quot;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="s2">&quot;boundary_mask&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_data</span><span class="p">[</span><span class="s2">&quot;boundary_mask&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;boundary_mask&#39; or &#39;is_boundary&#39; is not found in point_data&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">default_element_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Element type(s) of the highest-dimensional cells in the mesh.</span>
+
+<span class="sd">        Methods like :meth:`elements`, :meth:`n_elements`, and the FEM</span>
+<span class="sd">        assemblers fall back to this when no ``element_type`` is given.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str or List[str]</span>
+<span class="sd">            the default element type, if the mesh is composed of mixed elements, it will return List[str],</span>
+<span class="sd">            otherwise it will return str</span>
+
+<span class="sd">        :noindex:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_eletyp</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Floating-point dtype of :attr:`points` (and, by convention, of every buffer in the mesh).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.dtype</span>
+<span class="sd">            the data type of the points, e.g., torch.float32, torch.float64</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">dtype</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">device</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Device on which the mesh tensors live.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.device</span>
+<span class="sd">            the device of the points, e.g., torch.device(&quot;cpu&quot;), torch.device(&quot;cuda:0&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">device</span>
+
+<div class="viewcode-block" id="Mesh.from_meshio">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh.from_meshio">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_meshio</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+                    <span class="n">mesh</span><span class="p">:</span><span class="n">meshio</span><span class="o">.</span><span class="n">Mesh</span><span class="p">,</span>
+                    <span class="n">reorder</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a :class:`Mesh` from an in-memory ``meshio.Mesh``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mesh: meshio.Mesh</span>
+<span class="sd">            a meshio mesh object</span>
+<span class="sd">        reorder: bool</span>
+<span class="sd">            whether to convert connectivity from Gmsh/VTK ordering to</span>
+<span class="sd">            TensorMesh internal ordering (delegates to</span>
+<span class="sd">            :meth:`tensormesh.Element.reorder`).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tensormesh.Mesh</span>
+<span class="sd">            the mesh object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">reorder</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="Mesh.read">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh.read">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span>
+             <span class="n">file_format</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+             <span class="n">reorder</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read a mesh from disk via ``meshio.read``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        file_name: str</span>
+<span class="sd">            the name of the file</span>
+<span class="sd">        file_format: str</span>
+<span class="sd">            the format of the file, e.g., &#39;msh&#39;, &#39;vtk&#39;, &#39;obj&#39;</span>
+<span class="sd">            default is the file extension</span>
+<span class="sd">        reorder: bool</span>
+<span class="sd">            whether to convert connectivity from Gmsh/VTK ordering to</span>
+<span class="sd">            TensorMesh internal ordering (delegates to</span>
+<span class="sd">            :meth:`tensormesh.Element.reorder`).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tensormesh.Mesh</span>
+<span class="sd">            the mesh object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">meshio</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">file_format</span><span class="p">),</span> <span class="n">reorder</span><span class="p">)</span></div>
+
+    
+    <span class="n">from_file</span> <span class="o">=</span> <span class="n">read</span>
+
+<div class="viewcode-block" id="Mesh.gen_rectangle">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh.gen_rectangle">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gen_rectangle</span><span class="p">(</span>
+             <span class="n">chara_length</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+             <span class="n">order</span><span class="p">:</span><span class="nb">int</span>         <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+             <span class="n">element_type</span><span class="p">:</span><span class="nb">str</span>  <span class="o">=</span><span class="s2">&quot;tri&quot;</span><span class="p">,</span>
+             <span class="n">left</span><span class="p">:</span><span class="nb">float</span>        <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span><span class="nb">float</span>  <span class="o">=</span>  <span class="mf">1.0</span><span class="p">,</span> 
+             <span class="n">bottom</span><span class="p">:</span><span class="nb">float</span>      <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">top</span><span class="p">:</span><span class="nb">float</span>    <span class="o">=</span>  <span class="mf">1.0</span><span class="p">,</span>
+             <span class="n">visualize</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+             <span class="n">cache_path</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">-&gt;</span><span class="s1">&#39;Mesh&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a 2-D mesh of an axis-aligned rectangle.</span>
+
+<span class="sd">        Delegates to :func:`~tensormesh.dataset.gen_rectangle`, which calls</span>
+<span class="sd">        Gmsh under the hood and caches the result if ``cache_path`` is</span>
+<span class="sd">        given.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        chara_length: float, optional</span>
+<span class="sd">            the characteristic length of the mesh,</span>
+<span class="sd">            default: ``0.1``</span>
+<span class="sd">        order: int, optional</span>
+<span class="sd">            the order of the basis function,</span>
+<span class="sd">            default: ``1``</span>
+<span class="sd">        element_type: str, optional</span>
+<span class="sd">            the type of the element,</span>
+<span class="sd">            default: ``&quot;tri&quot;``</span>
+<span class="sd">        left: float, optional</span>
+<span class="sd">            the left boundary of the rectangle,</span>
+<span class="sd">            default: ``0.0``</span>
+<span class="sd">        right: float, optional</span>
+<span class="sd">            the right boundary of the rectangle,</span>
+<span class="sd">            default: ``1.0``</span>
+<span class="sd">        bottom: float, optional</span>
+<span class="sd">            the bottom boundary of the rectangle,</span>
+<span class="sd">            default: ``0.0``</span>
+<span class="sd">        top: float, optional</span>
+<span class="sd">            the top boundary of the rectangle,</span>
+<span class="sd">            default: ``1.0``</span>
+<span class="sd">        visualize: bool, optional</span>
+<span class="sd">            whether to visualize the mesh,</span>
+<span class="sd">            default: :obj:`False`</span>
+<span class="sd">        cache_path: str, optional</span>
+<span class="sd">            the path to save the mesh, if :obj:`None`, it will be decided by :func:`~tensormesh.dataset.gen_rectangle`,</span>
+<span class="sd">            default: :obj:`None`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tensormesh.Mesh</span>
+<span class="sd">            the mesh object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..dataset</span><span class="w"> </span><span class="kn">import</span> <span class="n">gen_rectangle</span>
+        <span class="k">return</span> <span class="n">gen_rectangle</span><span class="p">(</span><span class="n">chara_length</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">element_type</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">visualize</span><span class="p">,</span> <span class="n">cache_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Mesh.gen_hollow_rectangle">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh.gen_hollow_rectangle">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gen_hollow_rectangle</span><span class="p">(</span>
+        <span class="n">chara_length</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">order</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">element_type</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s2">&quot;quad&quot;</span><span class="p">,</span>
+        <span class="n">outer_left</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">outer_right</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">outer_bottom</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">outer_top</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">inner_left</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>  <span class="n">inner_right</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+        <span class="n">inner_bottom</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">inner_top</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+        <span class="n">visualize</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">cache_path</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">-&gt;</span><span class="s1">&#39;Mesh&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a 2-D mesh of a rectangle with a rectangular hole cut out.</span>
+
+<span class="sd">        Delegates to :func:`~tensormesh.dataset.gen_hollow_rectangle`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        chara_length: float, optional</span>
+<span class="sd">            the characteristic length of the mesh,</span>
+<span class="sd">            default: ``0.1``</span>
+<span class="sd">        order: int, optional</span>
+<span class="sd">            the order of the basis function,</span>
+<span class="sd">            default: ``1``</span>
+<span class="sd">        element_type: str, optional</span>
+<span class="sd">            the type of the element,</span>
+<span class="sd">            default: ``&quot;quad&quot;``</span>
+<span class="sd">        outer_left: float, optional</span>
+<span class="sd">            the left boundary of the outer rectangle,</span>
+<span class="sd">            default: ``0.0``</span>
+<span class="sd">        outer_right: float, optional</span>
+<span class="sd">            the right boundary of the outer rectangle,</span>
+<span class="sd">            default: ``1.0``</span>
+<span class="sd">        outer_bottom: float, optional</span>
+<span class="sd">            the bottom boundary of the outer rectangle,</span>
+<span class="sd">            default: ``0.0``</span>
+<span class="sd">        outer_top: float, optional</span>
+<span class="sd">            the top boundary of the outer rectangle,</span>
+<span class="sd">            default: ``1.0``</span>
+<span class="sd">        inner_left: float, optional</span>
+<span class="sd">            the left boundary of the inner rectangle,</span>
+<span class="sd">            default: ``0.25``</span>
+<span class="sd">        inner_right: float, optional</span>
+<span class="sd">            the right boundary of the inner rectangle,</span>
+<span class="sd">            default: ``0.75``</span>
+<span class="sd">        inner_bottom: float, optional</span>
+<span class="sd">            the bottom boundary of the inner rectangle,</span>
+<span class="sd">            default: ``0.25``</span>
+<span class="sd">        inner_top: float, optional</span>
+<span class="sd">            the top boundary of the inner rectangle,</span>
+<span class="sd">            default: ``0.75``</span>
+<span class="sd">        visualize: bool, optional</span>
+<span class="sd">            whether to visualize the mesh,</span>
+<span class="sd">            default: :obj:`False`</span>
+<span class="sd">        cache_path: str, optional</span>
+<span class="sd">            the path to save the mesh, if :obj:`None`, it will be decided by :func:`~tensormesh.dataset.gen_hollow_rectangle`,</span>
+<span class="sd">            default: :obj:`None`</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tensormesh.Mesh</span>
+<span class="sd">            the mesh object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..dataset</span><span class="w"> </span><span class="kn">import</span> <span class="n">gen_hollow_rectangle</span>
+        <span class="k">return</span> <span class="n">gen_hollow_rectangle</span><span class="p">(</span><span class="n">chara_length</span><span class="p">,</span>
+             <span class="n">order</span><span class="p">,</span>
+             <span class="n">element_type</span><span class="p">,</span>
+             <span class="n">outer_left</span><span class="p">,</span> <span class="n">outer_right</span><span class="p">,</span> <span class="n">outer_bottom</span><span class="p">,</span> <span class="n">outer_top</span><span class="p">,</span>
+             <span class="n">inner_left</span><span class="p">,</span>  <span class="n">inner_right</span><span class="p">,</span>
+             <span class="n">inner_bottom</span><span class="p">,</span> <span class="n">inner_top</span><span class="p">,</span>
+             <span class="n">visualize</span><span class="p">,</span>
+             <span class="n">cache_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Mesh.gen_circle">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh.gen_circle">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gen_circle</span><span class="p">(</span><span class="n">chara_length</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+            <span class="n">order</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">element_type</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s2">&quot;tri&quot;</span><span class="p">,</span>
+            <span class="n">cx</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">cy</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+            <span class="n">visualize</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">cache_path</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">-&gt;</span><span class="s1">&#39;Mesh&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a 2-D mesh of a disk (filled circle).</span>
+
+<span class="sd">        Delegates to :func:`~tensormesh.dataset.gen_circle`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        chara_length: float, optional</span>
+<span class="sd">            the characteristic length of the mesh,</span>
+<span class="sd">            default: ``0.1``</span>
+<span class="sd">        order: int, optional</span>
+<span class="sd">            the order of the basis function,</span>
+<span class="sd">            default: ``1``</span>
+<span class="sd">        element_type: str, optional</span>
+<span class="sd">            the type of the element,</span>
+<span class="sd">            default: ``&quot;tri&quot;``</span>
+<span class="sd">        cx: float, optional</span>
+<span class="sd">            the x coordinate of the center of the circle,</span>
+<span class="sd">            default: ``0.0``</span>
+<span class="sd">        cy: float, optional</span>
+<span class="sd">            the y coordinate of the center of the circle,</span>
+<span class="sd">            default: ``0.0``</span>
+<span class="sd">        r: float, optional</span>
+<span class="sd">            the radius of the circle,</span>
+<span class="sd">            default: ``1.0``</span>
+<span class="sd">        visualize: bool, optional</span>
+<span class="sd">            whether to visualize the mesh,</span>
+<span class="sd">            default: :obj:`False`</span>
+<span class="sd">        cache_path: str, optional</span>
+<span class="sd">            the path to save the mesh, if :obj:`None`, it will be decided by :func:`~tensormesh.dataset.gen_circle`,</span>
+<span class="sd">            default: :obj:`None`</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tensormesh.Mesh</span>
+<span class="sd">            the mesh object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..dataset</span><span class="w"> </span><span class="kn">import</span> <span class="n">gen_circle</span>
+        <span class="k">return</span> <span class="n">gen_circle</span><span class="p">(</span><span class="n">chara_length</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">element_type</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">visualize</span><span class="p">,</span> <span class="n">cache_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Mesh.gen_hollow_circle">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh.gen_hollow_circle">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gen_hollow_circle</span><span class="p">(</span><span class="n">chara_length</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+             <span class="n">order</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+             <span class="n">element_type</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s2">&quot;quad&quot;</span><span class="p">,</span>
+             <span class="n">cx</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">cy</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+             <span class="n">r_inner</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">r_outer</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+             <span class="n">visualize</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+             <span class="n">cache_path</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">-&gt;</span><span class="s1">&#39;Mesh&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a 2-D mesh of an annulus (disk with a circular hole).</span>
+
+<span class="sd">        Delegates to :func:`~tensormesh.dataset.gen_hollow_circle`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        chara_length: float, optional</span>
+<span class="sd">            the characteristic length of the mesh,</span>
+<span class="sd">            default: ``0.1``</span>
+<span class="sd">        order: int, optional</span>
+<span class="sd">            the order of the basis function,</span>
+<span class="sd">            default: ``1``</span>
+<span class="sd">        element_type: str, optional</span>
+<span class="sd">            the type of the element,</span>
+<span class="sd">            default: ``&quot;quad&quot;``</span>
+<span class="sd">        cx: float, optional</span>
+<span class="sd">            the x coordinate of the center of the circle,</span>
+<span class="sd">            default: ``0.0``</span>
+<span class="sd">        cy: float, optional</span>
+<span class="sd">            the y coordinate of the center of the circle,</span>
+<span class="sd">            default: ``0.0``</span>
+<span class="sd">        r_inner: float, optional</span>
+<span class="sd">            the inner radius of the circle,</span>
+<span class="sd">            default: ``1.0``</span>
+<span class="sd">        r_outer: float, optional</span>
+<span class="sd">            the outer radius of the circle,</span>
+<span class="sd">            default: ``2.0``</span>
+<span class="sd">        visualize: bool, optional</span>
+<span class="sd">            whether to visualize the mesh,</span>
+<span class="sd">            default: :obj:`False`</span>
+<span class="sd">        cache_path: str, optional</span>
+<span class="sd">            the path to save the mesh, if :obj:`None`, it will be decided by :func:`~tensormesh.dataset.gen_hollow_circle`,</span>
+<span class="sd">            default: :obj:`None`</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tensormesh.Mesh</span>
+<span class="sd">            the mesh object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..dataset</span><span class="w"> </span><span class="kn">import</span> <span class="n">gen_hollow_circle</span>
+        <span class="k">return</span> <span class="n">gen_hollow_circle</span><span class="p">(</span><span class="n">chara_length</span><span class="p">,</span>
+             <span class="n">order</span><span class="p">,</span>
+             <span class="n">element_type</span><span class="p">,</span>
+             <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">r_inner</span><span class="p">,</span> <span class="n">r_outer</span><span class="p">,</span>
+             <span class="n">visualize</span><span class="p">,</span>
+             <span class="n">cache_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Mesh.gen_L">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh.gen_L">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gen_L</span><span class="p">(</span><span class="n">chara_length</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+             <span class="n">order</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+             <span class="n">element_type</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s2">&quot;quad&quot;</span><span class="p">,</span>
+             <span class="n">left</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+             <span class="n">bottom</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">top</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+             <span class="n">top_inner</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+             <span class="n">right_inner</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+             <span class="n">visualize</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+             <span class="n">cache_path</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">-&gt;</span><span class="s1">&#39;Mesh&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a 2-D mesh of an L-shaped domain (re-entrant corner benchmark).</span>
+
+<span class="sd">        Delegates to :func:`~tensormesh.dataset.gen_L`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        chara_length: float, optional</span>
+<span class="sd">            the characteristic length of the mesh,</span>
+<span class="sd">            default: ``0.1``</span>
+<span class="sd">        order: int, optional</span>
+<span class="sd">            the order of the basis function,</span>
+<span class="sd">            default: ``1``</span>
+<span class="sd">        element_type: str, optional</span>
+<span class="sd">            the type of the element,</span>
+<span class="sd">            default: ``&quot;quad&quot;``</span>
+<span class="sd">        left: float, optional</span>
+<span class="sd">            the left boundary of the rectangle,</span>
+<span class="sd">            default: ``0.0``</span>
+<span class="sd">        right: float, optional</span>
+<span class="sd">            the right boundary of the rectangle,</span>
+<span class="sd">            default: ``1.0``</span>
+<span class="sd">        bottom: float, optional</span>
+<span class="sd">            the bottom boundary of the rectangle,</span>
+<span class="sd">            default: ``0.0``</span>
+<span class="sd">        top: float, optional</span>
+<span class="sd">            the top boundary of the rectangle,</span>
+<span class="sd">            default: ``1.0``</span>
+<span class="sd">        top_inner: float, optional</span>
+<span class="sd">            the top inner boundary of the rectangle,</span>
+<span class="sd">            default: ``0.5``</span>
+<span class="sd">        right_inner: float, optional</span>
+<span class="sd">            the right inner boundary of the rectangle,</span>
+<span class="sd">            default: ``0.5``</span>
+<span class="sd">        visualize: bool, optional</span>
+<span class="sd">            whether to visualize the mesh,</span>
+<span class="sd">            default: :obj:`False`</span>
+<span class="sd">        cache_path: str, optional</span>
+<span class="sd">            the path to save the mesh, if :obj:`None`, it will be decided by :func:`~tensormesh.dataset.gen_L`,</span>
+<span class="sd">            default: :obj:`None`</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tensormesh.Mesh</span>
+<span class="sd">            the mesh object </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..dataset</span><span class="w"> </span><span class="kn">import</span> <span class="n">gen_L</span>
+        <span class="k">return</span> <span class="n">gen_L</span><span class="p">(</span><span class="n">chara_length</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">element_type</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">top_inner</span><span class="p">,</span> <span class="n">right_inner</span><span class="p">,</span> <span class="n">visualize</span><span class="p">,</span> <span class="n">cache_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Mesh.gen_cube">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh.gen_cube">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gen_cube</span><span class="p">(</span><span class="n">chara_length</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+             <span class="n">order</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+             <span class="n">left</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+             <span class="n">bottom</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">top</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+             <span class="n">front</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">back</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+             <span class="n">visualize</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+             <span class="n">cache_path</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">-&gt;</span><span class="s1">&#39;Mesh&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a 3-D mesh of an axis-aligned cuboid.</span>
+
+<span class="sd">        Delegates to :func:`~tensormesh.dataset.gen_cube`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        chara_length: float, optional</span>
+<span class="sd">            the characteristic length of the mesh,</span>
+<span class="sd">            default: ``0.1``</span>
+<span class="sd">        order: int, optional</span>
+<span class="sd">            the order of the basis function,</span>
+<span class="sd">            default: ``1``</span>
+<span class="sd">        left: float, optional</span>
+<span class="sd">            the left boundary of the cube,</span>
+<span class="sd">            default: ``0.0``</span>
+<span class="sd">        right: float, optional</span>
+<span class="sd">            the right boundary of the cube,</span>
+<span class="sd">            default: ``1.0``</span>
+<span class="sd">        bottom: float, optional</span>
+<span class="sd">            the bottom boundary of the cube,</span>
+<span class="sd">            default: ``0.0``</span>
+<span class="sd">        top: float, optional</span>
+<span class="sd">            the top boundary of the cube,</span>
+<span class="sd">            default: ``1.0``</span>
+<span class="sd">        front: float, optional</span>
+<span class="sd">            the front boundary of the cube,</span>
+<span class="sd">            default: ``0.0``</span>
+<span class="sd">        back: float, optional</span>
+<span class="sd">            the back boundary of the cube,</span>
+<span class="sd">            default: ``1.0``</span>
+<span class="sd">        visualize: bool, optional</span>
+<span class="sd">            whether to visualize the mesh,</span>
+<span class="sd">            default: :obj:`False`</span>
+<span class="sd">        cache_path: str, optional</span>
+<span class="sd">            the path to save the mesh, if :obj:`None`, it will be decided by :func:`~tensormesh.dataset.gen_cube`,</span>
+<span class="sd">            default: :obj:`None`</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tensormesh.Mesh</span>
+<span class="sd">            the mesh object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..dataset</span><span class="w"> </span><span class="kn">import</span> <span class="n">gen_cube</span>
+        <span class="k">return</span> <span class="n">gen_cube</span><span class="p">(</span><span class="n">chara_length</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">front</span><span class="p">,</span> <span class="n">back</span><span class="p">,</span> <span class="n">visualize</span><span class="p">,</span> <span class="n">cache_path</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="Mesh.gen_hollow_cube">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh.gen_hollow_cube">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gen_hollow_cube</span><span class="p">(</span><span class="n">chara_length</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+             <span class="n">order</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+             <span class="n">outer_left</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">outer_right</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+             <span class="n">outer_bottom</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">outer_top</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+             <span class="n">outer_front</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">outer_back</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+             <span class="n">inner_left</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">inner_right</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+             <span class="n">inner_bottom</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">inner_top</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+             <span class="n">inner_front</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">inner_back</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+             <span class="n">visualize</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+             <span class="n">cache_path</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">-&gt;</span><span class="s1">&#39;Mesh&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a 3-D mesh of a cuboid with a cuboidal hole.</span>
+
+<span class="sd">        Delegates to :func:`~tensormesh.dataset.gen_hollow_cube`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        chara_length: float, optional</span>
+<span class="sd">            the characteristic length of the mesh,</span>
+<span class="sd">            default: ``0.1``</span>
+<span class="sd">        order: int, optional</span>
+<span class="sd">            the order of the basis function,</span>
+<span class="sd">            default: ``1``</span>
+<span class="sd">        outer_left: float, optional</span>
+<span class="sd">            the left boundary of the outer cube,</span>
+<span class="sd">            default: ``0.0``</span>
+<span class="sd">        outer_right: float, optional</span>
+<span class="sd">            the right boundary of the outer cube,</span>
+<span class="sd">            default: ``1.0``</span>
+<span class="sd">        outer_bottom: float, optional</span>
+<span class="sd">            the bottom boundary of the outer cube,</span>
+<span class="sd">            default: ``0.0``</span>
+<span class="sd">        outer_top: float, optional</span>
+<span class="sd">            the top boundary of the outer cube,</span>
+<span class="sd">            default: ``1.0``</span>
+<span class="sd">        outer_front: float, optional</span>
+<span class="sd">            the front boundary of the outer cube,</span>
+<span class="sd">            default: ``0.0``</span>
+<span class="sd">        outer_back: float, optional</span>
+<span class="sd">            the back boundary of the outer cube,</span>
+<span class="sd">            default: ``1.0``</span>
+<span class="sd">        inner_left: float, optional</span>
+<span class="sd">            the left boundary of the inner cube,</span>
+<span class="sd">            default: ``0.25``</span>
+<span class="sd">        inner_right: float, optional</span>
+<span class="sd">            the right boundary of the inner cube,</span>
+<span class="sd">            default: ``0.75``</span>
+<span class="sd">        inner_bottom: float, optional</span>
+<span class="sd">            the bottom boundary of the inner cube,</span>
+<span class="sd">            default: ``0.25``</span>
+<span class="sd">        inner_top: float, optional</span>
+<span class="sd">            the top boundary of the inner cube,</span>
+<span class="sd">            default: ``0.75``</span>
+<span class="sd">        inner_front: float, optional</span>
+<span class="sd">            the front boundary of the inner cube,</span>
+<span class="sd">            default: ``0.25``</span>
+<span class="sd">        inner_back: float, optional</span>
+<span class="sd">            the back boundary of the inner cube,</span>
+<span class="sd">            default: ``0.75``</span>
+<span class="sd">        visualize: bool, optional</span>
+<span class="sd">            whether to visualize the mesh,</span>
+<span class="sd">            default: :obj:`False`</span>
+<span class="sd">        cache_path: str, optional</span>
+<span class="sd">            the path to save the mesh, if :obj:`None`, it will be decided by :func:`~tensormesh.dataset.gen_hollow_cube`,</span>
+<span class="sd">            default: :obj:`None`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tensormesh.Mesh</span>
+<span class="sd">            the mesh object </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..dataset</span><span class="w"> </span><span class="kn">import</span> <span class="n">gen_hollow_cube</span>
+        <span class="k">return</span> <span class="n">gen_hollow_cube</span><span class="p">(</span><span class="n">chara_length</span><span class="p">,</span>
+             <span class="n">order</span><span class="p">,</span>
+             <span class="n">outer_left</span><span class="p">,</span> <span class="n">outer_right</span><span class="p">,</span> 
+             <span class="n">outer_bottom</span><span class="p">,</span> <span class="n">outer_top</span><span class="p">,</span>
+             <span class="n">outer_front</span><span class="p">,</span> <span class="n">outer_back</span><span class="p">,</span>
+             <span class="n">inner_left</span><span class="p">,</span> <span class="n">inner_right</span><span class="p">,</span>
+             <span class="n">inner_bottom</span><span class="p">,</span> <span class="n">inner_top</span><span class="p">,</span>
+             <span class="n">inner_front</span><span class="p">,</span> <span class="n">inner_back</span><span class="p">,</span>
+             <span class="n">visualize</span><span class="p">,</span>
+             <span class="n">cache_path</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="Mesh.gen_sphere">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh.gen_sphere">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gen_sphere</span><span class="p">(</span><span class="n">chara_length</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                <span class="n">order</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">cx</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">cy</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">cz</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                <span class="n">visualize</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">cache_path</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">-&gt;</span><span class="s1">&#39;Mesh&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a 3-D mesh of a solid ball (filled sphere).</span>
+
+<span class="sd">        Delegates to :func:`~tensormesh.dataset.gen_sphere`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        chara_length: float, optional</span>
+<span class="sd">            the characteristic length of the mesh,</span>
+<span class="sd">            default: ``0.1``</span>
+<span class="sd">        order: int, optional</span>
+<span class="sd">            the order of the basis function,</span>
+<span class="sd">            default: ``1``</span>
+<span class="sd">        cx: float, optional</span>
+<span class="sd">            the x coordinate of the center of the sphere,</span>
+<span class="sd">            default: ``0.0``</span>
+<span class="sd">        cy: float, optional</span>
+<span class="sd">            the y coordinate of the center of the sphere,</span>
+<span class="sd">            default: ``0.0``</span>
+<span class="sd">        cz: float, optional</span>
+<span class="sd">            the z coordinate of the center of the sphere,</span>
+<span class="sd">            default: ``0.0``</span>
+<span class="sd">        r: float, optional</span>
+<span class="sd">            the radius of the sphere,</span>
+<span class="sd">            default: ``1.0``</span>
+<span class="sd">        visualize: bool, optional</span>
+<span class="sd">            whether to visualize the mesh,</span>
+<span class="sd">            default: :obj:`False`</span>
+<span class="sd">        cache_path: str, optional</span>
+<span class="sd">            the path to save the mesh, if :obj:`None`, it will be decided by :func:`~tensormesh.dataset.gen_sphere`,</span>
+<span class="sd">            default: :obj:`None`</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tensormesh.Mesh</span>
+<span class="sd">            the mesh object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..dataset</span><span class="w"> </span><span class="kn">import</span> <span class="n">gen_sphere</span>
+        <span class="k">return</span> <span class="n">gen_sphere</span><span class="p">(</span><span class="n">chara_length</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">cz</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">visualize</span><span class="p">,</span> <span class="n">cache_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Mesh.gen_hollow_sphere">
+<a class="viewcode-back" href="../../../api/mesh.html#tensormesh.Mesh.gen_hollow_sphere">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gen_hollow_sphere</span><span class="p">(</span><span class="n">chara_length</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+             <span class="n">order</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+             <span class="n">cx</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">cy</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">cz</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+             <span class="n">r_inner</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">r_outer</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+             <span class="n">visualize</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+             <span class="n">cache_path</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">-&gt;</span><span class="s1">&#39;Mesh&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a 3-D mesh of a spherical shell (ball with a concentric spherical cavity).</span>
+
+<span class="sd">        Delegates to :func:`~tensormesh.dataset.gen_hollow_sphere`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        chara_length: float, optional</span>
+<span class="sd">            the characteristic length of the mesh,</span>
+<span class="sd">            default: ``0.1``</span>
+<span class="sd">        order: int, optional</span>
+<span class="sd">            the order of the basis function,</span>
+<span class="sd">            default: ``1``</span>
+<span class="sd">        cx: float, optional</span>
+<span class="sd">            the x coordinate of the center of the sphere,</span>
+<span class="sd">            default: ``0.0``</span>
+<span class="sd">        cy: float, optional</span>
+<span class="sd">            the y coordinate of the center of the sphere,</span>
+<span class="sd">            default: ``0.0``</span>
+<span class="sd">        cz: float, optional</span>
+<span class="sd">            the z coordinate of the center of the sphere,</span>
+<span class="sd">            default: ``0.0``</span>
+<span class="sd">        r_inner: float, optional</span>
+<span class="sd">            the inner radius of the sphere,</span>
+<span class="sd">            default: ``1.0``</span>
+<span class="sd">        r_outer: float, optional</span>
+<span class="sd">            the outer radius of the sphere,</span>
+<span class="sd">            default: ``2.0``</span>
+<span class="sd">        visualize: bool, optional</span>
+<span class="sd">            whether to visualize the mesh,</span>
+<span class="sd">            default: :obj:`False`</span>
+<span class="sd">        cache_path: str, optional</span>
+<span class="sd">            the path to save the mesh, if :obj:`None`, it will be decided by :func:`~tensormesh.dataset.gen_hollow_sphere`,</span>
+<span class="sd">            default: :obj:`None`</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tensormesh.Mesh</span>
+<span class="sd">            the mesh object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..dataset</span><span class="w"> </span><span class="kn">import</span> <span class="n">gen_hollow_sphere</span>
+        <span class="k">return</span> <span class="n">gen_hollow_sphere</span><span class="p">(</span><span class="n">chara_length</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">cz</span><span class="p">,</span> <span class="n">r_inner</span><span class="p">,</span> <span class="n">r_outer</span><span class="p">,</span> <span class="n">visualize</span><span class="p">,</span> <span class="n">cache_path</span><span class="p">)</span></div>
+</div>
+
+
+<span class="n">Mesh</span><span class="o">.</span><span class="n">__autodoc__</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">Mesh</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)]</span>
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, TensorMesh Contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/camlab-ethz/TensorMesh" aria-label="GitHub"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+              <a class="muted-link " href="https://discord.gg/EC9kbHSnrx" aria-label="Discord"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.576-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.05.05 0 0 0-.021.019C.356 6.024-.213 9.047.066 12.032c.002.015.01.029.02.037a13.3 13.3 0 0 0 3.995 2.01.05.05 0 0 0 .056-.019c.308-.42.582-.86.818-1.329a.05.05 0 0 0-.027-.06 8.7 8.7 0 0 1-1.248-.595.05.05 0 0 1-.005-.085c.079-.053.16-.104.248-.152a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007c.08.048.16.1.248.152a.05.05 0 0 1-.004.085 8.2 8.2 0 0 1-1.249.594.05.05 0 0 0-.027.06c.24.465.514.906.817 1.329a.05.05 0 0 0 .056.02 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.036c.334-3.451-.559-6.449-2.366-9.106a.04.04 0 0 0-.021-.02zM5.68 10.77c-.789 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.45.73 1.438 1.61 0 .886-.637 1.61-1.438 1.61zm4.842 0c-.788 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.451.73 1.438 1.61 0 .886-.63 1.61-1.438 1.61z"></path></svg></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=a58bc63e"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    </body>
+</html>

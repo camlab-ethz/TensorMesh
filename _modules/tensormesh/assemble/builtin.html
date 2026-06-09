@@ -1,0 +1,1232 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
+        <link rel="prefetch" href="../../../_static/logo.png" as="image">
+        <link rel="prefetch" href="../../../_static/logo.png" as="image">
+
+    <link rel="shortcut icon" href="../../../_static/logo.png"><!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>tensormesh.assemble.builtin - TensorMesh</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=95a110e3" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #5B6EE8;
+  --color-brand-content: #149B8E;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">TensorMesh</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../../_static/logo.png" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../../_static/logo.png" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">TensorMesh</span>
+  
+</a><div class="sidebar-language-switcher">
+  <span class="active">English</span>
+  <span class="sep">·</span>
+  <a href="../../../zh/_modules/tensormesh/assemble/builtin.html" rel="alternate" hreflang="zh-CN" title="中文">中文</a>
+</div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../getting_started/index.html">Get Started</a><input aria-label="Toggle navigation of Get Started" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../getting_started/quickstart.html">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../getting_started/verify_install.html">Verify Install</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a><input aria-label="Toggle navigation of User Guide" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/concepts.html">Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/meshes.html">Meshes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/elements_and_quadrature.html">Elements and Quadrature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/forms.html">Forms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/boundary_conditions.html">Boundary Conditions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/linear_solvers.html">Sparse Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/time_integration.html">Time Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/batched_workflows.html">Batched Workflows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/differentiability.html">Differentiability</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../example_gallery/index.html">Example Gallery</a><input aria-label="Toggle navigation of Example Gallery" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/basics.html">Basics &amp; Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/poisson.html">Poisson Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/diffusion.html">Diffusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/wave.html">Wave Equation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../example_gallery/solid/index.html">Solid Mechanics</a><input aria-label="Toggle navigation of Solid Mechanics" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/solid/cantilever_beam.html">Cantilever Beam</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/solid/hyperelastic_beam.html">Hyperelastic Beam (Neo-Hookean)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/solid/hertzian_contact.html">Hertzian Contact</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/solid/plasticity_strip.html">Plasticity (J2 with Isotropic Hardening)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/solid/drucker_prager_triaxial.html">Geomechanics: Drucker-Prager triaxial compression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/solid/elastic_footing.html">Geomechanics: elastic strip footing</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../example_gallery/fluid/index.html">Fluid Mechanics</a><input aria-label="Toggle navigation of Fluid Mechanics" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/fluid/cavity.html">Lid-Driven Cavity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/fluid/cylinder_flow.html">Cylinder Flow (Vortex Shedding)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/fluid/flow_obstacles.html">Flow Past Multiple Obstacles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/fluid/rayleigh_benard.html">Rayleigh-Bénard Convection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/fluid/taylor_green.html">Taylor-Green Vortex (Convergence Study)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/maxwell.html">Magnetostatics (Maxwell)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/inverse_design.html">Inverse Design &amp; Identification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/physics_informed.html">Physics-Informed Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/dataset.html">ML Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/distributed.html">Distributed FEM</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/index.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/mesh.html">tensormesh.mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/element.html">tensormesh.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/assemble.html">tensormesh.assemble</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/operator.html">tensormesh.operator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/sparse.html">tensormesh.sparse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/ode.html">tensormesh.ode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/functional.html">tensormesh.functional</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/optimizer.html">tensormesh.optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/material.html">tensormesh.material</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/distributed.html">tensormesh.distributed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/nn.html">tensormesh.nn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/dataset.html">tensormesh.dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/visualization.html">tensormesh.visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../performance/index.html">Performance</a><input aria-label="Toggle navigation of Performance" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../performance/benchmarks.html">Benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../performance/scaling_guide.html">Scaling Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../performance/profiling.html">Profiling</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../community/index.html">Community</a><input aria-label="Toggle navigation of Community" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../community/discord.html">Discord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../community/github_discussions.html">GitHub Discussions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../community/github_issues.html">GitHub Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../community/contributing.html">Contributing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../community/citing.html">Citing TensorMesh</a></li>
+</ul>
+</li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for tensormesh.assemble.builtin</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Ready-made assemblers for the most common FEM forms.</span>
+
+<span class="sd">This module is the &quot;battery&quot; tier of :mod:`tensormesh.assemble`: each class</span>
+<span class="sd">below is a worked subclass of one of the three base assemblers</span>
+<span class="sd">(:class:`ElementAssembler`, :class:`NodeAssembler`, :class:`FacetAssembler`)</span>
+<span class="sd">covering a textbook form — Laplace, mass, linear elasticity, Neo-Hookean</span>
+<span class="sd">hyperelasticity, J2 plasticity, contact, and constant/function loads.</span>
+<span class="sd">Subclass these (or use the two factory functions at the bottom) to skip</span>
+<span class="sd">re-deriving the weak form for standard physics.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.element_assembler</span><span class="w"> </span><span class="kn">import</span> <span class="n">ElementAssembler</span><span class="p">,</span> <span class="n">InputBroadcast</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.facet_assembler</span><span class="w"> </span><span class="kn">import</span> <span class="n">FacetAssembler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.node_assembler</span><span class="w"> </span><span class="kn">import</span> <span class="n">NodeAssembler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..functional.elasticity</span><span class="w"> </span><span class="kn">import</span> <span class="n">voigt_shape_grad</span><span class="p">,</span> <span class="n">voigt_stiffness</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..vmap</span><span class="w"> </span><span class="kn">import</span> <span class="n">vmap</span>
+
+<div class="viewcode-block" id="LaplaceElementAssembler">
+<a class="viewcode-back" href="../../../api/assemble.html#tensormesh.LaplaceElementAssembler">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LaplaceElementAssembler</span><span class="p">(</span><span class="n">ElementAssembler</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Laplace/Diffusion Element Assembler.</span>
+<span class="sd">    </span>
+<span class="sd">    Assembles the stiffness matrix for the Laplace operator (diffusion term).</span>
+<span class="sd">    This is the fundamental building block for solving elliptic PDEs such as</span>
+<span class="sd">    the Poisson equation, heat equation (steady-state), and other diffusion problems.</span>
+<span class="sd">    </span>
+<span class="sd">    **Weak Form:**</span>
+<span class="sd">    </span>
+<span class="sd">    Given the Laplace equation :math:`-\nabla \cdot (\kappa \nabla u) = f`, the weak form is:</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">    </span>
+<span class="sd">        \int_{\Omega} \kappa \nabla u \cdot \nabla v \, \mathrm{d}\Omega = \int_{\Omega} f v \, \mathrm{d}\Omega</span>
+<span class="sd">    </span>
+<span class="sd">    **Element Stiffness Matrix:**</span>
+<span class="sd">    </span>
+<span class="sd">    For each element :math:`K`, the local stiffness matrix entry is:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">    </span>
+<span class="sd">        K_{ij}^e = \int_{\Omega^e} \nabla N_i \cdot \nabla N_j \, \mathrm{d}\Omega</span>
+<span class="sd">    </span>
+<span class="sd">    where :math:`N_i, N_j` are the shape functions.</span>
+<span class="sd">    </span>
+<span class="sd">    **Implementation:**</span>
+<span class="sd">    </span>
+<span class="sd">    The ``forward`` method computes the integrand :math:`\nabla N_i \cdot \nabla N_j`</span>
+<span class="sd">    at each quadrature point, which is then integrated by the base class.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        mesh = Mesh.gen_rectangle(chara_length=0.1)</span>
+<span class="sd">        K = LaplaceElementAssembler.from_mesh(mesh)(mesh.points)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="LaplaceElementAssembler.forward">
+<a class="viewcode-back" href="../../../api/assemble.html#tensormesh.LaplaceElementAssembler.forward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradu</span><span class="p">,</span> <span class="n">gradv</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">gradu</span> <span class="o">@</span> <span class="n">gradv</span></div>
+</div>
+
+    
+<div class="viewcode-block" id="MassElementAssembler">
+<a class="viewcode-back" href="../../../api/assemble.html#tensormesh.MassElementAssembler">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MassElementAssembler</span><span class="p">(</span><span class="n">ElementAssembler</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Mass Element Assembler.</span>
+<span class="sd">    </span>
+<span class="sd">    Assembles the mass matrix for finite element discretization. The mass matrix</span>
+<span class="sd">    represents the :math:`L^2` inner product and is essential for time-dependent</span>
+<span class="sd">    problems, eigenvalue problems, and :math:`L^2` projection.</span>
+<span class="sd">    </span>
+<span class="sd">    **Weak Form:**</span>
+<span class="sd">    </span>
+<span class="sd">    The mass matrix arises from terms like :math:`\int_\Omega u \, v \, \mathrm{d}\Omega`</span>
+<span class="sd">    in the weak formulation.</span>
+<span class="sd">    </span>
+<span class="sd">    **Element Mass Matrix:**</span>
+<span class="sd">    </span>
+<span class="sd">    For each element :math:`K`, the local mass matrix entry is:</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        </span>
+<span class="sd">        M_{ij}^e = \int_{\Omega^e} N_i \, N_j \, \mathrm{d}\Omega</span>
+<span class="sd">    </span>
+<span class="sd">    where :math:`N_i, N_j` are the shape functions.</span>
+<span class="sd">    </span>
+<span class="sd">    **Applications:**</span>
+<span class="sd">    </span>
+<span class="sd">    - Time-dependent PDEs (heat equation, wave equation)</span>
+<span class="sd">    - :math:`L^2` error computation: :math:`\|u - u_h\|_{L^2}^2 = (u-u_h)^T M (u-u_h)`</span>
+<span class="sd">    - Eigenvalue problems: :math:`K u = \lambda M u`</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        mesh = Mesh.gen_rectangle(chara_length=0.1)</span>
+<span class="sd">        M = MassElementAssembler.from_mesh(mesh)(mesh.points)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="MassElementAssembler.forward">
+<a class="viewcode-back" href="../../../api/assemble.html#tensormesh.MassElementAssembler.forward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">u</span> <span class="o">*</span> <span class="n">v</span></div>
+</div>
+
+    
+<div class="viewcode-block" id="LinearElasticityElementAssembler">
+<a class="viewcode-back" href="../../../api/assemble.html#tensormesh.LinearElasticityElementAssembler">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LinearElasticityElementAssembler</span><span class="p">(</span><span class="n">ElementAssembler</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Linear Elasticity Element Assembler.</span>
+<span class="sd">    </span>
+<span class="sd">    Assembles the stiffness matrix for linear elastic materials based on </span>
+<span class="sd">    Hooke&#39;s law. Suitable for small deformation analysis of isotropic materials.</span>
+<span class="sd">    </span>
+<span class="sd">    **Constitutive Law (Hooke&#39;s Law):**</span>
+<span class="sd">    </span>
+<span class="sd">    The stress-strain relationship for isotropic linear elasticity:</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">    </span>
+<span class="sd">        \boldsymbol{\sigma} = \mathbf{C} : \boldsymbol{\varepsilon}</span>
+<span class="sd">    </span>
+<span class="sd">    where the elasticity tensor :math:`\mathbf{C}` is defined by:</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">    </span>
+<span class="sd">        C_{ijkl} = \lambda \delta_{ij} \delta_{kl} + \mu (\delta_{ik}\delta_{jl} + \delta_{il}\delta_{jk})</span>
+<span class="sd">    </span>
+<span class="sd">    **Lamé Parameters:**</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">    </span>
+<span class="sd">        \lambda = \frac{E \nu}{(1+\nu)(1-2\nu)}, \quad \mu = \frac{E}{2(1+\nu)}</span>
+<span class="sd">    </span>
+<span class="sd">    where :math:`E` is Young&#39;s modulus and :math:`\nu` is Poisson&#39;s ratio.</span>
+<span class="sd">    </span>
+<span class="sd">    **Strain Tensor:**</span>
+<span class="sd">    </span>
+<span class="sd">    The infinitesimal strain tensor:</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">    </span>
+<span class="sd">        \boldsymbol{\varepsilon} = \frac{1}{2}(\nabla \mathbf{u} + \nabla \mathbf{u}^T)</span>
+<span class="sd">    </span>
+<span class="sd">    **Weak Form:**</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">    </span>
+<span class="sd">        \int_{\Omega} \boldsymbol{\sigma}(\mathbf{u}) : \boldsymbol{\varepsilon}(\mathbf{v}) \, \mathrm{d}\Omega </span>
+<span class="sd">        = \int_{\Omega} \mathbf{f} \cdot \mathbf{v} \, \mathrm{d}\Omega </span>
+<span class="sd">        + \int_{\Gamma_N} \mathbf{t} \cdot \mathbf{v} \, \mathrm{d}S</span>
+<span class="sd">    </span>
+<span class="sd">    **Strain Energy Density:**</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">    </span>
+<span class="sd">        \Psi = \frac{1}{2} \boldsymbol{\varepsilon} : \mathbf{C} : \boldsymbol{\varepsilon}</span>
+<span class="sd">        = \frac{\lambda}{2} (\mathrm{tr}\, \boldsymbol{\varepsilon})^2 + \mu \, \boldsymbol{\varepsilon} : \boldsymbol{\varepsilon}</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    E : float, optional</span>
+<span class="sd">        Young&#39;s modulus. Default: ``1.0``.</span>
+<span class="sd">    nu : float, optional</span>
+<span class="sd">        Poisson&#39;s ratio (must satisfy :math:`-1 &lt; \nu &lt; 0.5`). Default: ``0.3``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        mesh = Mesh.gen_cube(chara_length=0.1)</span>
+<span class="sd">        assembler = LinearElasticityElementAssembler.from_mesh(mesh, E=210e9, nu=0.3)</span>
+<span class="sd">        K = assembler(mesh.points)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="mf">0.3</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">=</span> <span class="n">E</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nu</span> <span class="o">=</span> <span class="n">nu</span>
+        
+<div class="viewcode-block" id="LinearElasticityElementAssembler.forward">
+<a class="viewcode-back" href="../../../api/assemble.html#tensormesh.LinearElasticityElementAssembler.forward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradu</span><span class="p">,</span> <span class="n">gradv</span><span class="p">):</span>
+        <span class="n">dim</span> <span class="o">=</span> <span class="n">gradu</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">Ba</span> <span class="o">=</span> <span class="n">voigt_shape_grad</span><span class="p">(</span><span class="n">gradu</span><span class="p">)</span>
+        <span class="n">Bb</span> <span class="o">=</span> <span class="n">voigt_shape_grad</span><span class="p">(</span><span class="n">gradv</span><span class="p">)</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">voigt_stiffness</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">gradu</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">gradu</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Ba</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">C</span> <span class="o">@</span> <span class="n">Bb</span></div>
+
+
+<div class="viewcode-block" id="LinearElasticityElementAssembler.element_energy">
+<a class="viewcode-back" href="../../../api/assemble.html#tensormesh.LinearElasticityElementAssembler.element_energy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">element_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graddisplacement</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute strain energy density at a quadrature point.</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            \Psi = \frac{\lambda}{2} (\mathrm{tr}\, \boldsymbol{\varepsilon})^2</span>
+<span class="sd">            + \mu \, \boldsymbol{\varepsilon} : \boldsymbol{\varepsilon}</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        graddisplacement : torch.Tensor</span>
+<span class="sd">            Displacement gradient :math:`\nabla \mathbf{u}` of shape ``[dim, dim]``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Scalar strain energy density.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">grad_u</span> <span class="o">=</span> <span class="n">graddisplacement</span>
+        <span class="n">dim</span> <span class="o">=</span> <span class="n">grad_u</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        
+        <span class="c1"># Strain epsilon = 0.5 (grad_u + grad_u.T)</span>
+        <span class="n">eps</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">grad_u</span> <span class="o">+</span> <span class="n">grad_u</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">))</span>
+        
+        <span class="c1"># Lame parameters</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">))</span>
+        <span class="n">lam</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">)</span> <span class="o">/</span> <span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">))</span>
+        
+        <span class="c1"># Trace squared</span>
+        <span class="n">tr_eps</span> <span class="o">=</span> <span class="n">eps</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">dim1</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">dim2</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">vol_term</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">lam</span> <span class="o">*</span> <span class="p">(</span><span class="n">tr_eps</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        
+        <span class="c1"># Double dot product eps : eps</span>
+        <span class="n">eps_sq</span> <span class="o">=</span> <span class="p">(</span><span class="n">eps</span> <span class="o">*</span> <span class="n">eps</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">dev_term</span> <span class="o">=</span> <span class="n">mu</span> <span class="o">*</span> <span class="n">eps_sq</span>
+        
+        <span class="n">energy</span> <span class="o">=</span> <span class="n">vol_term</span> <span class="o">+</span> <span class="n">dev_term</span>
+        <span class="k">return</span> <span class="n">energy</span></div>
+</div>
+
+
+<div class="viewcode-block" id="NeoHookeanModel">
+<a class="viewcode-back" href="../../../api/assemble.html#tensormesh.NeoHookeanModel">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NeoHookeanModel</span><span class="p">(</span><span class="n">ElementAssembler</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Neo-Hookean Hyperelastic Material Model.</span>
+<span class="sd">    </span>
+<span class="sd">    A nonlinear hyperelastic constitutive model for large deformation analysis.</span>
+<span class="sd">    The Neo-Hookean model is the simplest hyperelastic model and extends linear</span>
+<span class="sd">    elasticity to the finite strain regime.</span>
+<span class="sd">    </span>
+<span class="sd">    **Deformation Gradient:**</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">    </span>
+<span class="sd">        \mathbf{F} = \mathbf{I} + \nabla \mathbf{u}</span>
+<span class="sd">    </span>
+<span class="sd">    **Kinematic Quantities:**</span>
+<span class="sd">    </span>
+<span class="sd">    - Right Cauchy-Green tensor: :math:`\mathbf{C} = \mathbf{F}^T \mathbf{F}`</span>
+<span class="sd">    - First invariant: :math:`I_1 = \mathrm{tr}(\mathbf{C}) = \|\mathbf{F}\|_F^2`</span>
+<span class="sd">    - Jacobian (volume ratio): :math:`J = \det(\mathbf{F})`</span>
+<span class="sd">    </span>
+<span class="sd">    **Strain Energy Density:**</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">    </span>
+<span class="sd">        \Psi = \frac{\mu}{2}(I_1 - d) - \mu \ln J + \frac{\lambda}{2}(\ln J)^2</span>
+<span class="sd">    </span>
+<span class="sd">    where :math:`d` is the spatial dimension (2 or 3).</span>
+<span class="sd">    </span>
+<span class="sd">    **First Piola-Kirchhoff Stress:**</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">    </span>
+<span class="sd">        \mathbf{P} = \frac{\partial \Psi}{\partial \mathbf{F}} </span>
+<span class="sd">        = \mu \mathbf{F} + (\lambda \ln J - \mu) \mathbf{F}^{-T}</span>
+<span class="sd">    </span>
+<span class="sd">    **Material Parameters:**</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">    </span>
+<span class="sd">        \mu = \frac{E}{2(1+\nu)}, \quad \lambda = \frac{E\nu}{(1+\nu)(1-2\nu)}</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    E : float, optional</span>
+<span class="sd">        Young&#39;s modulus. Default: ``1.0``.</span>
+<span class="sd">    nu : float, optional</span>
+<span class="sd">        Poisson&#39;s ratio. Default: ``0.3``.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Requires :math:`J &gt; 0` (no element inversion). For nearly incompressible</span>
+<span class="sd">    materials (:math:`\nu \to 0.5`), consider a mixed formulation to avoid</span>
+<span class="sd">    volumetric locking.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        mesh = Mesh.gen_cube(chara_length=0.1)</span>
+<span class="sd">        model = NeoHookeanModel.from_mesh(mesh, E=1e6, nu=0.45)</span>
+<span class="sd">        E_tot = model.energy(displacement)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="mf">0.3</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">=</span> <span class="n">E</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">nu</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lam</span> <span class="o">=</span> <span class="n">E</span> <span class="o">*</span> <span class="n">nu</span> <span class="o">/</span> <span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="n">nu</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">nu</span><span class="p">))</span>
+
+<div class="viewcode-block" id="NeoHookeanModel.element_energy">
+<a class="viewcode-back" href="../../../api/assemble.html#tensormesh.NeoHookeanModel.element_energy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">element_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graddisplacement</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute Neo-Hookean strain energy density at a quadrature point.</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            \Psi = \frac{\mu}{2}(I_1 - d) - \mu \ln J + \frac{\lambda}{2}(\ln J)^2</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        graddisplacement : torch.Tensor</span>
+<span class="sd">            Displacement gradient :math:`\nabla \mathbf{u}` of shape ``[dim, dim]``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Scalar strain energy density.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">grad_u</span> <span class="o">=</span> <span class="n">graddisplacement</span>
+        <span class="n">dim</span> <span class="o">=</span> <span class="n">grad_u</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        
+        <span class="c1"># F = I + grad_u</span>
+        <span class="n">F</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">grad_u</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">grad_u</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span> <span class="o">+</span> <span class="n">grad_u</span>
+        
+        <span class="c1"># Invariants</span>
+        <span class="n">J</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">F</span><span class="p">)</span> 
+        <span class="n">I1</span> <span class="o">=</span> <span class="p">(</span><span class="n">F</span> <span class="o">*</span> <span class="n">F</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="c1"># tr(F^T F)</span>
+        
+        <span class="n">log_J</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">J</span><span class="p">)</span>
+        <span class="n">psi</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">I1</span> <span class="o">-</span> <span class="n">dim</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">log_J</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lam</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">log_J</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">psi</span></div>
+
+
+<div class="viewcode-block" id="NeoHookeanModel.energy">
+<a class="viewcode-back" href="../../../api/assemble.html#tensormesh.NeoHookeanModel.energy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute total strain energy.</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            \Pi = \int_{\Omega} \Psi(\mathbf{F}) \, \mathrm{d}\Omega</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        u : torch.Tensor</span>
+<span class="sd">            Displacement field of shape ``[n_nodes, dim]``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Scalar total strain energy.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">energy</span><span class="p">(</span><span class="n">point_data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;displacement&quot;</span><span class="p">:</span> <span class="n">u</span><span class="p">})</span></div>
+</div>
+
+
+<div class="viewcode-block" id="J2Plasticity">
+<a class="viewcode-back" href="../../../api/assemble.html#tensormesh.J2Plasticity">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">J2Plasticity</span><span class="p">(</span><span class="n">ElementAssembler</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;J2 (von Mises) Plasticity Model with Isotropic Hardening.</span>
+<span class="sd">    </span>
+<span class="sd">    Implements rate-independent J2 plasticity with linear isotropic hardening</span>
+<span class="sd">    using a return-mapping algorithm. This model is suitable for metals and</span>
+<span class="sd">    other ductile materials under monotonic or cyclic loading.</span>
+<span class="sd">    </span>
+<span class="sd">    **Yield Function (von Mises):**</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">    </span>
+<span class="sd">        f(\boldsymbol{\sigma}, \alpha) = \|\mathbf{s}\| - \sqrt{\frac{2}{3}}(\sigma_0 + H\alpha) \leq 0</span>
+<span class="sd">    </span>
+<span class="sd">    where:</span>
+<span class="sd">    </span>
+<span class="sd">    - :math:`\mathbf{s} = \boldsymbol{\sigma} - \frac{1}{3}\mathrm{tr}(\boldsymbol{\sigma})\mathbf{I}` is the deviatoric stress</span>
+<span class="sd">    - :math:`\sigma_0` is the initial yield stress</span>
+<span class="sd">    - :math:`H` is the hardening modulus</span>
+<span class="sd">    - :math:`\alpha` is the equivalent plastic strain (internal variable)</span>
+<span class="sd">    </span>
+<span class="sd">    **Additive Strain Decomposition:**</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">    </span>
+<span class="sd">        \boldsymbol{\varepsilon} = \boldsymbol{\varepsilon}^e + \boldsymbol{\varepsilon}^p</span>
+<span class="sd">    </span>
+<span class="sd">    **Flow Rule (Associated):**</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">    </span>
+<span class="sd">        \dot{\boldsymbol{\varepsilon}}^p = \dot{\gamma} \frac{\partial f}{\partial \boldsymbol{\sigma}}</span>
+<span class="sd">        = \dot{\gamma} \frac{\mathbf{s}}{\|\mathbf{s}\|}</span>
+<span class="sd">    </span>
+<span class="sd">    **Hardening Law:**</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">    </span>
+<span class="sd">        \dot{\alpha} = \sqrt{\frac{2}{3}} \dot{\gamma}</span>
+<span class="sd">    </span>
+<span class="sd">    **Return Mapping Algorithm:**</span>
+<span class="sd">    </span>
+<span class="sd">    1. Compute trial elastic stress: :math:`\boldsymbol{\sigma}^{tr} = \mathbf{C}:(\boldsymbol{\varepsilon} - \boldsymbol{\varepsilon}^p_n)`</span>
+<span class="sd">    2. Check yield: :math:`f^{tr} = \|\mathbf{s}^{tr}\| - \sqrt{2/3}(\sigma_0 + H\alpha_n)`</span>
+<span class="sd">    3. If :math:`f^{tr} \leq 0`: elastic step, accept trial state</span>
+<span class="sd">    4. If :math:`f^{tr} &gt; 0`: plastic correction</span>
+<span class="sd">    </span>
+<span class="sd">       .. math::</span>
+<span class="sd">       </span>
+<span class="sd">           \Delta\gamma = \frac{f^{tr}}{2\mu + \frac{2}{3}H}</span>
+<span class="sd">    </span>
+<span class="sd">    **Algorithmic Incremental Potential:**</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">    </span>
+<span class="sd">        \Psi^{alg} = \frac{K}{2}(\mathrm{tr}\,\boldsymbol{\varepsilon}^e)^2 </span>
+<span class="sd">        + \mu \|\mathbf{e}^{tr}\|^2 - \frac{1}{2}(2\mu + \frac{2}{3}H)(\Delta\gamma)^2</span>
+<span class="sd">    </span>
+<span class="sd">    where :math:`K = \lambda + \frac{2}{3}\mu` is the bulk modulus and</span>
+<span class="sd">    :math:`\mathbf{e}^{tr}` is the deviatoric trial strain.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    material : optional</span>
+<span class="sd">        Material object with properties ``E``, ``nu``, ``sigma_y``, ``H``;</span>
+<span class="sd">        when supplied, overrides the individual scalar arguments.</span>
+<span class="sd">    E : float, optional</span>
+<span class="sd">        Young&#39;s modulus. Default: ``200e9`` (steel).</span>
+<span class="sd">    nu : float, optional</span>
+<span class="sd">        Poisson&#39;s ratio. Default: ``0.3``.</span>
+<span class="sd">    sig0 : float, optional</span>
+<span class="sd">        Initial yield stress. Default: ``250e6``.</span>
+<span class="sd">    H : float, optional</span>
+<span class="sd">        Hardening modulus. Default: ``1e9``.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    history : dict</span>
+<span class="sd">        Internal state variables — plastic strain (:math:`\boldsymbol{\varepsilon}^p`)</span>
+<span class="sd">        and equivalent plastic strain (:math:`\alpha`) — keyed by element type.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        mesh = Mesh.gen_cube(chara_length=0.05)</span>
+<span class="sd">        plasticity = J2Plasticity.from_mesh(mesh, E=200e9, nu=0.3, sig0=250e6, H=1e9)</span>
+<span class="sd">        # In time-stepping loop:</span>
+<span class="sd">        energy = plasticity.energy(point_data={&quot;displacement&quot;: u})</span>
+<span class="sd">        energy.backward()</span>
+<span class="sd">        # After convergence:</span>
+<span class="sd">        plasticity.update_state(u)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">material</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="mf">200e9</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">sig0</span><span class="o">=</span><span class="mf">250e6</span><span class="p">,</span> <span class="n">H</span><span class="o">=</span><span class="mf">1e9</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">material</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">=</span> <span class="n">material</span><span class="o">.</span><span class="n">E</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nu</span> <span class="o">=</span> <span class="n">material</span><span class="o">.</span><span class="n">nu</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sig0</span> <span class="o">=</span> <span class="n">material</span><span class="o">.</span><span class="n">sigma_y</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">=</span> <span class="n">material</span><span class="o">.</span><span class="n">H</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">=</span> <span class="n">E</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nu</span> <span class="o">=</span> <span class="n">nu</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sig0</span> <span class="o">=</span> <span class="n">sig0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">=</span> <span class="n">H</span>
+        
+        <span class="c1"># Lamé parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lam</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">)</span> <span class="o">/</span> <span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bulk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lam</span> <span class="o">+</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span>
+        
+        <span class="c1"># Initialize History Variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">etype</span><span class="p">,</span> <span class="n">trans</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformation</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">n_elem</span> <span class="o">=</span> <span class="n">trans</span><span class="o">.</span><span class="n">n_elements</span>
+            <span class="n">n_quad</span> <span class="o">=</span> <span class="n">trans</span><span class="o">.</span><span class="n">n_quadrature</span>
+            
+            <span class="c1"># Plastic strain tensor (trace is 0 for J2)</span>
+            <span class="n">eps_p</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_elem</span><span class="p">,</span> <span class="n">n_quad</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            
+            <span class="c1"># Equivalent plastic strain</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_elem</span><span class="p">,</span> <span class="n">n_quad</span><span class="p">),</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="n">etype</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;eps_p&#39;</span><span class="p">:</span> <span class="n">eps_p</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="n">alpha</span><span class="p">}</span>
+
+<div class="viewcode-block" id="J2Plasticity.element_energy">
+<a class="viewcode-back" href="../../../api/assemble.html#tensormesh.J2Plasticity.element_energy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">element_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graddisplacement</span><span class="p">,</span> <span class="n">eps_p_n</span><span class="p">,</span> <span class="n">alpha_n</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute algorithmic incremental potential energy density.</span>
+
+<span class="sd">        This implements the return-mapping algorithm at the quadrature point level.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        graddisplacement : torch.Tensor</span>
+<span class="sd">            Displacement gradient :math:`\nabla \mathbf{u}`.</span>
+<span class="sd">        eps_p_n : torch.Tensor</span>
+<span class="sd">            Plastic strain from the previous step :math:`\boldsymbol{\varepsilon}^p_n`.</span>
+<span class="sd">        alpha_n : torch.Tensor</span>
+<span class="sd">            Equivalent plastic strain from the previous step :math:`\alpha_n`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Scalar incremental potential energy density.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">grad_u</span> <span class="o">=</span> <span class="n">graddisplacement</span>
+        <span class="n">dim</span> <span class="o">=</span> <span class="n">grad_u</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="c1"># Construct 3D strain tensor</span>
+        <span class="k">if</span> <span class="n">dim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">eps_2d</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">grad_u</span> <span class="o">+</span> <span class="n">grad_u</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+            <span class="n">eps</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">eps_2d</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">eps</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">grad_u</span> <span class="o">+</span> <span class="n">grad_u</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        
+        <span class="c1"># Trial Elastic Step</span>
+        <span class="n">eps_tr</span> <span class="o">=</span> <span class="n">eps</span> <span class="o">-</span> <span class="n">eps_p_n</span>
+        <span class="n">tr_eps_tr</span> <span class="o">=</span> <span class="n">eps_tr</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">dim1</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">dim2</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">dev_eps_tr</span> <span class="o">=</span> <span class="n">eps_tr</span> <span class="o">-</span> <span class="p">(</span><span class="n">tr_eps_tr</span> <span class="o">/</span> <span class="mf">3.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">grad_u</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">grad_u</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">norm_dev_eps_tr</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dev_eps_tr</span><span class="p">)</span>
+        
+        <span class="c1"># Trial yield criterion</span>
+        <span class="n">norm_s_tr</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">norm_dev_eps_tr</span>
+        <span class="n">radius</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sig0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">*</span> <span class="n">alpha_n</span><span class="p">)</span>
+        <span class="n">f_tr</span> <span class="o">=</span> <span class="n">norm_s_tr</span> <span class="o">-</span> <span class="n">radius</span>
+        
+        <span class="c1"># Volumetric energy</span>
+        <span class="n">vol_energy</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">bulk</span> <span class="o">*</span> <span class="p">(</span><span class="n">tr_eps_tr</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        
+        <span class="c1"># Plastic multiplier</span>
+        <span class="n">denom</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">H</span>
+        <span class="n">d_gamma</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">f_tr</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">denom</span>
+        
+        <span class="c1"># Deviatoric energy with plastic correction</span>
+        <span class="n">dev_energy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="p">(</span><span class="n">norm_dev_eps_tr</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">denom</span> <span class="o">*</span> <span class="p">(</span><span class="n">d_gamma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        
+        <span class="n">psi</span> <span class="o">=</span> <span class="n">vol_energy</span> <span class="o">+</span> <span class="n">dev_energy</span>
+        <span class="k">return</span> <span class="n">psi</span></div>
+
+
+<div class="viewcode-block" id="J2Plasticity.update_state">
+<a class="viewcode-back" href="../../../api/assemble.html#tensormesh.J2Plasticity.update_state">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_vec</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Update internal state variables after load-step convergence.</span>
+
+<span class="sd">        Call after the Newton-Raphson iteration converges to update the</span>
+<span class="sd">        plastic strain and the equivalent plastic strain.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        u_vec : torch.Tensor</span>
+<span class="sd">            Converged displacement field.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">etype</span><span class="p">,</span> <span class="n">trans</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformation</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">cells</span> <span class="o">=</span> <span class="n">trans</span><span class="o">.</span><span class="n">elements</span>
+                <span class="n">u_elem</span> <span class="o">=</span> <span class="n">u_vec</span><span class="p">[</span><span class="n">cells</span><span class="p">]</span>
+                <span class="n">grad_u</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;bqkx,bku-&gt;bqux&#39;</span><span class="p">,</span> <span class="n">trans</span><span class="o">.</span><span class="n">shape_grad</span><span class="p">,</span> <span class="n">u_elem</span><span class="p">)</span>
+                
+                <span class="n">dim</span> <span class="o">=</span> <span class="n">grad_u</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">eps</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">grad_u</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">device</span><span class="o">=</span><span class="n">u_vec</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">u_vec</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="n">dim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">grad_u_2d</span> <span class="o">=</span> <span class="n">grad_u</span>
+                    <span class="n">eps</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">grad_u_2d</span> <span class="o">+</span> <span class="n">grad_u_2d</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">eps</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">grad_u</span> <span class="o">+</span> <span class="n">grad_u</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">))</span>
+                
+                <span class="n">hist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="n">etype</span><span class="p">]</span>
+                <span class="n">eps_p_n</span> <span class="o">=</span> <span class="n">hist</span><span class="p">[</span><span class="s1">&#39;eps_p&#39;</span><span class="p">]</span>
+                <span class="n">alpha_n</span> <span class="o">=</span> <span class="n">hist</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">]</span>
+                
+                <span class="c1"># Trial</span>
+                <span class="n">eps_tr</span> <span class="o">=</span> <span class="n">eps</span> <span class="o">-</span> <span class="n">eps_p_n</span>
+                <span class="n">tr_eps_tr</span> <span class="o">=</span> <span class="n">eps_tr</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">dim1</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">dim2</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">dev_eps_tr</span> <span class="o">=</span> <span class="n">eps_tr</span> <span class="o">-</span> <span class="p">(</span><span class="n">tr_eps_tr</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">3.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">u_vec</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">u_vec</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+                
+                <span class="n">norm_dev_eps_tr</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dev_eps_tr</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                <span class="n">norm_s_tr</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">norm_dev_eps_tr</span>
+                <span class="n">radius</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sig0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">*</span> <span class="n">alpha_n</span><span class="p">)</span>
+                <span class="n">f_tr</span> <span class="o">=</span> <span class="n">norm_s_tr</span> <span class="o">-</span> <span class="n">radius</span>
+                
+                <span class="n">d_gamma</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">f_tr</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="p">)</span>
+                
+                <span class="c1"># Update direction</span>
+                <span class="n">norm_safe</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">norm_dev_eps_tr</span> <span class="o">&lt;</span> <span class="mf">1e-12</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">norm_dev_eps_tr</span><span class="p">),</span> <span class="n">norm_dev_eps_tr</span><span class="p">)</span>
+                <span class="n">n_tensor</span> <span class="o">=</span> <span class="n">dev_eps_tr</span> <span class="o">/</span> <span class="n">norm_safe</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                
+                <span class="n">yield_mask</span> <span class="o">=</span> <span class="n">f_tr</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                <span class="n">d_gamma_masked</span> <span class="o">=</span> <span class="n">d_gamma</span> <span class="o">*</span> <span class="n">yield_mask</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+                
+                <span class="n">hist</span><span class="p">[</span><span class="s1">&#39;eps_p&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">d_gamma_masked</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_tensor</span>
+                <span class="n">hist</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">d_gamma_masked</span></div>
+</div>
+
+
+<div class="viewcode-block" id="ContactAssembler">
+<a class="viewcode-back" href="../../../api/assemble.html#tensormesh.ContactAssembler">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ContactAssembler</span><span class="p">(</span><span class="n">FacetAssembler</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Contact/Boundary Facet Assembler.</span>
+<span class="sd">    </span>
+<span class="sd">    Assembler for integrating energy contributions over boundary facets (surfaces in 3D,</span>
+<span class="sd">    edges in 2D). This is useful for implementing:</span>
+<span class="sd">    </span>
+<span class="sd">    - **Contact mechanics**: Penalty or barrier methods for non-penetration constraints</span>
+<span class="sd">    - **Surface tension**: Capillary effects in fluid-structure interaction</span>
+<span class="sd">    - **Pressure loads**: Follower forces that remain normal to deformed surface</span>
+<span class="sd">    - **Robin boundary conditions**: Mixed Dirichlet-Neumann conditions</span>
+<span class="sd">    </span>
+<span class="sd">    **Penalty Contact Formulation:**</span>
+<span class="sd">    </span>
+<span class="sd">    For a penalty-based contact between surface :math:`\Gamma` and an obstacle:</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">    </span>
+<span class="sd">        \Pi_{contact} = \int_{\Gamma} \frac{\kappa}{2} \langle g_n \rangle_-^2 \, \mathrm{d}S</span>
+<span class="sd">    </span>
+<span class="sd">    where:</span>
+<span class="sd">    </span>
+<span class="sd">    - :math:`g_n` is the normal gap function (negative when penetrating)</span>
+<span class="sd">    - :math:`\langle \cdot \rangle_- = \min(\cdot, 0)` is the negative part (Macaulay bracket)</span>
+<span class="sd">    - :math:`\kappa` is the penalty stiffness</span>
+<span class="sd">    </span>
+<span class="sd">    **Usage Pattern:**</span>
+<span class="sd">    </span>
+<span class="sd">    Subclass ``ContactAssembler`` and implement ``element_energy`` to define</span>
+<span class="sd">    the specific contact/boundary energy density.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        class PenaltyContact(ContactAssembler):</span>
+<span class="sd">            def __post_init__(self, kappa=1e6, obstacle_y=0.0):</span>
+<span class="sd">                self.kappa = kappa</span>
+<span class="sd">                self.obstacle_y = obstacle_y</span>
+
+<span class="sd">            def element_energy(self, x):</span>
+<span class="sd">                gap = x[..., 1] - self.obstacle_y         # y-coordinate gap</span>
+<span class="sd">                penetration = torch.clamp(-gap, min=0.0)</span>
+<span class="sd">                return 0.5 * self.kappa * penetration ** 2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="ContactAssembler.energy">
+<a class="viewcode-back" href="../../../api/assemble.html#tensormesh.ContactAssembler.energy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+                       <span class="n">func</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">point_data</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+                       <span class="n">element_data</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+                       <span class="n">scalar_data</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">batch_size</span><span class="p">:</span><span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute total boundary / contact energy.</span>
+
+<span class="sd">        Integrates ``element_energy`` over all selected boundary facets:</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            \Pi = \int_{\Gamma} \psi(\mathbf{x}, \mathbf{u}, \ldots) \, \mathrm{d}S</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        points : torch.Tensor, optional</span>
+<span class="sd">            Updated nodal coordinates; if ``None``, the cached points are used.</span>
+<span class="sd">        func : Callable, optional</span>
+<span class="sd">            Custom energy density to use *in place of* :meth:`element_energy`.</span>
+<span class="sd">        point_data : dict[str, torch.Tensor], optional</span>
+<span class="sd">            Nodal fields to interpolate at quadrature points.</span>
+<span class="sd">        element_data : dict, optional</span>
+<span class="sd">            Element-wise data (constant or per-quadrature).</span>
+<span class="sd">        scalar_data : dict, optional</span>
+<span class="sd">            Global scalar parameters.</span>
+<span class="sd">        batch_size : int, optional</span>
+<span class="sd">            Quadrature-point batch size; ``-1`` (default) means no batching.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Scalar total boundary energy.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">point_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">point_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">element_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">element_data</span> <span class="o">=</span> <span class="p">{</span><span class="n">element_type</span><span class="p">:{}</span> <span class="k">for</span> <span class="n">element_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">element_types</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">scalar_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">scalar_data</span> <span class="o">=</span> <span class="p">{}</span>
+        
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">point_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">assert</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_points</span>
+
+        <span class="k">if</span> <span class="n">points</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
+            <span class="bp">self</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">element_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">element_types</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">transformation</span><span class="p">[</span><span class="n">element_type</span><span class="p">]</span><span class="o">.</span><span class="n">update_points</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">points</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transformation</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="o">.</span><span class="n">points</span>
+            
+        <span class="n">point_data</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">points</span>
+        
+        <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element_energy</span> <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">func</span>
+        <span class="n">signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+        
+        <span class="n">broadcast_fns</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">element_data</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">InputBroadcast</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">)),</span>
+            <span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">scalar_data</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">InputBroadcast</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">)),</span>
+            <span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">point_data</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">InputBroadcast</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">)),</span>
+        <span class="p">]</span>
+        
+        <span class="n">element_dims</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">quadrature_dims</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">signature</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+            <span class="n">is_match</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">condition</span><span class="p">,</span> <span class="n">broadcast</span> <span class="ow">in</span> <span class="n">broadcast_fns</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">condition</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+                    <span class="n">element_dims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">broadcast</span><span class="o">.</span><span class="n">element</span><span class="p">)</span>
+                    <span class="n">quadrature_dims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">broadcast</span><span class="o">.</span><span class="n">quadrature</span><span class="p">)</span>
+                    <span class="n">is_match</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_match</span><span class="p">:</span>
+                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> is not supported for contact energy calculation.&quot;</span><span class="p">)</span>
+
+        <span class="n">element_dims</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">element_dims</span><span class="p">)</span>
+        <span class="n">quadrature_dims</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">quadrature_dims</span><span class="p">)</span>
+        
+        <span class="n">parallel_fn</span> <span class="o">=</span> <span class="n">vmap</span><span class="p">(</span>
+            <span class="n">vmap</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">in_dims</span><span class="o">=</span><span class="n">quadrature_dims</span><span class="p">),</span>
+            <span class="n">in_dims</span><span class="o">=</span><span class="n">element_dims</span>
+        <span class="p">)</span>
+        
+        <span class="n">total_energy</span> <span class="o">=</span> <span class="mf">0.0</span>
+        
+        <span class="k">for</span> <span class="n">element_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">element_types</span><span class="p">:</span>
+            <span class="n">trans</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformation</span><span class="p">[</span><span class="n">element_type</span><span class="p">]</span>
+            
+            <span class="k">if</span> <span class="n">trans</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">is_mix_facet</span><span class="p">:</span>
+                 <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Mixed facet elements not fully supported in simple energy loop yet.&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">facet_mask</span><span class="p">[</span><span class="n">element_type</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+                <span class="n">elem_indices</span><span class="p">,</span> <span class="n">facet_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">elem_indices</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="n">shape_val_sel</span> <span class="o">=</span> <span class="n">trans</span><span class="o">.</span><span class="n">facet_shape_val</span><span class="p">[</span><span class="n">facet_indices</span><span class="p">]</span>
+                <span class="n">FxW</span> <span class="o">=</span> <span class="n">trans</span><span class="o">.</span><span class="n">FxW</span><span class="p">[</span><span class="n">m</span><span class="p">]</span>
+                
+                <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">signature</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">point_data</span><span class="p">:</span>
+                        <span class="n">u_global</span> <span class="o">=</span> <span class="n">point_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                        <span class="n">nodes</span> <span class="o">=</span> <span class="n">trans</span><span class="o">.</span><span class="n">elements</span><span class="p">[</span><span class="n">elem_indices</span><span class="p">]</span>
+                        <span class="n">u_nodes</span> <span class="o">=</span> <span class="n">u_global</span><span class="p">[</span><span class="n">nodes</span><span class="p">]</span>
+                        <span class="n">val_interp</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;sbd,sqb-&gt;sqd&quot;</span><span class="p">,</span> <span class="n">u_nodes</span><span class="p">,</span> <span class="n">shape_val_sel</span><span class="p">)</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val_interp</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">scalar_data</span><span class="p">:</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scalar_data</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">element_data</span><span class="p">:</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">element_type</span><span class="p">][</span><span class="n">elem_indices</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown arg </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                
+                <span class="n">energy_density</span> <span class="o">=</span> <span class="n">parallel_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+                <span class="n">energy_val</span> <span class="o">=</span> <span class="p">(</span><span class="n">energy_density</span> <span class="o">*</span> <span class="n">FxW</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+                <span class="n">total_energy</span> <span class="o">+=</span> <span class="n">energy_val</span>
+
+        <span class="k">return</span> <span class="n">total_energy</span></div>
+
+
+<div class="viewcode-block" id="ContactAssembler.element_energy">
+<a class="viewcode-back" href="../../../api/assemble.html#tensormesh.ContactAssembler.element_energy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">element_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override this method to define the boundary energy density.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</div>
+
+
+<div class="viewcode-block" id="const_node_assembler">
+<a class="viewcode-back" href="../../../api/assemble.html#tensormesh.const_node_assembler">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">const_node_assembler</span><span class="p">(</span><span class="n">c</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Factory: build a :class:`NodeAssembler` for a constant body load.</span>
+
+<span class="sd">    **Weak form:**</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        f_i = \int_{\Omega} c \, N_i \, \mathrm{d}\Omega</span>
+
+<span class="sd">    This represents a uniform body force or source term.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    c : float, optional</span>
+<span class="sd">        Constant load value. Default: ``1``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    type[NodeAssembler]</span>
+<span class="sd">        A new :class:`NodeAssembler` subclass with ``c`` baked in.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        ConstLoad = const_node_assembler(c=9.81)        # gravity</span>
+<span class="sd">        f = ConstLoad.from_mesh(mesh)(mesh.points)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">ConstNodeAssembler</span><span class="p">(</span><span class="n">NodeAssembler</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Constant load node assembler.</span>
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+<span class="sd">    </span>
+<span class="sd">            f = \int_{\Omega} c\cdot v \mathrm{d}\Omega</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span> 
+        <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">*</span> <span class="n">v</span>
+            <span class="k">return</span> <span class="n">f</span>
+    <span class="k">return</span> <span class="n">ConstNodeAssembler</span></div>
+
+
+<div class="viewcode-block" id="func_node_assembler">
+<a class="viewcode-back" href="../../../api/assemble.html#tensormesh.func_node_assembler">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">func_node_assembler</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Factory: build a :class:`NodeAssembler` for a spatially-varying load.</span>
+
+<span class="sd">    **Weak form:**</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        f_i = \int_{\Omega} f(\mathbf{x}) \, N_i \, \mathrm{d}\Omega</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    f : Callable</span>
+<span class="sd">        Function returning the load value at a coordinate. Signature</span>
+<span class="sd">        ``f(x) -&gt; load``, where ``x`` has shape ``[..., dim]``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    type[NodeAssembler]</span>
+<span class="sd">        A new :class:`NodeAssembler` subclass with ``f`` baked in.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        source = func_node_assembler(lambda x: torch.sin(np.pi * x[..., 0]))</span>
+<span class="sd">        rhs = source.from_mesh(mesh)(mesh.points)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">FuncNodeAssembler</span><span class="p">(</span><span class="n">NodeAssembler</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Function-based load node assembler.</span>
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+<span class="sd">    </span>
+<span class="sd">            f = \int_{\Omega} f(\mathbf{x}) \, v \, \mathrm{d}\Omega</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span>
+            <span class="k">return</span> <span class="n">f</span>
+    <span class="k">return</span> <span class="n">FuncNodeAssembler</span></div>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;LaplaceElementAssembler&quot;</span><span class="p">,</span> <span class="s2">&quot;MassElementAssembler&quot;</span><span class="p">,</span> <span class="s2">&quot;LinearElasticityElementAssembler&quot;</span><span class="p">,</span> <span class="s2">&quot;NeoHookeanModel&quot;</span><span class="p">,</span> <span class="s2">&quot;J2Plasticity&quot;</span><span class="p">,</span> <span class="s2">&quot;ContactAssembler&quot;</span><span class="p">,</span> <span class="s2">&quot;const_node_assembler&quot;</span><span class="p">,</span> <span class="s2">&quot;func_node_assembler&quot;</span><span class="p">]</span>
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, TensorMesh Contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/camlab-ethz/TensorMesh" aria-label="GitHub"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+              <a class="muted-link " href="https://discord.gg/EC9kbHSnrx" aria-label="Discord"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.576-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.05.05 0 0 0-.021.019C.356 6.024-.213 9.047.066 12.032c.002.015.01.029.02.037a13.3 13.3 0 0 0 3.995 2.01.05.05 0 0 0 .056-.019c.308-.42.582-.86.818-1.329a.05.05 0 0 0-.027-.06 8.7 8.7 0 0 1-1.248-.595.05.05 0 0 1-.005-.085c.079-.053.16-.104.248-.152a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007c.08.048.16.1.248.152a.05.05 0 0 1-.004.085 8.2 8.2 0 0 1-1.249.594.05.05 0 0 0-.027.06c.24.465.514.906.817 1.329a.05.05 0 0 0 .056.02 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.036c.334-3.451-.559-6.449-2.366-9.106a.04.04 0 0 0-.021-.02zM5.68 10.77c-.789 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.45.73 1.438 1.61 0 .886-.637 1.61-1.438 1.61zm4.842 0c-.788 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.451.73 1.438 1.61 0 .886-.63 1.61-1.438 1.61z"></path></svg></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=a58bc63e"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    </body>
+</html>

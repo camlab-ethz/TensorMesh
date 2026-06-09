@@ -1,0 +1,1140 @@
+<!doctype html>
+<html class="no-js" lang="zh-CN" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="索引" href="../genindex.html"><link rel="search" title="搜索" href="../search.html"><link rel="next" title="tensormesh.ode" href="ode.html"><link rel="prev" title="tensormesh.operator" href="operator.html">
+        <link rel="prefetch" href="../_static/logo.png" as="image">
+        <link rel="prefetch" href="../_static/logo.png" as="image">
+
+    <link rel="shortcut icon" href="../_static/logo.png"><!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>tensormesh.sparse - TensorMesh</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=95a110e3" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #5B6EE8;
+  --color-brand-content: #149B8E;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">TensorMesh</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../_static/logo.png" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../_static/logo.png" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">TensorMesh</span>
+  
+</a><div class="sidebar-language-switcher">
+  <a href="../../api/sparse.html" rel="alternate" hreflang="en" title="English">English</a>
+  <span class="sep">·</span>
+  <span class="active">中文</span>
+</div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="搜索" name="q" aria-label="搜索">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">文档</span></p>
+<ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../getting_started/index.html">快速上手</a><input aria-label="Toggle navigation of 快速上手" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html">安装</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quickstart.html">快速开始</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/verify_install.html">验证安装</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../user_guide/index.html">用户指南</a><input aria-label="Toggle navigation of 用户指南" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/concepts.html">核心概念</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/meshes.html">网格</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/elements_and_quadrature.html">单元与求积</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/forms.html">形式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/boundary_conditions.html">边界条件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/linear_solvers.html">稀疏求解器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/time_integration.html">时间积分</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/batched_workflows.html">批量化工作流</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/differentiability.html">可微性</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../example_gallery/index.html">示例画廊</a><input aria-label="Toggle navigation of 示例画廊" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/basics.html">基础与可视化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/poisson.html">泊松方程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/diffusion.html">扩散</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/wave.html">波动方程</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../example_gallery/solid/index.html">固体力学</a><input aria-label="Toggle navigation of 固体力学" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/cantilever_beam.html">悬臂梁</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/hyperelastic_beam.html">超弹性梁（新胡克）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/hertzian_contact.html">赫兹接触</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/plasticity_strip.html">塑性（带各向同性硬化的 J2）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/drucker_prager_triaxial.html">岩土力学：Drucker-Prager 三轴压缩</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/elastic_footing.html">Geomechanics: elastic strip footing</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../example_gallery/fluid/index.html">流体力学</a><input aria-label="Toggle navigation of 流体力学" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/cavity.html">顶盖驱动方腔</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/cylinder_flow.html">圆柱绕流（涡脱落）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/flow_obstacles.html">绕多个障碍物的流动</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/rayleigh_benard.html">瑞利-贝纳德对流</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/taylor_green.html">泰勒-格林涡（收敛性研究）</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/maxwell.html">静磁学（麦克斯韦方程）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/inverse_design.html">反问题设计与辨识</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/physics_informed.html">物理信息学习</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/dataset.html">机器学习数据集</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/distributed.html">分布式 FEM</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">API Reference</a><input aria-label="Toggle navigation of API Reference" checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="mesh.html">tensormesh.mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="element.html">tensormesh.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assemble.html">tensormesh.assemble</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operator.html">tensormesh.operator</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">tensormesh.sparse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode.html">tensormesh.ode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional.html">tensormesh.functional</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optimizer.html">tensormesh.optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="material.html">tensormesh.material</a></li>
+<li class="toctree-l2"><a class="reference internal" href="distributed.html">tensormesh.distributed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nn.html">tensormesh.nn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataset.html">tensormesh.dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html">tensormesh.visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../performance/index.html">性能</a><input aria-label="Toggle navigation of 性能" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../performance/benchmarks.html">基准测试</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../performance/scaling_guide.html">扩展性指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../performance/profiling.html">性能剖析</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../community/index.html">社区</a><input aria-label="Toggle navigation of 社区" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../community/discord.html">Discord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/github_discussions.html">GitHub Discussions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/github_issues.html">GitHub Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/contributing.html">贡献指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/citing.html">引用 TensorMesh</a></li>
+</ul>
+</li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/api/sparse.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="module-tensormesh.sparse">
+<span id="tensormesh-sparse"></span><h1>tensormesh.sparse<a class="headerlink" href="#module-tensormesh.sparse" title="Link to this heading">¶</a></h1>
+<p>Sparse matrix data type and solver entry points. Built on top of
+<code class="docutils literal notranslate"><span class="pre">torch-sla</span></code>; see <a class="reference internal" href="../user_guide/linear_solvers.html"><span class="doc">稀疏求解器</span></a> for the design and
+backend matrix.</p>
+<section id="sparsematrix">
+<h2>SparseMatrix<a class="headerlink" href="#sparsematrix" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SparseMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="（在 Python v3.14）"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix" title="Link to this definition">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">SparseTensor</span></code></p>
+<p>COO sparse matrix with FEM-flavoured helpers.</p>
+<p>Subclass of <code class="docutils literal notranslate"><span class="pre">torch_sla.SparseTensor</span></code>. Inherits <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> (spmm),
+<code class="docutils literal notranslate"><span class="pre">solve</span></code>, autograd-aware values, <code class="docutils literal notranslate"><span class="pre">.to_dense()</span></code> and friends from
+the parent; adds layout hashing, block-COO assembly, scipy
+interoperability and type-preserving arithmetic.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>edata</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a>) -- 1D float tensor of shape <code class="docutils literal notranslate"><span class="pre">[nnz]</span></code>: the non-zero values.</p></li>
+<li><p><strong>row</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a>) -- 1D integer tensor of shape <code class="docutils literal notranslate"><span class="pre">[nnz]</span></code>: row indices.</p></li>
+<li><p><strong>col</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a>) -- 1D integer tensor of shape <code class="docutils literal notranslate"><span class="pre">[nnz]</span></code>: column indices.</p></li>
+<li><p><strong>shape</strong> (<em>Tuple</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><em>int</em></a><em>]</em>) -- <code class="docutils literal notranslate"><span class="pre">(nrows,</span> <span class="pre">ncols)</span></code> of the dense equivalent.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.layout_hash">
+<span class="sig-name descname"><span class="pre">layout_hash</span></span><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.layout_hash" title="Link to this definition">¶</a></dt>
+<dd><p>SHA-256 of <code class="docutils literal notranslate"><span class="pre">(row,</span> <span class="pre">col)</span></code> concatenated bytes. Two matrices with
+the same sparsity pattern share this hash; useful for caching
+any quantity that depends only on the topology (Condenser
+permutations, AMG hierarchies, etc.).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.14）"><em>str</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">示例</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparseMatrix</span>
+
+<span class="n">edata</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>
+<span class="n">row</span>   <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="n">col</span>   <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">A</span>     <span class="o">=</span> <span class="n">SparseMatrix</span><span class="p">(</span><span class="n">edata</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+<span class="c1"># Inherited from SparseTensor:</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">A</span> <span class="o">@</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">double</span><span class="p">()</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float64</span><span class="p">))</span>
+
+<span class="c1"># FEM-specific block-COO assembly: 10 element matrices of size 3x3.</span>
+<span class="n">block_data</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">elem_row</span>   <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">elem_col</span>   <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">SparseMatrix</span><span class="o">.</span><span class="n">from_block_coo</span><span class="p">(</span><span class="n">block_data</span><span class="p">,</span> <span class="n">elem_row</span><span class="p">,</span> <span class="n">elem_col</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="（在 Python v3.14）"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.__init__"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.edata">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">edata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a></em><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.edata" title="Link to this definition">¶</a></dt>
+<dd><p>Alias for <code class="docutils literal notranslate"><span class="pre">values</span></code> (legacy TensorMesh API).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.row">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">row</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a></em><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.row" title="Link to this definition">¶</a></dt>
+<dd><p>Alias for <code class="docutils literal notranslate"><span class="pre">row_indices</span></code>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.col">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">col</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a></em><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.col" title="Link to this definition">¶</a></dt>
+<dd><p>Alias for <code class="docutils literal notranslate"><span class="pre">col_indices</span></code>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.edges">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">edges</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a></em><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.edges" title="Link to this definition">¶</a></dt>
+<dd><p>Stacked <code class="docutils literal notranslate"><span class="pre">(row,</span> <span class="pre">col)</span></code> indices of shape <code class="docutils literal notranslate"><span class="pre">[2,</span> <span class="pre">nnz]</span></code>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.layout_mask">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">layout_mask</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a></em><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.layout_mask" title="Link to this definition">¶</a></dt>
+<dd><p>Dense <code class="docutils literal notranslate"><span class="pre">[nrows,</span> <span class="pre">ncols]</span></code> mask with 1.0 on the sparsity pattern.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.grad">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">grad</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="（在 Python v3.14）"><span class="pre">None</span></a></em><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.grad" title="Link to this definition">¶</a></dt>
+<dd><p>Gradient w.r.t. <code class="docutils literal notranslate"><span class="pre">values</span></code>, wrapped as a <a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SparseMatrix</span></code></a>.</p>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">None</span></code> when no gradient has accumulated on <code class="docutils literal notranslate"><span class="pre">values</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.to">
+<span class="sig-name descname"><span class="pre">to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.to"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.to" title="Link to this definition">¶</a></dt>
+<dd><p>Move tensor to device and/or convert dtype.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>device</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.14）"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="（在 PyTorch v2.12）"><em>device</em></a><em>, </em><em>optional</em>) -- Target device (e.g., 'cuda', 'cpu', 'cuda:0').</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensor_attributes.html#torch.dtype" title="（在 PyTorch v2.12）"><em>dtype</em></a><em>, </em><em>optional</em>) -- Target data type (e.g., torch.float32, torch.float64).</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>New SparseTensor on the target device/dtype.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#tensormesh.sparse.SparseTensor" title="tensormesh.sparse.SparseTensor"><em>SparseTensor</em></a></p>
+</dd>
+</dl>
+<p class="rubric">示例</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">SparseTensor</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A_cuda</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A_float32</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A_cuda_float32</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;cuda&#39;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.cuda">
+<span class="sig-name descname"><span class="pre">cuda</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.cuda"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.cuda" title="Link to this definition">¶</a></dt>
+<dd><p>Move tensor to CUDA device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>device</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><em>int</em></a><em>, </em><em>optional</em>) -- CUDA device index. Default: current device.</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tensor on CUDA.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#tensormesh.sparse.SparseTensor" title="tensormesh.sparse.SparseTensor"><em>SparseTensor</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.cpu">
+<span class="sig-name descname"><span class="pre">cpu</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.cpu"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.cpu" title="Link to this definition">¶</a></dt>
+<dd><p>Move tensor to CPU.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tensor on CPU.</p>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#tensormesh.sparse.SparseTensor" title="tensormesh.sparse.SparseTensor"><em>SparseTensor</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.float">
+<span class="sig-name descname"><span class="pre">float</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.float"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.float" title="Link to this definition">¶</a></dt>
+<dd><p>Convert to float32.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.double">
+<span class="sig-name descname"><span class="pre">double</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.double"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.double" title="Link to this definition">¶</a></dt>
+<dd><p>Convert to float64.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.half">
+<span class="sig-name descname"><span class="pre">half</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.half"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.half" title="Link to this definition">¶</a></dt>
+<dd><p>Convert to float16.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.detach">
+<span class="sig-name descname"><span class="pre">detach</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.detach"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.detach" title="Link to this definition">¶</a></dt>
+<dd><p>Detach from computation graph. Preserves subclass type.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.has_same_layout">
+<span class="sig-name descname"><span class="pre">has_same_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.14）"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="（在 Python v3.14）"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.has_same_layout"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.has_same_layout" title="Link to this definition">¶</a></dt>
+<dd><p>Check whether <code class="docutils literal notranslate"><span class="pre">other</span></code> shares this matrix's sparsity pattern.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.14）"><em>str</em></a><em> or </em><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><em>SparseMatrix</em></a>) -- Either another <a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SparseMatrix</span></code></a> or a <code class="docutils literal notranslate"><span class="pre">layout_hash</span></code>
+string to compare against.</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> iff both have identical <code class="docutils literal notranslate"><span class="pre">(row,</span> <span class="pre">col)</span></code> arrays.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="（在 Python v3.14）"><em>bool</em></a></p>
+</dd>
+<dt class="field-even">抛出<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="（在 Python v3.14）"><strong>TypeError</strong></a> -- If <code class="docutils literal notranslate"><span class="pre">other</span></code> is neither a string nor a <a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SparseMatrix</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.degree">
+<span class="sig-name descname"><span class="pre">degree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.degree"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.degree" title="Link to this definition">¶</a></dt>
+<dd><p>Non-zero count per row (<code class="docutils literal notranslate"><span class="pre">axis=0</span></code>) or per column (<code class="docutils literal notranslate"><span class="pre">axis=1</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><em>int</em></a><em>, </em><em>default 0</em>) -- Aggregate over <code class="docutils literal notranslate"><span class="pre">axis</span></code>; <code class="docutils literal notranslate"><span class="pre">0</span></code> counts nnz per row, <code class="docutils literal notranslate"><span class="pre">1</span></code> per
+column.</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>1D int tensor of length <code class="docutils literal notranslate"><span class="pre">shape[axis]</span></code>.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.transpose">
+<span class="sig-name descname"><span class="pre">transpose</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.transpose"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.transpose" title="Link to this definition">¶</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">A^T</span></code> as a <a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SparseMatrix</span></code></a> sharing this matrix's values.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.T">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">T</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a></em><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.T" title="Link to this definition">¶</a></dt>
+<dd><p>Shorthand for <a class="reference internal" href="#tensormesh.sparse.SparseMatrix.transpose" title="tensormesh.sparse.SparseMatrix.transpose"><code class="xref py py-meth docutils literal notranslate"><span class="pre">transpose()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.to_scipy_coo">
+<span class="sig-name descname"><span class="pre">to_scipy_coo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.coo_matrix.html#scipy.sparse.coo_matrix" title="（在 SciPy v1.17.0）"><span class="pre">coo_matrix</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.to_scipy_coo"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.to_scipy_coo" title="Link to this definition">¶</a></dt>
+<dd><p>Detach and convert to a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.coo_matrix.html#scipy.sparse.coo_matrix" title="（在 SciPy v1.17.0）"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse.coo_matrix</span></code></a> on CPU.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.to_sparse_coo">
+<span class="sig-name descname"><span class="pre">to_sparse_coo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.to_sparse_coo"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.to_sparse_coo" title="Link to this definition">¶</a></dt>
+<dd><p>Convert to a <a class="reference external" href="https://docs.pytorch.org/docs/stable/generated/torch.sparse_coo_tensor.html#torch.sparse_coo_tensor" title="（在 PyTorch v2.12）"><code class="xref py py-func docutils literal notranslate"><span class="pre">torch.sparse_coo_tensor()</span></code></a> (autograd-tracked).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.from_scipy_coo">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_scipy_coo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.coo_matrix.html#scipy.sparse.coo_matrix" title="（在 SciPy v1.17.0）"><span class="pre">coo_matrix</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.14）"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensor_attributes.html#torch.dtype" title="（在 PyTorch v2.12）"><span class="pre">dtype</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">torch.float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.from_scipy_coo"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.from_scipy_coo" title="Link to this definition">¶</a></dt>
+<dd><p>Wrap a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.coo_matrix.html#scipy.sparse.coo_matrix" title="（在 SciPy v1.17.0）"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse.coo_matrix</span></code></a> as a <a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SparseMatrix</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>matrix</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.coo_matrix.html#scipy.sparse.coo_matrix" title="（在 SciPy v1.17.0）"><em>coo_matrix</em></a>) -- Source matrix.</p></li>
+<li><p><strong>device</strong> (str, default <code class="docutils literal notranslate"><span class="pre">&quot;cpu&quot;</span></code>) -- Target torch device.</p></li>
+<li><p><strong>dtype</strong> (torch.dtype, default <code class="docutils literal notranslate"><span class="pre">torch.float</span></code>) -- Target value dtype.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><em>SparseMatrix</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.from_sparse_coo">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_sparse_coo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.from_sparse_coo"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.from_sparse_coo" title="Link to this definition">¶</a></dt>
+<dd><p>Wrap a coalesced <a class="reference external" href="https://docs.pytorch.org/docs/stable/generated/torch.sparse_coo_tensor.html#torch.sparse_coo_tensor" title="（在 PyTorch v2.12）"><code class="xref py py-func docutils literal notranslate"><span class="pre">torch.sparse_coo_tensor()</span></code></a> as a <a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SparseMatrix</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>matrix</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a>) -- Sparse COO tensor; will be coalesced in place.</p>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><em>SparseMatrix</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.from_dense">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dense</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.from_dense"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.from_dense" title="Link to this definition">¶</a></dt>
+<dd><p>Pull non-zero entries out of a dense 2D tensor into COO.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tensor</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a>) -- 2D tensor; entries exactly equal to zero are dropped.</p>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><em>SparseMatrix</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.from_block_coo">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_block_coo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="（在 Python v3.14）"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.from_block_coo"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.from_block_coo" title="Link to this definition">¶</a></dt>
+<dd><p>Expand block-COO storage into a flat <a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SparseMatrix</span></code></a>.</p>
+<p>Each block is a small dense matrix attached to a <code class="docutils literal notranslate"><span class="pre">(row,</span> <span class="pre">col)</span></code>
+pair in a coarser graph. This is the layout produced by FEM
+element assembly when the element data is <em>vector-valued</em>
+(e.g. linear elasticity), with one <code class="docutils literal notranslate"><span class="pre">[dim,</span> <span class="pre">dim]</span></code> block per
+<code class="docutils literal notranslate"><span class="pre">(node_i,</span> <span class="pre">node_j)</span></code> pair.</p>
+<p>Blocks are assumed <strong>square</strong>; the function uses
+<code class="docutils literal notranslate"><span class="pre">edata.shape[1]</span></code> as the block size and ignores <code class="docutils literal notranslate"><span class="pre">shape[2]</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>edata</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a>) -- Block data of shape <code class="docutils literal notranslate"><span class="pre">[n_elements,</span> <span class="pre">block_size,</span> <span class="pre">block_size]</span></code>.</p></li>
+<li><p><strong>row</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a>) -- Block indices of shape <code class="docutils literal notranslate"><span class="pre">[n_elements]</span></code>; entries refer to
+the coarse graph.</p></li>
+<li><p><strong>col</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a>) -- Block indices of shape <code class="docutils literal notranslate"><span class="pre">[n_elements]</span></code>; entries refer to
+the coarse graph.</p></li>
+<li><p><strong>shape</strong> (<em>Tuple</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><em>int</em></a><em>]</em>) -- <code class="docutils literal notranslate"><span class="pre">(block_rows,</span> <span class="pre">block_cols)</span></code> of the coarse graph.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>Flat COO matrix of shape
+<code class="docutils literal notranslate"><span class="pre">(shape[0]</span> <span class="pre">*</span> <span class="pre">block_size,</span> <span class="pre">shape[1]</span> <span class="pre">*</span> <span class="pre">block_size)</span></code>.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><em>SparseMatrix</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.random">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">random</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.14）"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensor_attributes.html#torch.dtype" title="（在 PyTorch v2.12）"><span class="pre">dtype</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">torch.float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.random"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.random" title="Link to this definition">¶</a></dt>
+<dd><p>Random <code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">x</span> <span class="pre">n</span></code> sparse matrix with the requested density.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>m</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><em>int</em></a>) -- Dense shape.</p></li>
+<li><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><em>int</em></a>) -- Dense shape.</p></li>
+<li><p><strong>density</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="（在 Python v3.14）"><em>float</em></a><em>, </em><em>default 0.1</em>) -- Fraction of entries that are non-zero. Drawn via
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.random.html#scipy.sparse.random" title="（在 SciPy v1.17.0）"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.sparse.random()</span></code></a>.</p></li>
+<li><p><strong>device</strong> (str, default <code class="docutils literal notranslate"><span class="pre">&quot;cpu&quot;</span></code>)</p></li>
+<li><p><strong>dtype</strong> (torch.dtype, default <code class="docutils literal notranslate"><span class="pre">torch.float</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><em>SparseMatrix</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.random_layout">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">random_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.14）"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cpu'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="（在 Python v3.14）"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="（在 Python v3.14）"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.random_layout"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.random_layout" title="Link to this definition">¶</a></dt>
+<dd><p>Random <code class="docutils literal notranslate"><span class="pre">(row,</span> <span class="pre">col,</span> <span class="pre">shape)</span></code> triple with no value tensor attached.</p>
+<p>Useful when several matrices need to share the same sparsity
+pattern; combine with <a class="reference internal" href="#tensormesh.sparse.SparseMatrix.random_from_layout" title="tensormesh.sparse.SparseMatrix.random_from_layout"><code class="xref py py-meth docutils literal notranslate"><span class="pre">random_from_layout()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">(row,</span> <span class="pre">col,</span> <span class="pre">(m,</span> <span class="pre">n))</span></code>.</p>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Tuple</em>[<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a>, <a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a>, <em>Tuple</em>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><em>int</em></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><em>int</em></a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.random_from_layout">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">random_from_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="（在 Python v3.14）"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="（在 Python v3.14）"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.14）"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensor_attributes.html#torch.dtype" title="（在 PyTorch v2.12）"><span class="pre">dtype</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">torch.float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.random_from_layout"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.random_from_layout" title="Link to this definition">¶</a></dt>
+<dd><p>Attach random uniform <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1)</span></code> values to an existing layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layout</strong> (<em>Tuple</em><em>[</em><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a><em>, </em><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a><em>, </em><em>Tuple</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><em>int</em></a><em>]</em><em>]</em>) -- <code class="docutils literal notranslate"><span class="pre">(row,</span> <span class="pre">col,</span> <span class="pre">shape)</span></code> triple, e.g. from <a class="reference internal" href="#tensormesh.sparse.SparseMatrix.random_layout" title="tensormesh.sparse.SparseMatrix.random_layout"><code class="xref py py-meth docutils literal notranslate"><span class="pre">random_layout()</span></code></a>.</p></li>
+<li><p><strong>device</strong> (str, default <code class="docutils literal notranslate"><span class="pre">&quot;cpu&quot;</span></code>)</p></li>
+<li><p><strong>dtype</strong> (torch.dtype, default <code class="docutils literal notranslate"><span class="pre">torch.float</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><em>SparseMatrix</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.eye">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">eye</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.14）"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensor_attributes.html#torch.dtype" title="（在 PyTorch v2.12）"><span class="pre">dtype</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">torch.float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.eye"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.eye" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">x</span> <span class="pre">n</span></code> sparse identity, optionally scaled by <code class="docutils literal notranslate"><span class="pre">value</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><em>int</em></a>) -- Dimension.</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="（在 Python v3.14）"><em>float</em></a><em>, </em><em>default 1.0</em>) -- Diagonal value; <code class="docutils literal notranslate"><span class="pre">value</span> <span class="pre">*</span> <span class="pre">I_n</span></code> is stored.</p></li>
+<li><p><strong>device</strong> (str, default <code class="docutils literal notranslate"><span class="pre">&quot;cpu&quot;</span></code>)</p></li>
+<li><p><strong>dtype</strong> (torch.dtype, default <code class="docutils literal notranslate"><span class="pre">torch.float</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><em>SparseMatrix</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.full">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">full</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.14）"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensor_attributes.html#torch.dtype" title="（在 PyTorch v2.12）"><span class="pre">dtype</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">torch.float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.full"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.full" title="Link to this definition">¶</a></dt>
+<dd><p>Constant <code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">x</span> <span class="pre">n</span></code> matrix stored densely-as-sparse.</p>
+<p>Mostly a building block for <a class="reference internal" href="#tensormesh.sparse.SparseMatrix.combine_matrix" title="tensormesh.sparse.SparseMatrix.combine_matrix"><code class="xref py py-meth docutils literal notranslate"><span class="pre">combine_matrix()</span></code></a> block layouts;
+<code class="docutils literal notranslate"><span class="pre">value</span> <span class="pre">==</span> <span class="pre">0</span></code> is short-circuited to an empty COO tensor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>m</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><em>int</em></a>) -- Shape.</p></li>
+<li><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><em>int</em></a>) -- Shape.</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="（在 Python v3.14）"><em>float</em></a><em>, </em><em>default 1.0</em>) -- Constant entry.</p></li>
+<li><p><strong>device</strong> (str, default <code class="docutils literal notranslate"><span class="pre">&quot;cpu&quot;</span></code>)</p></li>
+<li><p><strong>dtype</strong> (torch.dtype, default <code class="docutils literal notranslate"><span class="pre">torch.float</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><em>SparseMatrix</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.combine_vector">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">combine_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="（在 Python v3.14）"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.combine_vector"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.combine_vector" title="Link to this definition">¶</a></dt>
+<dd><p>Stack a list of sparse matrices along <code class="docutils literal notranslate"><span class="pre">axis</span></code>.</p>
+<p>Equivalent of <a class="reference external" href="https://docs.pytorch.org/docs/stable/generated/torch.cat.html#torch.cat" title="（在 PyTorch v2.12）"><code class="xref py py-func docutils literal notranslate"><span class="pre">torch.cat()</span></code></a> for <a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SparseMatrix</span></code></a>. Dense
+<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a> entries are auto-converted via
+<a class="reference internal" href="#tensormesh.sparse.SparseMatrix.from_dense" title="tensormesh.sparse.SparseMatrix.from_dense"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_dense()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>matrices</strong> (<em>List</em><em>[</em><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><em>SparseMatrix</em></a><em> or </em><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a><em>]</em>) -- Items must agree on <code class="docutils literal notranslate"><span class="pre">shape[1</span> <span class="pre">-</span> <span class="pre">axis]</span></code>.</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><em>int</em></a><em>, </em><em>default 0</em>) -- <code class="docutils literal notranslate"><span class="pre">0</span></code> stacks vertically (along rows), <code class="docutils literal notranslate"><span class="pre">1</span></code> horizontally.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><em>SparseMatrix</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.combine_matrix">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">combine_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="（在 Python v3.14）"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="（在 Python v3.14）"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.combine_matrix"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.combine_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Assemble a 2D block layout of sparse matrices into one matrix.</p>
+<p>Each entry of <code class="docutils literal notranslate"><span class="pre">matrices[i][j]</span></code> may be:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> — treated as a zero block of inferred size;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">int</span></code> or <code class="docutils literal notranslate"><span class="pre">float</span></code> — expanded via <a class="reference internal" href="#tensormesh.sparse.SparseMatrix.full" title="tensormesh.sparse.SparseMatrix.full"><code class="xref py py-meth docutils literal notranslate"><span class="pre">full()</span></code></a> to a constant
+block of the inferred size;</p></li>
+<li><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a> — auto-converted via <a class="reference internal" href="#tensormesh.sparse.SparseMatrix.from_dense" title="tensormesh.sparse.SparseMatrix.from_dense"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_dense()</span></code></a>;</p></li>
+<li><p><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SparseMatrix</span></code></a> — used as-is.</p></li>
+</ul>
+<p>Block sizes are inferred from the first non-scalar entry in each
+row / column; a row or column with only <code class="docutils literal notranslate"><span class="pre">None</span></code>/scalar entries
+will have inferred size zero.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>matrices</strong> (<em>List</em><em>[</em><em>List</em><em>[</em><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><em>SparseMatrix</em></a><em> or </em><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="（在 Python v3.14）"><em>float</em></a><em> or </em><em>None</em><em>]</em><em>]</em>) -- Rectangular nested list, <code class="docutils literal notranslate"><span class="pre">[n_rows][n_cols]</span></code>.</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>Assembled matrix of shape
+<code class="docutils literal notranslate"><span class="pre">(sum(row_sizes),</span> <span class="pre">sum(col_sizes))</span></code>.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><em>SparseMatrix</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseMatrix.combine">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">combine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrices</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/matrix.html#SparseMatrix.combine"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseMatrix.combine" title="Link to this definition">¶</a></dt>
+<dd><p>Dispatch to <a class="reference internal" href="#tensormesh.sparse.SparseMatrix.combine_matrix" title="tensormesh.sparse.SparseMatrix.combine_matrix"><code class="xref py py-meth docutils literal notranslate"><span class="pre">combine_matrix()</span></code></a> or <a class="reference internal" href="#tensormesh.sparse.SparseMatrix.combine_vector" title="tensormesh.sparse.SparseMatrix.combine_vector"><code class="xref py py-meth docutils literal notranslate"><span class="pre">combine_vector()</span></code></a>.</p>
+<p>If the first element is a list or tuple, the input is treated as
+a 2D block layout (calls <a class="reference internal" href="#tensormesh.sparse.SparseMatrix.combine_matrix" title="tensormesh.sparse.SparseMatrix.combine_matrix"><code class="xref py py-meth docutils literal notranslate"><span class="pre">combine_matrix()</span></code></a>); otherwise it is
+a 1D stack along axis 0 (calls <a class="reference internal" href="#tensormesh.sparse.SparseMatrix.combine_vector" title="tensormesh.sparse.SparseMatrix.combine_vector"><code class="xref py py-meth docutils literal notranslate"><span class="pre">combine_vector()</span></code></a>).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tensormesh.sparse.SparseTensor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SparseTensor</span></span><a class="reference internal" href="../_modules/torch_sla/sparse_tensor.html#SparseTensor"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.SparseTensor" title="Link to this definition">¶</a></dt>
+<dd><p>COO sparse tensor with autograd support — the base class that
+<a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SparseMatrix</span></code></a> extends. Re-exported from
+<code class="docutils literal notranslate"><span class="pre">torch-sla</span></code>; see the
+<a class="reference external" href="https://github.com/sparsexlab/torch-sla">torch-sla docs</a> for the
+full API.</p>
+</dd></dl>
+
+</section>
+<section id="solvers">
+<h2>Solvers<a class="headerlink" href="#solvers" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tensormesh.sparse.spmm">
+<span class="sig-name descname"><span class="pre">spmm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tensormesh/sparse/mm.html#spmm"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.spmm" title="Link to this definition">¶</a></dt>
+<dd><p>Compute <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">&#64;</span> <span class="pre">B</span></code> for sparse <code class="docutils literal notranslate"><span class="pre">A</span></code> and dense matrix (or vector) <code class="docutils literal notranslate"><span class="pre">B</span></code>.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">B</span></code> is 1D this transparently delegates to <code class="docutils literal notranslate"><span class="pre">spmv</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>edata</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a>) -- 1D tensor of shape <code class="docutils literal notranslate"><span class="pre">[nnz]</span></code>: non-zero values of <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p></li>
+<li><p><strong>row</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a>) -- 1D int tensor of shape <code class="docutils literal notranslate"><span class="pre">[nnz]</span></code>: row indices of <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p></li>
+<li><p><strong>col</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a>) -- 1D int tensor of shape <code class="docutils literal notranslate"><span class="pre">[nnz]</span></code>: column indices of <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p></li>
+<li><p><strong>shape</strong> (<em>Tuple</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><em>int</em></a><em>]</em>) -- Shape <code class="docutils literal notranslate"><span class="pre">(M,</span> <span class="pre">N)</span></code> of the dense <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p></li>
+<li><p><strong>B</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a>) -- Dense operand of shape <code class="docutils literal notranslate"><span class="pre">[N,</span> <span class="pre">K]</span></code> (matrix) or <code class="docutils literal notranslate"><span class="pre">[N]</span></code> (vector).</p></li>
+<li><p><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.14）"><em>str</em></a><em> or </em><em>None</em><em>, </em><em>default None</em>) -- See <code class="docutils literal notranslate"><span class="pre">spmv</span></code> for the backend / device matrix.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">[M,</span> <span class="pre">K]</span></code> or <code class="docutils literal notranslate"><span class="pre">[M]</span></code> matching the rank of <code class="docutils literal notranslate"><span class="pre">B</span></code>.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="legacy-entry-points-deprecated">
+<h3>Legacy entry points (deprecated)<a class="headerlink" href="#legacy-entry-points-deprecated" title="Link to this heading">¶</a></h3>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">自 0.x 版本弃用: </span>The two functions below pre-date the <code class="docutils literal notranslate"><span class="pre">torch-sla</span></code> integration and
+are <strong>scheduled for removal</strong>. The canonical solver path is the
+methods on <a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SparseMatrix</span></code></a> itself (inherited
+from <code class="docutils literal notranslate"><span class="pre">torch_sla.SparseTensor</span></code>):</p>
+<ul class="simple">
+<li><p>Linear solves → <code class="docutils literal notranslate"><span class="pre">SparseMatrix.solve</span></code> (i.e.
+<code class="docutils literal notranslate"><span class="pre">torch_sla.SparseTensor.solve</span></code>) — see
+<a class="reference internal" href="../user_guide/linear_solvers.html"><span class="doc">稀疏求解器</span></a>.</p></li>
+<li><p>Nonlinear solves → <code class="docutils literal notranslate"><span class="pre">SparseMatrix.nonlinear_solve</span></code> (Newton /
+Picard / Anderson with line search and autograd Jacobian).</p></li>
+</ul>
+<p>Both will be retired once the remaining in-tree call sites have
+migrated. New code should not use them.</p>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="tensormesh.sparse.spsolve">
+<span class="sig-name descname"><span class="pre">spsolve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cg'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preconditioner</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'jacobi'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_spd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tensormesh/sparse/solve.html#spsolve"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.spsolve" title="Link to this definition">¶</a></dt>
+<dd><p>Solve the sparse linear system <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">x</span> <span class="pre">=</span> <span class="pre">b</span></code> (legacy entry point).</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">自 0.x 版本弃用: </span>This free function pre-dates the <code class="docutils literal notranslate"><span class="pre">torch-sla</span></code> integration and is
+<strong>scheduled for removal</strong>. The canonical path is to wrap the data
+in a <a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SparseMatrix</span></code></a> and call its
+<code class="docutils literal notranslate"><span class="pre">solve</span></code> method (inherited from <code class="docutils literal notranslate"><span class="pre">torch_sla.SparseTensor</span></code>),
+which auto-detects symmetry / positive-definiteness and routes
+to <code class="docutils literal notranslate"><span class="pre">torch_sla.spsolve</span></code> directly. See
+<a class="reference internal" href="../user_guide/linear_solvers.html"><span class="doc">稀疏求解器</span></a>.</p>
+</div>
+<p>Low-level entry point: takes raw COO arrays instead of a
+<a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SparseMatrix</span></code></a> object. With <code class="docutils literal notranslate"><span class="pre">torch-sla</span></code> installed,
+dispatches to a differentiable sparse-linear-algebra backend;
+without it, falls back to a curated mini-stack of
+SciPy / SuperLU / CuPy / PETSc wrappers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>edata</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a>) -- 1D tensor of shape <code class="docutils literal notranslate"><span class="pre">[nnz]</span></code>: non-zero values of <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p></li>
+<li><p><strong>row</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a>) -- 1D int tensor of shape <code class="docutils literal notranslate"><span class="pre">[nnz]</span></code>: row indices of <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p></li>
+<li><p><strong>col</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a>) -- 1D int tensor of shape <code class="docutils literal notranslate"><span class="pre">[nnz]</span></code>: column indices of <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p></li>
+<li><p><strong>shape</strong> (<em>Tuple</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><em>int</em></a><em>]</em>) -- Dense shape <code class="docutils literal notranslate"><span class="pre">(m,</span> <span class="pre">n)</span></code> of <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p></li>
+<li><p><strong>b</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a>) -- Right-hand side. Shape <code class="docutils literal notranslate"><span class="pre">[n]</span></code> for a single RHS, or
+<code class="docutils literal notranslate"><span class="pre">[n,</span> <span class="pre">n_batch]</span></code> for batched RHS (auto-routed through SuperLU).</p></li>
+<li><p><strong>backend</strong> (str, default <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code>) -- Torch-sla path: <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code> (CPU → <code class="docutils literal notranslate"><span class="pre">&quot;scipy&quot;</span></code>, CUDA →
+<code class="docutils literal notranslate"><span class="pre">&quot;pytorch&quot;</span></code>), <code class="docutils literal notranslate"><span class="pre">&quot;scipy&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;pytorch&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;eigen&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;cudss&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;cupy&quot;</span></code>.
+Fallback path (no torch-sla): <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;petsc&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;cupy&quot;</span></code> — others are accepted but the method/preconditioner
+hints below are ignored.</p></li>
+<li><p><strong>method</strong> (str, default <code class="docutils literal notranslate"><span class="pre">&quot;cg&quot;</span></code>) -- Iterative algorithm — <code class="docutils literal notranslate"><span class="pre">&quot;cg&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;bicgstab&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;minres&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;gmres&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;lgmres&quot;</span></code> — or one of the direct factorizations
+<code class="docutils literal notranslate"><span class="pre">&quot;lu&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;umfpack&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;cholesky&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;ldlt&quot;</span></code>. See the
+installed <code class="docutils literal notranslate"><span class="pre">torch_sla.spsolve</span></code> signature for the canonical
+list. <strong>Honoured only on the torch-sla path.</strong> On the fallback
+path, each wrapper uses a fixed algorithm.</p></li>
+<li><p><strong>preconditioner</strong> (str, default <code class="docutils literal notranslate"><span class="pre">&quot;jacobi&quot;</span></code>) -- <code class="docutils literal notranslate"><span class="pre">&quot;jacobi&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;ilu&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">&quot;none&quot;</span></code>. Same caveat as
+<code class="docutils literal notranslate"><span class="pre">method</span></code> — torch-sla path only.</p></li>
+<li><p><strong>tol</strong> (float, default <code class="docutils literal notranslate"><span class="pre">1e-5</span></code>) -- Convergence tolerance (iterative methods).</p></li>
+<li><p><strong>max_iter</strong> (int, default <code class="docutils literal notranslate"><span class="pre">10000</span></code>) -- Iteration budget (iterative methods).</p></li>
+<li><p><strong>x0</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a><em>, </em><em>optional</em>) -- Initial guess. Currently consumed only by some fallback wrappers
+and ignored by torch-sla.</p></li>
+<li><p><strong>is_spd</strong> (bool, default <code class="docutils literal notranslate"><span class="pre">True</span></code>) -- Hint to the torch-sla path that <code class="docutils literal notranslate"><span class="pre">A</span></code> is symmetric positive
+definite. Picks CG as the default <code class="docutils literal notranslate"><span class="pre">method</span></code>; set <code class="docutils literal notranslate"><span class="pre">False</span></code> for
+indefinite / non-symmetric <code class="docutils literal notranslate"><span class="pre">A</span></code> and combine with
+<code class="docutils literal notranslate"><span class="pre">method=&quot;bicgstab&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;gmres&quot;</span></code>.</p></li>
+<li><p><strong>verbose</strong> (bool, default <code class="docutils literal notranslate"><span class="pre">False</span></code>) -- Print which backend/method was picked.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>Solution <code class="docutils literal notranslate"><span class="pre">x</span></code>, same shape and dtype as <code class="docutils literal notranslate"><span class="pre">b</span></code>.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a></p>
+</dd>
+</dl>
+<p class="rubric">备注</p>
+<p>Both paths are autograd-aware: gradients of <code class="docutils literal notranslate"><span class="pre">x</span></code> flow back into
+<code class="docutils literal notranslate"><span class="pre">edata</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code> via an adjoint sparse solve. On the torch-sla
+path this is built in to the library; on the fallback path each
+wrapper supplies its own <a class="reference external" href="https://docs.pytorch.org/docs/stable/autograd.html#torch.autograd.Function" title="（在 PyTorch v2.12）"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.autograd.Function</span></code></a> backward.</p>
+<p class="rubric">示例</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">spsolve</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">spsolve</span><span class="p">(</span><span class="n">edata</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">b</span><span class="p">)</span>                   <span class="c1"># auto</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">spsolve</span><span class="p">(</span><span class="n">edata</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">b</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;lu&quot;</span><span class="p">)</span>      <span class="c1"># direct</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">spsolve</span><span class="p">(</span><span class="n">edata</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">b</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;cudss&quot;</span><span class="p">)</span>  <span class="c1"># GPU direct</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">spsolve</span><span class="p">(</span><span class="n">edata</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">b</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="n">is_spd</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;bicgstab&quot;</span><span class="p">)</span>              <span class="c1"># non-SPD</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tensormesh.sparse.nonlinear_solve">
+<span class="sig-name descname"><span class="pre">nonlinear_solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="（在 Python v3.14）"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="（在 Python v3.14）"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.matrix.SparseMatrix"><span class="pre">SparseMatrix</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="（在 Python v3.14）"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="（在 Python v3.14）"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="（在 Python v3.14）"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/tensormesh/sparse/nonlinear_solve.html#nonlinear_solve"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#tensormesh.sparse.nonlinear_solve" title="Link to this definition">¶</a></dt>
+<dd><p>Solve <code class="docutils literal notranslate"><span class="pre">F(u,</span> <span class="pre">params)</span> <span class="pre">=</span> <span class="pre">0</span></code> for <code class="docutils literal notranslate"><span class="pre">u</span></code> (legacy in-tree implementation).</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">自 0.x 版本弃用: </span>This in-tree Newton-Raphson driver is <strong>scheduled for removal</strong>.
+<code class="docutils literal notranslate"><span class="pre">torch-sla</span></code> ships a richer
+<code class="docutils literal notranslate"><span class="pre">torch_sla.SparseTensor.nonlinear_solve</span></code> (also accessible
+as <code class="docutils literal notranslate"><span class="pre">SparseMatrix.nonlinear_solve</span></code>) with Newton / Picard /
+Anderson modes, Armijo line search, and an autograd-based
+Jacobian — so the user no longer has to supply <code class="docutils literal notranslate"><span class="pre">j</span></code>. Migrate to
+<code class="docutils literal notranslate"><span class="pre">A.nonlinear_solve(residual,</span> <span class="pre">u0,</span> <span class="pre">*params)</span></code>; see
+<a class="reference internal" href="../user_guide/linear_solvers.html"><span class="doc">稀疏求解器</span></a>.</p>
+</div>
+<p>Drives Newton-Raphson on the forward pass and the implicit-function
+theorem on the backward pass: gradients w.r.t. <code class="docutils literal notranslate"><span class="pre">params</span></code> cost
+roughly one extra linear solve regardless of how many Newton
+iterations were taken.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f</strong> (<em>Callable</em>) -- <code class="docutils literal notranslate"><span class="pre">F(u,</span> <span class="pre">*params)</span> <span class="pre">-&gt;</span> <span class="pre">torch.Tensor</span></code>. Must support autograd in
+<code class="docutils literal notranslate"><span class="pre">params</span></code> for gradients to flow.</p></li>
+<li><p><strong>j</strong> (<em>Callable</em>) -- <code class="docutils literal notranslate"><span class="pre">J(u,</span> <span class="pre">*params)</span> <span class="pre">-&gt;</span> <span class="pre">SparseMatrix</span></code>: the Jacobian <code class="docutils literal notranslate"><span class="pre">dF/du</span></code>.</p></li>
+<li><p><strong>u0</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a>) -- Initial guess.</p></li>
+<li><p><strong>params</strong> (<em>Tuple</em><em>[</em><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a><em>, </em><em>...</em><em>]</em>) -- Optimizable parameters forwarded to <code class="docutils literal notranslate"><span class="pre">f</span></code> / <code class="docutils literal notranslate"><span class="pre">j</span></code>.</p></li>
+<li><p><strong>max_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.14）"><em>int</em></a><em>, </em><em>default 100</em>) -- Newton iteration budget.</p></li>
+<li><p><strong>tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="（在 Python v3.14）"><em>float</em></a><em>, </em><em>default 1e-6</em>) -- Convergence tolerance on <code class="docutils literal notranslate"><span class="pre">||F(u)||</span></code>.</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="（在 Python v3.14）"><em>bool</em></a><em>, </em><em>default False</em>) -- Print residual norm each Newton step.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>Converged <code class="docutils literal notranslate"><span class="pre">u</span></code>; gradients route back into <code class="docutils literal notranslate"><span class="pre">params</span></code> via the
+adjoint solve inside <code class="docutils literal notranslate"><span class="pre">NonLinearSolveFunction</span></code>.</p>
+</dd>
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="（在 PyTorch v2.12）"><em>Tensor</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="backend-availability-flags">
+<h2>Backend availability flags<a class="headerlink" href="#backend-availability-flags" title="Link to this heading">¶</a></h2>
+<p>Module-level booleans, set at import time, indicating which <strong>optional</strong>
+backends were detected. <code class="docutils literal notranslate"><span class="pre">torch-sla</span></code> itself is a hard dependency — its
+absence raises at import time rather than flipping a flag — so it is not
+listed here.</p>
+<dl class="py data">
+<dt class="sig sig-object py" id="tensormesh.sparse.is_petsc_available">
+<span class="sig-name descname"><span class="pre">is_petsc_available</span></span><a class="headerlink" href="#tensormesh.sparse.is_petsc_available" title="Link to this definition">¶</a></dt>
+<dd><p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="tensormesh.sparse.is_cupy_available">
+<span class="sig-name descname"><span class="pre">is_cupy_available</span></span><a class="headerlink" href="#tensormesh.sparse.is_cupy_available" title="Link to this definition">¶</a></dt>
+<dd><p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.</p>
+</dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="ode.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">tensormesh.ode</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="operator.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">tensormesh.operator</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, TensorMesh Contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/camlab-ethz/TensorMesh" aria-label="GitHub"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+              <a class="muted-link " href="https://discord.gg/EC9kbHSnrx" aria-label="Discord"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.576-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.05.05 0 0 0-.021.019C.356 6.024-.213 9.047.066 12.032c.002.015.01.029.02.037a13.3 13.3 0 0 0 3.995 2.01.05.05 0 0 0 .056-.019c.308-.42.582-.86.818-1.329a.05.05 0 0 0-.027-.06 8.7 8.7 0 0 1-1.248-.595.05.05 0 0 1-.005-.085c.079-.053.16-.104.248-.152a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007c.08.048.16.1.248.152a.05.05 0 0 1-.004.085 8.2 8.2 0 0 1-1.249.594.05.05 0 0 0-.027.06c.24.465.514.906.817 1.329a.05.05 0 0 0 .056.02 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.036c.334-3.451-.559-6.449-2.366-9.106a.04.04 0 0 0-.021-.02zM5.68 10.77c-.789 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.45.73 1.438 1.61 0 .886-.637 1.61-1.438 1.61zm4.842 0c-.788 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.451.73 1.438 1.61 0 .886-.63 1.61-1.438 1.61z"></path></svg></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">tensormesh.sparse</a><ul>
+<li><a class="reference internal" href="#sparsematrix">SparseMatrix</a><ul>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix"><code class="docutils literal notranslate"><span class="pre">SparseMatrix</span></code></a><ul>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.layout_hash"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.layout_hash</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.__init__"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.edata"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.edata</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.row"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.row</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.col"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.col</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.edges"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.edges</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.layout_mask"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.layout_mask</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.grad"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.grad</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.to"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.to()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.cuda"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.cuda()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.cpu"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.cpu()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.float"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.float()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.double"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.double()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.half"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.half()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.detach"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.detach()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.has_same_layout"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.has_same_layout()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.degree"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.degree()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.transpose"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.transpose()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.T"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.T</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.to_scipy_coo"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.to_scipy_coo()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.to_sparse_coo"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.to_sparse_coo()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.from_scipy_coo"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.from_scipy_coo()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.from_sparse_coo"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.from_sparse_coo()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.from_dense"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.from_dense()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.from_block_coo"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.from_block_coo()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.random"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.random()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.random_layout"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.random_layout()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.random_from_layout"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.random_from_layout()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.eye"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.eye()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.full"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.full()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.combine_vector"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.combine_vector()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.combine_matrix"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.combine_matrix()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseMatrix.combine"><code class="docutils literal notranslate"><span class="pre">SparseMatrix.combine()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tensormesh.sparse.SparseTensor"><code class="docutils literal notranslate"><span class="pre">SparseTensor</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#solvers">Solvers</a><ul>
+<li><a class="reference internal" href="#tensormesh.sparse.spmm"><code class="docutils literal notranslate"><span class="pre">spmm()</span></code></a></li>
+<li><a class="reference internal" href="#legacy-entry-points-deprecated">Legacy entry points (deprecated)</a><ul>
+<li><a class="reference internal" href="#tensormesh.sparse.spsolve"><code class="docutils literal notranslate"><span class="pre">spsolve()</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.nonlinear_solve"><code class="docutils literal notranslate"><span class="pre">nonlinear_solve()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#backend-availability-flags">Backend availability flags</a><ul>
+<li><a class="reference internal" href="#tensormesh.sparse.is_petsc_available"><code class="docutils literal notranslate"><span class="pre">is_petsc_available</span></code></a></li>
+<li><a class="reference internal" href="#tensormesh.sparse.is_cupy_available"><code class="docutils literal notranslate"><span class="pre">is_cupy_available</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=c5408746"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../_static/translations.js?v=beaddf03"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    </body>
+</html>

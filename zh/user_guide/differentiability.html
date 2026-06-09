@@ -1,0 +1,627 @@
+<!doctype html>
+<html class="no-js" lang="zh-CN" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="索引" href="../genindex.html"><link rel="search" title="搜索" href="../search.html"><link rel="next" title="示例画廊" href="../example_gallery/index.html"><link rel="prev" title="批量化工作流" href="batched_workflows.html">
+        <link rel="prefetch" href="../_static/logo.png" as="image">
+        <link rel="prefetch" href="../_static/logo.png" as="image">
+
+    <link rel="shortcut icon" href="../_static/logo.png"><!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>可微性 - TensorMesh</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=95a110e3" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #5B6EE8;
+  --color-brand-content: #149B8E;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">TensorMesh</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../_static/logo.png" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../_static/logo.png" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">TensorMesh</span>
+  
+</a><div class="sidebar-language-switcher">
+  <a href="../../user_guide/differentiability.html" rel="alternate" hreflang="en" title="English">English</a>
+  <span class="sep">·</span>
+  <span class="active">中文</span>
+</div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="搜索" name="q" aria-label="搜索">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">文档</span></p>
+<ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../getting_started/index.html">快速上手</a><input aria-label="Toggle navigation of 快速上手" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html">安装</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quickstart.html">快速开始</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/verify_install.html">验证安装</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">用户指南</a><input aria-label="Toggle navigation of 用户指南" checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="concepts.html">核心概念</a></li>
+<li class="toctree-l2"><a class="reference internal" href="meshes.html">网格</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elements_and_quadrature.html">单元与求积</a></li>
+<li class="toctree-l2"><a class="reference internal" href="forms.html">形式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="boundary_conditions.html">边界条件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_solvers.html">稀疏求解器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time_integration.html">时间积分</a></li>
+<li class="toctree-l2"><a class="reference internal" href="batched_workflows.html">批量化工作流</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">可微性</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../example_gallery/index.html">示例画廊</a><input aria-label="Toggle navigation of 示例画廊" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/basics.html">基础与可视化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/poisson.html">泊松方程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/diffusion.html">扩散</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/wave.html">波动方程</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../example_gallery/solid/index.html">固体力学</a><input aria-label="Toggle navigation of 固体力学" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/cantilever_beam.html">悬臂梁</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/hyperelastic_beam.html">超弹性梁（新胡克）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/hertzian_contact.html">赫兹接触</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/plasticity_strip.html">塑性（带各向同性硬化的 J2）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/drucker_prager_triaxial.html">岩土力学：Drucker-Prager 三轴压缩</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/elastic_footing.html">Geomechanics: elastic strip footing</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../example_gallery/fluid/index.html">流体力学</a><input aria-label="Toggle navigation of 流体力学" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/cavity.html">顶盖驱动方腔</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/cylinder_flow.html">圆柱绕流（涡脱落）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/flow_obstacles.html">绕多个障碍物的流动</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/rayleigh_benard.html">瑞利-贝纳德对流</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/taylor_green.html">泰勒-格林涡（收敛性研究）</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/maxwell.html">静磁学（麦克斯韦方程）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/inverse_design.html">反问题设计与辨识</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/physics_informed.html">物理信息学习</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/dataset.html">机器学习数据集</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/distributed.html">分布式 FEM</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/index.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/mesh.html">tensormesh.mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/element.html">tensormesh.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/assemble.html">tensormesh.assemble</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/operator.html">tensormesh.operator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/sparse.html">tensormesh.sparse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/ode.html">tensormesh.ode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/functional.html">tensormesh.functional</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/optimizer.html">tensormesh.optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/material.html">tensormesh.material</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/distributed.html">tensormesh.distributed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/nn.html">tensormesh.nn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/dataset.html">tensormesh.dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/visualization.html">tensormesh.visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../performance/index.html">性能</a><input aria-label="Toggle navigation of 性能" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../performance/benchmarks.html">基准测试</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../performance/scaling_guide.html">扩展性指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../performance/profiling.html">性能剖析</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../community/index.html">社区</a><input aria-label="Toggle navigation of 社区" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../community/discord.html">Discord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/github_discussions.html">GitHub Discussions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/github_issues.html">GitHub Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/contributing.html">贡献指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/citing.html">引用 TensorMesh</a></li>
+</ul>
+</li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/user_guide/differentiability.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="differentiability">
+<h1>可微性<a class="headerlink" href="#differentiability" title="Link to this heading">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">Mesh</span> <span class="pre">→</span> <span class="pre">Assembler</span> <span class="pre">→</span> <span class="pre">SparseMatrix</span> <span class="pre">→</span> <span class="pre">Condenser</span> <span class="pre">→</span> <span class="pre">Solve</span></code> 流水线上的每一个组件，要么是 <a class="reference external" href="https://docs.pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="（在 PyTorch v2.12）"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.Module</span></code></a>，要么是自定义的 <a class="reference external" href="https://docs.pytorch.org/docs/stable/autograd.html#torch.autograd.Function" title="（在 PyTorch v2.12）"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.autograd.Function</span></code></a>，而末端的线性求解具备<strong>解析的伴随反向传播</strong>。其结果是：在有限元解上计算出的损失，可以一路反向传播到<em>任何</em>接触过流水线的对象：每个节点上的系数、某个狄利克雷取值，或是参数化材料系数场的神经网络——而无需手写一行灵敏度代码。</p>
+<p>本章讲解梯度流是如何工作的，用两个实战示例（参数辨识与基于密度的拓扑优化）加以演示，并列出其开销、正确性，以及目前尚不可微的少数情形。</p>
+<section id="how-it-works">
+<h2>工作原理<a class="headerlink" href="#how-it-works" title="Link to this heading">¶</a></h2>
+<p>TensorMesh 有三个部件接入了 autograd 计算图：</p>
+<ul>
+<li><p><a class="reference internal" href="../api/mesh.html#tensormesh.Mesh" title="tensormesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> 继承自 <a class="reference external" href="https://docs.pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="（在 PyTorch v2.12）"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.Module</span></code></a>。它的 <code class="docutils literal notranslate"><span class="pre">points</span></code> 与逐节点字段都是可以携带 <code class="docutils literal notranslate"><span class="pre">requires_grad=True</span></code> 的张量。用 <code class="docutils literal notranslate"><span class="pre">mesh.to(device)</span></code> 搬移网格、用 <code class="docutils literal notranslate"><span class="pre">state_dict</span></code> 保存网格，都会如你所料地工作。</p></li>
+<li><p><a class="reference internal" href="../api/assemble.html#tensormesh.ElementAssembler" title="tensormesh.ElementAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElementAssembler</span></code></a> 和 <a class="reference internal" href="../api/assemble.html#tensormesh.NodeAssembler" title="tensormesh.NodeAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">NodeAssembler</span></code></a> 本身就是 <code class="docutils literal notranslate"><span class="pre">nn.Module</span></code>。任何流入 <code class="docutils literal notranslate"><span class="pre">forward(...)</span></code> 被积函数的张量，都会成为装配出的矩阵或向量的计算图输入。</p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">tensormesh.sparse.SparseMatrix.solve()</span></code> 原封不动地继承自 <code class="docutils literal notranslate"><span class="pre">torch_sla.SparseTensor</span></code>（见 <a class="reference internal" href="linear_solvers.html"><span class="doc">稀疏求解器</span></a>），因此伴随逻辑位于 <code class="docutils literal notranslate"><span class="pre">torch-sla</span></code> 中而非 TensorMesh 内。前向求解由 <span class="math notranslate nohighlight">\(A\,u = b\)</span> 得到 <span class="math notranslate nohighlight">\(u\)</span>。对于标量损失 <span class="math notranslate nohighlight">\(L(u)\)</span>，反向模式 autograd 会将上游梯度 <span class="math notranslate nohighlight">\(\partial L/\partial u\)</span> 交给该求解；它并不穿过求解器的内部进行求导，而是把求解封装进一个 <a class="reference external" href="https://docs.pytorch.org/docs/stable/autograd.html#torch.autograd.Function" title="（在 PyTorch v2.12）"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.autograd.Function</span></code></a>，其自定义的 <code class="docutils literal notranslate"><span class="pre">backward</span></code> 求解单个<strong>伴随</strong>系统以得到伴随变量 <span class="math notranslate nohighlight">\(\boldsymbol{\lambda}\)</span>，</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[A^{T}\, \boldsymbol{\lambda} \;=\; \frac{\partial L}{\partial u},\]</div>
+</div>
+<p>随后以闭式形式装配出输入梯度——对每个非零矩阵元 <span class="math notranslate nohighlight">\(\partial L / \partial A_{ij} = -\lambda_i\, u_j\)</span>，对右端项 <span class="math notranslate nohighlight">\(\partial L / \partial b = \boldsymbol{\lambda}\)</span>。</p>
+</li>
+</ul>
+<p>因此，先调用 <code class="docutils literal notranslate"><span class="pre">loss</span> <span class="pre">=</span> <span class="pre">criterion(K.solve(b),</span> <span class="pre">target).sum()</span></code> 再调用 <code class="docutils literal notranslate"><span class="pre">loss.backward()</span></code>，便能为所有流入 <code class="docutils literal notranslate"><span class="pre">K</span></code>、<code class="docutils literal notranslate"><span class="pre">b</span></code> 或损失的叶子张量给出正确梯度——矩阵元、源项、给定的边界取值，以及任何上游参数（神经网络权重、设计变量等）。</p>
+</section>
+<section id="adjoint-cost">
+<h2>伴随方法的开销<a class="headerlink" href="#adjoint-cost" title="Link to this heading">¶</a></h2>
+<p>穿过一次线性求解的反向传播，只需付出<strong>一次额外的稀疏求解</strong>（针对转置系统）。对于 SPD 问题 <span class="math notranslate nohighlight">\(A^T = A\)</span>，因此反向传播使用与前向相同的分解或预条件子模式。由此，在基于梯度的优化器中，每次迭代的总开销大约为 <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">×</span> <span class="pre">forward_solve_cost</span></code>，与你有多少自由度、装配逻辑多么复杂无关。</p>
+</section>
+<section id="correctness-check-autograd-vs-finite-differences">
+<h2>正确性校验：autograd 对比有限差分<a class="headerlink" href="#correctness-check-autograd-vs-finite-differences" title="Link to this heading">¶</a></h2>
+<p>在把 autograd 用于正经的反问题之前，值得拿中心有限差分对它做一次抽查。生成本页各图的脚本中包含了一个在 35 节点网格上的小型校验；运行它会打印出</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[grad check] vs finite differences...
+    node    autograd          fd                  |diff|
+      32    -8.297026e-03   -8.297026e-03   8.05e-12
+      15    -5.268205e-04   -5.268205e-04   2.31e-12
+      37    -4.118132e-03   -4.118132e-03   1.04e-12
+</pre></div>
+</div>
+<p>即大约 11 位有效数字的吻合，这正是 float64 伴随方法应当达到的水平。那点微小的残差是有限差分的截断误差，而非 autograd 的缺陷。</p>
+</section>
+<section id="what-s-differentiable-what-isn-t">
+<h2>什么可微，什么不可微<a class="headerlink" href="#what-s-differentiable-what-isn-t" title="Link to this heading">¶</a></h2>
+<p><strong>目前可穿过 ``solve`` 求导的对象：</strong></p>
+<ul class="simple">
+<li><p>矩阵元（<code class="docutils literal notranslate"><span class="pre">edata</span></code>）——梯度会落到提供各非零值的那个上游张量上。</p></li>
+<li><p>右端项 <code class="docutils literal notranslate"><span class="pre">b</span></code>。</p></li>
+<li><p>传给装配器的 <code class="docutils literal notranslate"><span class="pre">point_data</span></code> / <code class="docutils literal notranslate"><span class="pre">element_data</span></code> / <code class="docutils literal notranslate"><span class="pre">scalar_data</span></code> 中的任何张量——梯度会穿过被积函数流动。</p></li>
+<li><p>狄利克雷取值（通过凝聚后对右端项的贡献）。</p></li>
+</ul>
+<p><strong>后端方面的注意事项：</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">torch-sla</span></code> 的 <code class="docutils literal notranslate"><span class="pre">backend=&quot;pytorch&quot;</span></code> 和 <code class="docutils literal notranslate"><span class="pre">backend=&quot;auto&quot;</span></code> 路径是对 autograd 最稳妥的默认选择。它们将前向路由到纯 PyTorch 的迭代求解器，反向则使用解析伴随。</p></li>
+<li><p>SciPy / Eigen / cuDSS / CuPy 后端都被同一个自定义 <a class="reference external" href="https://docs.pytorch.org/docs/stable/autograd.html#torch.autograd.Function" title="（在 PyTorch v2.12）"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.autograd.Function</span></code></a> 包装，因此梯度依然能够流动——但前向计算发生在 NumPy / CuPy / C++ 中，并在那一段从计算图上脱离。这对线性求解而言是正确的，但意味着你无法从 autograd “看进”求解器内部。</p></li>
+<li><p><a class="reference internal" href="../api/sparse.html#module-tensormesh.sparse" title="tensormesh.sparse"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensormesh.sparse</span></code></a> 中的遗留回退路径（在未安装 <code class="docutils literal notranslate"><span class="pre">torch-sla</span></code> 时使用）实现了同样的、带伴随反向传播的自定义 <code class="docutils literal notranslate"><span class="pre">autograd.Function</span></code>，所以在那里梯度同样有效。</p></li>
+</ul>
+<p>在涉及自动微分的研究工作流中拿不准时，请安装 <code class="docutils literal notranslate"><span class="pre">torch-sla</span></code> 并坚持使用 <code class="docutils literal notranslate"><span class="pre">backend=&quot;auto&quot;</span></code>。</p>
+</section>
+<section id="worked-example-1-coefficient-field-identification">
+<h2>实战示例 1：系数场辨识<a class="headerlink" href="#worked-example-1-coefficient-field-identification" title="Link to this heading">¶</a></h2>
+<p>假设我们观测到一个“真值”泊松解，并希望通过梯度下降，在每个网格节点上恢复未知的系数场 <span class="math notranslate nohighlight">\(\kappa(x)\)</span>：</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[-\nabla \cdot \big(\kappa(x)\, \nabla u\big) \;=\; f \quad \text{in } \Omega,
+\qquad u = 0 \text{ on } \partial\Omega.\]</div>
+</div>
+<p>前向映射是“给定 <span class="math notranslate nohighlight">\(\kappa\)</span> 后做有限元求解”；损失是有限元解与观测之间的 L² 距离；autograd 提供梯度，Adam 更新 <span class="math notranslate nohighlight">\(\kappa\)</span>。我们将其参数化为 <span class="math notranslate nohighlight">\(\kappa = 1 + \tanh\theta\)</span>，从而让 <span class="math notranslate nohighlight">\(\kappa\)</span> 保持在 <span class="math notranslate nohighlight">\((0, 2)\)</span> 内——严格为正，因此有限元矩阵在每次迭代都是 SPD——而 <span class="math notranslate nohighlight">\(\theta\)</span> 无约束。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mesh</span><span class="p">,</span> <span class="n">ElementAssembler</span><span class="p">,</span> <span class="n">NodeAssembler</span><span class="p">,</span> <span class="n">Condenser</span>
+
+<span class="n">device</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span>
+<span class="n">mesh</span>   <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">gen_rectangle</span><span class="p">(</span><span class="n">chara_length</span><span class="o">=</span><span class="mf">0.04</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+<span class="n">cond</span>   <span class="o">=</span> <span class="n">Condenser</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">boundary_mask</span><span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">WeightedLaplace</span><span class="p">(</span><span class="n">ElementAssembler</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradu</span><span class="p">,</span> <span class="n">gradv</span><span class="p">,</span> <span class="n">kappa</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">kappa</span> <span class="o">*</span> <span class="p">(</span><span class="n">gradu</span> <span class="o">@</span> <span class="n">gradv</span><span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Source</span><span class="p">(</span><span class="n">NodeAssembler</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">v</span> <span class="o">*</span> <span class="n">f</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">fem_solve</span><span class="p">(</span><span class="n">kappa</span><span class="p">,</span> <span class="n">f_vals</span><span class="p">):</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">WeightedLaplace</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)(</span><span class="n">point_data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;kappa&quot;</span><span class="p">:</span> <span class="n">kappa</span><span class="p">})</span><span class="o">.</span><span class="n">double</span><span class="p">()</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">Source</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)(</span><span class="n">point_data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;f&quot;</span><span class="p">:</span> <span class="n">f_vals</span><span class="p">})</span><span class="o">.</span><span class="n">double</span><span class="p">()</span>
+    <span class="n">K_</span><span class="p">,</span> <span class="n">b_</span> <span class="o">=</span> <span class="n">cond</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cond</span><span class="o">.</span><span class="n">recover</span><span class="p">(</span><span class="n">K_</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">b_</span><span class="p">))</span>
+
+<span class="c1"># Synthetic ground-truth data.</span>
+<span class="n">pts</span>   <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">points</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span>  <span class="o">=</span> <span class="n">pts</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">pts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">kappa_true</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="mf">0.6</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">f_vals</span>     <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">n_points</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+    <span class="n">u_obs</span> <span class="o">=</span> <span class="n">fem_solve</span><span class="p">(</span><span class="n">kappa_true</span><span class="p">,</span> <span class="n">f_vals</span><span class="p">)</span>
+
+<span class="c1"># Recover kappa from u_obs by Adam.</span>
+<span class="n">theta</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">n_points</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+                    <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">optim</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">([</span><span class="n">theta</span><span class="p">],</span> <span class="n">lr</span><span class="o">=</span><span class="mf">3e-2</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5000</span><span class="p">):</span>
+    <span class="n">optim</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+    <span class="n">kappa</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">u</span>     <span class="o">=</span> <span class="n">fem_solve</span><span class="p">(</span><span class="n">kappa</span><span class="p">,</span> <span class="n">f_vals</span><span class="p">)</span>
+    <span class="n">loss</span>  <span class="o">=</span> <span class="p">((</span><span class="n">u</span> <span class="o">-</span> <span class="n">u_obs</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    <span class="n">optim</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>在 5000 次迭代中，数据损失下降了七个数量级以上，最大范数下的观测误差最终降至约 <span class="math notranslate nohighlight">\(6 \times 10^{-5}\)</span>：</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/param_id_loss.png"><img alt="../_images/param_id_loss.png" src="../_images/param_id_loss.png" style="width: 75%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 16 </span><span class="caption-text">5000 步的 Adam 优化历程：数据损失 <span class="math notranslate nohighlight">\(\|u_\theta - u_{\rm obs}\|_2^2\)</span> 从 <span class="math notranslate nohighlight">\(10^{-2}\)</span> 降至 <span class="math notranslate nohighlight">\(\sim 3 \times 10^{-10}\)</span>（周期性的尖峰是 Adam 的过冲，几步之内即可恢复），<span class="math notranslate nohighlight">\(u\)</span> 的相对最大范数误差达到 <span class="math notranslate nohighlight">\(\sim 6 \times 10^{-5}\)</span>。</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>恢复出的系数场：</p>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/param_id_fields.png"><img alt="../_images/param_id_fields.png" src="../_images/param_id_fields.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 17 </span><span class="caption-text">真值 <span class="math notranslate nohighlight">\(\kappa(x)\)</span>（左），经 5000 步 Adam 后恢复的场（中），以及绝对误差（右）。如今四瓣棋盘格已在整个求解域上恢复出来；仅在中心残留一抹微弱的痕迹（那里绝对误差峰值约为 <span class="math notranslate nohighlight">\(0.08\)</span>，而在求解域其余部分低于 <span class="math notranslate nohighlight">\(0.01\)</span>），该处的解梯度很小。</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>唯一可见的残差是中心处一团微弱的色斑。在那里常数源使 <span class="math notranslate nohighlight">\(\nabla u\)</span> 消失，因此通量 <span class="math notranslate nohighlight">\(\kappa\,\nabla u\)</span> 几乎不携带任何关于 <span class="math notranslate nohighlight">\(\kappa\)</span> 的信息，该区域恢复得最慢——对 <span class="math notranslate nohighlight">\(\theta\)</span> 施加一个光滑性惩罚即可消除它，留作练习。</p>
+<p>整个梯度计算经由 <code class="docutils literal notranslate"><span class="pre">WeightedLaplace</span></code> 装配器，并通过伴随反向传播穿过线性求解——你从不需要手写一条灵敏度方程。</p>
+</section>
+<section id="worked-example-2-thermal-compliance-topology-optimization">
+<h2>实战示例 2：热柔度拓扑优化<a class="headerlink" href="#worked-example-2-thermal-compliance-topology-optimization" title="Link to this heading">¶</a></h2>
+<p>对于基于密度的拓扑优化（体积约束下的柔度最小化），TensorMesh 自带一个专用的 <a class="reference internal" href="../api/optimizer.html#tensormesh.optimizer.OCOptimizer" title="tensormesh.optimizer.OCOptimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">OCOptimizer</span></code></a>，实现了经典的最优性准则更新。这里我们将其应用于 <span class="math notranslate nohighlight">\([0,1]^2\)</span> 上的一个热问题：中心有一个高斯热源，边界处为冷汇，每个单元的密度 <span class="math notranslate nohighlight">\(\rho \in [0,1]\)</span>，SIMP 导热率 <span class="math notranslate nohighlight">\(\kappa(\rho) = \kappa_{\min} + (1 - \kappa_{\min})\,\rho^{p}\)</span>，以及一个硬性体积上限 <span class="math notranslate nohighlight">\(\bar{\rho} \leq V = 0.4\)</span>。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mesh</span><span class="p">,</span> <span class="n">ElementAssembler</span><span class="p">,</span> <span class="n">NodeAssembler</span><span class="p">,</span> <span class="n">Condenser</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh.optimizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">OCOptimizer</span>
+
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">gen_rectangle</span><span class="p">(</span><span class="n">chara_length</span><span class="o">=</span><span class="mf">0.025</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+<span class="n">cond</span> <span class="o">=</span> <span class="n">Condenser</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">boundary_mask</span><span class="p">)</span>
+<span class="n">elements</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="s2">&quot;triangle&quot;</span><span class="p">]</span>
+<span class="n">n_elem</span>   <span class="o">=</span> <span class="n">elements</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SIMPLaplace</span><span class="p">(</span><span class="n">ElementAssembler</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradu</span><span class="p">,</span> <span class="n">gradv</span><span class="p">,</span> <span class="n">kappa</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">kappa</span> <span class="o">*</span> <span class="p">(</span><span class="n">gradu</span> <span class="o">@</span> <span class="n">gradv</span><span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Source</span><span class="p">(</span><span class="n">NodeAssembler</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">v</span> <span class="o">*</span> <span class="n">f</span>
+
+<span class="c1"># Localised heat source.</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span>    <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mesh</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">sigma</span>   <span class="o">=</span> <span class="mf">0.08</span>
+<span class="n">f_field</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+
+<span class="n">V</span><span class="p">,</span> <span class="n">p_simp</span><span class="p">,</span> <span class="n">kmin</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">1e-3</span>
+<span class="n">rho</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">n_elem</span><span class="p">,),</span> <span class="n">V</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+                 <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">optim</span> <span class="o">=</span> <span class="n">OCOptimizer</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">vf</span><span class="o">=</span><span class="n">V</span><span class="p">,</span> <span class="n">move_limit</span><span class="o">=</span><span class="mf">0.15</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">fem_solve</span><span class="p">(</span><span class="n">rho</span><span class="p">):</span>
+    <span class="n">kappa</span> <span class="o">=</span> <span class="n">kmin</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">kmin</span><span class="p">)</span> <span class="o">*</span> <span class="n">rho</span> <span class="o">**</span> <span class="n">p_simp</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">SIMPLaplace</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)(</span><span class="n">element_data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;kappa&quot;</span><span class="p">:</span> <span class="n">kappa</span><span class="p">})</span><span class="o">.</span><span class="n">double</span><span class="p">()</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">Source</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)(</span><span class="n">point_data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;f&quot;</span><span class="p">:</span> <span class="n">f_field</span><span class="p">})</span><span class="o">.</span><span class="n">double</span><span class="p">()</span>
+    <span class="n">K_</span><span class="p">,</span> <span class="n">b_</span> <span class="o">=</span> <span class="n">cond</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cond</span><span class="o">.</span><span class="n">recover</span><span class="p">(</span><span class="n">K_</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">b_</span><span class="p">)),</span> <span class="n">b</span>
+
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">60</span><span class="p">):</span>
+    <span class="n">optim</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+    <span class="n">u</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">fem_solve</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span>
+    <span class="n">compliance</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>             <span class="c1"># J = b^T u</span>
+    <span class="n">compliance</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>                  <span class="c1"># autograd populates rho.grad</span>
+    <span class="n">optim</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>                           <span class="c1"># OC update + bisection</span>
+</pre></div>
+</div>
+<p>柔度从 <span class="math notranslate nohighlight">\(5.9 \times 10^{-3}\)</span>（均匀灰板）降至 <span class="math notranslate nohighlight">\(6.9 \times 10^{-4}\)</span>——几乎一个数量级——同时体积约束 <span class="math notranslate nohighlight">\(\bar{\rho} = 0.4\)</span> 全程被精确保持。最优布局是一个“热十字”，把中心的热源与四条边中点处的冷汇连接起来：</p>
+<figure class="align-center" id="id3">
+<a class="reference internal image-reference" href="../_images/topology_thermal.png"><img alt="../_images/topology_thermal.png" src="../_images/topology_thermal.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 18 </span><span class="caption-text">60 步最优性准则迭代中的密度演化。第 0 次迭代是均匀的 <span class="math notranslate nohighlight">\(\rho = V = 0.4\)</span> 起点；到第 5 次迭代十字形状已经显现；第 59 次迭代是收敛后的设计。柔度下降了约 <span class="math notranslate nohighlight">\(\sim 8.6\times\)</span>；体积分数被精确保持在 <span class="math notranslate nohighlight">\(0.4\)</span>。</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>最优性准则步使用刚刚由 autograd 计算出的梯度——<a class="reference internal" href="../api/optimizer.html#tensormesh.optimizer.OCOptimizer.step" title="tensormesh.optimizer.OCOptimizer.step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tensormesh.optimizer.OCOptimizer.step()</span></code></a> 读取 <code class="docutils literal notranslate"><span class="pre">rho.grad</span></code>，通过二分法求出拉格朗日乘子，并在移动限制下施加密度更新。没有有限差分，也没有手写的伴随。</p>
+</section>
+<section id="wiring-a-neural-network-in">
+<h2>接入神经网络<a class="headerlink" href="#wiring-a-neural-network-in" title="Link to this heading">¶</a></h2>
+<p>三种模式涵盖了常见的机器学习/偏微分方程耦合：</p>
+<ul class="simple">
+<li><p><strong>神经网络预测系数场。</strong> 神经网络吃进坐标（或由其派生的特征），输出一个逐节点的值——通过 <code class="docutils literal notranslate"><span class="pre">point_data={&quot;kappa&quot;:</span> <span class="pre">nn_out}</span></code> 把输出喂给装配器。梯度会从有限元损失反向流过神经网络。</p></li>
+<li><p><strong>神经网络预测边界取值。</strong> 把输出作为 <code class="docutils literal notranslate"><span class="pre">dirichlet_value</span></code> 传给一个新建的 <a class="reference internal" href="../api/operator.html#tensormesh.Condenser" title="tensormesh.Condenser"><code class="xref py py-class docutils literal notranslate"><span class="pre">Condenser</span></code></a>。凝聚对右端项的贡献使梯度保持连通。</p></li>
+<li><p><strong>神经网络预测逐单元的刚度调节因子。</strong> 把输出堆叠成一个逐单元的张量，通过 <code class="docutils literal notranslate"><span class="pre">element_data={&quot;alpha&quot;:</span> <span class="pre">nn_out}</span></code> 传入；让装配器的 <code class="docutils literal notranslate"><span class="pre">forward</span></code> 在被积函数内部使用它。</p></li>
+</ul>
+<p>在这三种模式中，神经网络都是一个普通的 <code class="docutils literal notranslate"><span class="pre">nn.Module</span></code>，有限元流水线则是一串普通的 <code class="docutils literal notranslate"><span class="pre">nn.Module</span></code> 调用；标准的 <code class="docutils literal notranslate"><span class="pre">torch.optim</span></code> 优化器无需任何特殊 hook 即可工作。</p>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>接入网络<strong>无需</strong>任何 TensorMesh 专属的神经网络层——如上所示，一个普通的 <a class="reference external" href="https://docs.pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="（在 PyTorch v2.12）"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.Module</span></code></a> 就够了。目前 <a class="reference internal" href="../api/nn.html#module-tensormesh.nn" title="tensormesh.nn"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensormesh.nn</span></code></a> 只提供容器工具 <code class="docutils literal notranslate"><span class="pre">BufferDict</span></code> 和 <code class="docutils literal notranslate"><span class="pre">BufferList</span></code>（在内部用于把张量注册为模块 buffer），并不包含可学习的层。更高层的神经算子与可学习偏微分方程构件已列入未来版本的计划；在那之前，请用普通的 <code class="docutils literal notranslate"><span class="pre">torch.nn</span></code> 层来搭建网络侧。</p>
+</div>
+</section>
+<section id="reproducing-the-figures">
+<h2>复现这些图<a class="headerlink" href="#reproducing-the-figures" title="Link to this heading">¶</a></h2>
+<p>上面两个示例，连同那个有限差分梯度校验，都由同一个脚本生成：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>docs/scripts/differentiability_figures.py
+</pre></div>
+</div>
+<p>它仅使用公开 API。如今 5000 步的辨识循环占据了大部分运行时间——无论如何都要几分钟（GPU 上约 3 分钟）——之后它会把 <code class="docutils literal notranslate"><span class="pre">param_id_loss.png</span></code>、<code class="docutils literal notranslate"><span class="pre">param_id_fields.png</span></code> 和 <code class="docutils literal notranslate"><span class="pre">topology_thermal.png</span></code> 写入 <code class="docutils literal notranslate"><span class="pre">docs/source/_static/user_guide/differentiability/</span></code>。</p>
+</section>
+<section id="what-s-next">
+<h2>下一步<a class="headerlink" href="#what-s-next" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="linear_solvers.html"><span class="doc">稀疏求解器</span></a> —— <code class="docutils literal notranslate"><span class="pre">SparseMatrix.solve</span></code> 背后那个感知 autograd 的求解器。</p></li>
+<li><p><a class="reference internal" href="batched_workflows.html"><span class="doc">批量化工作流</span></a> —— 在批量流水线中进行反向传播，用于机器学习训练数据生成。</p></li>
+<li><p><a class="reference internal" href="time_integration.html"><span class="doc">时间积分</span></a> —— 瞬态伴随同样有效，每个时间步做一次伴随求解。</p></li>
+<li><p><a class="reference internal" href="../api/index.html"><span class="doc">API Reference</span></a> —— <code class="docutils literal notranslate"><span class="pre">solve</span></code> autograd 函数以及 <code class="docutils literal notranslate"><span class="pre">OCOptimizer</span></code> 的参考文档。</p></li>
+</ul>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../example_gallery/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">示例画廊</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="batched_workflows.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">批量化工作流</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, TensorMesh Contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/camlab-ethz/TensorMesh" aria-label="GitHub"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+              <a class="muted-link " href="https://discord.gg/EC9kbHSnrx" aria-label="Discord"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.576-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.05.05 0 0 0-.021.019C.356 6.024-.213 9.047.066 12.032c.002.015.01.029.02.037a13.3 13.3 0 0 0 3.995 2.01.05.05 0 0 0 .056-.019c.308-.42.582-.86.818-1.329a.05.05 0 0 0-.027-.06 8.7 8.7 0 0 1-1.248-.595.05.05 0 0 1-.005-.085c.079-.053.16-.104.248-.152a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007c.08.048.16.1.248.152a.05.05 0 0 1-.004.085 8.2 8.2 0 0 1-1.249.594.05.05 0 0 0-.027.06c.24.465.514.906.817 1.329a.05.05 0 0 0 .056.02 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.036c.334-3.451-.559-6.449-2.366-9.106a.04.04 0 0 0-.021-.02zM5.68 10.77c-.789 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.45.73 1.438 1.61 0 .886-.637 1.61-1.438 1.61zm4.842 0c-.788 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.451.73 1.438 1.61 0 .886-.63 1.61-1.438 1.61z"></path></svg></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">可微性</a><ul>
+<li><a class="reference internal" href="#how-it-works">工作原理</a></li>
+<li><a class="reference internal" href="#adjoint-cost">伴随方法的开销</a></li>
+<li><a class="reference internal" href="#correctness-check-autograd-vs-finite-differences">正确性校验：autograd 对比有限差分</a></li>
+<li><a class="reference internal" href="#what-s-differentiable-what-isn-t">什么可微，什么不可微</a></li>
+<li><a class="reference internal" href="#worked-example-1-coefficient-field-identification">实战示例 1：系数场辨识</a></li>
+<li><a class="reference internal" href="#worked-example-2-thermal-compliance-topology-optimization">实战示例 2：热柔度拓扑优化</a></li>
+<li><a class="reference internal" href="#wiring-a-neural-network-in">接入神经网络</a></li>
+<li><a class="reference internal" href="#reproducing-the-figures">复现这些图</a></li>
+<li><a class="reference internal" href="#what-s-next">下一步</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=c5408746"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../_static/translations.js?v=beaddf03"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

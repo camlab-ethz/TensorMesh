@@ -1,0 +1,854 @@
+<!doctype html>
+<html class="no-js" lang="zh-CN" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="索引" href="../genindex.html"><link rel="search" title="搜索" href="../search.html"><link rel="next" title="形式" href="forms.html"><link rel="prev" title="网格" href="meshes.html">
+        <link rel="prefetch" href="../_static/logo.png" as="image">
+        <link rel="prefetch" href="../_static/logo.png" as="image">
+
+    <link rel="shortcut icon" href="../_static/logo.png"><!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>单元与求积 - TensorMesh</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=95a110e3" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #5B6EE8;
+  --color-brand-content: #149B8E;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">TensorMesh</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../_static/logo.png" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../_static/logo.png" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">TensorMesh</span>
+  
+</a><div class="sidebar-language-switcher">
+  <a href="../../user_guide/elements_and_quadrature.html" rel="alternate" hreflang="en" title="English">English</a>
+  <span class="sep">·</span>
+  <span class="active">中文</span>
+</div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="搜索" name="q" aria-label="搜索">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">文档</span></p>
+<ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../getting_started/index.html">快速上手</a><input aria-label="Toggle navigation of 快速上手" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html">安装</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quickstart.html">快速开始</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/verify_install.html">验证安装</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">用户指南</a><input aria-label="Toggle navigation of 用户指南" checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="concepts.html">核心概念</a></li>
+<li class="toctree-l2"><a class="reference internal" href="meshes.html">网格</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">单元与求积</a></li>
+<li class="toctree-l2"><a class="reference internal" href="forms.html">形式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="boundary_conditions.html">边界条件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_solvers.html">稀疏求解器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time_integration.html">时间积分</a></li>
+<li class="toctree-l2"><a class="reference internal" href="batched_workflows.html">批量化工作流</a></li>
+<li class="toctree-l2"><a class="reference internal" href="differentiability.html">可微性</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../example_gallery/index.html">示例画廊</a><input aria-label="Toggle navigation of 示例画廊" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/basics.html">基础与可视化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/poisson.html">泊松方程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/diffusion.html">扩散</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/wave.html">波动方程</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../example_gallery/solid/index.html">固体力学</a><input aria-label="Toggle navigation of 固体力学" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/cantilever_beam.html">悬臂梁</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/hyperelastic_beam.html">超弹性梁（新胡克）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/hertzian_contact.html">赫兹接触</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/plasticity_strip.html">塑性（带各向同性硬化的 J2）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/drucker_prager_triaxial.html">岩土力学：Drucker-Prager 三轴压缩</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/elastic_footing.html">Geomechanics: elastic strip footing</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../example_gallery/fluid/index.html">流体力学</a><input aria-label="Toggle navigation of 流体力学" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/cavity.html">顶盖驱动方腔</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/cylinder_flow.html">圆柱绕流（涡脱落）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/flow_obstacles.html">绕多个障碍物的流动</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/rayleigh_benard.html">瑞利-贝纳德对流</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/taylor_green.html">泰勒-格林涡（收敛性研究）</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/maxwell.html">静磁学（麦克斯韦方程）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/inverse_design.html">反问题设计与辨识</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/physics_informed.html">物理信息学习</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/dataset.html">机器学习数据集</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/distributed.html">分布式 FEM</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/index.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/mesh.html">tensormesh.mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/element.html">tensormesh.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/assemble.html">tensormesh.assemble</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/operator.html">tensormesh.operator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/sparse.html">tensormesh.sparse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/ode.html">tensormesh.ode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/functional.html">tensormesh.functional</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/optimizer.html">tensormesh.optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/material.html">tensormesh.material</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/distributed.html">tensormesh.distributed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/nn.html">tensormesh.nn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/dataset.html">tensormesh.dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/visualization.html">tensormesh.visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../performance/index.html">性能</a><input aria-label="Toggle navigation of 性能" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../performance/benchmarks.html">基准测试</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../performance/scaling_guide.html">扩展性指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../performance/profiling.html">性能剖析</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../community/index.html">社区</a><input aria-label="Toggle navigation of 社区" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../community/discord.html">Discord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/github_discussions.html">GitHub Discussions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/github_issues.html">GitHub Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/contributing.html">贡献指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/citing.html">引用 TensorMesh</a></li>
+</ul>
+</li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/user_guide/elements_and_quadrature.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="elements-and-quadrature">
+<h1>单元与求积<a class="headerlink" href="#elements-and-quadrature" title="Link to this heading">¶</a></h1>
+<p><a class="reference internal" href="../api/mesh.html#tensormesh.Mesh.cells" title="tensormesh.Mesh.cells"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cells</span></code></a> 中的每一项都以一个 <em>单元类型字符串</em> 作为键——例如 <code class="docutils literal notranslate"><span class="pre">&quot;triangle&quot;</span></code>、<code class="docutils literal notranslate"><span class="pre">&quot;hexahedron27&quot;</span></code>、<code class="docutils literal notranslate"><span class="pre">&quot;wedge&quot;</span></code> 等等——它对应于 <a class="reference internal" href="../api/element.html#module-tensormesh.element" title="tensormesh.element"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensormesh.element</span></code></a> 中七种参考形状之一。这些单元类承载了装配器内部使用的基函数定义和求积规则；你很少会直接调用它们，但理解它们所暴露的内容能让流程的其余部分（装配、IO、高阶求解）不再那么神秘。</p>
+<p>本页分为两部分。首先是受支持类型的清单，以及从 <code class="docutils literal notranslate"><span class="pre">order=1</span></code> 过渡到高阶求解的高层规则。其次是对 <strong>参考 → 物理流程</strong> 的逐步讲解，该流程将静态的参考单元定义转化为装配器实际使用的逐单元形函数值、梯度和积分权重。</p>
+<section id="supported-element-types">
+<h2>受支持的单元类型<a class="headerlink" href="#supported-element-types" title="Link to this heading">¶</a></h2>
+<p>TensorMesh 提供七种参考形状，覆盖一维、二维和三维，每种都带有线性及高阶变体：</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 24.0%" />
+<col style="width: 10.0%" />
+<col style="width: 22.0%" />
+<col style="width: 44.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>类</p></th>
+<th class="head"><p>维度</p></th>
+<th class="head"><p>线性类型字符串</p></th>
+<th class="head"><p>高阶类型字符串</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/element.html#tensormesh.Line" title="tensormesh.Line"><code class="xref py py-class docutils literal notranslate"><span class="pre">Line</span></code></a></p></td>
+<td><p>一维</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;line&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;line3&quot;</span></code>、<code class="docutils literal notranslate"><span class="pre">&quot;line4&quot;</span></code>、……、<code class="docutils literal notranslate"><span class="pre">&quot;line11&quot;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/element.html#tensormesh.Triangle" title="tensormesh.Triangle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Triangle</span></code></a></p></td>
+<td><p>二维</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;triangle&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;triangle6&quot;</span></code>、<code class="docutils literal notranslate"><span class="pre">&quot;triangle10&quot;</span></code>、……、<code class="docutils literal notranslate"><span class="pre">&quot;triangle66&quot;</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/element.html#tensormesh.Quadrilateral" title="tensormesh.Quadrilateral"><code class="xref py py-class docutils literal notranslate"><span class="pre">Quadrilateral</span></code></a></p></td>
+<td><p>二维</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;quad&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;quad8&quot;</span></code>、<code class="docutils literal notranslate"><span class="pre">&quot;quad9&quot;</span></code>、<code class="docutils literal notranslate"><span class="pre">&quot;quad16&quot;</span></code>、……、<code class="docutils literal notranslate"><span class="pre">&quot;quad121&quot;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/element.html#tensormesh.Tetrahedron" title="tensormesh.Tetrahedron"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tetrahedron</span></code></a></p></td>
+<td><p>三维</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;tetra&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;tetra10&quot;</span></code>、<code class="docutils literal notranslate"><span class="pre">&quot;tetra20&quot;</span></code>、……、<code class="docutils literal notranslate"><span class="pre">&quot;tetra286&quot;</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/element.html#tensormesh.Hexahedron" title="tensormesh.Hexahedron"><code class="xref py py-class docutils literal notranslate"><span class="pre">Hexahedron</span></code></a></p></td>
+<td><p>三维</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;hexahedron&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;hexahedron20&quot;</span></code>、<code class="docutils literal notranslate"><span class="pre">&quot;hexahedron27&quot;</span></code>、<code class="docutils literal notranslate"><span class="pre">&quot;hexahedron64&quot;</span></code>、……</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/element.html#tensormesh.Prism" title="tensormesh.Prism"><code class="xref py py-class docutils literal notranslate"><span class="pre">Prism</span></code></a>（楔形）</p></td>
+<td><p>三维</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;wedge&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;wedge18&quot;</span></code>、<code class="docutils literal notranslate"><span class="pre">&quot;wedge40&quot;</span></code>、<code class="docutils literal notranslate"><span class="pre">&quot;wedge75&quot;</span></code>、……</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/element.html#tensormesh.Pyramid" title="tensormesh.Pyramid"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pyramid</span></code></a></p></td>
+<td><p>三维</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;pyramid&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;pyramid14&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>字符串与维度/阶数之间的映射以两个普通字典的形式暴露出来：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">element_type2order</span><span class="p">,</span> <span class="n">element_type2dimension</span>
+<span class="n">element_type2order</span><span class="p">[</span><span class="s2">&quot;triangle6&quot;</span><span class="p">]</span>      <span class="c1"># 2</span>
+<span class="n">element_type2dimension</span><span class="p">[</span><span class="s2">&quot;hexahedron&quot;</span><span class="p">]</span> <span class="c1"># 3</span>
+</pre></div>
+</div>
+<p>反向映射 <code class="docutils literal notranslate"><span class="pre">element_type2element</span></code> 会返回对应的类：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh.element</span><span class="w"> </span><span class="kn">import</span> <span class="n">element_type2element</span>
+<span class="n">element_type2element</span><span class="p">(</span><span class="s2">&quot;hexahedron27&quot;</span><span class="p">)</span>  <span class="c1"># tensormesh.Hexahedron</span>
+</pre></div>
+</div>
+<p>类型字符串的命名遵循 meshio 约定：小写的形状名（<code class="docutils literal notranslate"><span class="pre">triangle</span></code>）加上高阶变体的基节点数（<code class="docutils literal notranslate"><span class="pre">triangle6</span></code>、<code class="docutils literal notranslate"><span class="pre">hexahedron27</span></code>）。注意有一处从 meshio 沿袭而来的不一致——三维三棱柱对应的 <em>类</em> 是 <a class="reference internal" href="../api/element.html#tensormesh.Prism" title="tensormesh.Prism"><code class="xref py py-class docutils literal notranslate"><span class="pre">Prism</span></code></a>，但其 <em>字符串</em> 却是 <code class="docutils literal notranslate"><span class="pre">&quot;wedge&quot;</span></code>。</p>
+</section>
+<section id="higher-order-elements">
+<h2>高阶单元<a class="headerlink" href="#higher-order-elements" title="Link to this heading">¶</a></h2>
+<p>向内置网格生成器传入 <code class="docutils literal notranslate"><span class="pre">order=2</span></code>（或 <code class="docutils literal notranslate"><span class="pre">3</span></code>、……）即可：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mesh</span>
+
+<span class="n">tri</span>  <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">gen_rectangle</span><span class="p">(</span><span class="n">chara_length</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># &quot;triangle&quot;</span>
+<span class="n">tri6</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">gen_rectangle</span><span class="p">(</span><span class="n">chara_length</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># &quot;triangle6&quot;</span>
+<span class="n">hex27</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">gen_cube</span><span class="p">(</span><span class="n">chara_length</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>      <span class="c1"># &quot;hexahedron27&quot;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">mesh.cells</span></code> 中的单元类型字符串会相应更新，下游的每个装配器都会自动采用高阶基函数，无需任何额外配置。</p>
+</section>
+<section id="the-pipeline-from-reference-shape-to-physical-integration">
+<span id="pipeline"></span><h2>流程：从参考形状到物理积分<a class="headerlink" href="#the-pipeline-from-reference-shape-to-physical-integration" title="Link to this heading">¶</a></h2>
+<p>从概念上讲，单元层回答的是一个问题：<em>给定一个要在网格上积分的弱形式，求积点位于何处？那里的形函数值和梯度是多少？积分权重又是多少？</em> 它通过将七个静态参考单元定义与你网格的物理空间连接性组合起来实现这一点。总体流程如下：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Element subclass (Triangle / Hexahedron / ...) — static topology
+        │
+        ▼
+get_basis(order)          : Lagrange nodes on the reference element   [N_b, D]
+get_polynomial(order)     : polynomial space (P_k or Q_k or ...)
+        │
+        ▼   (Vandermonde inversion, done once and cached)
+get_basis_fns(order)      : hat functions  φ_b(ξ)                     [N_b]
+get_basis_grad_fns        : reference-space gradients ∂φ/∂ξ
+        │
+        ▼
+get_quadrature(order)     : reference-element Gauss points + weights
+        │
+        ▼   (compose the two layers above)
+eval_shape_val            : φ_b(ξ_q)                                   [N_q, N_b]
+                             ↑ mesh-independent, shared across cells
+
+eval_cell_jacobian        : J(ξ_q; e)                                  [N_e, N_q, D, D]
+eval_shape_grad           : ∇_x φ_b(ξ_q; e)                            [N_e, N_q, N_b, D]
+                             ↑ first place the physical coordinates enter
+
+        │
+        ▼
+Transformation(points, elements, type)
+    ├ shape_val      = φ        at Gauss points (reference, cached buffer)
+    ├ shape_grad     = ∇_x φ    at Gauss points (physical)
+    ├ jacobian       = J
+    ├ JxW            = |det J| · w           ← volume-integral measure
+    ├ facet_*        : same quantities but on each facet
+    └ nanson_scale / FxW                     ← surface-integral measure
+</pre></div>
+</div>
+<p>本节的其余部分将逐一讲解每个环节，并展示返回的张量实际是什么样子。所有示例都使用 <a class="reference internal" href="../api/element.html#tensormesh.Triangle" title="tensormesh.Triangle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Triangle</span></code></a>，因为它打印起来开销最小，但对其余六种形状来说结构是完全相同的。</p>
+<section id="step-0-reference-element-topology">
+<h3>步骤 0 —— 参考单元拓扑<a class="headerlink" href="#step-0-reference-element-topology" title="Link to this heading">¶</a></h3>
+<p>每个子类都带有少量类级别的 <code class="docutils literal notranslate"><span class="pre">torch.Tensor</span></code> / <code class="docutils literal notranslate"><span class="pre">tuple</span></code> 属性，用于确定参考几何。这里没有任何东西依赖 <code class="docutils literal notranslate"><span class="pre">order</span></code>——它们只是参考形状的角点及其连接方式：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">Triangle</span>
+
+<span class="n">Triangle</span><span class="o">.</span><span class="n">points</span>                                  <span class="c1"># vertex coordinates</span>
+<span class="c1"># tensor([[0., 0.],</span>
+<span class="c1">#         [1., 0.],</span>
+<span class="c1">#         [0., 1.]])</span>
+<span class="n">Triangle</span><span class="o">.</span><span class="n">edge</span>                                    <span class="c1"># vertex-pair connectivity</span>
+<span class="c1"># tensor([[1, 2],</span>
+<span class="c1">#         [0, 2],</span>
+<span class="c1">#         [0, 1]])</span>
+<span class="n">Triangle</span><span class="o">.</span><span class="n">face</span>                                    <span class="c1"># tuple of vertex tuples</span>
+<span class="c1"># ((0, 1, 2),)</span>
+<span class="n">Triangle</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">Triangle</span><span class="o">.</span><span class="n">n_vertex</span><span class="p">,</span> <span class="n">Triangle</span><span class="o">.</span><span class="n">n_edge</span>
+<span class="c1"># (2, 3, 3)</span>
+</pre></div>
+</div>
+<p>有两个派生属性值得了解：对于 <a class="reference internal" href="../api/element.html#tensormesh.Prism" title="tensormesh.Prism"><code class="xref py py-class docutils literal notranslate"><span class="pre">Prism</span></code></a> 和 <a class="reference internal" href="../api/element.html#tensormesh.Pyramid" title="tensormesh.Pyramid"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pyramid</span></code></a>（它们的面有两种形状），<a class="reference internal" href="../api/element.html#tensormesh.Element.is_mix_facet" title="tensormesh.Element.is_mix_facet"><code class="xref py py-attr docutils literal notranslate"><span class="pre">is_mix_facet</span></code></a> 为 <code class="docutils literal notranslate"><span class="pre">True</span></code>，其余情况为 <code class="docutils literal notranslate"><span class="pre">False</span></code>；<a class="reference internal" href="../api/element.html#tensormesh.Element.get_facet_type" title="tensormesh.Element.get_facet_type"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_facet_type()</span></code></a> 返回面单元类（三角形为 <code class="docutils literal notranslate"><span class="pre">Line</span></code>，四面体为 <code class="docutils literal notranslate"><span class="pre">Triangle</span></code>，三棱柱为元组 <code class="docutils literal notranslate"><span class="pre">(Triangle,</span> <span class="pre">Quadrilateral)</span></code>）。</p>
+</section>
+<section id="step-1-lagrange-nodes-get-basis">
+<h3>步骤 1 —— 拉格朗日节点（<code class="docutils literal notranslate"><span class="pre">get_basis</span></code>）<a class="headerlink" href="#step-1-lagrange-nodes-get-basis" title="Link to this heading">¶</a></h3>
+<p><a class="reference internal" href="../api/element.html#tensormesh.Element.get_basis" title="tensormesh.Element.get_basis"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_basis()</span></code></a> 为给定的多项式阶数确定插值节点在参考单元上的位置。约定是 <em>先顶点节点，再边节点，然后是面/内部节点</em>——七种形状的可视化对照参见 <a class="reference internal" href="../example_gallery/basics.html#node-ordering-gallery"><span class="std std-ref">Gmsh / VTK ↔ TensorMesh 节点编号</span></a>。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Triangle</span><span class="o">.</span><span class="n">get_basis</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># tensor([[0., 0.],    # vertex nodes</span>
+<span class="c1">#         [1., 0.],</span>
+<span class="c1">#         [0., 1.]])</span>
+<span class="n">Triangle</span><span class="o">.</span><span class="n">get_basis</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="c1"># tensor([[0.0, 0.0],  # vertex nodes (3)</span>
+<span class="c1">#         [1.0, 0.0],</span>
+<span class="c1">#         [0.0, 1.0],</span>
+<span class="c1">#         [0.5, 0.5],  # edge midpoints (3)</span>
+<span class="c1">#         [0.0, 0.5],</span>
+<span class="c1">#         [0.5, 0.0]])</span>
+</pre></div>
+</div>
+<p>输出形状为 <code class="docutils literal notranslate"><span class="pre">[N_b,</span> <span class="pre">D]</span></code>，对于单纯形形状 <span class="math notranslate nohighlight">\(N_b = (p+1)(p+2)/2\)</span>，对于张量积形状（四边形/六面体）则为 <span class="math notranslate nohighlight">\((p+1)^d\)</span>。流程中其余每一步都会按这一布局进行索引，因此它是回答“<em>基函数 b</em> 究竟意味着什么？”这一问题的唯一权威依据。</p>
+</section>
+<section id="step-2-polynomial-space-get-polynomial">
+<h3>步骤 2 —— 多项式空间（<code class="docutils literal notranslate"><span class="pre">get_polynomial</span></code>）<a class="headerlink" href="#step-2-polynomial-space-get-polynomial" title="Link to this heading">¶</a></h3>
+<p><a class="reference internal" href="../api/element.html#tensormesh.Element.get_polynomial" title="tensormesh.Element.get_polynomial"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_polynomial()</span></code></a> 以 <a class="reference internal" href="../api/element.html#tensormesh.element.Polynomial" title="tensormesh.element.Polynomial"><code class="xref py py-class docutils literal notranslate"><span class="pre">Polynomial</span></code></a> 的形式返回形函数所在的多项式空间。该空间取决于形状：单纯形单元使用完整的 <span class="math notranslate nohighlight">\(P_k\)</span>（总次数 <span class="math notranslate nohighlight">\(\le k\)</span> 的项）；张量积单元使用 <span class="math notranslate nohighlight">\(Q_k\)</span>（每个坐标的指数 <span class="math notranslate nohighlight">\(\le k\)</span>）；四棱锥和三棱柱则使用各自专用的空间。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Triangle</span><span class="o">.</span><span class="n">get_polynomial</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># 1 + x + y                       (P_1 in 2D, 3 terms)</span>
+<span class="n">Triangle</span><span class="o">.</span><span class="n">get_polynomial</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="c1"># 1 + x + y + x^2 + xy + y^2      (P_2 in 2D, 6 terms)</span>
+</pre></div>
+</div>
+<p>你通常不会直接调用它——<a class="reference internal" href="../api/element.html#tensormesh.Element.get_basis_fns" title="tensormesh.Element.get_basis_fns"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_basis_fns()</span></code></a> 会替你调用。这个钩子是供添加新单元类型的人重写的，这样基类就能在自定义多项式空间之上合成拉格朗日基。</p>
+</section>
+<section id="step-3-hat-functions-get-basis-fns-get-basis-grad-fns">
+<h3>步骤 3 —— 帽函数（<code class="docutils literal notranslate"><span class="pre">get_basis_fns</span></code>、<code class="docutils literal notranslate"><span class="pre">get_basis_grad_fns</span></code>）<a class="headerlink" href="#step-3-hat-functions-get-basis-fns-get-basis-grad-fns" title="Link to this heading">¶</a></h3>
+<p><a class="reference internal" href="../api/element.html#tensormesh.Element.get_basis_fns" title="tensormesh.Element.get_basis_fns"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_basis_fns()</span></code></a> 将前两者——拉格朗日节点与多项式空间——组合成基函数集合。在内部，TensorMesh 会在基节点处求值多项式空间的各项，对所得的 Vandermonde 矩阵求逆，并将系数压入一个 <a class="reference internal" href="../api/element.html#tensormesh.element.Polynomials" title="tensormesh.element.Polynomials"><code class="xref py py-class docutils literal notranslate"><span class="pre">Polynomials</span></code></a>（批量多项式）对象。其输出满足拉格朗日性质 <span class="math notranslate nohighlight">\(\phi_b(\boldsymbol{\xi}_{b'}) = \delta_{bb'}\)</span>。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fns</span> <span class="o">=</span> <span class="n">Triangle</span><span class="o">.</span><span class="n">get_basis_fns</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fns</span><span class="p">)</span>
+<span class="c1"># [1 -x -y,</span>
+<span class="c1">#  x,</span>
+<span class="c1">#  y]</span>
+<span class="n">fns</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">fns</span><span class="o">.</span><span class="n">n_vars</span><span class="p">,</span> <span class="n">fns</span><span class="o">.</span><span class="n">n_terms</span>
+<span class="c1"># ((3,), 2, 3)</span>
+
+<span class="c1"># Reference-space gradient ∂φ_b / ∂ξ_i  — already symbolic.</span>
+<span class="n">grad_fns</span> <span class="o">=</span> <span class="n">Triangle</span><span class="o">.</span><span class="n">get_basis_grad_fns</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">grad_fns</span><span class="p">)</span>
+<span class="c1"># [[-1, 1, 0],     # ∂/∂x</span>
+<span class="c1">#  [-1, 0, 1]]     # ∂/∂y</span>
+<span class="n">grad_fns</span><span class="o">.</span><span class="n">shape</span>
+<span class="c1"># (2, 3)             # [dim, n_basis]</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="../api/element.html#tensormesh.Element.get_basis_fns" title="tensormesh.Element.get_basis_fns"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_basis_fns()</span></code></a> 的结果是 <strong>与网格无关的</strong>——网格中的每个单元，无论其物理形状如何，都使用同一个 <span class="math notranslate nohighlight">\(\phi_b(\boldsymbol{\xi})\)</span>。这正是参考单元这一技巧的全部意义所在。</p>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="../_images/p1_shape_functions.png"><img alt="P1 三角形形函数" src="../_images/p1_shape_functions.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 6 </span><span class="caption-text">参考三角形上的三个 P1 形函数。每个 <span class="math notranslate nohighlight">\(\phi_b\)</span> 在顶点 <em>b</em>（红色标记）处等于 1，并线性衰减至另外两个顶点处的 0。</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>若需查看每种受支持形状上的高阶曲面图，参见 <a class="reference internal" href="../example_gallery/basics.html"><span class="doc">基础与可视化</span></a>（“Shape functions”一节）。在内部，example_gallery 脚本调用的正是你刚才看到的 <a class="reference internal" href="../api/element.html#tensormesh.Element.get_basis_fns" title="tensormesh.Element.get_basis_fns"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_basis_fns()</span></code></a>——并不存在单独的绘图代码路径。</p>
+</section>
+<section id="step-4-reference-quadrature-get-quadrature">
+<h3>步骤 4 —— 参考求积（<code class="docutils literal notranslate"><span class="pre">get_quadrature</span></code>）<a class="headerlink" href="#step-4-reference-quadrature-get-quadrature" title="Link to this heading">¶</a></h3>
+<p><a class="reference internal" href="../api/element.html#tensormesh.Element.get_quadrature" title="tensormesh.Element.get_quadrature"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_quadrature()</span></code></a> 返回参考单元上的高斯型规则——形状为 <code class="docutils literal notranslate"><span class="pre">[N_q]</span></code> 的权重和形状为 <code class="docutils literal notranslate"><span class="pre">[N_q,</span> <span class="pre">D]</span></code> 的求积点。<code class="docutils literal notranslate"><span class="pre">order</span></code> 参数是 <em>求积阶数</em>，而非基函数阶数；要选得足够大，以便精确积分你的弱形式。作为经验法则，对于拉普拉斯型问题的大多数双线性形式，<code class="docutils literal notranslate"><span class="pre">quadrature_order</span> <span class="pre">=</span> <span class="pre">2</span> <span class="pre">*</span> <span class="pre">basis_order</span></code> 就足够了。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">w</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">Triangle</span><span class="o">.</span><span class="n">get_quadrature</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">w</span>     <span class="c1"># tensor([0.1667, 0.1667, 0.1667])     (sum = 1/2 = |reference triangle|)</span>
+<span class="n">q</span>     <span class="c1"># tensor([[0.1667, 0.1667],</span>
+      <span class="c1">#         [0.6667, 0.1667],</span>
+      <span class="c1">#         [0.1667, 0.6667]])</span>
+</pre></div>
+</div>
+<p>三角形、四边形、六面体、四面体、四棱锥、三棱柱各自选用不同的规则族；具体表格参见 <code class="docutils literal notranslate"><span class="pre">tensormesh/element/quadrature.py</span></code>。</p>
+</section>
+<section id="step-5-reference-shape-values-eval-shape-val">
+<h3>步骤 5 —— 参考形函数值（<code class="docutils literal notranslate"><span class="pre">eval_shape_val</span></code>）<a class="headerlink" href="#step-5-reference-shape-values-eval-shape-val" title="Link to this heading">¶</a></h3>
+<p><a class="reference internal" href="../api/element.html#tensormesh.Element.eval_shape_val" title="tensormesh.Element.eval_shape_val"><code class="xref py py-meth docutils literal notranslate"><span class="pre">eval_shape_val()</span></code></a> 将步骤 3（基函数）与步骤 4（求积点）组合起来：所得矩阵的元素为 <span class="math notranslate nohighlight">\([q, b] = \phi_b(\boldsymbol{\xi}_q)\)</span>。这仍然纯粹是参考单元数据——还没有触及任何网格。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">phi</span> <span class="o">=</span> <span class="n">Triangle</span><span class="o">.</span><span class="n">eval_shape_val</span><span class="p">(</span><span class="n">quadrature_order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">phi</span><span class="o">.</span><span class="n">shape</span>
+<span class="c1"># torch.Size([3, 3])   # [N_q=3, N_b=3]</span>
+<span class="n">phi</span>
+<span class="c1"># tensor([[0.6667, 0.1667, 0.1667],   # rows sum to 1 (partition of unity)</span>
+<span class="c1">#         [0.1667, 0.6667, 0.1667],</span>
+<span class="c1">#         [0.1667, 0.1667, 0.6667]])</span>
+</pre></div>
+</div>
+<p>无论物理形状如何，每个网格的每个单元都复用这同一个 <span class="math notranslate nohighlight">\([N_q, N_b]\)</span> 矩阵。这正是有限元方法相对于配点法提速的来源——你只需构建一次，并在装配过程中将其广播到所有单元上。</p>
+</section>
+<section id="step-6-cell-jacobian-and-physical-gradients">
+<h3>步骤 6 —— 单元雅可比矩阵与物理梯度<a class="headerlink" href="#step-6-cell-jacobian-and-physical-gradients" title="Link to this heading">¶</a></h3>
+<p>现在网格登场了。对于每个单元 <span class="math notranslate nohighlight">\(e\)</span>，等参映射</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\mathbf{x}^e(\boldsymbol{\xi}) \;=\; \sum_{b=1}^{N_b}
+      \phi_b(\boldsymbol{\xi})\, \mathbf{x}^e_b\]</div>
+</div>
+<p>将参考单元 <span class="math notranslate nohighlight">\(\hat K\)</span> 映射到物理单元 <span class="math notranslate nohighlight">\(K^e\)</span>，其中 <span class="math notranslate nohighlight">\(\mathbf{x}^e_b\)</span> 是单元 <em>e</em> 的基节点的物理坐标。其雅可比矩阵 <span class="math notranslate nohighlight">\(\mathbf{J}^e_q = \partial \mathbf{x}^e / \partial \boldsymbol{\xi}\)</span> 在求积点 <span class="math notranslate nohighlight">\(q\)</span> 处求值为</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[J^e_{q,ij} \;=\; \sum_{b=1}^{N_b}
+      (\mathbf{x}^e_b)_j \, \frac{\partial \phi_b}{\partial \xi_i}
+      (\boldsymbol{\xi}_q).\]</div>
+</div>
+<p><a class="reference internal" href="../api/element.html#tensormesh.Element.eval_cell_jacobian" title="tensormesh.Element.eval_cell_jacobian"><code class="xref py py-meth docutils literal notranslate"><span class="pre">eval_cell_jacobian()</span></code></a> 会在整个网格上精确地计算这个求和：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">Triangle</span>
+
+<span class="c1"># Three different physical triangles sharing the same reference shape.</span>
+<span class="n">coords</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span>
+    <span class="p">[[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]],</span>   <span class="c1"># canonical</span>
+    <span class="p">[[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]],</span>   <span class="c1"># stretched in x by 2</span>
+    <span class="p">[[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]],</span>   <span class="c1"># sheared</span>
+<span class="p">])</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">Triangle</span><span class="o">.</span><span class="n">get_quadrature</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">J</span> <span class="o">=</span> <span class="n">Triangle</span><span class="o">.</span><span class="n">eval_cell_jacobian</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">basis_order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">J</span><span class="o">.</span><span class="n">shape</span>                              <span class="c1"># torch.Size([3, 3, 2, 2])  [N_e, N_q, D, D]</span>
+<span class="n">J</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">];</span> <span class="n">J</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">];</span> <span class="n">J</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="c1"># element 0: identity                element 1: diag(2, 1)     element 2: [[1,0],[1,2]]</span>
+</pre></div>
+</div>
+<p>形函数的物理空间梯度随后通过链式法则 <span class="math notranslate nohighlight">\(\nabla_{\!x}\phi_b = \mathbf{J}^{-T}\nabla_{\!\xi}\phi_b\)</span> 得到，<a class="reference internal" href="../api/element.html#tensormesh.Element.eval_shape_grad" title="tensormesh.Element.eval_shape_grad"><code class="xref py py-meth docutils literal notranslate"><span class="pre">eval_shape_grad()</span></code></a> 将其与本就需要计算的雅可比矩阵打包在一起：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">grad</span><span class="p">,</span> <span class="n">J</span> <span class="o">=</span> <span class="n">Triangle</span><span class="o">.</span><span class="n">eval_shape_grad</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">basis_order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">grad</span><span class="o">.</span><span class="n">shape</span>                           <span class="c1"># [N_e, N_q, N_b, D]</span>
+
+<span class="n">grad</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>                           <span class="c1"># canonical triangle</span>
+<span class="c1"># tensor([[-1., -1.],                # ∇φ_0</span>
+<span class="c1">#         [ 1.,  0.],                # ∇φ_1</span>
+<span class="c1">#         [ 0.,  1.]])               # ∇φ_2</span>
+
+<span class="n">grad</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>                           <span class="c1"># stretched triangle: x-derivative halved</span>
+<span class="c1"># tensor([[-0.5000, -1.0000],</span>
+<span class="c1">#         [ 0.5000,  0.0000],</span>
+<span class="c1">#         [ 0.0000,  1.0000]])</span>
+</pre></div>
+</div>
+<p>这是流程中 <strong>物理坐标</strong> <code class="docutils literal notranslate"><span class="pre">element_coords</span></code> 首次登场的地方。在此之前的一切（<code class="docutils literal notranslate"><span class="pre">get_basis</span></code>、<code class="docutils literal notranslate"><span class="pre">get_basis_fns</span></code>、<code class="docutils literal notranslate"><span class="pre">eval_shape_val</span></code>）都是纯粹的参考单元数据；在此之后的一切都依赖于网格几何。</p>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="../_images/ref_to_physical.png"><img alt="参考三角形与物理三角形对比，附带映射后的求积点" src="../_images/ref_to_physical.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 7 </span><span class="caption-text">在单个三角形上可视化的步骤 6。左：参考单元 <span class="math notranslate nohighlight">\(\hat K\)</span> 及其三个 2 阶高斯点。右：一个被拉伸、平移后的物理三角形 <span class="math notranslate nohighlight">\(K\)</span>。高斯点通过等参映射 <span class="math notranslate nohighlight">\(\mathbf{F}_K\)</span> 进行映射；从步骤 5 原封不动复用的值 <span class="math notranslate nohighlight">\(\phi_b(\boldsymbol{\xi}_q)\)</span> 现在与物理点 <span class="math notranslate nohighlight">\(\mathbf{x}_q\)</span> 绑定以用于积分。该映射的雅可比矩阵 <span class="math notranslate nohighlight">\(\mathbf{J}\)</span> 同时驱动下一步中的梯度变换和体积因子 <span class="math notranslate nohighlight">\(\lvert\det\mathbf{J}\rvert\)</span>。</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="step-7-transformation-the-cached-package">
+<h3>步骤 7 —— <code class="docutils literal notranslate"><span class="pre">Transformation</span></code>：缓存好的封装<a class="headerlink" href="#step-7-transformation-the-cached-package" title="Link to this heading">¶</a></h3>
+<p>实际中你绝不会直接调用 <code class="docutils literal notranslate"><span class="pre">eval_*</span></code>。相反，你会实例化一个 <a class="reference internal" href="../api/element.html#tensormesh.Transformation" title="tensormesh.Transformation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transformation</span></code></a>，它会惰性地串联起流程的每一步，并将结果缓存为 <a class="reference external" href="https://docs.pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="（在 PyTorch v2.12）"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.Module</span></code></a> 缓冲区（这样 <code class="docutils literal notranslate"><span class="pre">.to(device)</span></code> / <code class="docutils literal notranslate"><span class="pre">.double()</span></code> / <code class="docutils literal notranslate"><span class="pre">.cuda()</span></code> 便能直接生效）。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tensormesh</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tm</span>
+
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">tm</span><span class="o">.</span><span class="n">Mesh</span><span class="o">.</span><span class="n">gen_rectangle</span><span class="p">(</span><span class="n">chara_length</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>         <span class="c1"># 26 triangles, 20 nodes</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">tm</span><span class="o">.</span><span class="n">Transformation</span><span class="p">(</span>
+    <span class="n">mesh</span><span class="o">.</span><span class="n">points</span><span class="p">,</span>
+    <span class="n">mesh</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="s2">&quot;triangle&quot;</span><span class="p">],</span>
+    <span class="n">element_type</span><span class="o">=</span><span class="s2">&quot;triangle&quot;</span><span class="p">,</span>
+    <span class="n">quadrature_order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">t</span><span class="o">.</span><span class="n">shape_val</span><span class="o">.</span><span class="n">shape</span>                            <span class="c1"># [N_q, N_b]            = [3, 3]</span>
+<span class="n">t</span><span class="o">.</span><span class="n">shape_grad</span><span class="o">.</span><span class="n">shape</span>                           <span class="c1"># [N_e, N_q, N_b, D]    = [26, 3, 3, 2]</span>
+<span class="n">t</span><span class="o">.</span><span class="n">jacobian</span><span class="o">.</span><span class="n">shape</span>                             <span class="c1"># [N_e, N_q, D, D]      = [26, 3, 2, 2]</span>
+<span class="n">t</span><span class="o">.</span><span class="n">JxW</span><span class="o">.</span><span class="n">shape</span>                                  <span class="c1"># [N_e, N_q]            = [26, 3]</span>
+
+<span class="c1"># Integral of 1 over the unit square — should equal 1.</span>
+<span class="n">t</span><span class="o">.</span><span class="n">JxW</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+<span class="c1"># 1.0000000000000002</span>
+</pre></div>
+</div>
+<p>这些具名属性与流程直接对应：</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 32.0%" />
+<col style="width: 38.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>属性</p></th>
+<th class="head"><p>数学表达</p></th>
+<th class="head"><p>形状</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/element.html#tensormesh.Transformation.shape_val" title="tensormesh.Transformation.shape_val"><code class="xref py py-attr docutils literal notranslate"><span class="pre">shape_val</span></code></a></p></td>
+<td><p><span class="math notranslate nohighlight">\(\phi_b(\boldsymbol{\xi}_q)\)</span></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[N_q,</span> <span class="pre">N_b]</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/element.html#tensormesh.Transformation.shape_grad" title="tensormesh.Transformation.shape_grad"><code class="xref py py-attr docutils literal notranslate"><span class="pre">shape_grad</span></code></a></p></td>
+<td><p><span class="math notranslate nohighlight">\(\nabla_{\!x}\phi_b(\mathbf{x}^e_q)\)</span></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[N_e,</span> <span class="pre">N_q,</span> <span class="pre">N_b,</span> <span class="pre">D]</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/element.html#tensormesh.Transformation.jacobian" title="tensormesh.Transformation.jacobian"><code class="xref py py-attr docutils literal notranslate"><span class="pre">jacobian</span></code></a></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathbf{J}^e_q\)</span></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[N_e,</span> <span class="pre">N_q,</span> <span class="pre">D,</span> <span class="pre">D]</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/element.html#tensormesh.Transformation.JxW" title="tensormesh.Transformation.JxW"><code class="xref py py-attr docutils literal notranslate"><span class="pre">JxW</span></code></a></p></td>
+<td><p><span class="math notranslate nohighlight">\(\lvert\det\mathbf{J}^e_q\rvert\, w_q\)</span></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[N_e,</span> <span class="pre">N_q]</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>即便你只使用 <a class="reference internal" href="../api/element.html#tensormesh.Transformation" title="tensormesh.Transformation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transformation</span></code></a>，流程仍然重要，原因在于 <strong>每个属性都有固定的开销和固定的内存占用</strong>，二者都恰好由两个旋钮控制：单元类型（决定 <span class="math notranslate nohighlight">\(N_b\)</span>）和求积阶数（决定 <span class="math notranslate nohighlight">\(N_q\)</span>）。当你编写自定义装配器并取用 <code class="docutils literal notranslate"><span class="pre">t.shape_grad</span></code> 时，你现在就知道，手中拿到的是一个 <span class="math notranslate nohighlight">\([N_e, N_q, N_b, D]\)</span> 张量，它由 <code class="docutils literal notranslate"><span class="pre">get_basis_grad_fns</span></code>（步骤 3）、<code class="docutils literal notranslate"><span class="pre">get_quadrature</span></code>（步骤 4）以及逐单元的逆雅可比矩阵（步骤 6）组合而成。</p>
+<p>为方便起见，TensorMesh 提供了别名 <code class="docutils literal notranslate"><span class="pre">phi</span> <span class="pre">:=</span> <span class="pre">shape_val</span></code>、<code class="docutils literal notranslate"><span class="pre">gradphi</span> <span class="pre">:=</span> <span class="pre">shape_grad</span></code>、<code class="docutils literal notranslate"><span class="pre">J</span> <span class="pre">:=</span> <span class="pre">jacobian</span></code>、<code class="docutils literal notranslate"><span class="pre">G</span> <span class="pre">:=</span> <span class="pre">jacobian</span></code>、<code class="docutils literal notranslate"><span class="pre">GxW</span> <span class="pre">:=</span> <span class="pre">JxW</span></code>——在直接从数学公式誊写弱形式时很有用。</p>
+</section>
+</section>
+<section id="facet-quantities">
+<h2>面相关量<a class="headerlink" href="#facet-quantities" title="Link to this heading">¶</a></h2>
+<p>面积分遵循相同的流程，但参考单元变成了 <em>面</em>（二维中是边，三维中是面），并且体积测度 <span class="math notranslate nohighlight">\(\lvert\det\mathbf{J}\rvert w\)</span> 变为 Nanson 面积缩放因子 <span class="math notranslate nohighlight">\(\lvert\det\mathbf{J}_K\rvert \lVert\mathbf{J}_K^{-T} \mathbf{n}\rVert w\)</span>。<a class="reference internal" href="../api/element.html#tensormesh.Transformation" title="tensormesh.Transformation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transformation</span></code></a> 以相同的命名模式暴露出面的对应量：</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.0%" />
+<col style="width: 42.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>属性</p></th>
+<th class="head"><p>数学表达</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/element.html#tensormesh.Transformation.facet_quadrature" title="tensormesh.Transformation.facet_quadrature"><code class="xref py py-attr docutils literal notranslate"><span class="pre">facet_quadrature</span></code></a></p></td>
+<td><p><span class="math notranslate nohighlight">\((w^f_q, \boldsymbol{\xi}^f_q)\)</span></p></td>
+<td><p>面局部的高斯规则</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/element.html#tensormesh.Transformation.facet_shape_val" title="tensormesh.Transformation.facet_shape_val"><code class="xref py py-attr docutils literal notranslate"><span class="pre">facet_shape_val</span></code></a></p></td>
+<td><p><span class="math notranslate nohighlight">\(\phi_b(\boldsymbol{\xi}^f_q)\)</span></p></td>
+<td><p>在每个面上求值的单元形函数</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/element.html#tensormesh.Transformation.facet_shape_grad" title="tensormesh.Transformation.facet_shape_grad"><code class="xref py py-attr docutils literal notranslate"><span class="pre">facet_shape_grad</span></code></a></p></td>
+<td><p><span class="math notranslate nohighlight">\(\nabla_{\!x}\phi_b(\mathbf{x}^f_q)\)</span></p></td>
+<td><p>通过单元雅可比矩阵进行链式法则变换</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/element.html#tensormesh.Transformation.facet_jacobian" title="tensormesh.Transformation.facet_jacobian"><code class="xref py py-attr docutils literal notranslate"><span class="pre">facet_jacobian</span></code></a>（<code class="docutils literal notranslate"><span class="pre">F</span></code>）</p></td>
+<td><p>面切向雅可比矩阵 <span class="math notranslate nohighlight">\(\mathbf{J}_f\)</span></p></td>
+<td><p>将面局部坐标映射到物理坐标</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/element.html#tensormesh.Transformation.nanson_scale" title="tensormesh.Transformation.nanson_scale"><code class="xref py py-attr docutils literal notranslate"><span class="pre">nanson_scale</span></code></a>（<code class="docutils literal notranslate"><span class="pre">n</span></code>）</p></td>
+<td><p><span class="math notranslate nohighlight">\(\lvert\det\mathbf{J}\rvert\,\lVert\mathbf{J}^{-T}\mathbf{n}\rVert\, w\)</span></p></td>
+<td><p>朝外的表面测度</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/element.html#tensormesh.Transformation.FxW" title="tensormesh.Transformation.FxW"><code class="xref py py-attr docutils literal notranslate"><span class="pre">FxW</span></code></a></p></td>
+<td><p><span class="math notranslate nohighlight">\(\lvert\mathbf{J}_f\rvert\, w\)</span></p></td>
+<td><p>面积分的便捷量</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>对于具有混合面类型的单元（<a class="reference internal" href="../api/element.html#tensormesh.Prism" title="tensormesh.Prism"><code class="xref py py-class docutils literal notranslate"><span class="pre">Prism</span></code></a>、<a class="reference internal" href="../api/element.html#tensormesh.Pyramid" title="tensormesh.Pyramid"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pyramid</span></code></a>），上述每个属性都会返回一个元组——先是三角形面的量，其次是四边形面的量。<a class="reference internal" href="../api/assemble.html#module-tensormesh.assemble" title="tensormesh.assemble"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensormesh.assemble</span></code></a> 中的高层 <code class="docutils literal notranslate"><span class="pre">FacetAssembler</span></code> 会替你处理这种分情况讨论。</p>
+</section>
+<section id="the-ordering-convention">
+<h2>排序约定<a class="headerlink" href="#the-ordering-convention" title="Link to this heading">¶</a></h2>
+<p>对于张量积形状（<a class="reference internal" href="../api/element.html#tensormesh.Quadrilateral" title="tensormesh.Quadrilateral"><code class="xref py py-class docutils literal notranslate"><span class="pre">Quadrilateral</span></code></a>、<a class="reference internal" href="../api/element.html#tensormesh.Hexahedron" title="tensormesh.Hexahedron"><code class="xref py py-class docutils literal notranslate"><span class="pre">Hexahedron</span></code></a>），TensorMesh 以 <strong>字典序</strong> 存储连接性——即与底层张量积多项式布局相匹配的顺序。Gmsh 和 VTK 使用的是另一套约定。对于高阶或张量积单元，这两套约定不可互换：将 Gmsh 排序的 hex27 连接性直接送入装配器，会在不报错的情况下产生错误的基函数求值结果。</p>
+<p>唯一的转换入口是 <a class="reference internal" href="../api/element.html#tensormesh.Element.reorder" title="tensormesh.Element.reorder"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reorder()</span></code></a>：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Element.reorder(elements,</span> <span class="pre">to_gmsh=False)</span></code> —— Gmsh/VTK → TensorMesh（在 <strong>读取</strong> 外部网格时使用）。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Element.reorder(elements,</span> <span class="pre">to_gmsh=True)</span></code> —— TensorMesh → Gmsh/VTK（在 <strong>写出</strong> <code class="docutils literal notranslate"><span class="pre">.vtk</span></code> / <code class="docutils literal notranslate"><span class="pre">.vtu</span></code> 文件时使用）。</p></li>
+</ul>
+<p>你几乎从不需要直接调用 <a class="reference internal" href="../api/element.html#tensormesh.Element.reorder" title="tensormesh.Element.reorder"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reorder()</span></code></a>。高层路径会替你完成：</p>
+<ul class="simple">
+<li><p>内置网格生成器输出的本就是 TensorMesh 排序。</p></li>
+<li><p><a class="reference internal" href="../api/mesh.html#tensormesh.Mesh.read" title="tensormesh.Mesh.read"><code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code></a> 和 <a class="reference internal" href="../api/mesh.html#tensormesh.Mesh.from_meshio" title="tensormesh.Mesh.from_meshio"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_meshio()</span></code></a> 接受 <code class="docutils literal notranslate"><span class="pre">reorder=True</span></code>，可在导入时进行转换。</p></li>
+<li><p><a class="reference internal" href="../api/mesh.html#tensormesh.Mesh.save" title="tensormesh.Mesh.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save()</span></code></a> 会自动检测 <code class="docutils literal notranslate"><span class="pre">.vtk</span></code>/<code class="docutils literal notranslate"><span class="pre">.vtu</span></code> 输出并替你重新排序。</p></li>
+</ul>
+<p>如果你从原始数组构建网格（<code class="docutils literal notranslate"><span class="pre">Mesh(meshio_obj,</span> <span class="pre">reorder=True)</span></code>），同一个标志控制其行为——当源数据采用 Gmsh/VTK 约定时，请传入 <code class="docutils literal notranslate"><span class="pre">reorder=True</span></code>。示例库为每种单元类型在 2–4 阶下提供了并排对比：参见 <a class="reference internal" href="../example_gallery/basics.html#node-ordering-gallery"><span class="std std-ref">Gmsh / VTK ↔ TensorMesh 节点编号</span></a>。</p>
+</section>
+<section id="adding-a-new-element-type">
+<h2>添加新的单元类型<a class="headerlink" href="#adding-a-new-element-type" title="Link to this heading">¶</a></h2>
+<p>对 <a class="reference internal" href="../api/element.html#tensormesh.Element" title="tensormesh.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a> 进行子类化是受支持的扩展方式，而上述流程也告诉了你 <em>需要</em> 重写 <em>哪些</em> 钩子：</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../api/element.html#tensormesh.Element.get_polynomial" title="tensormesh.Element.get_polynomial"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_polynomial()</span></code></a> —— 步骤 2，你的新单元所在的多项式空间。</p></li>
+<li><p><a class="reference internal" href="../api/element.html#tensormesh.Element.get_basis" title="tensormesh.Element.get_basis"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_basis()</span></code></a> —— 步骤 1，插值节点的坐标。</p></li>
+<li><p><a class="reference internal" href="../api/element.html#tensormesh.Element.get_quadrature" title="tensormesh.Element.get_quadrature"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_quadrature()</span></code></a> / <a class="reference internal" href="../api/element.html#tensormesh.Element.get_facet_quadrature" title="tensormesh.Element.get_facet_quadrature"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_facet_quadrature()</span></code></a> —— 步骤 4 及其面变体。</p></li>
+<li><p><a class="reference internal" href="../api/element.html#tensormesh.Element.get_facet_type" title="tensormesh.Element.get_facet_type"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_facet_type()</span></code></a>、<a class="reference internal" href="../api/element.html#tensormesh.Element.get_facet" title="tensormesh.Element.get_facet"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_facet()</span></code></a> —— 面拓扑与基函数索引映射。</p></li>
+<li><p><a class="reference internal" href="../api/element.html#tensormesh.Element.get_gmsh_permutation" title="tensormesh.Element.get_gmsh_permutation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_gmsh_permutation()</span></code></a> —— 仅当你希望该单元能与 Gmsh / VTK 文件往返互转时才需要。</p></li>
+</ul>
+<p>基类会根据这些重写自动推导出步骤 3、5、6 和 7。<code class="docutils literal notranslate"><span class="pre">tensormesh/element/element.py</span></code> 中现有的七种形状都是简短、自包含的模板；这些重写内部所用的底层辅助工具（<a class="reference internal" href="../api/element.html#tensormesh.element.Polynomial" title="tensormesh.element.Polynomial"><code class="xref py py-class docutils literal notranslate"><span class="pre">Polynomial</span></code></a>、基节点生成器、求积工厂）位于 <a class="reference internal" href="../api/element.html#api-element-internals"><span class="std std-ref">Extension internals</span></a> 之下。</p>
+</section>
+<section id="what-s-next">
+<h2>接下来<a class="headerlink" href="#what-s-next" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="forms.html"><span class="doc">形式</span></a> —— 基于这些单元所提供的基张量编写弱形式。</p></li>
+<li><p><a class="reference internal" href="meshes.html"><span class="doc">网格</span></a> —— 生成器、I/O，以及在实际语境中 <code class="docutils literal notranslate"><span class="pre">reorder=True</span></code> 的调用模式。</p></li>
+<li><p><a class="reference internal" href="../example_gallery/index.html"><span class="doc">示例画廊</span></a> —— 三角形、四边形、四面体和六面体网格上的可运行示例（含高阶）。</p></li>
+</ul>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="forms.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">形式</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="meshes.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">网格</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, TensorMesh Contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/camlab-ethz/TensorMesh" aria-label="GitHub"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+              <a class="muted-link " href="https://discord.gg/EC9kbHSnrx" aria-label="Discord"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.576-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.05.05 0 0 0-.021.019C.356 6.024-.213 9.047.066 12.032c.002.015.01.029.02.037a13.3 13.3 0 0 0 3.995 2.01.05.05 0 0 0 .056-.019c.308-.42.582-.86.818-1.329a.05.05 0 0 0-.027-.06 8.7 8.7 0 0 1-1.248-.595.05.05 0 0 1-.005-.085c.079-.053.16-.104.248-.152a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007c.08.048.16.1.248.152a.05.05 0 0 1-.004.085 8.2 8.2 0 0 1-1.249.594.05.05 0 0 0-.027.06c.24.465.514.906.817 1.329a.05.05 0 0 0 .056.02 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.036c.334-3.451-.559-6.449-2.366-9.106a.04.04 0 0 0-.021-.02zM5.68 10.77c-.789 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.45.73 1.438 1.61 0 .886-.637 1.61-1.438 1.61zm4.842 0c-.788 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.451.73 1.438 1.61 0 .886-.63 1.61-1.438 1.61z"></path></svg></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">单元与求积</a><ul>
+<li><a class="reference internal" href="#supported-element-types">受支持的单元类型</a></li>
+<li><a class="reference internal" href="#higher-order-elements">高阶单元</a></li>
+<li><a class="reference internal" href="#the-pipeline-from-reference-shape-to-physical-integration">流程：从参考形状到物理积分</a><ul>
+<li><a class="reference internal" href="#step-0-reference-element-topology">步骤 0 —— 参考单元拓扑</a></li>
+<li><a class="reference internal" href="#step-1-lagrange-nodes-get-basis">步骤 1 —— 拉格朗日节点（<code class="docutils literal notranslate"><span class="pre">get_basis</span></code>）</a></li>
+<li><a class="reference internal" href="#step-2-polynomial-space-get-polynomial">步骤 2 —— 多项式空间（<code class="docutils literal notranslate"><span class="pre">get_polynomial</span></code>）</a></li>
+<li><a class="reference internal" href="#step-3-hat-functions-get-basis-fns-get-basis-grad-fns">步骤 3 —— 帽函数（<code class="docutils literal notranslate"><span class="pre">get_basis_fns</span></code>、<code class="docutils literal notranslate"><span class="pre">get_basis_grad_fns</span></code>）</a></li>
+<li><a class="reference internal" href="#step-4-reference-quadrature-get-quadrature">步骤 4 —— 参考求积（<code class="docutils literal notranslate"><span class="pre">get_quadrature</span></code>）</a></li>
+<li><a class="reference internal" href="#step-5-reference-shape-values-eval-shape-val">步骤 5 —— 参考形函数值（<code class="docutils literal notranslate"><span class="pre">eval_shape_val</span></code>）</a></li>
+<li><a class="reference internal" href="#step-6-cell-jacobian-and-physical-gradients">步骤 6 —— 单元雅可比矩阵与物理梯度</a></li>
+<li><a class="reference internal" href="#step-7-transformation-the-cached-package">步骤 7 —— <code class="docutils literal notranslate"><span class="pre">Transformation</span></code>：缓存好的封装</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#facet-quantities">面相关量</a></li>
+<li><a class="reference internal" href="#the-ordering-convention">排序约定</a></li>
+<li><a class="reference internal" href="#adding-a-new-element-type">添加新的单元类型</a></li>
+<li><a class="reference internal" href="#what-s-next">接下来</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=c5408746"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../_static/translations.js?v=beaddf03"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

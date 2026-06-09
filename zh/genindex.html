@@ -1,0 +1,1754 @@
+<!doctype html>
+<html class="no-js" lang="zh-CN" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="索引" href="#"><link rel="search" title="搜索" href="search.html">
+        <link rel="prefetch" href="_static/logo.png" as="image">
+        <link rel="prefetch" href="_static/logo.png" as="image">
+
+    <link rel="shortcut icon" href="_static/logo.png"><!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 --><title>索引 - TensorMesh</title>
+<link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=95a110e3" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #5B6EE8;
+  --color-brand-content: #149B8E;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">TensorMesh</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="_static/logo.png" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="_static/logo.png" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">TensorMesh</span>
+  
+</a><div class="sidebar-language-switcher">
+  <a href="../genindex.html" rel="alternate" hreflang="en" title="English">English</a>
+  <span class="sep">·</span>
+  <span class="active">中文</span>
+</div><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="搜索" name="q" aria-label="搜索">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">文档</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="getting_started/index.html">快速上手</a><input aria-label="Toggle navigation of 快速上手" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/installation.html">安装</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/quickstart.html">快速开始</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/verify_install.html">验证安装</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="user_guide/index.html">用户指南</a><input aria-label="Toggle navigation of 用户指南" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/concepts.html">核心概念</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/meshes.html">网格</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/elements_and_quadrature.html">单元与求积</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/forms.html">形式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/boundary_conditions.html">边界条件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/linear_solvers.html">稀疏求解器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/time_integration.html">时间积分</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/batched_workflows.html">批量化工作流</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/differentiability.html">可微性</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="example_gallery/index.html">示例画廊</a><input aria-label="Toggle navigation of 示例画廊" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="example_gallery/basics.html">基础与可视化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example_gallery/poisson.html">泊松方程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example_gallery/diffusion.html">扩散</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example_gallery/wave.html">波动方程</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="example_gallery/solid/index.html">固体力学</a><input aria-label="Toggle navigation of 固体力学" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="example_gallery/solid/cantilever_beam.html">悬臂梁</a></li>
+<li class="toctree-l3"><a class="reference internal" href="example_gallery/solid/hyperelastic_beam.html">超弹性梁（新胡克）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="example_gallery/solid/hertzian_contact.html">赫兹接触</a></li>
+<li class="toctree-l3"><a class="reference internal" href="example_gallery/solid/plasticity_strip.html">塑性（带各向同性硬化的 J2）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="example_gallery/solid/drucker_prager_triaxial.html">岩土力学：Drucker-Prager 三轴压缩</a></li>
+<li class="toctree-l3"><a class="reference internal" href="example_gallery/solid/elastic_footing.html">Geomechanics: elastic strip footing</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="example_gallery/fluid/index.html">流体力学</a><input aria-label="Toggle navigation of 流体力学" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="example_gallery/fluid/cavity.html">顶盖驱动方腔</a></li>
+<li class="toctree-l3"><a class="reference internal" href="example_gallery/fluid/cylinder_flow.html">圆柱绕流（涡脱落）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="example_gallery/fluid/flow_obstacles.html">绕多个障碍物的流动</a></li>
+<li class="toctree-l3"><a class="reference internal" href="example_gallery/fluid/rayleigh_benard.html">瑞利-贝纳德对流</a></li>
+<li class="toctree-l3"><a class="reference internal" href="example_gallery/fluid/taylor_green.html">泰勒-格林涡（收敛性研究）</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="example_gallery/maxwell.html">静磁学（麦克斯韦方程）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example_gallery/inverse_design.html">反问题设计与辨识</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example_gallery/physics_informed.html">物理信息学习</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example_gallery/dataset.html">机器学习数据集</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example_gallery/distributed.html">分布式 FEM</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/index.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/mesh.html">tensormesh.mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/element.html">tensormesh.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/assemble.html">tensormesh.assemble</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/operator.html">tensormesh.operator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/sparse.html">tensormesh.sparse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/ode.html">tensormesh.ode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/functional.html">tensormesh.functional</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/optimizer.html">tensormesh.optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/material.html">tensormesh.material</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/distributed.html">tensormesh.distributed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/nn.html">tensormesh.nn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/dataset.html">tensormesh.dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/visualization.html">tensormesh.visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="performance/index.html">性能</a><input aria-label="Toggle navigation of 性能" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="performance/benchmarks.html">基准测试</a></li>
+<li class="toctree-l2"><a class="reference internal" href="performance/scaling_guide.html">扩展性指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="performance/profiling.html">性能剖析</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="community/index.html">社区</a><input aria-label="Toggle navigation of 社区" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="community/discord.html">Discord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="community/github_discussions.html">GitHub Discussions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="community/github_issues.html">GitHub Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="community/contributing.html">贡献指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="community/citing.html">引用 TensorMesh</a></li>
+</ul>
+</li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          
+<section class="genindex-section">
+  <h1 id="index">索引</h1>
+  <div class="genindex-jumpbox"><a href="#_"><strong>_</strong></a> | <a href="#A"><strong>A</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#H"><strong>H</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#J"><strong>J</strong></a> | <a href="#K"><strong>K</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#Q"><strong>Q</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#U"><strong>U</strong></a> | <a href="#V"><strong>V</strong></a> | <a href="#W"><strong>W</strong></a> | <a href="#Z"><strong>Z</strong></a></div>
+</section>
+<section id="_" class="genindex-section">
+  <h2>_</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/nn.html#tensormesh.nn.BufferDict.__init__">__init__() （BufferDict 方法）</a>
+</li>
+        <li><a href="api/nn.html#tensormesh.nn.BufferList.__init__">__init__() （BufferList 方法）</a>
+</li>
+        <li><a href="api/operator.html#tensormesh.Condenser.__init__">__init__() （Condenser 方法）</a>
+</li>
+        <li><a href="api/distributed.html#tensormesh.distributed.DistributedMesh.__init__">__init__() （DistributedMesh 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.ElementAssembler.__init__">__init__() （ElementAssembler 方法）</a>
+</li>
+        <li><a href="api/ode.html#tensormesh.ode.ExplicitEuler.__init__">__init__() （ExplicitEuler 方法）</a>
+</li>
+        <li><a href="api/ode.html#tensormesh.ode.ExplicitRungeKutta.__init__">__init__() （ExplicitRungeKutta 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.FacetAssembler.__init__">__init__() （FacetAssembler 方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.dataset.HeatMultiFrequency.__init__">__init__() （HeatMultiFrequency 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Hexahedron.__init__">__init__() （Hexahedron 方法）</a>
+</li>
+        <li><a href="api/ode.html#tensormesh.ode.ImplicitLinearEuler.__init__">__init__() （ImplicitLinearEuler 方法）</a>
+</li>
+        <li><a href="api/ode.html#tensormesh.ode.ImplicitLinearRungeKutta.__init__">__init__() （ImplicitLinearRungeKutta 方法）</a>
+</li>
+        <li><a href="api/material.html#tensormesh.material.IsotropicMaterial.__init__">__init__() （IsotropicMaterial 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Line.__init__">__init__() （Line 方法）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.__init__">__init__() （Mesh 方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.MeshGen.__init__">__init__() （MeshGen 方法）</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/ode.html#tensormesh.ode.MidPointLinearEuler.__init__">__init__() （MidPointLinearEuler 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.NodeAssembler.__init__">__init__() （NodeAssembler 方法）</a>
+</li>
+        <li><a href="api/optimizer.html#tensormesh.optimizer.OCOptimizer.__init__">__init__() （OCOptimizer 方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.dataset.PoissonMultiFrequency.__init__">__init__() （PoissonMultiFrequency 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomial.__init__">__init__() （Polynomial 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomials.__init__">__init__() （Polynomials 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Prism.__init__">__init__() （Prism 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Pyramid.__init__">__init__() （Pyramid 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Quadrilateral.__init__">__init__() （Quadrilateral 方法）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.__init__">__init__() （SparseMatrix 方法）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.stream_plotter.StreamPlotter.__init__">__init__() （StreamPlotter 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Tetrahedron.__init__">__init__() （Tetrahedron 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.__init__">__init__() （Transformation 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Triangle.__init__">__init__() （Triangle 方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.dataset.WaveMultiFrequency.__init__">__init__() （WaveMultiFrequency 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomials._coef">_coef（Polynomials 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomials._exp">_exp（Polynomials 属性）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="A" class="genindex-section">
+  <h2>A</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/dataset.html#tensormesh.MeshGen.add_circle">add_circle() （MeshGen 方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.MeshGen.add_cube">add_cube() （MeshGen 方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.MeshGen.add_rectangle">add_rectangle() （MeshGen 方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.MeshGen.add_sphere">add_sphere() （MeshGen 方法）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.animation.animate_deformation">animate_deformation()（在 tensormesh.visualization.animation 模块中）</a>
+</li>
+        <li><a href="api/nn.html#tensormesh.nn.BufferList.append">append() （BufferList 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomials.apply_coefficient">apply_coefficient() （Polynomials 方法）</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/nn.html#tensormesh.nn.BufferDict.as_buffer">as_buffer() （BufferDict 方法）</a>
+</li>
+        <li><a href="api/nn.html#tensormesh.nn.BufferList.as_buffer">as_buffer() （BufferList 方法）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.utils.as_ndarray">as_ndarray()（在 tensormesh.visualization.utils 模块中）</a>
+</li>
+        <li><a href="api/nn.html#tensormesh.nn.BufferDict.as_parameter">as_parameter() （BufferDict 方法）</a>
+</li>
+        <li><a href="api/nn.html#tensormesh.nn.BufferList.as_parameter">as_parameter() （BufferList 方法）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.utils.as_sparse_matrix">as_sparse_matrix()（在 tensormesh.visualization.utils 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.utils.as_tensor">as_tensor()（在 tensormesh.visualization.utils 模块中）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="B" class="genindex-section">
+  <h2>B</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/element.html#tensormesh.Transformation.basis_order">basis_order（Transformation 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.basis">basis（Transformation 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.batch_elements_coords">batch_elements_coords() （Transformation 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.batch_quadrature">batch_quadrature() （Transformation 方法）</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/element.html#tensormesh.Transformation.batch_shape_grad_jxw">batch_shape_grad_jxw() （Transformation 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.batch_shape_val">batch_shape_val() （Transformation 方法）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.boundary_mask">boundary_mask（Mesh 属性）</a>
+</li>
+        <li><a href="api/nn.html#tensormesh.nn.BufferDict">BufferDict（tensormesh.nn 中的类）</a>
+</li>
+        <li><a href="api/nn.html#tensormesh.nn.BufferList">BufferList（tensormesh.nn 中的类）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="C" class="genindex-section">
+  <h2>C</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/mesh.html#tensormesh.Mesh.cell_data">cell_data（Mesh 属性）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.cell_sets">cell_sets（Mesh 属性）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.cells">cells（Mesh 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.cell">cell（Element 属性）</a>
+</li>
+        <li><a href="api/nn.html#tensormesh.nn.BufferDict.clone">clone() （BufferDict 方法）</a>
+</li>
+        <li><a href="api/nn.html#tensormesh.nn.BufferList.clone">clone() （BufferList 方法）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.clone">clone() （Mesh 方法）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.color">color() （Mesh 方法）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.col">col（SparseMatrix 属性）</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.combine">combine()（SparseMatrix 静态方法）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.combine_matrix">combine_matrix()（SparseMatrix 静态方法）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.combine_vector">combine_vector()（SparseMatrix 静态方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.NodeAssembler.compile">compile() （NodeAssembler 方法）</a>
+</li>
+        <li><a href="api/operator.html#tensormesh.Condenser.condense_rhs">condense_rhs() （Condenser 方法）</a>
+</li>
+        <li><a href="api/operator.html#tensormesh.Condenser">Condenser（tensormesh 中的类）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.const_node_assembler">const_node_assembler()（在 tensormesh 模块中）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.assemble.ContactAssembler">ContactAssembler（tensormesh.assemble 中的类）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.cpu">cpu() （SparseMatrix 方法）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.cuda">cuda() （SparseMatrix 方法）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="D" class="genindex-section">
+  <h2>D</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/mesh.html#tensormesh.Mesh.default_eletyp">default_eletyp（Mesh 属性）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.degree">degree() （SparseMatrix 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomial.deriv">deriv() （Polynomial 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomials.deriv">deriv() （Polynomials 方法）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.detach">detach() （SparseMatrix 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.detF">detF（Transformation 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.detG">detG（Transformation 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.detJ">detJ（Transformation 属性）</a>
+</li>
+        <li><a href="api/functional.html#tensormesh.functional.elasticity.deviatoric_stress">deviatoric_stress()（在 tensormesh.functional.elasticity 模块中）</a>
+</li>
+        <li><a href="api/functional.html#tensormesh.functional.elasticity.deviatoric_stress_norm">deviatoric_stress_norm()（在 tensormesh.functional.elasticity 模块中）</a>
+</li>
+        <li><a href="api/nn.html#tensormesh.nn.BufferDict.device">device（BufferDict 属性）</a>
+</li>
+        <li><a href="api/nn.html#tensormesh.nn.BufferList.device">device（BufferList 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.ElementAssembler.device">device（ElementAssembler 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.FacetAssembler.device">device（FacetAssembler 属性）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.device">device（Mesh 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.NodeAssembler.device">device（NodeAssembler 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomial.device">device（Polynomial 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomials.device">device（Polynomials 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.device">device（Transformation 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomials.dim">dim() （Polynomials 方法）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.utils.dim">dim()（在 tensormesh.visualization.utils 模块中）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.dim2eletyp">dim2eletyp（Mesh 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.ElementAssembler.dimension">dimension（ElementAssembler 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.FacetAssembler.dimension">dimension（FacetAssembler 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.NodeAssembler.dimension">dimension（NodeAssembler 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.dim">dim（Element 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.dim">dim（Transformation 属性）</a>
+</li>
+        <li><a href="api/operator.html#tensormesh.Condenser.dirichlet_mask">dirichlet_mask（Condenser 属性）</a>
+</li>
+        <li><a href="api/operator.html#tensormesh.Condenser.dirichlet_value">dirichlet_value（Condenser 属性）</a>
+</li>
+        <li><a href="api/distributed.html#tensormesh.distributed.distributed_element_assemble">distributed_element_assemble()（在 tensormesh.distributed 模块中）</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/distributed.html#tensormesh.distributed.distributed_element_assemble_to_sparse">distributed_element_assemble_to_sparse()（在 tensormesh.distributed 模块中）</a>
+</li>
+        <li><a href="api/distributed.html#tensormesh.distributed.distributed_node_assemble">distributed_node_assemble()（在 tensormesh.distributed 模块中）</a>
+</li>
+        <li><a href="api/distributed.html#tensormesh.distributed.DistributedMesh">DistributedMesh（tensormesh.distributed 中的类）</a>
+</li>
+        <li><a href="api/functional.html#tensormesh.functional.ops.divide">divide()（在 tensormesh.functional.ops 模块中）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.double">double() （SparseMatrix 方法）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.draw_element_value.draw_element_value">draw_element_value()（在 tensormesh.visualization.draw_element_value 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.draw_element_value.draw_element_value_2d">draw_element_value_2d()（在 tensormesh.visualization.draw_element_value 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.draw_element_value.draw_element_value_2d_tri">draw_element_value_2d_tri()（在 tensormesh.visualization.draw_element_value 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.draw_element_value.draw_element_value_3d">draw_element_value_3d()（在 tensormesh.visualization.draw_element_value 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.draw_facet.draw_face">draw_face()（在 tensormesh.visualization.draw_facet 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.draw_facet.draw_facet_2d">draw_facet_2d()（在 tensormesh.visualization.draw_facet 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.draw_graph.draw_graph">draw_graph()（在 tensormesh.visualization.draw_graph 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.draw_mesh.draw_mesh">draw_mesh()（在 tensormesh.visualization.draw_mesh 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.stream_plotter.StreamPlotter.draw_mesh_2d">draw_mesh_2d() （StreamPlotter 方法）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.stream_plotter.draw_mesh_2d_static">draw_mesh_2d_static()（在 tensormesh.visualization.stream_plotter 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.stream_plotter.draw_mesh_2d_stream">draw_mesh_2d_stream()（在 tensormesh.visualization.stream_plotter 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.draw_point_value.draw_point_value">draw_point_value()（在 tensormesh.visualization.draw_point_value 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.draw_point_value.draw_point_value_2d">draw_point_value_2d()（在 tensormesh.visualization.draw_point_value 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.draw_point_value.draw_point_value_2d_interpolation">draw_point_value_2d_interpolation()（在 tensormesh.visualization.draw_point_value 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.draw_point_value.draw_point_value_2d_tri_gouraud">draw_point_value_2d_tri_gouraud()（在 tensormesh.visualization.draw_point_value 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.draw_point_value.draw_point_value_3d_interpolation">draw_point_value_3d_interpolation()（在 tensormesh.visualization.draw_point_value 模块中）</a>
+</li>
+        <li><a href="api/nn.html#tensormesh.nn.BufferDict.dtype">dtype（BufferDict 属性）</a>
+</li>
+        <li><a href="api/nn.html#tensormesh.nn.BufferList.dtype">dtype（BufferList 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.ElementAssembler.dtype">dtype（ElementAssembler 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.FacetAssembler.dtype">dtype（FacetAssembler 属性）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.dtype">dtype（Mesh 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.NodeAssembler.dtype">dtype（NodeAssembler 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomial.dtype">dtype（Polynomial 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomials.dtype">dtype（Polynomials 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.dtype">dtype（Transformation 属性）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="E" class="genindex-section">
+  <h2>E</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.edata">edata（SparseMatrix 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.ElementAssembler.edges">edges（ElementAssembler 属性）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.edges">edges（SparseMatrix 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.edge">edge（Element 属性）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.element_adjacency">element_adjacency() （Mesh 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.element_coords">element_coords（Transformation 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.assemble.ContactAssembler.element_energy">element_energy() （ContactAssembler 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.ElementAssembler.element_energy">element_energy() （ElementAssembler 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.assemble.J2Plasticity.element_energy">element_energy() （J2Plasticity 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.LinearElasticityElementAssembler.element_energy">element_energy() （LinearElasticityElementAssembler 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.assemble.NeoHookeanModel.element_energy">element_energy() （NeoHookeanModel 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.element_to_edge">element_to_edge()（Element 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.element_to_facet">element_to_facet()（Element 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element_type2dimension">element_type2dimension()（在 tensormesh 模块中）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element_type2element">element_type2element()（在 tensormesh 模块中）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element_type2order">element_type2order()（在 tensormesh 模块中）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element_types">element_types()（在 tensormesh 模块中）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.ElementAssembler.element_types">element_types（ElementAssembler 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.FacetAssembler.element_types">element_types（FacetAssembler 属性）</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/assemble.html#tensormesh.NodeAssembler.element_types">element_types（NodeAssembler 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.ElementAssembler">ElementAssembler（tensormesh 中的类）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.elements">elements() （Mesh 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.ElementAssembler.elements">elements（ElementAssembler 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.NodeAssembler.elements">elements（NodeAssembler 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.elements">elements（Transformation 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element">Element（tensormesh 中的类）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.element">element（Transformation 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.assemble.ContactAssembler.energy">energy() （ContactAssembler 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.ElementAssembler.energy">energy() （ElementAssembler 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.assemble.NeoHookeanModel.energy">energy() （NeoHookeanModel 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.eval_cell_jacobian">eval_cell_jacobian()（Element 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.eval_facet_cell_jacobian">eval_facet_cell_jacobian()（Element 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.eval_facet_jacobian">eval_facet_jacobian()（Element 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.eval_shape_grad">eval_shape_grad()（Element 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.eval_shape_val">eval_shape_val()（Element 类方法）</a>
+</li>
+        <li><a href="api/ode.html#tensormesh.ode.ExplicitEuler">ExplicitEuler（tensormesh.ode 中的类）</a>
+</li>
+        <li><a href="api/ode.html#tensormesh.ode.ExplicitRungeKutta">ExplicitRungeKutta（tensormesh.ode 中的类）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.eye">eye()（SparseMatrix 静态方法）</a>
+</li>
+        <li><a href="api/material.html#tensormesh.material.IsotropicMaterial.E">E（IsotropicMaterial 属性）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="F" class="genindex-section">
+  <h2>F</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/element.html#tensormesh.Transformation.facet_jacobian">facet_jacobian（Transformation 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.FacetAssembler.facet_mask">facet_mask（FacetAssembler 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.facet_quadrature">facet_quadrature（Transformation 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.facet_shape_grad">facet_shape_grad（Transformation 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.facet_shape_val">facet_shape_val（Transformation 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.FacetAssembler">FacetAssembler（tensormesh 中的类）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.facets">facets（Transformation 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.face">face（Element 属性）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.field_data">field_data（Mesh 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.NodeAssembler.flat_mode">flat_mode() （NodeAssembler 方法）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.float">float() （SparseMatrix 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.ElementAssembler.forward">forward() （ElementAssembler 方法）</a>
+</li>
+        <li><a href="api/ode.html#tensormesh.ode.ExplicitRungeKutta.forward">forward() （ExplicitRungeKutta 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.FacetAssembler.forward">forward() （FacetAssembler 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.LaplaceElementAssembler.forward">forward() （LaplaceElementAssembler 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.LinearElasticityElementAssembler.forward">forward() （LinearElasticityElementAssembler 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.MassElementAssembler.forward">forward() （MassElementAssembler 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.NodeAssembler.forward">forward() （NodeAssembler 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomial.forward">forward() （Polynomial 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomials.forward">forward() （Polynomials 方法）</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/ode.html#tensormesh.ode.ImplicitLinearRungeKutta.forward_A">forward_A() （ImplicitLinearRungeKutta 方法）</a>
+</li>
+        <li><a href="api/ode.html#tensormesh.ode.ImplicitLinearRungeKutta.forward_B">forward_B() （ImplicitLinearRungeKutta 方法）</a>
+</li>
+        <li><a href="api/ode.html#tensormesh.ode.ImplicitLinearRungeKutta.forward_M">forward_M() （ImplicitLinearRungeKutta 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.ElementAssembler.from_assembler">from_assembler()（ElementAssembler 类方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.FacetAssembler.from_assembler">from_assembler()（FacetAssembler 类方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.NodeAssembler.from_assembler">from_assembler()（NodeAssembler 类方法）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.from_block_coo">from_block_coo()（SparseMatrix 静态方法）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.from_dense">from_dense()（SparseMatrix 静态方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.FacetAssembler.from_elements">from_elements()（FacetAssembler 类方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.NodeAssembler.from_elements">from_elements()（NodeAssembler 类方法）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.from_file">from_file()（Mesh 类方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.ElementAssembler.from_mesh">from_mesh()（ElementAssembler 类方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.FacetAssembler.from_mesh">from_mesh()（FacetAssembler 类方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.NodeAssembler.from_mesh">from_mesh()（NodeAssembler 类方法）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.from_meshio">from_meshio()（Mesh 类方法）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.from_scipy_coo">from_scipy_coo()（SparseMatrix 静态方法）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.from_sparse_coo">from_sparse_coo()（SparseMatrix 静态方法）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.full">full()（SparseMatrix 静态方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.func_node_assembler">func_node_assembler()（在 tensormesh 模块中）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.FxW">FxW（Transformation 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.F">F（Transformation 属性）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="G" class="genindex-section">
+  <h2>G</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/dataset.html#tensormesh.MeshGen.gen">gen() （MeshGen 方法）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.gen_circle">gen_circle()（Mesh 静态方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.dataset.gen_circle">gen_circle()（在 tensormesh.dataset 模块中）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.gen_cube">gen_cube()（Mesh 静态方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.dataset.gen_cube">gen_cube()（在 tensormesh.dataset 模块中）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.gen_hollow_circle">gen_hollow_circle()（Mesh 静态方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.dataset.gen_hollow_circle">gen_hollow_circle()（在 tensormesh.dataset 模块中）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.gen_hollow_cube">gen_hollow_cube()（Mesh 静态方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.dataset.gen_hollow_cube">gen_hollow_cube()（在 tensormesh.dataset 模块中）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.gen_hollow_rectangle">gen_hollow_rectangle()（Mesh 静态方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.dataset.gen_hollow_rectangle">gen_hollow_rectangle()（在 tensormesh.dataset 模块中）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.gen_hollow_sphere">gen_hollow_sphere()（Mesh 静态方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.dataset.gen_hollow_sphere">gen_hollow_sphere()（在 tensormesh.dataset 模块中）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.gen_L">gen_L()（Mesh 静态方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.dataset.gen_L">gen_L()（在 tensormesh.dataset 模块中）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.gen_rectangle">gen_rectangle()（Mesh 静态方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.dataset.gen_rectangle">gen_rectangle()（在 tensormesh.dataset 模块中）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.gen_sphere">gen_sphere()（Mesh 静态方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.dataset.gen_sphere">gen_sphere()（在 tensormesh.dataset 模块中）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.get_basis">get_basis()（Element 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.get_basis_fns">get_basis_fns()（Element 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.get_basis_grad_fns">get_basis_grad_fns()（Element 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.get_contour">get_contour()（Element 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.get_edge">get_edge()（Element 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomial.get_exp_terms">get_exp_terms() （Polynomial 方法）</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/element.html#tensormesh.element.Polynomials.get_exp_terms">get_exp_terms() （Polynomials 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.get_facet">get_facet()（Element 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.get_facet_quadrature">get_facet_quadrature()（Element 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.get_facet_type">get_facet_type()（Element 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.get_gmsh_permutation">get_gmsh_permutation()（Element 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.get_local_facet_mapping_fns">get_local_facet_mapping_fns()（Element 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.get_local_facet_mapping_grad_fns">get_local_facet_mapping_grad_fns()（Element 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.get_n_basis">get_n_basis()（Element 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.get_n_facet">get_n_facet()（Element 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.get_outwards_facet_normal">get_outwards_facet_normal()（Element 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.get_polynomial">get_polynomial()（Element 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.get_quad_mask">get_quad_mask()（Element 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.get_quadrature">get_quadrature()（Element 类方法）</a>
+</li>
+        <li><a href="api/optimizer.html#tensormesh.optimizer.OCOptimizer.get_stats">get_stats() （OCOptimizer 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.get_tri_mask">get_tri_mask()（Element 类方法）</a>
+</li>
+        <li><a href="api/optimizer.html#tensormesh.optimizer.OCOptimizer.get_volume">get_volume() （OCOptimizer 方法）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.stream_plotter.StreamPlotter.grab_frame">grab_frame() （StreamPlotter 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomial.grad">grad() （Polynomial 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomials.grad">grad() （Polynomials 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.gradphi">gradphi（Transformation 属性）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.grad">grad（SparseMatrix 属性）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.mesh.graph_coloring">graph_coloring()（在 tensormesh.mesh 模块中）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.mesh.graph_partition">graph_partition()（在 tensormesh.mesh 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.utils.grid">grid()（在 tensormesh.visualization.utils 模块中）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.GxW">GxW（Transformation 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.G">G（Transformation 属性）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="H" class="genindex-section">
+  <h2>H</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.half">half() （SparseMatrix 方法）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.has_same_layout">has_same_layout() （SparseMatrix 方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.dataset.HeatMultiFrequency">HeatMultiFrequency（tensormesh.dataset 中的类）</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/element.html#tensormesh.Hexahedron">Hexahedron（tensormesh 中的类）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.assemble.J2Plasticity.history">history（J2Plasticity 属性）</a>
+</li>
+        <li><a href="api/material.html#tensormesh.material.IsotropicMaterial.H">H（IsotropicMaterial 属性）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="I" class="genindex-section">
+  <h2>I</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/ode.html#tensormesh.ode.ImplicitLinearEuler">ImplicitLinearEuler（tensormesh.ode 中的类）</a>
+</li>
+        <li><a href="api/ode.html#tensormesh.ode.ImplicitLinearRungeKutta">ImplicitLinearRungeKutta（tensormesh.ode 中的类）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.dataset.HeatMultiFrequency.initial_condition">initial_condition() （HeatMultiFrequency 方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.dataset.WaveMultiFrequency.initial_condition">initial_condition() （WaveMultiFrequency 方法）</a>
+</li>
+        <li><a href="api/nn.html#tensormesh.nn.BufferList.insert">insert() （BufferList 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.NodeAssembler.is_compiled">is_compiled（NodeAssembler 属性）</a>
+</li>
+        <li><a href="api/nn.html#tensormesh.nn.BufferDict.is_complex">is_complex() （BufferDict 方法）</a>
+</li>
+        <li><a href="api/nn.html#tensormesh.nn.BufferList.is_complex">is_complex() （BufferList 方法）</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/sparse.html#tensormesh.sparse.is_cupy_available">is_cupy_available()（在 tensormesh.sparse 模块中）</a>
+</li>
+        <li><a href="api/nn.html#tensormesh.nn.BufferDict.is_floating_point">is_floating_point() （BufferDict 方法）</a>
+</li>
+        <li><a href="api/nn.html#tensormesh.nn.BufferList.is_floating_point">is_floating_point() （BufferList 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.is_mix_facet">is_mix_facet（Element 属性）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.is_petsc_available">is_petsc_available()（在 tensormesh.sparse 模块中）</a>
+</li>
+        <li><a href="api/functional.html#tensormesh.functional.elasticity.isotropic_stress">isotropic_stress()（在 tensormesh.functional.elasticity 模块中）</a>
+</li>
+        <li><a href="api/material.html#tensormesh.material.IsotropicMaterial">IsotropicMaterial（tensormesh.material 中的类）</a>
+</li>
+        <li><a href="api/nn.html#tensormesh.nn.BufferList.item">item() （BufferList 方法）</a>
+</li>
+        <li><a href="api/nn.html#tensormesh.nn.BufferDict.items">items() （BufferDict 方法）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="J" class="genindex-section">
+  <h2>J</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/assemble.html#tensormesh.assemble.J2Plasticity">J2Plasticity（tensormesh.assemble 中的类）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.jacobian">jacobian（Transformation 属性）</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/element.html#tensormesh.Transformation.JxW">JxW（Transformation 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.J">J（Transformation 属性）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="K" class="genindex-section">
+  <h2>K</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/operator.html#tensormesh.Condenser.K_ou2in">K_ou2in（Condenser 属性）</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/nn.html#tensormesh.nn.BufferDict.keys">keys() （BufferDict 方法）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="L" class="genindex-section">
+  <h2>L</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/material.html#tensormesh.material.IsotropicMaterial.lame_params">lame_params（IsotropicMaterial 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.LaplaceElementAssembler">LaplaceElementAssembler（tensormesh 中的类）</a>
+</li>
+        <li><a href="api/operator.html#tensormesh.Condenser.layout_hash">layout_hash（Condenser 属性）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.layout_hash">layout_hash（SparseMatrix 属性）</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.layout_mask">layout_mask（SparseMatrix 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomial.lin_exp">lin_exp()（Polynomial 类方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.LinearElasticityElementAssembler">LinearElasticityElementAssembler（tensormesh 中的类）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Line">Line（tensormesh 中的类）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="M" class="genindex-section">
+  <h2>M</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/element.html#tensormesh.element.Polynomials.map">map() （Polynomials 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomials.map_exp_terms">map_exp_terms() （Polynomials 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.MassElementAssembler">MassElementAssembler（tensormesh 中的类）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.utils.mesh_to_pyvista">mesh_to_pyvista()（在 tensormesh.visualization.utils 模块中）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.MeshGen">MeshGen（tensormesh 中的类）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh">Mesh（tensormesh 中的类）</a>
+</li>
+        <li><a href="api/ode.html#tensormesh.ode.MidPointLinearEuler">MidPointLinearEuler（tensormesh.ode 中的类）</a>
+</li>
+        <li>
+    module
+
+        <ul>
+          <li><a href="api/assemble.html#module-tensormesh.assemble">tensormesh.assemble</a>
+</li>
+          <li><a href="api/dataset.html#module-tensormesh.dataset">tensormesh.dataset</a>
+</li>
+          <li><a href="api/distributed.html#module-tensormesh.distributed">tensormesh.distributed</a>
+</li>
+          <li><a href="api/element.html#module-tensormesh.element">tensormesh.element</a>
+</li>
+          <li><a href="api/functional.html#module-tensormesh.functional">tensormesh.functional</a>
+</li>
+          <li><a href="api/functional.html#module-tensormesh.functional.elasticity">tensormesh.functional.elasticity</a>
+</li>
+          <li><a href="api/functional.html#module-tensormesh.functional.ops">tensormesh.functional.ops</a>
+</li>
+          <li><a href="api/functional.html#module-tensormesh.functional.plastic">tensormesh.functional.plastic</a>
+</li>
+          <li><a href="api/material.html#module-tensormesh.material">tensormesh.material</a>
+</li>
+          <li><a href="api/mesh.html#module-tensormesh.mesh">tensormesh.mesh</a>
+</li>
+          <li><a href="api/nn.html#module-tensormesh.nn">tensormesh.nn</a>
+</li>
+          <li><a href="api/ode.html#module-tensormesh.ode">tensormesh.ode</a>
+</li>
+          <li><a href="api/operator.html#module-tensormesh.operator">tensormesh.operator</a>
+</li>
+          <li><a href="api/optimizer.html#module-tensormesh.optimizer">tensormesh.optimizer</a>
+</li>
+          <li><a href="api/sparse.html#module-tensormesh.sparse">tensormesh.sparse</a>
+</li>
+          <li><a href="api/visualization.html#module-tensormesh.visualization">tensormesh.visualization</a>
+</li>
+          <li><a href="api/visualization.html#module-tensormesh.visualization.animation">tensormesh.visualization.animation</a>
+</li>
+          <li><a href="api/visualization.html#module-tensormesh.visualization.draw_element_value">tensormesh.visualization.draw_element_value</a>
+</li>
+          <li><a href="api/visualization.html#module-tensormesh.visualization.draw_facet">tensormesh.visualization.draw_facet</a>
+</li>
+          <li><a href="api/visualization.html#module-tensormesh.visualization.draw_graph">tensormesh.visualization.draw_graph</a>
+</li>
+          <li><a href="api/visualization.html#module-tensormesh.visualization.draw_mesh">tensormesh.visualization.draw_mesh</a>
+</li>
+          <li><a href="api/visualization.html#module-tensormesh.visualization.draw_point_value">tensormesh.visualization.draw_point_value</a>
+</li>
+          <li><a href="api/visualization.html#module-tensormesh.visualization.pyvista">tensormesh.visualization.pyvista</a>
+</li>
+          <li><a href="api/visualization.html#module-tensormesh.visualization.static_plot">tensormesh.visualization.static_plot</a>
+</li>
+          <li><a href="api/visualization.html#module-tensormesh.visualization.stream_plotter">tensormesh.visualization.stream_plotter</a>
+</li>
+          <li><a href="api/visualization.html#module-tensormesh.visualization.utils">tensormesh.visualization.utils</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="N" class="genindex-section">
+  <h2>N</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/element.html#tensormesh.Transformation.n_basis">n_basis（Transformation 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.n_cell">n_cell（Element 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.n_edge">n_edge（Element 属性）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.n_elements">n_elements（Mesh 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.n_elements">n_elements（Transformation 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.n_face">n_face（Element 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.ElementAssembler.n_points">n_points（ElementAssembler 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.FacetAssembler.n_points">n_points（FacetAssembler 属性）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.n_points">n_points（Mesh 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.NodeAssembler.n_points">n_points（NodeAssembler 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomials.n_polys">n_polys（Polynomials 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.n_quadrature">n_quadrature（Transformation 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomial.n_terms">n_terms（Polynomial 属性）</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/element.html#tensormesh.element.Polynomials.n_terms">n_terms（Polynomials 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomial.n_vars">n_vars（Polynomial 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomials.n_vars">n_vars（Polynomials 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.n_vertex">n_vertex（Element 属性）</a>
+</li>
+        <li><a href="api/material.html#tensormesh.material.IsotropicMaterial.name">name（IsotropicMaterial 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.nanson_scale">nanson_scale（Transformation 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomials.ndim">ndim（Polynomials 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.assemble.NeoHookeanModel">NeoHookeanModel（tensormesh.assemble 中的类）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.node_adjacency">node_adjacency() （Mesh 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.NodeAssembler">NodeAssembler（tensormesh 中的类）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.nonlinear_solve">nonlinear_solve()（在 tensormesh.sparse 模块中）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomials.numel">numel() （Polynomials 方法）</a>
+</li>
+        <li><a href="api/material.html#tensormesh.material.IsotropicMaterial.nu">nu（IsotropicMaterial 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.n">n（Transformation 属性）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="O" class="genindex-section">
+  <h2>O</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/optimizer.html#tensormesh.optimizer.OCOptimizer">OCOptimizer（tensormesh.optimizer 中的类）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="P" class="genindex-section">
+  <h2>P</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/mesh.html#tensormesh.Mesh.partition">partition() （Mesh 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.phi">phi（Transformation 属性）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.plot">plot() （Mesh 方法）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.static_plot.plot_deformation">plot_deformation()（在 tensormesh.visualization.static_plot 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.pyvista.plot_value">plot_value()（在 tensormesh.visualization.pyvista 模块中）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.point_data">point_data（Mesh 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.points">points（Element 属性）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.points">points（Mesh 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.points">points（Transformation 属性）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.dataset.PoissonMultiFrequency">PoissonMultiFrequency（tensormesh.dataset 中的类）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomial.poly_exp">poly_exp()（Polynomial 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomials">Polynomials（tensormesh.element 中的类）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomial">Polynomial（tensormesh.element 中的类）</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/nn.html#tensormesh.nn.BufferList.pop">pop() （BufferList 方法）</a>
+</li>
+        <li><a href="api/ode.html#tensormesh.ode.ImplicitLinearRungeKutta.post_solve">post_solve() （ImplicitLinearRungeKutta 方法）</a>
+</li>
+        <li><a href="api/ode.html#tensormesh.ode.ImplicitLinearRungeKutta.pre_solve_lhs">pre_solve_lhs() （ImplicitLinearRungeKutta 方法）</a>
+</li>
+        <li><a href="api/ode.html#tensormesh.ode.ImplicitLinearRungeKutta.pre_solve_rhs">pre_solve_rhs() （ImplicitLinearRungeKutta 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomial.pri_exp">pri_exp()（Polynomial 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Prism">Prism（tensormesh 中的类）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.ElementAssembler.projector">projector（ElementAssembler 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.FacetAssembler.projector">projector（FacetAssembler 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.NodeAssembler.projector">projector（NodeAssembler 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.assemble.projector.Projector">Projector（tensormesh.assemble.projector 中的类）</a>
+</li>
+        <li><a href="api/operator.html#tensormesh.Condenser.prolong">prolong() （Condenser 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomial.pyr_exp">pyr_exp()（Polynomial 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Pyramid">Pyramid（tensormesh 中的类）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="Q" class="genindex-section">
+  <h2>Q</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/element.html#tensormesh.Transformation.quadrature_order">quadrature_order（Transformation 属性）</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/element.html#tensormesh.Transformation.quadrature">quadrature（Transformation 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Quadrilateral">Quadrilateral（tensormesh 中的类）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="R" class="genindex-section">
+  <h2>R</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.random">random()（SparseMatrix 静态方法）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.random_from_layout">random_from_layout()（SparseMatrix 静态方法）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.random_layout">random_layout()（SparseMatrix 静态方法）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.read">read()（Mesh 类方法）</a>
+</li>
+        <li><a href="api/operator.html#tensormesh.Condenser.recover">recover() （Condenser 方法）</a>
+</li>
+        <li><a href="api/ode.html#tensormesh.ode.ImplicitLinearRungeKutta.recover_stage">recover_stage() （ImplicitLinearRungeKutta 方法）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.register_element_data">register_element_data() （Mesh 方法）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.register_point_data">register_point_data() （Mesh 方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.MeshGen.remove_circle">remove_circle() （MeshGen 方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.MeshGen.remove_cube">remove_cube() （MeshGen 方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.MeshGen.remove_rectangle">remove_rectangle() （MeshGen 方法）</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/dataset.html#tensormesh.MeshGen.remove_sphere">remove_sphere() （MeshGen 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.reorder">reorder()（Element 类方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomial.repeat">repeat() （Polynomial 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomials.repeat">repeat() （Polynomials 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomial.reset_coef">reset_coef() （Polynomial 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomials.reset_coef">reset_coef() （Polynomials 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.NodeAssembler.reset_compile">reset_compile() （NodeAssembler 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomials.reshape">reshape() （Polynomials 方法）</a>
+</li>
+        <li><a href="api/operator.html#tensormesh.Condenser.restrict">restrict() （Condenser 方法）</a>
+</li>
+        <li><a href="api/material.html#tensormesh.material.IsotropicMaterial.rho">rho（IsotropicMaterial 属性）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.row">row（SparseMatrix 属性）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="S" class="genindex-section">
+  <h2>S</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/mesh.html#tensormesh.Mesh.save">save() （Mesh 方法）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.utils.setup_headless">setup_headless()（在 tensormesh.visualization.utils 模块中）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.shape_grad">shape_grad（Transformation 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.shape_val">shape_val（Transformation 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomials.shape">shape（Polynomials 属性）</a>
+</li>
+        <li><a href="api/material.html#tensormesh.material.IsotropicMaterial.sigma_y">sigma_y（IsotropicMaterial 属性）</a>
+</li>
+        <li><a href="api/functional.html#tensormesh.functional.ops.skew">skew()（在 tensormesh.functional.ops 模块中）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.dataset.HeatMultiFrequency.solution">solution() （HeatMultiFrequency 方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.dataset.PoissonMultiFrequency.solution">solution() （PoissonMultiFrequency 方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.dataset.WaveMultiFrequency.solution">solution() （WaveMultiFrequency 方法）</a>
+</li>
+        <li><a href="api/dataset.html#tensormesh.dataset.PoissonMultiFrequency.source_term">source_term() （PoissonMultiFrequency 方法）</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix">SparseMatrix（tensormesh.sparse 中的类）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseTensor">SparseTensor（tensormesh.sparse 中的类）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.spmm">spmm()（在 tensormesh.sparse 模块中）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.spsolve">spsolve()（在 tensormesh.sparse 模块中）</a>
+</li>
+        <li><a href="api/functional.html#tensormesh.functional.ops.sqrt">sqrt()（在 tensormesh.functional.ops 模块中）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomials.stack">stack()（Polynomials 类方法）</a>
+</li>
+        <li><a href="api/ode.html#tensormesh.ode.ExplicitRungeKutta.step">step() （ExplicitRungeKutta 方法）</a>
+</li>
+        <li><a href="api/ode.html#tensormesh.ode.ImplicitLinearRungeKutta.step">step() （ImplicitLinearRungeKutta 方法）</a>
+</li>
+        <li><a href="api/optimizer.html#tensormesh.optimizer.OCOptimizer.step">step() （OCOptimizer 方法）</a>
+</li>
+        <li><a href="api/functional.html#tensormesh.functional.elasticity.strain">strain()（在 tensormesh.functional.elasticity 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.stream_plotter.StreamPlotter">StreamPlotter（tensormesh.visualization.stream_plotter 中的类）</a>
+</li>
+        <li><a href="api/functional.html#tensormesh.functional.ops.sym">sym()（在 tensormesh.functional.ops 模块中）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="T" class="genindex-section">
+  <h2>T</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/element.html#tensormesh.element.Polynomial.tens_exp">tens_exp()（Polynomial 类方法）</a>
+</li>
+        <li>
+    tensormesh.assemble
+
+        <ul>
+          <li><a href="api/assemble.html#module-tensormesh.assemble">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.dataset
+
+        <ul>
+          <li><a href="api/dataset.html#module-tensormesh.dataset">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.distributed
+
+        <ul>
+          <li><a href="api/distributed.html#module-tensormesh.distributed">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.element
+
+        <ul>
+          <li><a href="api/element.html#module-tensormesh.element">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.functional
+
+        <ul>
+          <li><a href="api/functional.html#module-tensormesh.functional">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.functional.elasticity
+
+        <ul>
+          <li><a href="api/functional.html#module-tensormesh.functional.elasticity">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.functional.ops
+
+        <ul>
+          <li><a href="api/functional.html#module-tensormesh.functional.ops">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.functional.plastic
+
+        <ul>
+          <li><a href="api/functional.html#module-tensormesh.functional.plastic">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.material
+
+        <ul>
+          <li><a href="api/material.html#module-tensormesh.material">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.mesh
+
+        <ul>
+          <li><a href="api/mesh.html#module-tensormesh.mesh">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.nn
+
+        <ul>
+          <li><a href="api/nn.html#module-tensormesh.nn">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.ode
+
+        <ul>
+          <li><a href="api/ode.html#module-tensormesh.ode">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.operator
+
+        <ul>
+          <li><a href="api/operator.html#module-tensormesh.operator">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.optimizer
+
+        <ul>
+          <li><a href="api/optimizer.html#module-tensormesh.optimizer">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.sparse
+
+        <ul>
+          <li><a href="api/sparse.html#module-tensormesh.sparse">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.visualization
+
+        <ul>
+          <li><a href="api/visualization.html#module-tensormesh.visualization">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.visualization.animation
+
+        <ul>
+          <li><a href="api/visualization.html#module-tensormesh.visualization.animation">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.visualization.draw_element_value
+
+        <ul>
+          <li><a href="api/visualization.html#module-tensormesh.visualization.draw_element_value">module</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
+    tensormesh.visualization.draw_facet
+
+        <ul>
+          <li><a href="api/visualization.html#module-tensormesh.visualization.draw_facet">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.visualization.draw_graph
+
+        <ul>
+          <li><a href="api/visualization.html#module-tensormesh.visualization.draw_graph">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.visualization.draw_mesh
+
+        <ul>
+          <li><a href="api/visualization.html#module-tensormesh.visualization.draw_mesh">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.visualization.draw_point_value
+
+        <ul>
+          <li><a href="api/visualization.html#module-tensormesh.visualization.draw_point_value">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.visualization.pyvista
+
+        <ul>
+          <li><a href="api/visualization.html#module-tensormesh.visualization.pyvista">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.visualization.static_plot
+
+        <ul>
+          <li><a href="api/visualization.html#module-tensormesh.visualization.static_plot">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.visualization.stream_plotter
+
+        <ul>
+          <li><a href="api/visualization.html#module-tensormesh.visualization.stream_plotter">module</a>
+</li>
+        </ul></li>
+        <li>
+    tensormesh.visualization.utils
+
+        <ul>
+          <li><a href="api/visualization.html#module-tensormesh.visualization.utils">module</a>
+</li>
+        </ul></li>
+        <li><a href="api/element.html#tensormesh.Tetrahedron">Tetrahedron（tensormesh 中的类）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.to">to() （SparseMatrix 方法）</a>
+</li>
+        <li><a href="api/nn.html#tensormesh.nn.BufferDict.to_dict">to_dict() （BufferDict 方法）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.to_file">to_file() （Mesh 方法）</a>
+</li>
+        <li><a href="api/nn.html#tensormesh.nn.BufferList.to_list">to_list() （BufferList 方法）</a>
+</li>
+        <li><a href="api/mesh.html#tensormesh.Mesh.to_meshio">to_meshio() （Mesh 方法）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.to_scipy_coo">to_scipy_coo() （SparseMatrix 方法）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.to_sparse_coo">to_sparse_coo() （SparseMatrix 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.ElementAssembler.transformation">transformation（ElementAssembler 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.FacetAssembler.transformation">transformation（FacetAssembler 属性）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.NodeAssembler.transformation">transformation（NodeAssembler 属性）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation">Transformation（tensormesh 中的类）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.element.Polynomials.transpose">transpose() （Polynomials 方法）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.transpose">transpose() （SparseMatrix 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Triangle">Triangle（tensormesh 中的类）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.ElementAssembler.type">type() （ElementAssembler 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.FacetAssembler.type">type() （FacetAssembler 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.NodeAssembler.type">type() （NodeAssembler 方法）</a>
+</li>
+        <li><a href="api/sparse.html#tensormesh.sparse.SparseMatrix.T">T（SparseMatrix 属性）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="U" class="genindex-section">
+  <h2>U</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/visualization.html#tensormesh.visualization.stream_plotter.StreamPlotter.update">update() （StreamPlotter 方法）</a>
+</li>
+        <li><a href="api/operator.html#tensormesh.Condenser.update_dirichlet">update_dirichlet() （Condenser 方法）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.draw_element_value.update_element_value">update_element_value()（在 tensormesh.visualization.draw_element_value 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.draw_element_value.update_element_value_2d">update_element_value_2d()（在 tensormesh.visualization.draw_element_value 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.draw_element_value.update_element_value_2d_tri">update_element_value_2d_tri()（在 tensormesh.visualization.draw_element_value 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.draw_element_value.update_element_value_3d">update_element_value_3d()（在 tensormesh.visualization.draw_element_value 模块中）</a>
+</li>
+        <li><a href="api/functional.html#tensormesh.functional.plastic.update_plastic_stress">update_plastic_stress()（在 tensormesh.functional.plastic 模块中）</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/visualization.html#tensormesh.visualization.draw_point_value.update_point_value">update_point_value()（在 tensormesh.visualization.draw_point_value 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.draw_point_value.update_point_value_2d">update_point_value_2d()（在 tensormesh.visualization.draw_point_value 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.draw_point_value.update_point_value_2d_interpolation">update_point_value_2d_interpolation()（在 tensormesh.visualization.draw_point_value 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.draw_point_value.update_point_value_2d_tri_gouraud">update_point_value_2d_tri_gouraud()（在 tensormesh.visualization.draw_point_value 模块中）</a>
+</li>
+        <li><a href="api/visualization.html#tensormesh.visualization.draw_point_value.update_point_value_3d_interpolation">update_point_value_3d_interpolation()（在 tensormesh.visualization.draw_point_value 模块中）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Transformation.update_points">update_points() （Transformation 方法）</a>
+</li>
+        <li><a href="api/assemble.html#tensormesh.assemble.J2Plasticity.update_state">update_state() （J2Plasticity 方法）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="V" class="genindex-section">
+  <h2>V</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/nn.html#tensormesh.nn.BufferDict.values">values() （BufferDict 方法）</a>
+</li>
+        <li><a href="api/element.html#tensormesh.Element.vertex">vertex（Element 属性）</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/functional.html#tensormesh.functional.elasticity.voigt_shape_grad">voigt_shape_grad()（在 tensormesh.functional.elasticity 模块中）</a>
+</li>
+        <li><a href="api/functional.html#tensormesh.functional.elasticity.voigt_shape_val">voigt_shape_val()（在 tensormesh.functional.elasticity 模块中）</a>
+</li>
+        <li><a href="api/functional.html#tensormesh.functional.elasticity.voigt_stiffness">voigt_stiffness()（在 tensormesh.functional.elasticity 模块中）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="W" class="genindex-section">
+  <h2>W</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/dataset.html#tensormesh.dataset.WaveMultiFrequency">WaveMultiFrequency（tensormesh.dataset 中的类）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="Z" class="genindex-section">
+  <h2>Z</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/optimizer.html#tensormesh.optimizer.OCOptimizer.zero_grad">zero_grad() （OCOptimizer 方法）</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, TensorMesh Contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/camlab-ethz/TensorMesh" aria-label="GitHub"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+              <a class="muted-link " href="https://discord.gg/EC9kbHSnrx" aria-label="Discord"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.576-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.05.05 0 0 0-.021.019C.356 6.024-.213 9.047.066 12.032c.002.015.01.029.02.037a13.3 13.3 0 0 0 3.995 2.01.05.05 0 0 0 .056-.019c.308-.42.582-.86.818-1.329a.05.05 0 0 0-.027-.06 8.7 8.7 0 0 1-1.248-.595.05.05 0 0 1-.005-.085c.079-.053.16-.104.248-.152a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007c.08.048.16.1.248.152a.05.05 0 0 1-.004.085 8.2 8.2 0 0 1-1.249.594.05.05 0 0 0-.027.06c.24.465.514.906.817 1.329a.05.05 0 0 0 .056.02 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.036c.334-3.451-.559-6.449-2.366-9.106a.04.04 0 0 0-.021-.02zM5.68 10.77c-.789 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.45.73 1.438 1.61 0 .886-.637 1.61-1.438 1.61zm4.842 0c-.788 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.451.73 1.438 1.61 0 .886-.63 1.61-1.438 1.61z"></path></svg></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=c5408746"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="_static/translations.js?v=beaddf03"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    </body>
+</html>

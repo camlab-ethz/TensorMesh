@@ -1,0 +1,645 @@
+<!doctype html>
+<html class="no-js" lang="zh-CN" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="索引" href="../genindex.html"><link rel="search" title="搜索" href="../search.html"><link rel="next" title="泊松方程" href="poisson.html"><link rel="prev" title="示例画廊" href="index.html">
+        <link rel="prefetch" href="../_static/logo.png" as="image">
+        <link rel="prefetch" href="../_static/logo.png" as="image">
+
+    <link rel="shortcut icon" href="../_static/logo.png"><!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>基础与可视化 - TensorMesh</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=95a110e3" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #5B6EE8;
+  --color-brand-content: #149B8E;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">TensorMesh</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../_static/logo.png" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../_static/logo.png" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">TensorMesh</span>
+  
+</a><div class="sidebar-language-switcher">
+  <a href="../../example_gallery/basics.html" rel="alternate" hreflang="en" title="English">English</a>
+  <span class="sep">·</span>
+  <span class="active">中文</span>
+</div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="搜索" name="q" aria-label="搜索">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">文档</span></p>
+<ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../getting_started/index.html">快速上手</a><input aria-label="Toggle navigation of 快速上手" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html">安装</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quickstart.html">快速开始</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/verify_install.html">验证安装</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../user_guide/index.html">用户指南</a><input aria-label="Toggle navigation of 用户指南" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/concepts.html">核心概念</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/meshes.html">网格</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/elements_and_quadrature.html">单元与求积</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/forms.html">形式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/boundary_conditions.html">边界条件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/linear_solvers.html">稀疏求解器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/time_integration.html">时间积分</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/batched_workflows.html">批量化工作流</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/differentiability.html">可微性</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">示例画廊</a><input aria-label="Toggle navigation of 示例画廊" checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">基础与可视化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poisson.html">泊松方程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diffusion.html">扩散</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wave.html">波动方程</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="solid/index.html">固体力学</a><input aria-label="Toggle navigation of 固体力学" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="solid/cantilever_beam.html">悬臂梁</a></li>
+<li class="toctree-l3"><a class="reference internal" href="solid/hyperelastic_beam.html">超弹性梁（新胡克）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="solid/hertzian_contact.html">赫兹接触</a></li>
+<li class="toctree-l3"><a class="reference internal" href="solid/plasticity_strip.html">塑性（带各向同性硬化的 J2）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="solid/drucker_prager_triaxial.html">岩土力学：Drucker-Prager 三轴压缩</a></li>
+<li class="toctree-l3"><a class="reference internal" href="solid/elastic_footing.html">Geomechanics: elastic strip footing</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="fluid/index.html">流体力学</a><input aria-label="Toggle navigation of 流体力学" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="fluid/cavity.html">顶盖驱动方腔</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fluid/cylinder_flow.html">圆柱绕流（涡脱落）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fluid/flow_obstacles.html">绕多个障碍物的流动</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fluid/rayleigh_benard.html">瑞利-贝纳德对流</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fluid/taylor_green.html">泰勒-格林涡（收敛性研究）</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="maxwell.html">静磁学（麦克斯韦方程）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inverse_design.html">反问题设计与辨识</a></li>
+<li class="toctree-l2"><a class="reference internal" href="physics_informed.html">物理信息学习</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataset.html">机器学习数据集</a></li>
+<li class="toctree-l2"><a class="reference internal" href="distributed.html">分布式 FEM</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/index.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/mesh.html">tensormesh.mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/element.html">tensormesh.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/assemble.html">tensormesh.assemble</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/operator.html">tensormesh.operator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/sparse.html">tensormesh.sparse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/ode.html">tensormesh.ode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/functional.html">tensormesh.functional</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/optimizer.html">tensormesh.optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/material.html">tensormesh.material</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/distributed.html">tensormesh.distributed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/nn.html">tensormesh.nn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/dataset.html">tensormesh.dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/visualization.html">tensormesh.visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../performance/index.html">性能</a><input aria-label="Toggle navigation of 性能" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../performance/benchmarks.html">基准测试</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../performance/scaling_guide.html">扩展性指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../performance/profiling.html">性能剖析</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../community/index.html">社区</a><input aria-label="Toggle navigation of 社区" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../community/discord.html">Discord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/github_discussions.html">GitHub Discussions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/github_issues.html">GitHub Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/contributing.html">贡献指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/citing.html">引用 TensorMesh</a></li>
+</ul>
+</li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/example_gallery/basics.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="basics-visualization">
+<h1>基础与可视化<a class="headerlink" href="#basics-visualization" title="Link to this heading">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">examples/basics/</span></code> 中有四个简短脚本，用于可视化 TensorMesh 中有限元方法的基础构件：插值节点在参考单元上的分布位置、形函数的形态、内部节点编号与 Gmsh / VTK 编号的对比，以及网格生成器的产物。这些脚本都不求解偏微分方程——它们的作用是让底层对象变得直观可见，并对库中其他地方使用的约定进行合理性检查。</p>
+<p>如果你是在阅读 <a class="reference internal" href="../user_guide/elements_and_quadrature.html"><span class="doc">单元与求积</span></a> 用户指南页面之后才来到本页，可以把这些脚本当作与之配套的图册。</p>
+<section id="interpolation-nodes">
+<h2>插值节点<a class="headerlink" href="#interpolation-nodes" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">examples/basics/basis.py</span></code> 绘制全部七种单元类——<a class="reference internal" href="../api/element.html#tensormesh.Line" title="tensormesh.Line"><code class="xref py py-class docutils literal notranslate"><span class="pre">Line</span></code></a>、<a class="reference internal" href="../api/element.html#tensormesh.Triangle" title="tensormesh.Triangle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Triangle</span></code></a>、<a class="reference internal" href="../api/element.html#tensormesh.Quadrilateral" title="tensormesh.Quadrilateral"><code class="xref py py-class docutils literal notranslate"><span class="pre">Quadrilateral</span></code></a>、<a class="reference internal" href="../api/element.html#tensormesh.Tetrahedron" title="tensormesh.Tetrahedron"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tetrahedron</span></code></a>、<a class="reference internal" href="../api/element.html#tensormesh.Hexahedron" title="tensormesh.Hexahedron"><code class="xref py py-class docutils literal notranslate"><span class="pre">Hexahedron</span></code></a>、<a class="reference internal" href="../api/element.html#tensormesh.Pyramid" title="tensormesh.Pyramid"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pyramid</span></code></a>、<a class="reference internal" href="../api/element.html#tensormesh.Prism" title="tensormesh.Prism"><code class="xref py py-class docutils literal notranslate"><span class="pre">Prism</span></code></a>——在 1 至 4 阶下，参考单元上插值（拉格朗日）节点的空间分布。每个单元类的驱动代码只有一行：</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-number">列表 1 </span><span class="caption-text">examples/basics/basis.py（核心）</span><a class="headerlink" href="#id2" title="Link to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh.element</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Line</span><span class="p">,</span> <span class="n">Triangle</span><span class="p">,</span> <span class="n">Quadrilateral</span><span class="p">,</span>
+    <span class="n">Tetrahedron</span><span class="p">,</span> <span class="n">Hexahedron</span><span class="p">,</span> <span class="n">Pyramid</span><span class="p">,</span> <span class="n">Prism</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Line</span><span class="p">,</span> <span class="n">Triangle</span><span class="p">,</span> <span class="n">Quadrilateral</span><span class="p">,</span>
+                <span class="n">Tetrahedron</span><span class="p">,</span> <span class="n">Hexahedron</span><span class="p">,</span> <span class="n">Pyramid</span><span class="p">,</span> <span class="n">Prism</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+        <span class="n">basis</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">get_basis</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>   <span class="c1"># [n_basis, dim]</span>
+        <span class="c1"># …scatter basis on the reference element…</span>
+</pre></div>
+</div>
+</div>
+<p>基函数节点的数量随阶数迅速增长：张量单元为 <span class="math notranslate nohighlight">\((p+1)^d\)</span>，单纯形单元为 <span class="math notranslate nohighlight">\(\binom{p+d}{d}\)</span>。当高阶求解出现问题时，了解这些节点的位置是首要的合理性检查。</p>
+<p>下面七幅图展示了每种受支持单元类在 1–4 阶下的拉格朗日节点布局。每幅图按阶数从左到右排列；节点索引与内部 <code class="docutils literal notranslate"><span class="pre">element.get_basis(order)</span></code> 的编号一致。</p>
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="../_images/line_comparison.png"><img alt="线单元插值节点" src="../_images/line_comparison.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 19 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">Line</span></code> 单元——在 <span class="math notranslate nohighlight">\([0, 1]\)</span> 上的字典序编号。</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id4">
+<a class="reference internal image-reference" href="../_images/triangle_comparison.png"><img alt="三角形单元插值节点" src="../_images/triangle_comparison.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 20 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">Triangle</span></code> 单元——单纯形编号，先排顶点节点，再排边节点，最后排内部节点。</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id5">
+<a class="reference internal image-reference" href="../_images/quadrilateral_comparison.png"><img alt="四边形单元插值节点" src="../_images/quadrilateral_comparison.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 21 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">Quadrilateral</span></code> 单元——张量积拉格朗日节点。</span><a class="headerlink" href="#id5" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id6">
+<a class="reference internal image-reference" href="../_images/tetrahedron_comparison.png"><img alt="四面体单元插值节点" src="../_images/tetrahedron_comparison.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 22 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">Tetrahedron</span></code> 单元——三维单纯形。</span><a class="headerlink" href="#id6" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id7">
+<a class="reference internal image-reference" href="../_images/hexahedron_comparison.png"><img alt="六面体单元插值节点" src="../_images/hexahedron_comparison.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 23 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">Hexahedron</span></code> 单元——三维张量积。</span><a class="headerlink" href="#id7" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id8">
+<a class="reference internal image-reference" href="../_images/prism_comparison.png"><img alt="三棱柱单元插值节点" src="../_images/prism_comparison.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 24 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">Prism</span></code>（楔形）单元——三角形 <span class="math notranslate nohighlight">\(\times\)</span> 线。</span><a class="headerlink" href="#id8" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id9">
+<a class="reference internal image-reference" href="../_images/pyramid_comparison.png"><img alt="四棱锥单元插值节点" src="../_images/pyramid_comparison.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 25 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">Pyramid</span></code> 单元——方形底面，顶点在上方。</span><a class="headerlink" href="#id9" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="shape-functions">
+<h2>形函数<a class="headerlink" href="#shape-functions" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">examples/basics/basis_fn.py</span></code> 绘制多项式形函数本身。对于一维单元，它们表现为 <span class="math notranslate nohighlight">\([-1,1]\)</span> 上的曲线；对于二维单元，表现为参考三角形或方形上的三维曲面；对于三维单元，每个阶数对应一幅图，并带有一个穿过体积的切片。</p>
+<p>该脚本使用 <code class="docutils literal notranslate"><span class="pre">element.get_basis_fns(order)</span></code>，这与 <a class="reference internal" href="../api/assemble.html#tensormesh.ElementAssembler" title="tensormesh.ElementAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElementAssembler</span></code></a> 在装配过程中所做的调用相同。如果某个形函数在这里看起来有误，那么它在你装配出的矩阵中同样有误。</p>
+<p>原则上 <code class="docutils literal notranslate"><span class="pre">get_basis_fns</span></code> 接受<strong>任意</strong>多项式阶数——API 中并未内置硬性上限。下面的图展示了 1–3 阶的一维和二维形函数（外加完整的合成视图），以及 1 阶的三维形函数；更高阶的三维形函数同样可用，这里仅出于篇幅原因略去。</p>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>虽然支持任意阶数，但很高的阶数（实际中某些单元类在 <span class="math notranslate nohighlight">\(\geq 4\)</span> 时）是通过范德蒙德（Vandermonde）矩阵求值的，而该矩阵随阶数升高会变得越来越病态。在此情形下脚本可能会打印数值警告。返回的值仍然可用——但如果你在真实求解过程中看到这些警告，请降低阶数或改用其他单元类。对于大多数有限元方法工作负载，1–3 阶是最佳选择。</p>
+</div>
+<section id="d-and-2d-shape-functions">
+<h3>一维与二维形函数<a class="headerlink" href="#d-and-2d-shape-functions" title="Link to this heading">¶</a></h3>
+<figure class="align-default" id="id10">
+<a class="reference internal image-reference" href="../_images/linear.png"><img alt="1、2、3 阶的一维拉格朗日形函数及合成视图" src="../_images/linear.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 26 </span><span class="caption-text">1–3 阶的 <code class="docutils literal notranslate"><span class="pre">Line</span></code> 形函数，以及最高阶的合成视图。星号标记插值节点。</span><a class="headerlink" href="#id10" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id11">
+<a class="reference internal image-reference" href="../_images/triangle.png"><img alt="1、2、3 阶的三角形形函数曲面" src="../_images/triangle.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 27 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">Triangle</span></code> 形函数，以参考三角形上的三维曲面形式绘制。</span><a class="headerlink" href="#id11" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id12">
+<a class="reference internal image-reference" href="../_images/quadrilateral.png"><img alt="1、2、3 阶的四边形形函数曲面" src="../_images/quadrilateral.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 28 </span><span class="caption-text">参考方形上的 <code class="docutils literal notranslate"><span class="pre">Quadrilateral</span></code> 形函数。</span><a class="headerlink" href="#id12" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="d-shape-functions-order-1">
+<h3>三维形函数（1 阶）<a class="headerlink" href="#d-shape-functions-order-1" title="Link to this heading">¶</a></h3>
+<p>对于三维单元，脚本为每个单元 / 阶数组合渲染一幅体绘制图；下面仅展示 1 阶的图。运行脚本后，完整集合（包括 2–4 阶）会保存到 <code class="docutils literal notranslate"><span class="pre">examples/basics/output/&lt;element&gt;/&lt;order&gt;.png</span></code>。</p>
+<figure class="align-default" id="id13">
+<a class="reference internal image-reference" href="../_images/1.png"><img alt="六面体 1 阶形函数" src="../_images/1.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 29 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">Hexahedron</span></code> 1 阶形函数——八个三线性基函数，每个顶点对应一个。</span><a class="headerlink" href="#id13" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id14">
+<a class="reference internal image-reference" href="../_images/11.png"><img alt="四面体 1 阶形函数" src="../_images/11.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 30 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">Tetrahedron</span></code> 1 阶形函数——四个重心坐标。</span><a class="headerlink" href="#id14" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id15">
+<a class="reference internal image-reference" href="../_images/12.png"><img alt="三棱柱 1 阶形函数" src="../_images/12.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 31 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">Prism</span></code> 1 阶形函数——六个基函数，三棱柱每个顶点对应一个。</span><a class="headerlink" href="#id15" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id16">
+<a class="reference internal image-reference" href="../_images/13.png"><img alt="四棱锥 1 阶形函数" src="../_images/13.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 32 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">Pyramid</span></code> 1 阶形函数——五个基函数，每个顶点对应一个。</span><a class="headerlink" href="#id16" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="gmsh-vtk-tensormesh-node-ordering">
+<span id="node-ordering-gallery"></span><h2>Gmsh / VTK ↔ TensorMesh 节点编号<a class="headerlink" href="#gmsh-vtk-tensormesh-node-ordering" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">examples/basics/element_gallery.py</span></code> 将 TensorMesh 的内部节点编号与 Gmsh / VTK 约定并排展示，覆盖 2–4 阶的二维和三维单元。输出为每种单元类型一幅两行图：上一行是 TensorMesh / FEniCS 风格的编号；下一行是 Gmsh / VTK 编号。</p>
+<p><a class="reference internal" href="../user_guide/meshes.html"><span class="doc">网格</span></a> 中关于 <code class="docutils literal notranslate"><span class="pre">reorder=True</span></code> 的内容由本脚本提供可视化配套说明：当你加载 Gmsh 的 <code class="docutils literal notranslate"><span class="pre">.msh</span></code> 文件或通过 meshio 写出 VTU 时，TensorMesh 会施加 <code class="docutils literal notranslate"><span class="pre">element.get_gmsh_permutation(order)</span></code> 返回的逆置换，从而使内部连接性始终采用同一约定。如果你不确定某个数组采用的是哪种编号，这个脚本能让答案一目了然。</p>
+<p>下面展示了四个代表性对比——每个单元族一个。其余单元类型（线、三棱柱、四棱锥）采用相同的两行布局；完整集合位于 <code class="docutils literal notranslate"><span class="pre">examples/basics/output/element_gallery/</span></code>。</p>
+<figure class="align-default" id="id17">
+<a class="reference internal image-reference" href="../_images/triangle_p2p3p4_order_compare.png"><img alt="三角形节点编号，TensorMesh 与 Gmsh/VTK 对比，2-4 阶" src="../_images/triangle_p2p3p4_order_compare.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 33 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">Triangle</span></code>——上一行：TensorMesh / FEniCS 编号；下一行：Gmsh / VTK 编号。</span><a class="headerlink" href="#id17" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id18">
+<a class="reference internal image-reference" href="../_images/quad_p2p3p4_order_compare.png"><img alt="四边形节点编号，TensorMesh 与 Gmsh/VTK 对比，2-4 阶" src="../_images/quad_p2p3p4_order_compare.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 34 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">Quadrilateral</span></code>——注意 TensorMesh 的布局是字典序的，而 Gmsh 的 3 阶 / 4 阶四边形布局是沿边界螺旋排列的。</span><a class="headerlink" href="#id18" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id19">
+<a class="reference internal image-reference" href="../_images/tet_p2p3p4_order_compare.png"><img alt="四面体节点编号，TensorMesh 与 Gmsh/VTK 对比，2-4 阶" src="../_images/tet_p2p3p4_order_compare.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 35 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">Tetrahedron</span></code>——顶点 / 边 / 面 / 内部的分组在两种编号下都保持一致，仅各组内的索引有所不同。</span><a class="headerlink" href="#id19" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id20">
+<a class="reference internal image-reference" href="../_images/hex_p2p3p4_order_compare.png"><img alt="六面体节点编号，TensorMesh 与 Gmsh/VTK 对比，2-4 阶" src="../_images/hex_p2p3p4_order_compare.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 36 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">Hexahedron</span></code>——本画廊中差异最大的情形，因为 Gmsh 的六面体编号沿边游走，而 TensorMesh 的是单纯的字典序。</span><a class="headerlink" href="#id20" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="mesh-generation-gallery">
+<span id="id1"></span><h2>网格生成画廊<a class="headerlink" href="#mesh-generation-gallery" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">examples/basics/plot_mesh.py</span></code> 是 TensorMesh 网格工具产物的图册，并附带 <a class="reference internal" href="../api/visualization.html#module-tensormesh.visualization" title="tensormesh.visualization"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensormesh.visualization</span></code></a> 中的几个可视化辅助函数：</p>
+<ul class="simple">
+<li><p><strong>内置基元</strong>——矩形（三角形和四边形）、立方体（四面体和六面体，后者采用二次基），以及通过 <a class="reference internal" href="../api/dataset.html#tensormesh.MeshGen" title="tensormesh.MeshGen"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeshGen</span></code></a> 生成的单位圆盘。</p></li>
+<li><p><strong>混合网格</strong>——矩形一半用三角形剖分，另一半用四边形剖分，并在交界处开了一个圆孔。<code class="docutils literal notranslate"><span class="pre">mesh.cells</span></code> 是一个以单元类型为键的 <code class="docutils literal notranslate"><span class="pre">BufferDict</span></code>，因此所有装配器会自动遍历这两种单元类型。</p></li>
+<li><p><strong>邻接图</strong>——在二维和三维网格上绘制的节点到节点、单元到单元的连接性。可用于调试着色和划分算法（参见 <a class="reference internal" href="distributed.html"><span class="doc">分布式 FEM</span></a>）。</p></li>
+<li><p><strong>场可视化</strong>——将标量场绘制为节点值（插值到网格上）或逐单元常量。</p></li>
+</ul>
+<p>混合网格的一段代表性代码片段：</p>
+<div class="literal-block-wrapper docutils container" id="id21">
+<div class="code-block-caption"><span class="caption-number">列表 2 </span><span class="caption-text">examples/basics/plot_mesh.py（核心）</span><a class="headerlink" href="#id21" title="Link to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tensormesh</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tm</span>
+
+<span class="n">mesh_gen</span> <span class="o">=</span> <span class="n">tm</span><span class="o">.</span><span class="n">MeshGen</span><span class="p">(</span><span class="n">element_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chara_length</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">mesh_gen</span><span class="o">.</span><span class="n">add_rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">element</span><span class="o">=</span><span class="s2">&quot;tri&quot;</span><span class="p">)</span>
+<span class="n">mesh_gen</span><span class="o">.</span><span class="n">add_rectangle</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">element</span><span class="o">=</span><span class="s2">&quot;quad&quot;</span><span class="p">)</span>
+<span class="n">mesh_gen</span><span class="o">.</span><span class="n">remove_circle</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh_gen</span><span class="o">.</span><span class="n">gen</span><span class="p">()</span>
+<span class="n">mesh</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">save_path</span><span class="o">=</span><span class="s2">&quot;output/hybrid_mesh2d.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>相应的三维脚本使用 <code class="docutils literal notranslate"><span class="pre">dimension=3</span></code>，并配合 <code class="docutils literal notranslate"><span class="pre">add_cube</span></code> / <code class="docutils literal notranslate"><span class="pre">remove_sphere</span></code> 进行 CSG（构造实体几何）操作。</p>
+<figure class="align-center" id="id22">
+<a class="reference internal image-reference" href="../_images/hybrid_mesh2d.png"><img alt="包含三角形、四边形和一个圆孔的二维混合网格" src="../_images/hybrid_mesh2d.png" style="width: 75%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 37 </span><span class="caption-text">上面代码片段生成的二维混合网格：左侧为 2 阶三角形，右侧为 2 阶四边形，交界处有一个圆孔。橙色圆点为插值节点（包括 2 阶单元的边中点节点）。</span><a class="headerlink" href="#id22" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="running-the-scripts">
+<h2>运行脚本<a class="headerlink" href="#running-the-scripts" title="Link to this heading">¶</a></h2>
+<p>这四个脚本都可独立运行：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples/basics
+python<span class="w"> </span>basis.py
+python<span class="w"> </span>basis_fn.py
+python<span class="w"> </span>element_gallery.py
+python<span class="w"> </span>plot_mesh.py
+</pre></div>
+</div>
+<p>输出保存在 <code class="docutils literal notranslate"><span class="pre">examples/basics/output/</span></code> 下——每个脚本生成一张 PNG，对于多单元脚本，则每个（单元，阶数）组合生成一张 PNG。</p>
+</section>
+<section id="what-s-next">
+<h2>接下来<a class="headerlink" href="#what-s-next" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../user_guide/elements_and_quadrature.html"><span class="doc">单元与求积</span></a>——单元大全，以及这些脚本所调用的基函数 / 求积接口。</p></li>
+<li><p><a class="reference internal" href="../user_guide/meshes.html"><span class="doc">网格</span></a>——网格剖分 API、<code class="docutils literal notranslate"><span class="pre">reorder=True</span></code>，以及逐节点 / 逐单元数据。</p></li>
+<li><p><a class="reference internal" href="poisson.html"><span class="doc">泊松方程</span></a>——第一个偏微分方程求解，使用你刚学会构建的同款 <a class="reference internal" href="../api/mesh.html#tensormesh.Mesh" title="tensormesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> 对象。</p></li>
+</ul>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="poisson.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">泊松方程</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">示例画廊</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, TensorMesh Contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/camlab-ethz/TensorMesh" aria-label="GitHub"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+              <a class="muted-link " href="https://discord.gg/EC9kbHSnrx" aria-label="Discord"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.576-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.05.05 0 0 0-.021.019C.356 6.024-.213 9.047.066 12.032c.002.015.01.029.02.037a13.3 13.3 0 0 0 3.995 2.01.05.05 0 0 0 .056-.019c.308-.42.582-.86.818-1.329a.05.05 0 0 0-.027-.06 8.7 8.7 0 0 1-1.248-.595.05.05 0 0 1-.005-.085c.079-.053.16-.104.248-.152a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007c.08.048.16.1.248.152a.05.05 0 0 1-.004.085 8.2 8.2 0 0 1-1.249.594.05.05 0 0 0-.027.06c.24.465.514.906.817 1.329a.05.05 0 0 0 .056.02 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.036c.334-3.451-.559-6.449-2.366-9.106a.04.04 0 0 0-.021-.02zM5.68 10.77c-.789 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.45.73 1.438 1.61 0 .886-.637 1.61-1.438 1.61zm4.842 0c-.788 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.451.73 1.438 1.61 0 .886-.63 1.61-1.438 1.61z"></path></svg></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">基础与可视化</a><ul>
+<li><a class="reference internal" href="#interpolation-nodes">插值节点</a></li>
+<li><a class="reference internal" href="#shape-functions">形函数</a><ul>
+<li><a class="reference internal" href="#d-and-2d-shape-functions">一维与二维形函数</a></li>
+<li><a class="reference internal" href="#d-shape-functions-order-1">三维形函数（1 阶）</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gmsh-vtk-tensormesh-node-ordering">Gmsh / VTK ↔ TensorMesh 节点编号</a></li>
+<li><a class="reference internal" href="#mesh-generation-gallery">网格生成画廊</a></li>
+<li><a class="reference internal" href="#running-the-scripts">运行脚本</a></li>
+<li><a class="reference internal" href="#what-s-next">接下来</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=c5408746"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../_static/translations.js?v=beaddf03"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

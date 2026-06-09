@@ -1,0 +1,637 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html"><link rel="next" title="Geomechanics: Drucker-Prager triaxial compression" href="drucker_prager_triaxial.html"><link rel="prev" title="Hertzian Contact" href="hertzian_contact.html">
+        <link rel="prefetch" href="../../_static/logo.png" as="image">
+        <link rel="prefetch" href="../../_static/logo.png" as="image">
+
+    <link rel="shortcut icon" href="../../_static/logo.png"><!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>Plasticity (J2 with Isotropic Hardening) - TensorMesh</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=95a110e3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #5B6EE8;
+  --color-brand-content: #149B8E;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">TensorMesh</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/logo.png" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/logo.png" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">TensorMesh</span>
+  
+</a><div class="sidebar-language-switcher">
+  <span class="active">English</span>
+  <span class="sep">·</span>
+  <a href="../../zh/example_gallery/solid/plasticity_strip.html" rel="alternate" hreflang="zh-CN" title="中文">中文</a>
+</div><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../getting_started/index.html">Get Started</a><input aria-label="Toggle navigation of Get Started" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/quickstart.html">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/verify_install.html">Verify Install</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../user_guide/index.html">User Guide</a><input aria-label="Toggle navigation of User Guide" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/concepts.html">Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/meshes.html">Meshes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/elements_and_quadrature.html">Elements and Quadrature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/forms.html">Forms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/boundary_conditions.html">Boundary Conditions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/linear_solvers.html">Sparse Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/time_integration.html">Time Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/batched_workflows.html">Batched Workflows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/differentiability.html">Differentiability</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../index.html">Example Gallery</a><input aria-label="Toggle navigation of Example Gallery" checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../basics.html">Basics &amp; Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../poisson.html">Poisson Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../diffusion.html">Diffusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../wave.html">Wave Equation</a></li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="index.html">Solid Mechanics</a><input aria-label="Toggle navigation of Solid Mechanics" checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="cantilever_beam.html">Cantilever Beam</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hyperelastic_beam.html">Hyperelastic Beam (Neo-Hookean)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hertzian_contact.html">Hertzian Contact</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">Plasticity (J2 with Isotropic Hardening)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="drucker_prager_triaxial.html">Geomechanics: Drucker-Prager triaxial compression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="elastic_footing.html">Geomechanics: elastic strip footing</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../fluid/index.html">Fluid Mechanics</a><input aria-label="Toggle navigation of Fluid Mechanics" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../fluid/cavity.html">Lid-Driven Cavity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../fluid/cylinder_flow.html">Cylinder Flow (Vortex Shedding)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../fluid/flow_obstacles.html">Flow Past Multiple Obstacles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../fluid/rayleigh_benard.html">Rayleigh-Bénard Convection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../fluid/taylor_green.html">Taylor-Green Vortex (Convergence Study)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../maxwell.html">Magnetostatics (Maxwell)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inverse_design.html">Inverse Design &amp; Identification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics_informed.html">Physics-Informed Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dataset.html">ML Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../distributed.html">Distributed FEM</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/index.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/mesh.html">tensormesh.mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/element.html">tensormesh.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/assemble.html">tensormesh.assemble</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/operator.html">tensormesh.operator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/sparse.html">tensormesh.sparse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ode.html">tensormesh.ode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/functional.html">tensormesh.functional</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/optimizer.html">tensormesh.optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/material.html">tensormesh.material</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/distributed.html">tensormesh.distributed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/nn.html">tensormesh.nn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/dataset.html">tensormesh.dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/visualization.html">tensormesh.visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../performance/index.html">Performance</a><input aria-label="Toggle navigation of Performance" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../performance/benchmarks.html">Benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../performance/scaling_guide.html">Scaling Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../performance/profiling.html">Profiling</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../community/index.html">Community</a><input aria-label="Toggle navigation of Community" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../community/discord.html">Discord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../community/github_discussions.html">GitHub Discussions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../community/github_issues.html">GitHub Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../community/contributing.html">Contributing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../community/citing.html">Citing TensorMesh</a></li>
+</ul>
+</li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../../_sources/example_gallery/solid/plasticity_strip.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="plasticity-j2-with-isotropic-hardening">
+<h1>Plasticity (J2 with Isotropic Hardening)<a class="headerlink" href="#plasticity-j2-with-isotropic-hardening" title="Link to this heading">¶</a></h1>
+<p>A plane-strain plasticity problem: a <span class="math notranslate nohighlight">\(1.0 \times 0.2\)</span> m
+steel strip is stretched 10 % then unloaded, exhibiting the
+characteristic permanent (plastic) deformation that the elastic
+solver in <a class="reference internal" href="cantilever_beam.html"><span class="doc">Cantilever Beam</span></a> cannot capture. The script
+<code class="docutils literal notranslate"><span class="pre">examples/solid/plasticity_strip/plasticity_strip.py</span></code> uses J2
+flow theory with linear isotropic hardening, integrated in a
+<strong>variational constitutive update</strong> style — the constitutive
+response is encoded as an algorithmic potential, the displacement
+update is one L-BFGS pass, and history variables are advanced once
+per converged step.</p>
+<p>The constitutive model is dimension-generic, so the same
+<a class="reference internal" href="../../api/assemble.html#tensormesh.assemble.J2Plasticity" title="tensormesh.assemble.J2Plasticity"><code class="xref py py-class docutils literal notranslate"><span class="pre">J2Plasticity</span></code></a> runs unchanged in 3D —
+see <a class="reference internal" href="#going-to-3d">Going to 3D</a> at the end of this page.</p>
+<section id="problem">
+<h2>Problem<a class="headerlink" href="#problem" title="Link to this heading">¶</a></h2>
+<p>Small-strain elastoplasticity. The Cauchy stress is the elastic
+response of the <strong>elastic</strong> part of the strain:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\boldsymbol{\sigma} \;=\;
+\mathbb{C} : (\boldsymbol{\varepsilon} - \boldsymbol{\varepsilon}^p),\]</div>
+</div>
+<p>with yield surface</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[f(\boldsymbol{\sigma}, \alpha)
+\;=\;
+\|\,\mathrm{dev}\, \boldsymbol{\sigma}\,\|
+- \sqrt{\tfrac{2}{3}} \bigl(\sigma_y + H\, \alpha\bigr),\]</div>
+</div>
+<p>evolution <span class="math notranslate nohighlight">\(\dot{\boldsymbol{\varepsilon}}^p = \dot\gamma\, \mathbf{n}\)</span>,
+<span class="math notranslate nohighlight">\(\dot\alpha = \sqrt{\tfrac{2}{3}}\, \dot\gamma\)</span>. Material:
+<span class="math notranslate nohighlight">\(E = 200\)</span> GPa, <span class="math notranslate nohighlight">\(\nu = 0.3\)</span>,
+<span class="math notranslate nohighlight">\(\sigma_y = 250\)</span> MPa, <span class="math notranslate nohighlight">\(H = 1\)</span> GPa.</p>
+<p>Boundary conditions:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(x = 0\)</span>: roller (<span class="math notranslate nohighlight">\(u_x = 0\)</span>),</p></li>
+<li><p>corner <span class="math notranslate nohighlight">\((0, 0)\)</span>: full pin (<span class="math notranslate nohighlight">\(u_x = u_y = 0\)</span>),</p></li>
+<li><p><span class="math notranslate nohighlight">\(x = 1\)</span>: prescribed <span class="math notranslate nohighlight">\(u_x\)</span> ramped from 0 to 0.10 m
+(10 steps), then back down to 0 (10 more steps).</p></li>
+</ul>
+</section>
+<section id="variational-constitutive-update">
+<h2>Variational constitutive update<a class="headerlink" href="#variational-constitutive-update" title="Link to this heading">¶</a></h2>
+<p>Rather than implementing an explicit “radial return” map per
+quadrature point, the script defines an <strong>algorithmic potential</strong>
+<span class="math notranslate nohighlight">\(\Pi^\text{alg}(\boldsymbol{\varepsilon},
+\boldsymbol{\varepsilon}^p_n, \alpha_n)\)</span>
+whose stationarity in the plastic variables recovers the standard
+return-mapping equations. The displacement update at each step is
+then a single minimization of the integrated potential:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\mathbf{u}^{n+1}
+\;=\;
+\arg\min_{\mathbf{u}}
+\int_\Omega \Pi^\text{alg}\bigl(\boldsymbol{\varepsilon}(\mathbf{u}),\,
+\boldsymbol{\varepsilon}^p_n,\, \alpha_n\bigr)
+\,\mathrm{d}\Omega,\]</div>
+</div>
+<p>with autograd providing both the gradient (residual) and, via
+L-BFGS’ implicit Hessian approximation, an effective tangent.
+After convergence, the history variables
+<span class="math notranslate nohighlight">\((\boldsymbol{\varepsilon}^p, \alpha)\)</span> are advanced once
+to the new converged values.</p>
+<p>The potential is implemented in
+<a class="reference internal" href="../../api/assemble.html#tensormesh.assemble.J2Plasticity" title="tensormesh.assemble.J2Plasticity"><code class="xref py py-class docutils literal notranslate"><span class="pre">J2Plasticity</span></code></a>, a built-in shipping
+in <a class="reference internal" href="../../api/assemble.html#module-tensormesh.assemble" title="tensormesh.assemble"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensormesh.assemble</span></code></a>. From the user’s side it looks like
+any other custom assembler:</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-number">Listing 12 </span><span class="caption-text">examples/solid/plasticity_strip/plasticity_strip.py (essence)</span><a class="headerlink" href="#id1" title="Link to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh.assemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">J2Plasticity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh.material</span><span class="w"> </span><span class="kn">import</span> <span class="n">IsotropicMaterial</span>
+
+<span class="n">steel</span> <span class="o">=</span> <span class="n">IsotropicMaterial</span><span class="p">(</span><span class="s2">&quot;Steel_Hardening&quot;</span><span class="p">,</span>
+                          <span class="n">E</span><span class="o">=</span><span class="mf">200e9</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mi">7850</span><span class="p">,</span>
+                          <span class="n">sigma_y</span><span class="o">=</span><span class="mf">250e6</span><span class="p">,</span> <span class="n">H</span><span class="o">=</span><span class="mf">1e9</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">J2Plasticity</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">material</span><span class="o">=</span><span class="n">steel</span><span class="p">)</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">LBFGS</span><span class="p">([</span><span class="n">u</span><span class="p">],</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+                        <span class="n">history_size</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+                        <span class="n">line_search_fn</span><span class="o">=</span><span class="s2">&quot;strong_wolfe&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_total_steps</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">target_disp</span> <span class="o">=</span> <span class="n">piecewise_load_schedule</span><span class="p">(</span><span class="n">step</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">closure</span><span class="p">():</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">u_active</span> <span class="o">=</span> <span class="n">apply_bcs</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">target_disp</span><span class="p">)</span>
+        <span class="n">element_data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;eps_p_n&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">et</span><span class="p">:</span> <span class="n">h</span><span class="p">[</span><span class="s2">&quot;eps_p&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">et</span><span class="p">,</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+            <span class="s2">&quot;alpha_n&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">et</span><span class="p">:</span> <span class="n">h</span><span class="p">[</span><span class="s2">&quot;alpha&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">et</span><span class="p">,</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+        <span class="p">}</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">energy</span><span class="p">(</span><span class="n">point_data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;displacement&quot;</span><span class="p">:</span> <span class="n">u_active</span><span class="p">},</span>
+                         <span class="n">element_data</span><span class="o">=</span><span class="n">element_data</span><span class="p">)</span>
+        <span class="n">E</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">E</span>
+
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">closure</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">advance_history</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>        <span class="c1"># commit eps_p, alpha</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="history-variables">
+<h2>History variables<a class="headerlink" href="#history-variables" title="Link to this heading">¶</a></h2>
+<p>The plastic strain tensor <span class="math notranslate nohighlight">\(\boldsymbol{\varepsilon}^p\)</span> and
+the equivalent plastic strain <span class="math notranslate nohighlight">\(\alpha\)</span> are stored
+<strong>per-element / per-quadrature-point</strong>, accessed through
+<code class="docutils literal notranslate"><span class="pre">model.history</span></code>. They are passed into the closure as
+<code class="docutils literal notranslate"><span class="pre">element_data</span></code> (per-quadrature, per-element tensors), which
+TensorMesh dispatches as kwargs to the underlying <code class="docutils literal notranslate"><span class="pre">forward</span></code>
+method exactly the same way <code class="docutils literal notranslate"><span class="pre">point_data</span></code> is dispatched (see
+<a class="reference internal" href="../../user_guide/forms.html"><span class="doc">Forms</span></a>).</p>
+<p>After each load step’s L-BFGS converges, the script calls
+<code class="docutils literal notranslate"><span class="pre">model.advance_history(u_active)</span></code> which evaluates the converged
+<span class="math notranslate nohighlight">\(\boldsymbol{\varepsilon}^p, \alpha\)</span> from the current
+displacement and overwrites the stored history.</p>
+</section>
+<section id="output">
+<h2>Output<a class="headerlink" href="#output" title="Link to this heading">¶</a></h2>
+<p>The script renders a multi-panel animation as <code class="docutils literal notranslate"><span class="pre">plasticity_strip.mp4</span></code>:</p>
+<ul class="simple">
+<li><p>deformed mesh, painted by equivalent plastic strain
+<span class="math notranslate nohighlight">\(\alpha\)</span>,</p></li>
+<li><p>force-displacement curve at the loaded edge, traced through the
+load / unload cycle.</p></li>
+</ul>
+<p>The force-displacement curve is the canonical signature of
+plasticity: linear elastic loading until yield, a hardening branch
+above <span class="math notranslate nohighlight">\(\sigma_y\)</span>, then a linear elastic unloading branch
+back to a non-zero residual displacement at zero load.</p>
+<video controls loop muted preload="metadata"
+       width="100%" style="max-width: 900px; display: block; margin: 1em auto;">
+  <source src="../../_static/solid_mechanics/plasticity_strip.mp4" type="video/mp4">
+  Your browser does not support the HTML5 video tag.
+</video><p><em>Output of</em> <code class="docutils literal notranslate"><span class="pre">plasticity_strip.py</span></code><em>: the strip deforms under the
+prescribed elongation (left panel, colored by equivalent plastic
+strain</em> <span class="math notranslate nohighlight">\(\alpha\)</span><em>) while the force-displacement curve at the
+loaded edge (right panel) traces the load / unload cycle — elastic
+loading to yield, the hardening branch, then elastic unloading back
+to a permanent residual displacement at zero load.</em></p>
+</section>
+<section id="going-to-3d">
+<h2>Going to 3D<a class="headerlink" href="#going-to-3d" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="../../api/assemble.html#tensormesh.assemble.J2Plasticity" title="tensormesh.assemble.J2Plasticity"><code class="xref py py-class docutils literal notranslate"><span class="pre">J2Plasticity</span></code></a> is dimension-generic, so
+the same constitutive model, variational-update pattern, and
+history-variable bookkeeping carry over to 3D unchanged. The script
+<code class="docutils literal notranslate"><span class="pre">examples/solid/plasticity_3d/plasticity_3d.py</span></code> runs J2 flow on a
+<span class="math notranslate nohighlight">\(0.5 \times 0.5 \times 0.5\)</span> m steel cube, stretched 40 % in
+the <span class="math notranslate nohighlight">\(x\)</span> direction over 50 loading steps and unloaded over 50
+more. Only the <em>driver</em> differs from the 2D strip:</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-number">Listing 13 </span><span class="caption-text">examples/solid/plasticity_3d/plasticity_3d.py (essence)</span><a class="headerlink" href="#id2" title="Link to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mesh</span> <span class="o">=</span> <span class="n">gen_cube</span><span class="p">(</span><span class="n">chara_length</span><span class="o">=</span><span class="mf">0.04</span><span class="p">,</span>
+                <span class="n">left</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                <span class="n">front</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">back</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">steel</span> <span class="o">=</span> <span class="n">IsotropicMaterial</span><span class="p">(</span><span class="s2">&quot;Steel_Hardening&quot;</span><span class="p">,</span>
+                          <span class="n">E</span><span class="o">=</span><span class="mf">200e9</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">sigma_y</span><span class="o">=</span><span class="mf">250e6</span><span class="p">,</span> <span class="n">H</span><span class="o">=</span><span class="mf">1e9</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">J2Plasticity</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">material</span><span class="o">=</span><span class="n">steel</span><span class="p">)</span>
+<span class="c1"># …same closure / advance_history loop as the 2D strip, 3D BCs…</span>
+</pre></div>
+</div>
+</div>
+<p>What actually changes is scale, not the model:</p>
+<ul class="simple">
+<li><p><strong>3D mesh.</strong> <code class="docutils literal notranslate"><span class="pre">gen_cube</span></code> produces a tetrahedral cube with on the
+order of 5–10 k DOFs (vs. ~3 k in the 2D strip); each L-BFGS
+iteration integrates over many more quadrature points.</p></li>
+<li><p><strong>More load steps.</strong> 50 loading + 50 unloading = 100 steps,
+reaching 40 % strain — far enough that the hardening branch
+dominates. At 40 % nominal strain the small-strain assumption is
+being stretched (literally): the example is a useful regression
+test of the J2 model, but do not trust absolute stress numbers
+far from the elastic regime.</p></li>
+<li><p><strong>Output.</strong> <code class="docutils literal notranslate"><span class="pre">plasticity_3d_combined.mp4</span></code> shows the deformed
+cube colored by <strong>von Mises stress</strong> plus a force-displacement
+curve at the loaded face.</p></li>
+</ul>
+<p>The 3D run is L-BFGS-bound — most wall-clock time is the
+per-iteration energy evaluation and autograd backward. Moving the
+optimization to a GPU (<code class="docutils literal notranslate"><span class="pre">mesh.to(&quot;cuda&quot;)</span></code>, <code class="docutils literal notranslate"><span class="pre">u.to(&quot;cuda&quot;)</span></code>) helps
+significantly, and the assembler’s <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> argument chunks
+the per-quadrature integrand if memory becomes tight (see
+<a class="reference internal" href="../../user_guide/batched_workflows.html"><span class="doc">Batched Workflows</span></a>).</p>
+<video controls loop muted preload="metadata"
+       width="100%" style="max-width: 900px; display: block; margin: 1em auto;">
+  <source src="../../_static/solid_mechanics/plasticity_3d_combined.mp4" type="video/mp4">
+  Your browser does not support the HTML5 video tag.
+</video><p><em>Output of</em> <code class="docutils literal notranslate"><span class="pre">plasticity_3d.py</span></code><em>: the steel cube stretched to
+40 % strain (left panel, colored by von Mises stress) and the
+force-displacement curve at the loaded face (right panel) over the
+50-step load / 50-step unload cycle — the 3D counterpart of the
+strip animation above.</em></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples/solid/plasticity_3d
+python<span class="w"> </span>plasticity_3d.py<span class="w">     </span><span class="c1"># writes plasticity_3d_combined.mp4</span>
+</pre></div>
+</div>
+</section>
+<section id="running-it">
+<h2>Running it<a class="headerlink" href="#running-it" title="Link to this heading">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples/solid/plasticity_strip
+python<span class="w"> </span>plasticity_strip.py<span class="w">     </span><span class="c1"># writes plasticity_strip.mp4</span>
+</pre></div>
+</div>
+<p>Console output reports per-step force, displacement, and maximum
+plastic strain.</p>
+</section>
+<section id="what-s-next">
+<h2>What’s next<a class="headerlink" href="#what-s-next" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="hyperelastic_beam.html"><span class="doc">Hyperelastic Beam (Neo-Hookean)</span></a> — the same L-BFGS-with-history pattern
+but for a <em>path-independent</em> (hyperelastic) energy.</p></li>
+<li><p><a class="reference internal" href="hertzian_contact.html"><span class="doc">Hertzian Contact</span></a> — another non-quadratic energy driver,
+this time a contact penalty.</p></li>
+<li><p><a class="reference internal" href="../../user_guide/batched_workflows.html"><span class="doc">Batched Workflows</span></a> — chunking the
+per-quadrature integrand for the larger 3D problem.</p></li>
+</ul>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="drucker_prager_triaxial.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Geomechanics: Drucker-Prager triaxial compression</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="hertzian_contact.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Hertzian Contact</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, TensorMesh Contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/camlab-ethz/TensorMesh" aria-label="GitHub"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+              <a class="muted-link " href="https://discord.gg/EC9kbHSnrx" aria-label="Discord"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.576-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.05.05 0 0 0-.021.019C.356 6.024-.213 9.047.066 12.032c.002.015.01.029.02.037a13.3 13.3 0 0 0 3.995 2.01.05.05 0 0 0 .056-.019c.308-.42.582-.86.818-1.329a.05.05 0 0 0-.027-.06 8.7 8.7 0 0 1-1.248-.595.05.05 0 0 1-.005-.085c.079-.053.16-.104.248-.152a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007c.08.048.16.1.248.152a.05.05 0 0 1-.004.085 8.2 8.2 0 0 1-1.249.594.05.05 0 0 0-.027.06c.24.465.514.906.817 1.329a.05.05 0 0 0 .056.02 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.036c.334-3.451-.559-6.449-2.366-9.106a.04.04 0 0 0-.021-.02zM5.68 10.77c-.789 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.45.73 1.438 1.61 0 .886-.637 1.61-1.438 1.61zm4.842 0c-.788 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.451.73 1.438 1.61 0 .886-.63 1.61-1.438 1.61z"></path></svg></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Plasticity (J2 with Isotropic Hardening)</a><ul>
+<li><a class="reference internal" href="#problem">Problem</a></li>
+<li><a class="reference internal" href="#variational-constitutive-update">Variational constitutive update</a></li>
+<li><a class="reference internal" href="#history-variables">History variables</a></li>
+<li><a class="reference internal" href="#output">Output</a></li>
+<li><a class="reference internal" href="#going-to-3d">Going to 3D</a></li>
+<li><a class="reference internal" href="#running-it">Running it</a></li>
+<li><a class="reference internal" href="#what-s-next">What’s next</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=a58bc63e"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

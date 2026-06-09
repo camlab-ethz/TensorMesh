@@ -1,0 +1,981 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Batched Workflows" href="batched_workflows.html"><link rel="prev" title="Sparse Solvers" href="linear_solvers.html">
+        <link rel="prefetch" href="../_static/logo.png" as="image">
+        <link rel="prefetch" href="../_static/logo.png" as="image">
+
+    <link rel="shortcut icon" href="../_static/logo.png"><!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>Time Integration - TensorMesh</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=95a110e3" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #5B6EE8;
+  --color-brand-content: #149B8E;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">TensorMesh</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../_static/logo.png" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../_static/logo.png" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">TensorMesh</span>
+  
+</a><div class="sidebar-language-switcher">
+  <span class="active">English</span>
+  <span class="sep">·</span>
+  <a href="../zh/user_guide/time_integration.html" rel="alternate" hreflang="zh-CN" title="中文">中文</a>
+</div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../getting_started/index.html">Get Started</a><input aria-label="Toggle navigation of Get Started" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quickstart.html">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/verify_install.html">Verify Install</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">User Guide</a><input aria-label="Toggle navigation of User Guide" checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="concepts.html">Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="meshes.html">Meshes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elements_and_quadrature.html">Elements and Quadrature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="forms.html">Forms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="boundary_conditions.html">Boundary Conditions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_solvers.html">Sparse Solvers</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Time Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="batched_workflows.html">Batched Workflows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="differentiability.html">Differentiability</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../example_gallery/index.html">Example Gallery</a><input aria-label="Toggle navigation of Example Gallery" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/basics.html">Basics &amp; Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/poisson.html">Poisson Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/diffusion.html">Diffusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/wave.html">Wave Equation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../example_gallery/solid/index.html">Solid Mechanics</a><input aria-label="Toggle navigation of Solid Mechanics" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/cantilever_beam.html">Cantilever Beam</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/hyperelastic_beam.html">Hyperelastic Beam (Neo-Hookean)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/hertzian_contact.html">Hertzian Contact</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/plasticity_strip.html">Plasticity (J2 with Isotropic Hardening)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/drucker_prager_triaxial.html">Geomechanics: Drucker-Prager triaxial compression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/elastic_footing.html">Geomechanics: elastic strip footing</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../example_gallery/fluid/index.html">Fluid Mechanics</a><input aria-label="Toggle navigation of Fluid Mechanics" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/cavity.html">Lid-Driven Cavity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/cylinder_flow.html">Cylinder Flow (Vortex Shedding)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/flow_obstacles.html">Flow Past Multiple Obstacles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/rayleigh_benard.html">Rayleigh-Bénard Convection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/taylor_green.html">Taylor-Green Vortex (Convergence Study)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/maxwell.html">Magnetostatics (Maxwell)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/inverse_design.html">Inverse Design &amp; Identification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/physics_informed.html">Physics-Informed Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/dataset.html">ML Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/distributed.html">Distributed FEM</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/index.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/mesh.html">tensormesh.mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/element.html">tensormesh.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/assemble.html">tensormesh.assemble</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/operator.html">tensormesh.operator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/sparse.html">tensormesh.sparse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/ode.html">tensormesh.ode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/functional.html">tensormesh.functional</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/optimizer.html">tensormesh.optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/material.html">tensormesh.material</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/distributed.html">tensormesh.distributed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/nn.html">tensormesh.nn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/dataset.html">tensormesh.dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/visualization.html">tensormesh.visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../performance/index.html">Performance</a><input aria-label="Toggle navigation of Performance" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../performance/benchmarks.html">Benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../performance/scaling_guide.html">Scaling Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../performance/profiling.html">Profiling</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../community/index.html">Community</a><input aria-label="Toggle navigation of Community" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../community/discord.html">Discord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/github_discussions.html">GitHub Discussions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/github_issues.html">GitHub Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/contributing.html">Contributing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/citing.html">Citing TensorMesh</a></li>
+</ul>
+</li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/user_guide/time_integration.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="time-integration">
+<h1>Time Integration<a class="headerlink" href="#time-integration" title="Link to this heading">¶</a></h1>
+<p>Transient problems — heat, wave, transient elasticity, phase-field
+dynamics — extend the static FEM pipeline with a time-stepping loop.
+Once the mass and stiffness matrices have been assembled, the
+semi-discrete weak form is just a system of ODEs in the nodal values</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[M\,\dot u(t) \;=\; A(t)\,u(t) \;+\; B(t),
+\qquad u(0) = u_0,\]</div>
+</div>
+<p>and the job of this chapter is to advance <code class="docutils literal notranslate"><span class="pre">u</span></code> from one time level to
+the next, accurately and stably, while keeping everything
+differentiable.</p>
+<p>TensorMesh exposes two complementary styles:</p>
+<ol class="arabic simple">
+<li><p><strong>A manual time-stepping loop.</strong> You assemble the time-stepped
+operator yourself, call <a class="reference internal" href="../api/operator.html#tensormesh.Condenser" title="tensormesh.Condenser"><code class="xref py py-class docutils literal notranslate"><span class="pre">Condenser</span></code></a> once for the
+boundary conditions, and write a Python <code class="docutils literal notranslate"><span class="pre">for</span></code> loop that does one
+linear solve per step. Short, explicit, and the path of least
+resistance for a one-off problem.</p></li>
+<li><p><strong>The integrator classes in</strong> <a class="reference internal" href="../api/ode.html#module-tensormesh.ode" title="tensormesh.ode"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensormesh.ode</span></code></a>. You override
+<code class="docutils literal notranslate"><span class="pre">forward(t,</span> <span class="pre">u)</span></code> (explicit) or <code class="docutils literal notranslate"><span class="pre">forward_M</span></code> / <code class="docutils literal notranslate"><span class="pre">forward_A</span></code> /
+<code class="docutils literal notranslate"><span class="pre">forward_B</span></code> (linear-implicit), and call <code class="docutils literal notranslate"><span class="pre">step(t,</span> <span class="pre">u,</span> <span class="pre">dt)</span></code>.
+Useful when you want a generic transient driver that lets you swap
+one scheme for another without rewriting the loop. The
+linear-implicit family composes with
+<a class="reference internal" href="../api/operator.html#tensormesh.Condenser" title="tensormesh.Condenser"><code class="xref py py-class docutils literal notranslate"><span class="pre">Condenser</span></code></a> through three boundary-condition
+hooks (see <a class="reference internal" href="#ti-boundaries"><span class="std std-ref">Composing with boundary conditions</span></a>), so static condensation of
+Dirichlet DOFs works inside the integrator too.</p></li>
+</ol>
+<p>Both styles compose with <a class="reference external" href="https://docs.pytorch.org/docs/stable/autograd.html#module-torch.autograd" title="(in PyTorch v2.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">torch.autograd</span></code></a>, so gradients flow back
+through every step into initial conditions, material parameters, and
+boundary data alike (see <a class="reference internal" href="differentiability.html"><span class="doc">Differentiability</span></a>).</p>
+<section id="the-integrator-catalogue">
+<span id="the-integrators"></span><h2>The integrator catalogue<a class="headerlink" href="#the-integrator-catalogue" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="../api/ode.html#module-tensormesh.ode" title="tensormesh.ode"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensormesh.ode</span></code></a> ships three concrete schemes plus two extensible
+base classes:</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.0%" />
+<col style="width: 8.0%" />
+<col style="width: 22.0%" />
+<col style="width: 42.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Class</p></th>
+<th class="head"><p>Order</p></th>
+<th class="head"><p>Form</p></th>
+<th class="head"><p>Use case</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/ode.html#tensormesh.ode.ExplicitEuler" title="tensormesh.ode.ExplicitEuler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExplicitEuler</span></code></a></p></td>
+<td><p>1</p></td>
+<td><p><span class="math notranslate nohighlight">\(\dot u = f(t, u)\)</span></p></td>
+<td><p>Cheap explicit RHS; fine for non-stiff problems below the CFL.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/ode.html#tensormesh.ode.ImplicitLinearEuler" title="tensormesh.ode.ImplicitLinearEuler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImplicitLinearEuler</span></code></a></p></td>
+<td><p>1</p></td>
+<td><p><span class="math notranslate nohighlight">\(M\dot u = A u + B\)</span></p></td>
+<td><p>Heat / diffusion / stiff systems. Unconditionally stable.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/ode.html#tensormesh.ode.MidPointLinearEuler" title="tensormesh.ode.MidPointLinearEuler"><code class="xref py py-class docutils literal notranslate"><span class="pre">MidPointLinearEuler</span></code></a></p></td>
+<td><p>2</p></td>
+<td><p><span class="math notranslate nohighlight">\(M\dot u = A u + B\)</span></p></td>
+<td><p>Same family, second-order accurate (trapezoidal rule).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/ode.html#tensormesh.ode.ExplicitRungeKutta" title="tensormesh.ode.ExplicitRungeKutta"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExplicitRungeKutta</span></code></a></p></td>
+<td><p>s-stage</p></td>
+<td><p><span class="math notranslate nohighlight">\(\dot u = f(t, u)\)</span></p></td>
+<td><p>Base class — supply your own Butcher tableau <code class="docutils literal notranslate"><span class="pre">(a,</span> <span class="pre">b)</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/ode.html#tensormesh.ode.ImplicitLinearRungeKutta" title="tensormesh.ode.ImplicitLinearRungeKutta"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImplicitLinearRungeKutta</span></code></a></p></td>
+<td><p>s-stage</p></td>
+<td><p><span class="math notranslate nohighlight">\(M\dot u = A u + B\)</span></p></td>
+<td><p>Same, for linear-implicit schemes.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>For the explicit family you override <code class="docutils literal notranslate"><span class="pre">forward(t,</span> <span class="pre">u)</span></code> to return the
+right-hand side <span class="math notranslate nohighlight">\(f(t, u)\)</span>. For the linear-implicit family you
+override three methods that return the operators at the current time:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyScheme</span><span class="p">(</span><span class="n">ImplicitLinearEuler</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward_M</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>  <span class="k">return</span> <span class="n">M_matrix</span>    <span class="c1"># SparseMatrix, Tensor, or scalar</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward_A</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>  <span class="k">return</span> <span class="o">-</span><span class="n">K_matrix</span>   <span class="c1"># SparseMatrix, Tensor, or scalar</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward_B</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>  <span class="k">return</span> <span class="mf">0.0</span>         <span class="c1"># Tensor or scalar</span>
+</pre></div>
+</div>
+<p>A scalar return is lifted to that multiple of the identity (or to a
+constant vector for <code class="docutils literal notranslate"><span class="pre">B</span></code>), so you can leave any of the three at their
+defaults of <code class="docutils literal notranslate"><span class="pre">1</span></code>, <code class="docutils literal notranslate"><span class="pre">1</span></code>, <code class="docutils literal notranslate"><span class="pre">0</span></code>. Each call to <code class="docutils literal notranslate"><span class="pre">step(t0,</span> <span class="pre">u0,</span> <span class="pre">dt)</span></code>
+returns the new <code class="docutils literal notranslate"><span class="pre">u</span></code> advanced by one time step; <code class="docutils literal notranslate"><span class="pre">u</span></code> must be 1D
+(<code class="docutils literal notranslate"><span class="pre">[D]</span></code>), so flatten vector-valued problems before stepping.</p>
+</section>
+<section id="worked-example-1-a-scalar-ode">
+<span id="ti-scalar"></span><h2>Worked example 1: a scalar ODE<a class="headerlink" href="#worked-example-1-a-scalar-ode" title="Link to this heading">¶</a></h2>
+<p>The integrator classes work on plain ODEs the same way they work on
+FEM systems — you just leave the operators as scalars. Take</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\dot u(t) \;=\; -\lambda\,u(t),
+\qquad u(0) = 1,
+\qquad \lambda = \pi^{2},\]</div>
+</div>
+<p>whose exact solution is <span class="math notranslate nohighlight">\(u(t) = e^{-\lambda t}\)</span>. Both
+<a class="reference internal" href="../api/ode.html#tensormesh.ode.ImplicitLinearEuler" title="tensormesh.ode.ImplicitLinearEuler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImplicitLinearEuler</span></code></a> (first order) and
+<a class="reference internal" href="../api/ode.html#tensormesh.ode.MidPointLinearEuler" title="tensormesh.ode.MidPointLinearEuler"><code class="xref py py-class docutils literal notranslate"><span class="pre">MidPointLinearEuler</span></code></a> (second order) accept a
+scalar <code class="docutils literal notranslate"><span class="pre">M</span> <span class="pre">=</span> <span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">=</span> <span class="pre">-\lambda</span></code>, so the driver is two short
+classes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh.ode</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImplicitLinearEuler</span><span class="p">,</span> <span class="n">MidPointLinearEuler</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ScalarIE</span><span class="p">(</span><span class="n">ImplicitLinearEuler</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lam</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lam</span> <span class="o">=</span> <span class="n">lam</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward_M</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span> <span class="k">return</span> <span class="mf">1.0</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward_A</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span> <span class="k">return</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">lam</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward_B</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span> <span class="k">return</span> <span class="mf">0.0</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ScalarMP</span><span class="p">(</span><span class="n">MidPointLinearEuler</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lam</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lam</span> <span class="o">=</span> <span class="n">lam</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward_M</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span> <span class="k">return</span> <span class="mf">1.0</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward_A</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span> <span class="k">return</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">lam</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward_B</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span> <span class="k">return</span> <span class="mf">0.0</span>
+
+<span class="n">lam</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">pi</span> <span class="o">**</span> <span class="mi">2</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="n">dt</span> <span class="o">=</span> <span class="mf">1e-3</span>
+<span class="n">integrator</span> <span class="o">=</span> <span class="n">ScalarMP</span><span class="p">(</span><span class="n">lam</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">):</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">integrator</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="n">dt</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Running the same problem at decreasing <span class="math notranslate nohighlight">\(\Delta t\)</span> and measuring
+the error at <span class="math notranslate nohighlight">\(T = 0.05\)</span> produces the textbook order-1 and
+order-2 slopes:</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/convergence.png"><img alt="Temporal convergence on the scalar test ODE." src="../_images/convergence.png" style="width: 80%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Fig. 11 </span><span class="caption-text">Endpoint error vs <code class="docutils literal notranslate"><span class="pre">dt</span></code> for ImplicitLinearEuler and
+MidPointLinearEuler on <span class="math notranslate nohighlight">\(\dot u = -\pi^{2}\,u\)</span>. Dashed
+reference lines have slopes 1 and 2.</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>The practical reading: spending a higher-order method buys you orders
+of magnitude in accuracy at the <em>same</em> step size — at <code class="docutils literal notranslate"><span class="pre">dt</span> <span class="pre">=</span> <span class="pre">5e-3</span></code>
+the midpoint rule already beats backward Euler by four orders of
+magnitude.</p>
+</section>
+<section id="worked-example-2-2d-heat-equation">
+<span id="ti-heat-manual"></span><h2>Worked example 2: 2D heat equation<a class="headerlink" href="#worked-example-2-2d-heat-equation" title="Link to this heading">¶</a></h2>
+<p>For an FEM problem with Dirichlet boundaries, the manual loop is the
+cleanest pattern. Solve</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\frac{\partial u}{\partial t} \;=\; \kappa\,\Delta u
+\quad \text{in } \Omega = (0, 1)^{2},
+\qquad u = 0 \text{ on } \partial\Omega,
+\qquad u(x, y, 0) = \sin(\pi x)\,\sin(\pi y).\]</div>
+</div>
+<p>The semi-discrete form is <span class="math notranslate nohighlight">\(M\dot u = -\kappa\,K\,u\)</span>, and one
+backward-Euler step gives the linear system</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[(M + \Delta t\,\kappa\,K)\,u^{n+1} \;=\; M\,u^{n}.\]</div>
+</div>
+<p>The full driver assembles <code class="docutils literal notranslate"><span class="pre">M</span></code> and <code class="docutils literal notranslate"><span class="pre">K</span></code> once, builds the
+time-stepped operator once, condenses it once, then loops:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">Mesh</span><span class="p">,</span> <span class="n">ElementAssembler</span><span class="p">,</span>
+                        <span class="n">MassElementAssembler</span><span class="p">,</span> <span class="n">LaplaceElementAssembler</span><span class="p">,</span>
+                        <span class="n">Condenser</span><span class="p">)</span>
+
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">gen_rectangle</span><span class="p">(</span><span class="n">chara_length</span><span class="o">=</span><span class="mf">0.025</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">M</span> <span class="o">=</span> <span class="n">MassElementAssembler</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)()</span><span class="o">.</span><span class="n">double</span><span class="p">()</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">LaplaceElementAssembler</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)()</span><span class="o">.</span><span class="n">double</span><span class="p">()</span>
+
+<span class="n">kappa</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">dt</span>    <span class="o">=</span> <span class="mf">5e-4</span>
+
+<span class="c1"># Build the time-stepped operator once and condense it once.</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">M</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">kappa</span> <span class="o">*</span> <span class="n">K</span>
+<span class="n">condenser</span> <span class="o">=</span> <span class="n">Condenser</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">boundary_mask</span><span class="p">)</span>
+<span class="n">A_in</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">condenser</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">n_points</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float64</span><span class="p">))</span>
+
+<span class="c1"># Initial condition (already zero on the Dirichlet boundary).</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">double</span><span class="p">()[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mesh</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">double</span><span class="p">()[:,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="c1"># Time stepping: each iteration is one mass-vector product,</span>
+<span class="c1"># one RHS condensation, one back-substitution, one recovery.</span>
+<span class="n">snapshots</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">f</span>       <span class="o">=</span> <span class="n">M</span> <span class="o">@</span> <span class="n">u</span>
+    <span class="n">f_in</span>    <span class="o">=</span> <span class="n">condenser</span><span class="o">.</span><span class="n">condense_rhs</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">u_in</span>    <span class="o">=</span> <span class="n">A_in</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">f_in</span><span class="p">)</span>
+    <span class="n">u</span>       <span class="o">=</span> <span class="n">condenser</span><span class="o">.</span><span class="n">recover</span><span class="p">(</span><span class="n">u_in</span><span class="p">)</span>
+    <span class="n">snapshots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The two ingredients that make this loop fast are (a) factorising the
+time-stepped operator only once — the per-step solve is a back-substitution
+through <code class="docutils literal notranslate"><span class="pre">A_in</span></code> — and (b) reusing the cached condenser layout via
+<a class="reference internal" href="../api/operator.html#tensormesh.Condenser.condense_rhs" title="tensormesh.Condenser.condense_rhs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">condense_rhs()</span></code></a>. Together they turn what
+looks like an order-<span class="math notranslate nohighlight">\(N^{3}\)</span> problem into an order-<span class="math notranslate nohighlight">\(N\)</span>
+inner loop.</p>
+<p>The solution decays exponentially as <span class="math notranslate nohighlight">\(e^{-2\pi^{2}t}\)</span>:</p>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/heat_snapshots.png"><img alt="2D heat equation snapshots at three times." src="../_images/heat_snapshots.png" style="width: 95%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Fig. 12 </span><span class="caption-text">Snapshots of <span class="math notranslate nohighlight">\(u(x, y, t)\)</span> at <span class="math notranslate nohighlight">\(t = 0\)</span>, <span class="math notranslate nohighlight">\(t = T/2\)</span>,
+and <span class="math notranslate nohighlight">\(t = T\)</span> with <span class="math notranslate nohighlight">\(T = 0.05\)</span>, backward Euler,
+<span class="math notranslate nohighlight">\(\Delta t = 5\!\times\!10^{-4}\)</span>, characteristic mesh size
+<span class="math notranslate nohighlight">\(h = 0.025\)</span>.</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>For an animated version, see the rendered <code class="docutils literal notranslate"><span class="pre">heat.mp4</span></code> in the
+<a class="reference internal" href="../example_gallery/index.html"><span class="doc">example gallery</span></a> or under
+<code class="docutils literal notranslate"><span class="pre">examples/diffusion/heat/</span></code> in the source tree.</p>
+</section>
+<section id="custom-butcher-tableaux">
+<span id="ti-custom-tableau"></span><h2>Custom Butcher tableaux<a class="headerlink" href="#custom-butcher-tableaux" title="Link to this heading">¶</a></h2>
+<p>The two <code class="docutils literal notranslate"><span class="pre">RungeKutta</span></code> base classes let you supply any Butcher
+tableau. To use the classical fourth-order explicit Runge-Kutta on
+<span class="math notranslate nohighlight">\(\dot u = f(t, u)\)</span>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh.ode</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExplicitRungeKutta</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
+                  <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
+                  <span class="p">[</span><span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
+                  <span class="p">[</span><span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]])</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">6</span><span class="p">])</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyRK4</span><span class="p">(</span><span class="n">ExplicitRungeKutta</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>            <span class="c1"># your problem-specific RHS</span>
+
+<span class="n">integrator</span> <span class="o">=</span> <span class="n">MyRK4</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_steps</span><span class="p">):</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">integrator</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="n">dt</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The class verifies that <code class="docutils literal notranslate"><span class="pre">a</span></code> is lower-triangular and that
+<span class="math notranslate nohighlight">\(\sum_i b_i = 1\)</span> (to within floating-point tolerance), so you
+catch transcription mistakes early. The same pattern with
+<a class="reference internal" href="../api/ode.html#tensormesh.ode.ImplicitLinearRungeKutta" title="tensormesh.ode.ImplicitLinearRungeKutta"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImplicitLinearRungeKutta</span></code></a> gives you diagonally-implicit
+or fully-implicit schemes — supply a non-zero diagonal and the class
+will assemble and solve the block stage system for you.</p>
+</section>
+<section id="composing-with-boundary-conditions">
+<span id="ti-boundaries"></span><h2>Composing with boundary conditions<a class="headerlink" href="#composing-with-boundary-conditions" title="Link to this heading">¶</a></h2>
+<p>Static condensation via <a class="reference internal" href="../api/operator.html#tensormesh.Condenser" title="tensormesh.Condenser"><code class="xref py py-class docutils literal notranslate"><span class="pre">Condenser</span></code></a> (see
+<a class="reference internal" href="boundary_conditions.html"><span class="doc">Boundary Conditions</span></a>) is the recommended way to enforce
+Dirichlet conditions in TensorMesh. Both time-integration styles
+support it; the only difference is <em>where</em> the three condenser calls
+go.</p>
+<div class="important admonition">
+<p class="admonition-title">Mental model — what each solve is <em>for</em></p>
+<p>The two styles differ in <strong>what the linear solve is solving for</strong>,
+and that single fact dictates which <code class="docutils literal notranslate"><span class="pre">Condenser</span></code> calls are correct:</p>
+<ul class="simple">
+<li><p><strong>Manual loop</strong> → the unknown is the <strong>state</strong> <span class="math notranslate nohighlight">\(u^{n+1}\)</span>. It
+takes the prescribed value <span class="math notranslate nohighlight">\(u_o\)</span> on the boundary, so you use
+the BC-value-aware calls (<code class="docutils literal notranslate"><span class="pre">condense_rhs</span></code> subtracts
+<span class="math notranslate nohighlight">\(K_{io}\,u_o\)</span>; <code class="docutils literal notranslate"><span class="pre">recover</span></code> writes <span class="math notranslate nohighlight">\(u_o\)</span> back into the
+boundary slots).</p></li>
+<li><p><strong>Integrator hooks</strong> → the unknown is a <strong>stage slope</strong>
+<span class="math notranslate nohighlight">\(k_i \approx \dot u\)</span>. A Dirichlet DOF is fixed in time, so
+<span class="math notranslate nohighlight">\(\dot u = 0\)</span> there <em>whatever</em> <span class="math notranslate nohighlight">\(u_o\)</span> is — the slope is
+zero on the boundary. You use the BC-value-free projections
+(<code class="docutils literal notranslate"><span class="pre">restrict</span></code> / <code class="docutils literal notranslate"><span class="pre">prolong</span></code>, which apply zero on the boundary in
+both directions).</p></li>
+</ul>
+<p>The full-DOF state’s boundary value is carried along by <span class="math notranslate nohighlight">\(u_0\)</span>
+through the RK update <span class="math notranslate nohighlight">\(u_{n+1} = u_0 + h\sum_i b_i k_i\)</span>; it is
+<em>not</em> re-imposed by the stage recovery.</p>
+</div>
+<p>At a glance, the same three operations map across the two styles like
+this — the rest of this section is just the detail behind each row:</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.0%" />
+<col style="width: 36.0%" />
+<col style="width: 36.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Operation</p></th>
+<th class="head"><p>Manual loop (state <span class="math notranslate nohighlight">\(u\)</span>)</p></th>
+<th class="head"><p>Integrator hooks (slope <span class="math notranslate nohighlight">\(k\)</span>)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Condense the operator</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">condenser(A)[0]</span></code> once, before the loop</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pre_solve_lhs(K)</span></code> → <code class="docutils literal notranslate"><span class="pre">condenser(K)[0]</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Project the RHS down</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">condense_rhs(f)</span></code> — subtracts <span class="math notranslate nohighlight">\(K_{io}\,u_o\)</span></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pre_solve_rhs(f)</span></code> → <code class="docutils literal notranslate"><span class="pre">restrict(f)</span></code> — <strong>no</strong> correction</p></td>
+</tr>
+<tr class="row-even"><td><p>Lift the solution back</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">recover(u_in)</span></code> — writes <span class="math notranslate nohighlight">\(u_o\)</span> on the boundary</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">recover_stage(k)</span></code> → <code class="docutils literal notranslate"><span class="pre">prolong(k)</span></code> — <strong>zero</strong> on the boundary</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="in-a-manual-loop">
+<h3>In a manual loop<a class="headerlink" href="#in-a-manual-loop" title="Link to this heading">¶</a></h3>
+<p>The pattern is the same one used in
+<a class="reference internal" href="#ti-heat-manual"><span class="std std-ref">Worked example 2</span></a>:</p>
+<ul class="simple">
+<li><p>call <code class="docutils literal notranslate"><span class="pre">condenser(A,</span> <span class="pre">_)</span></code> <em>once</em>, before the loop, to factorise the
+time-stepped operator on the interior DOFs;</p></li>
+<li><p>call <code class="docutils literal notranslate"><span class="pre">condenser.condense_rhs(f)</span></code> <em>every step</em> to project the new
+RHS down to the interior;</p></li>
+<li><p>call <code class="docutils literal notranslate"><span class="pre">condenser.recover(u_in)</span></code> after every solve to glue boundary
+values back in.</p></li>
+</ul>
+<p>For time-varying boundary data, swap in the new values between steps
+with <a class="reference internal" href="../api/operator.html#tensormesh.Condenser.update_dirichlet" title="tensormesh.Condenser.update_dirichlet"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update_dirichlet()</span></code></a> — the sparsity
+layout is cached and survives the update, so this call is cheap.</p>
+</section>
+<section id="through-the-integrator-classes">
+<h3>Through the integrator classes<a class="headerlink" href="#through-the-integrator-classes" title="Link to this heading">¶</a></h3>
+<p><a class="reference internal" href="../api/ode.html#tensormesh.ode.ImplicitLinearRungeKutta" title="tensormesh.ode.ImplicitLinearRungeKutta"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImplicitLinearRungeKutta</span></code></a> (and its concrete
+subclasses) exposes three hooks that the <code class="docutils literal notranslate"><span class="pre">step()</span></code> method calls in
+the right places for static condensation to work end-to-end. Each
+hook is a no-op by default — override only the ones you need.</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 30.0%" />
+<col style="width: 48.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Hook</p></th>
+<th class="head"><p>Called by <code class="docutils literal notranslate"><span class="pre">step()</span></code></p></th>
+<th class="head"><p>For <code class="docutils literal notranslate"><span class="pre">Condenser</span></code>-based BCs, return …</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pre_solve_lhs(K)</span></code></p></td>
+<td><p>once per <code class="docutils literal notranslate"><span class="pre">[i][j]</span></code> block of the stage system</p></td>
+<td><p>the condensed inner block, <code class="docutils literal notranslate"><span class="pre">condenser(K)[0]</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pre_solve_rhs(f)</span></code></p></td>
+<td><p>once per stage RHS</p></td>
+<td><p>the <em>restriction</em> to inner DOFs, <code class="docutils literal notranslate"><span class="pre">condenser.restrict(f)</span></code> —
+<strong>not</strong> <code class="docutils literal notranslate"><span class="pre">condense_rhs(f)</span></code>: a stage slope is zero on the
+boundary by construction, so the
+<span class="math notranslate nohighlight">\(-K_{io}\,u_o\)</span> correction term in
+<code class="docutils literal notranslate"><span class="pre">condense_rhs</span></code> would over-apply the BC.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">recover_stage(k_i)</span></code></p></td>
+<td><p>once per stage, after the solve</p></td>
+<td><p>the prolongation to full DOF with zero in the boundary slots,
+<code class="docutils literal notranslate"><span class="pre">condenser.prolong(k_i)</span></code> — <strong>not</strong> <code class="docutils literal notranslate"><span class="pre">recover</span></code>, which would
+write the Dirichlet value into the boundary slots and break
+the increment <code class="docutils literal notranslate"><span class="pre">u_{n+1}</span> <span class="pre">=</span> <span class="pre">u_n</span> <span class="pre">+</span> <span class="pre">h\sum_i</span> <span class="pre">b_i</span> <span class="pre">k_i</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The fourth hook, <code class="docutils literal notranslate"><span class="pre">post_solve(u)</span></code>, runs after the stage slopes have
+already been lifted and combined with <span class="math notranslate nohighlight">\(u_0\)</span>, so <code class="docutils literal notranslate"><span class="pre">u</span></code> is
+always full-DOF when it sees you. Use it for things that act on the
+final state (clamping, normalisation, projection onto a manifold)
+rather than for boundary recovery.</p>
+<p>The same three hooks cover multi-stage schemes unchanged: <code class="docutils literal notranslate"><span class="pre">step()</span></code>
+calls them once per stage (<code class="docutils literal notranslate"><span class="pre">pre_solve_lhs</span></code> once per <code class="docutils literal notranslate"><span class="pre">[i][j]</span></code>
+block), so a <a class="reference internal" href="../api/ode.html#tensormesh.ode.MidPointLinearEuler" title="tensormesh.ode.MidPointLinearEuler"><code class="xref py py-class docutils literal notranslate"><span class="pre">MidPointLinearEuler</span></code></a> or a custom
+<a class="reference internal" href="../api/ode.html#tensormesh.ode.ImplicitLinearRungeKutta" title="tensormesh.ode.ImplicitLinearRungeKutta"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImplicitLinearRungeKutta</span></code></a> tableau wires up
+exactly like the backward-Euler example below.</p>
+<p>Putting them together, a heat-equation driver becomes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">Mesh</span><span class="p">,</span> <span class="n">MassElementAssembler</span><span class="p">,</span>
+                        <span class="n">LaplaceElementAssembler</span><span class="p">,</span> <span class="n">Condenser</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh.ode</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImplicitLinearEuler</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">HeatStepper</span><span class="p">(</span><span class="n">ImplicitLinearEuler</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;M du/dt = -kappa^2 K u, homogeneous Dirichlet via Condenser.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">kappa</span><span class="p">,</span> <span class="n">condenser</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_M</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cd</span> <span class="o">=</span> <span class="n">M</span><span class="p">,</span> <span class="o">-</span><span class="n">kappa</span> <span class="o">*</span> <span class="n">kappa</span> <span class="o">*</span> <span class="n">K</span><span class="p">,</span> <span class="n">condenser</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward_M</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>  <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_M</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward_A</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>  <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_A</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward_B</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>  <span class="k">return</span> <span class="mf">0.0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_solve_lhs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">K</span><span class="p">):</span>  <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cd</span><span class="p">(</span><span class="n">K</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>       <span class="c1"># condense stage block</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_solve_rhs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>  <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cd</span><span class="o">.</span><span class="n">restrict</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>   <span class="c1"># NOT condense_rhs</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">recover_stage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>  <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cd</span><span class="o">.</span><span class="n">prolong</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>    <span class="c1"># NOT recover</span>
+
+<span class="c1"># Same mesh and initial condition as Worked example 2.</span>
+<span class="n">mesh</span>    <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">gen_rectangle</span><span class="p">(</span><span class="n">chara_length</span><span class="o">=</span><span class="mf">0.025</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">M</span>       <span class="o">=</span> <span class="n">MassElementAssembler</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)()</span><span class="o">.</span><span class="n">double</span><span class="p">()</span>
+<span class="n">K</span>       <span class="o">=</span> <span class="n">LaplaceElementAssembler</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)()</span><span class="o">.</span><span class="n">double</span><span class="p">()</span>
+<span class="n">stepper</span> <span class="o">=</span> <span class="n">HeatStepper</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                      <span class="n">condenser</span><span class="o">=</span><span class="n">Condenser</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">boundary_mask</span><span class="p">))</span>
+
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">double</span><span class="p">()[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mesh</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">double</span><span class="p">()[:,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">u</span>    <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="n">dt</span> <span class="o">=</span> <span class="mf">5e-4</span>
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">stepper</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">step</span> <span class="o">*</span> <span class="n">dt</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">examples/diffusion/heat/</span></code> directory ships both versions:
+<code class="docutils literal notranslate"><span class="pre">heat.py</span></code> (manual loop) and <code class="docutils literal notranslate"><span class="pre">heat_ode.py</span></code> (integrator class).
+They produce identical snapshots to machine precision — try them
+side by side.</p>
+</section>
+<section id="why-restrict-prolong-and-not-condense-rhs-recover">
+<h3>Why <code class="docutils literal notranslate"><span class="pre">restrict</span></code> / <code class="docutils literal notranslate"><span class="pre">prolong</span></code> and not <code class="docutils literal notranslate"><span class="pre">condense_rhs</span></code> / <code class="docutils literal notranslate"><span class="pre">recover</span></code><a class="headerlink" href="#why-restrict-prolong-and-not-condense-rhs-recover" title="Link to this heading">¶</a></h3>
+<p>The two integrator hooks operate on the <strong>stage slope</strong>
+<span class="math notranslate nohighlight">\(k_i \approx \dot u\)</span>, not on the state <span class="math notranslate nohighlight">\(u\)</span> itself. At a
+Dirichlet DOF <span class="math notranslate nohighlight">\(u\)</span> is held fixed in time, so <span class="math notranslate nohighlight">\(\dot u = 0\)</span>
+there <em>regardless</em> of the prescribed value. The two BC-value-aware
+methods on <a class="reference internal" href="../api/operator.html#tensormesh.Condenser" title="tensormesh.Condenser"><code class="xref py py-class docutils literal notranslate"><span class="pre">Condenser</span></code></a> are designed for the
+state:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../api/operator.html#tensormesh.Condenser.condense_rhs" title="tensormesh.Condenser.condense_rhs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">condense_rhs()</span></code></a> subtracts
+<span class="math notranslate nohighlight">\(K_{io}\,u_o\)</span> from the inner RHS to account for the
+state’s prescribed boundary values;</p></li>
+<li><p><a class="reference internal" href="../api/operator.html#tensormesh.Condenser.recover" title="tensormesh.Condenser.recover"><code class="xref py py-meth docutils literal notranslate"><span class="pre">recover()</span></code></a> writes <span class="math notranslate nohighlight">\(u_o\)</span> into the
+boundary slots of the lifted solution.</p></li>
+</ul>
+<p>Use those when condensing the state-space system (the manual loop).
+For stage slopes inside the integrator, use the BC-value-free
+projections <a class="reference internal" href="../api/operator.html#tensormesh.Condenser.restrict" title="tensormesh.Condenser.restrict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">restrict()</span></code></a> and
+<a class="reference internal" href="../api/operator.html#tensormesh.Condenser.prolong" title="tensormesh.Condenser.prolong"><code class="xref py py-meth docutils literal notranslate"><span class="pre">prolong()</span></code></a>, which apply zero on the
+boundary in both directions. The difference vanishes for homogeneous
+Dirichlet (where <span class="math notranslate nohighlight">\(u_o = 0\)</span>), but matters as soon as the
+prescribed values are non-zero.</p>
+<div class="warning admonition">
+<p class="admonition-title">The bug is invisible under homogeneous Dirichlet</p>
+<p>Mixing up the two pairs costs nothing when <span class="math notranslate nohighlight">\(u_o = 0\)</span>, which is
+exactly why it slips through. Make it non-zero and it shows
+immediately. Take the heat problem above but hold the whole boundary
+at <span class="math notranslate nohighlight">\(u_o = 1\)</span> (interior starting at zero), backward Euler,
+<span class="math notranslate nohighlight">\(\Delta t = 10^{-2}\)</span>, 40 steps, and measure against the manual
+state-space loop (<code class="docutils literal notranslate"><span class="pre">condense_rhs</span></code> / <code class="docutils literal notranslate"><span class="pre">recover</span></code>) as the reference:</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 44.0%" />
+<col style="width: 30.0%" />
+<col style="width: 26.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Hook wiring</p></th>
+<th class="head"><p>Interior error vs reference</p></th>
+<th class="head"><p>Boundary (should stay <code class="docutils literal notranslate"><span class="pre">1.0</span></code>)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">restrict</span></code> + <code class="docutils literal notranslate"><span class="pre">prolong</span></code> (correct)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">4e-16</span></code> — machine precision</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">1.0</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">condense_rhs</span></code> + <code class="docutils literal notranslate"><span class="pre">prolong</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">6e-3</span></code> — wrong interior</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">1.0</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">restrict</span></code> + <code class="docutils literal notranslate"><span class="pre">recover</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0.4</span></code> — drifts</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">1.4</span></code> after 40 steps</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">condense_rhs</span></code> subtracts a <span class="math notranslate nohighlight">\(-K_{io}\,u_o\)</span> term that the slope
+RHS never had, polluting the interior solution. <code class="docutils literal notranslate"><span class="pre">recover</span></code> writes
+<span class="math notranslate nohighlight">\(u_o\)</span> into the slope’s boundary slots, so the RK update adds
+<span class="math notranslate nohighlight">\(h\,u_o\)</span> to the boundary <em>every</em> step (here
+<span class="math notranslate nohighlight">\(40 \times 10^{-2} \times 1 = 0.4\)</span> of drift), breaking
+<span class="math notranslate nohighlight">\(u_{n+1} = u_n + h\sum_i b_i k_i\)</span>. The <code class="docutils literal notranslate"><span class="pre">restrict</span></code> / <code class="docutils literal notranslate"><span class="pre">prolong</span></code>
+pair reproduces the manual loop to machine precision.</p>
+</div>
+</section>
+<section id="explicit-schemes">
+<h3>Explicit schemes<a class="headerlink" href="#explicit-schemes" title="Link to this heading">¶</a></h3>
+<p><a class="reference internal" href="../api/ode.html#tensormesh.ode.ExplicitRungeKutta" title="tensormesh.ode.ExplicitRungeKutta"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExplicitRungeKutta</span></code></a> has no linear solve and
+therefore no condensation hooks. The natural place for boundary
+conditions is inside the user-supplied <code class="docutils literal notranslate"><span class="pre">forward(t,</span> <span class="pre">u)</span></code>: return
+<span class="math notranslate nohighlight">\(f\)</span> with <code class="docutils literal notranslate"><span class="pre">f[boundary]</span> <span class="pre">=</span> <span class="pre">0</span></code> and the update
+<span class="math notranslate nohighlight">\(u_{n+1} = u_n + h \sum_i b_i k_i\)</span> preserves
+<span class="math notranslate nohighlight">\(u_{\text{boundary}}\)</span> automatically.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mesh</span><span class="p">,</span> <span class="n">MassElementAssembler</span><span class="p">,</span> <span class="n">LaplaceElementAssembler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh.ode</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExplicitEuler</span>
+
+<span class="n">mesh</span>  <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">gen_rectangle</span><span class="p">(</span><span class="n">chara_length</span><span class="o">=</span><span class="mf">0.08</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">M</span>     <span class="o">=</span> <span class="n">MassElementAssembler</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)()</span><span class="o">.</span><span class="n">double</span><span class="p">()</span>
+<span class="n">K</span>     <span class="o">=</span> <span class="n">LaplaceElementAssembler</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)()</span><span class="o">.</span><span class="n">double</span><span class="p">()</span>
+<span class="n">bmask</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">boundary_mask</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">HeatExplicit</span><span class="p">(</span><span class="n">ExplicitEuler</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;du/dt = M^{-1}(-kappa^2 K u), homogeneous Dirichlet.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">K</span> <span class="o">@</span> <span class="n">u</span><span class="p">))</span>     <span class="c1"># semi-discrete RHS (lump M in production)</span>
+        <span class="n">f</span><span class="p">[</span><span class="n">bmask</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>            <span class="c1"># Dirichlet DOFs have zero time-derivative</span>
+        <span class="k">return</span> <span class="n">f</span>
+
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">double</span><span class="p">()[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mesh</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">double</span><span class="p">()[:,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">u</span>    <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="n">dt</span> <span class="o">=</span> <span class="mf">5e-5</span>                         <span class="c1"># explicit -&gt; small (CFL-limited) step</span>
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">):</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">HeatExplicit</span><span class="p">()</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">step</span> <span class="o">*</span> <span class="n">dt</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Because the boundary slope is forced to zero, <code class="docutils literal notranslate"><span class="pre">u</span></code> stays at its
+initial boundary value (<code class="docutils literal notranslate"><span class="pre">0</span></code> here) for free. For time-varying
+Dirichlet data, write the analytical <span class="math notranslate nohighlight">\(\dot u_{\text{b}}(t)\)</span>
+into <code class="docutils literal notranslate"><span class="pre">f[boundary]</span></code> instead of zero, or overwrite the boundary
+slots of <code class="docutils literal notranslate"><span class="pre">u</span></code> between <code class="docutils literal notranslate"><span class="pre">step()</span></code> calls.</p>
+</section>
+</section>
+<section id="differentiability">
+<h2>Differentiability<a class="headerlink" href="#differentiability" title="Link to this heading">¶</a></h2>
+<p>Every step is built on a differentiable solve (see
+<a class="reference internal" href="linear_solvers.html"><span class="doc">Sparse Solvers</span></a>), so back-propagation through a transient
+simulation is a no-op:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kappa</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">u</span>     <span class="o">=</span> <span class="n">run_heat_solver</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">kappa</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">5e-4</span><span class="p">,</span> <span class="n">n_steps</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">loss</span>  <span class="o">=</span> <span class="p">(</span><span class="n">u</span> <span class="o">-</span> <span class="n">u_target</span><span class="p">)</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">kappa</span><span class="o">.</span><span class="n">grad</span><span class="p">)</span>            <span class="c1"># gradient through 100 implicit solves</span>
+</pre></div>
+</div>
+<p>This is what makes transient inverse problems, parameter identification,
+and gradient-based PDE design straightforward in TensorMesh — see
+<a class="reference internal" href="differentiability.html"><span class="doc">Differentiability</span></a> for the longer story.</p>
+</section>
+<section id="what-s-next">
+<h2>What’s next<a class="headerlink" href="#what-s-next" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="linear_solvers.html"><span class="doc">Sparse Solvers</span></a> — the solver behind every step.</p></li>
+<li><p><a class="reference internal" href="differentiability.html"><span class="doc">Differentiability</span></a> — backprop through a transient solve to
+optimise parameters or initial conditions.</p></li>
+<li><p><a class="reference internal" href="batched_workflows.html"><span class="doc">Batched Workflows</span></a> — batched initial conditions or parameters
+with the same transient driver.</p></li>
+<li><p><a class="reference internal" href="../example_gallery/index.html"><span class="doc">Example Gallery</span></a> — heat, wave, and transient
+elasticity demos with rendered animations.</p></li>
+</ul>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="batched_workflows.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Batched Workflows</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="linear_solvers.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Sparse Solvers</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, TensorMesh Contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/camlab-ethz/TensorMesh" aria-label="GitHub"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+              <a class="muted-link " href="https://discord.gg/EC9kbHSnrx" aria-label="Discord"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.576-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.05.05 0 0 0-.021.019C.356 6.024-.213 9.047.066 12.032c.002.015.01.029.02.037a13.3 13.3 0 0 0 3.995 2.01.05.05 0 0 0 .056-.019c.308-.42.582-.86.818-1.329a.05.05 0 0 0-.027-.06 8.7 8.7 0 0 1-1.248-.595.05.05 0 0 1-.005-.085c.079-.053.16-.104.248-.152a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007c.08.048.16.1.248.152a.05.05 0 0 1-.004.085 8.2 8.2 0 0 1-1.249.594.05.05 0 0 0-.027.06c.24.465.514.906.817 1.329a.05.05 0 0 0 .056.02 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.036c.334-3.451-.559-6.449-2.366-9.106a.04.04 0 0 0-.021-.02zM5.68 10.77c-.789 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.45.73 1.438 1.61 0 .886-.637 1.61-1.438 1.61zm4.842 0c-.788 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.451.73 1.438 1.61 0 .886-.63 1.61-1.438 1.61z"></path></svg></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Time Integration</a><ul>
+<li><a class="reference internal" href="#the-integrator-catalogue">The integrator catalogue</a></li>
+<li><a class="reference internal" href="#worked-example-1-a-scalar-ode">Worked example 1: a scalar ODE</a></li>
+<li><a class="reference internal" href="#worked-example-2-2d-heat-equation">Worked example 2: 2D heat equation</a></li>
+<li><a class="reference internal" href="#custom-butcher-tableaux">Custom Butcher tableaux</a></li>
+<li><a class="reference internal" href="#composing-with-boundary-conditions">Composing with boundary conditions</a><ul>
+<li><a class="reference internal" href="#in-a-manual-loop">In a manual loop</a></li>
+<li><a class="reference internal" href="#through-the-integrator-classes">Through the integrator classes</a></li>
+<li><a class="reference internal" href="#why-restrict-prolong-and-not-condense-rhs-recover">Why <code class="docutils literal notranslate"><span class="pre">restrict</span></code> / <code class="docutils literal notranslate"><span class="pre">prolong</span></code> and not <code class="docutils literal notranslate"><span class="pre">condense_rhs</span></code> / <code class="docutils literal notranslate"><span class="pre">recover</span></code></a></li>
+<li><a class="reference internal" href="#explicit-schemes">Explicit schemes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#differentiability">Differentiability</a></li>
+<li><a class="reference internal" href="#what-s-next">What’s next</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=a58bc63e"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

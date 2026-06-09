@@ -1,0 +1,1661 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
+        <link rel="prefetch" href="../../../_static/logo.png" as="image">
+        <link rel="prefetch" href="../../../_static/logo.png" as="image">
+
+    <link rel="shortcut icon" href="../../../_static/logo.png"><!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>tensormesh.element.transformation - TensorMesh</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=95a110e3" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #5B6EE8;
+  --color-brand-content: #149B8E;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">TensorMesh</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../../_static/logo.png" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../../_static/logo.png" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">TensorMesh</span>
+  
+</a><div class="sidebar-language-switcher">
+  <span class="active">English</span>
+  <span class="sep">·</span>
+  <a href="../../../zh/_modules/tensormesh/element/transformation.html" rel="alternate" hreflang="zh-CN" title="中文">中文</a>
+</div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../getting_started/index.html">Get Started</a><input aria-label="Toggle navigation of Get Started" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../getting_started/quickstart.html">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../getting_started/verify_install.html">Verify Install</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a><input aria-label="Toggle navigation of User Guide" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/concepts.html">Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/meshes.html">Meshes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/elements_and_quadrature.html">Elements and Quadrature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/forms.html">Forms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/boundary_conditions.html">Boundary Conditions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/linear_solvers.html">Sparse Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/time_integration.html">Time Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/batched_workflows.html">Batched Workflows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user_guide/differentiability.html">Differentiability</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../example_gallery/index.html">Example Gallery</a><input aria-label="Toggle navigation of Example Gallery" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/basics.html">Basics &amp; Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/poisson.html">Poisson Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/diffusion.html">Diffusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/wave.html">Wave Equation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../example_gallery/solid/index.html">Solid Mechanics</a><input aria-label="Toggle navigation of Solid Mechanics" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/solid/cantilever_beam.html">Cantilever Beam</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/solid/hyperelastic_beam.html">Hyperelastic Beam (Neo-Hookean)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/solid/hertzian_contact.html">Hertzian Contact</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/solid/plasticity_strip.html">Plasticity (J2 with Isotropic Hardening)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/solid/drucker_prager_triaxial.html">Geomechanics: Drucker-Prager triaxial compression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/solid/elastic_footing.html">Geomechanics: elastic strip footing</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../example_gallery/fluid/index.html">Fluid Mechanics</a><input aria-label="Toggle navigation of Fluid Mechanics" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/fluid/cavity.html">Lid-Driven Cavity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/fluid/cylinder_flow.html">Cylinder Flow (Vortex Shedding)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/fluid/flow_obstacles.html">Flow Past Multiple Obstacles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/fluid/rayleigh_benard.html">Rayleigh-Bénard Convection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../example_gallery/fluid/taylor_green.html">Taylor-Green Vortex (Convergence Study)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/maxwell.html">Magnetostatics (Maxwell)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/inverse_design.html">Inverse Design &amp; Identification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/physics_informed.html">Physics-Informed Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/dataset.html">ML Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../example_gallery/distributed.html">Distributed FEM</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/index.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/mesh.html">tensormesh.mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/element.html">tensormesh.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/assemble.html">tensormesh.assemble</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/operator.html">tensormesh.operator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/sparse.html">tensormesh.sparse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/ode.html">tensormesh.ode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/functional.html">tensormesh.functional</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/optimizer.html">tensormesh.optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/material.html">tensormesh.material</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/distributed.html">tensormesh.distributed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/nn.html">tensormesh.nn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/dataset.html">tensormesh.dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/visualization.html">tensormesh.visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../performance/index.html">Performance</a><input aria-label="Toggle navigation of Performance" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../performance/benchmarks.html">Benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../performance/scaling_guide.html">Scaling Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../performance/profiling.html">Profiling</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../community/index.html">Community</a><input aria-label="Toggle navigation of Community" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../community/discord.html">Discord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../community/github_discussions.html">GitHub Discussions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../community/github_issues.html">GitHub Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../community/contributing.html">Contributing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../community/citing.html">Citing TensorMesh</a></li>
+</ul>
+</li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for tensormesh.element.transformation</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tensorx1</span><span class="p">,</span> <span class="n">Tensorx2</span><span class="p">,</span> <span class="n">Tensorx3</span><span class="p">,</span> <span class="n">Tensorx4</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.element</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.element_type</span><span class="w"> </span><span class="kn">import</span> <span class="n">element_type2element</span><span class="p">,</span> <span class="n">element_type2order</span>
+
+
+<div class="viewcode-block" id="Transformation">
+<a class="viewcode-back" href="../../../api/element.html#tensormesh.Transformation">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Transformation</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reference-to-physical mapping for one element-type block of a mesh.</span>
+
+<span class="sd">    Holds the per-element Jacobian, shape-function values, shape-function</span>
+<span class="sd">    gradients, quadrature points/weights, and their facet analogues — all the</span>
+<span class="sd">    geometric ingredients an assembler needs to integrate a weak form.</span>
+<span class="sd">    Subclass of :class:`torch.nn.Module`, so every cached tensor is a buffer</span>
+<span class="sd">    and follows the module&#39;s ``.to()``/``.cuda()``/``.double()``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        import tensormesh as tm</span>
+
+<span class="sd">        mesh = tm.Mesh.gen_rectangle(chara_length=0.1)        # triangle mesh</span>
+<span class="sd">        transform = tm.Transformation(</span>
+<span class="sd">            mesh.points,</span>
+<span class="sd">            mesh.cells[&quot;triangle&quot;],</span>
+<span class="sd">            element_type=&quot;triangle&quot;,</span>
+<span class="sd">            quadrature_order=2,</span>
+<span class="sd">        )</span>
+
+<span class="sd">        # Geometric quantities at quadrature points</span>
+<span class="sd">        J   = transform.jacobian      # [n_elem, n_q, dim, dim]</span>
+<span class="sd">        phi = transform.shape_val     # [n_q, n_basis]</span>
+<span class="sd">        gphi= transform.shape_grad    # [n_elem, n_q, n_basis, dim]</span>
+<span class="sd">        jxw = transform.JxW           # [n_elem, n_q]  (|det J| · w)</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    elements : torch.Tensor</span>
+<span class="sd">        Element connectivity tensor of shape :math:`[N_e, N_b]` where:</span>
+<span class="sd">        </span>
+<span class="sd">        * :math:`N_e` = number of elements</span>
+<span class="sd">        * :math:`N_b` = number of basis functions per element</span>
+<span class="sd">        </span>
+<span class="sd">    points : torch.Tensor </span>
+<span class="sd">        Point coordinates tensor of shape :math:`[N_p, D]` where:</span>
+<span class="sd">        </span>
+<span class="sd">        * :math:`N_p` = number of points</span>
+<span class="sd">        * :math:`D` = spatial dimension</span>
+<span class="sd">        </span>
+<span class="sd">    element : Type[Element]</span>
+<span class="sd">        Element type class (e.g. Triangle, Tetrahedron)</span>
+<span class="sd">        </span>
+<span class="sd">    basis_order : int</span>
+<span class="sd">        Order of basis functions</span>
+<span class="sd">        </span>
+<span class="sd">    quadrature_order : int</span>
+<span class="sd">        Order of quadrature rule</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">elements</span><span class="p">:</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> 
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Element connectivity tensor of shape :math:`[N_e, N_b]` where:</span>
+<span class="sd">    </span>
+<span class="sd">    * :math:`N_e` = number of elements</span>
+<span class="sd">    * :math:`N_b` = number of basis functions per element</span>
+<span class="sd">    </span>
+<span class="sd">    :no-index:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">points</span><span class="p">:</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Point coordinates tensor of shape :math:`[N_p, D]` where:</span>
+<span class="sd">    </span>
+<span class="sd">    * :math:`N_p` = number of points</span>
+<span class="sd">    * :math:`D` = spatial dimension</span>
+<span class="sd">    </span>
+<span class="sd">    :no-index:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">element</span><span class="p">:</span><span class="n">Type</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Element type class (e.g. Triangle, Tetrahedron)</span>
+<span class="sd">    </span>
+<span class="sd">    :no-index:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">basis_order</span><span class="p">:</span><span class="nb">int</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Order of basis functions</span>
+<span class="sd">    </span>
+<span class="sd">    :no-index:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">quadrature_order</span><span class="p">:</span><span class="nb">int</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Order of quadrature rule</span>
+<span class="sd">    </span>
+<span class="sd">    :no-index:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Transformation.__init__">
+<a class="viewcode-back" href="../../../api/element.html#tensormesh.Transformation.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                 <span class="n">points</span><span class="p">:</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                 <span class="n">elements</span><span class="p">:</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                 <span class="n">element_type</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> 
+                 <span class="n">quadrature_order</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize transformation.</span>
+
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            # Single linear triangle</span>
+<span class="sd">            points   = torch.tensor([[0., 0.], [1., 0.], [0., 1.]])</span>
+<span class="sd">            elements = torch.tensor([[0, 1, 2]])</span>
+<span class="sd">            transform = Transformation(points, elements, &quot;triangle&quot;, quadrature_order=2)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        points : torch.Tensor</span>
+<span class="sd">            Point coordinates tensor of shape :math:`[N_p, D]`.</span>
+<span class="sd">        elements : torch.Tensor</span>
+<span class="sd">            Element connectivity tensor of shape :math:`[N_e, N_b]`.</span>
+<span class="sd">        element_type : str</span>
+<span class="sd">            Element type string (e.g. ``&quot;triangle&quot;``, ``&quot;triangle6&quot;``,</span>
+<span class="sd">            ``&quot;tetra&quot;``, ``&quot;hexahedron27&quot;``). See</span>
+<span class="sd">            :data:`tensormesh.element_types` for the full list.</span>
+<span class="sd">        quadrature_order : int, optional</span>
+<span class="sd">            Order of the quadrature rule, by default 2.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;elements&quot;</span><span class="p">,</span> <span class="n">elements</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="p">:</span><span class="n">Type</span><span class="p">[</span><span class="n">Element</span><span class="p">]</span> <span class="o">=</span> <span class="n">element_type2element</span><span class="p">(</span><span class="n">element_type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">basis_order</span><span class="p">:</span><span class="nb">int</span> <span class="o">=</span> <span class="n">element_type2order</span><span class="p">[</span><span class="n">element_type</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">quadrature_order</span><span class="o">=</span> <span class="n">quadrature_order</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_points</span><span class="p">(</span><span class="n">points</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Transformation.update_points">
+<a class="viewcode-back" href="../../../api/element.html#tensormesh.Transformation.update_points">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace the cached node coordinates and reset derived buffers.</span>
+
+<span class="sd">        Use this after deforming the mesh — e.g. in a moving-mesh or</span>
+<span class="sd">        topology-optimization loop — when the connectivity does not change</span>
+<span class="sd">        but the geometry does.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            new_points = transform.points + displacement</span>
+<span class="sd">            transform.update_points(new_points)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        points : torch.Tensor</span>
+<span class="sd">            Point coordinates tensor of shape :math:`[N_p, D]` where</span>
+<span class="sd">            :math:`N_p` is the number of points and :math:`D` the spatial</span>
+<span class="sd">            dimension.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dtype</span><span class="p">,</span> <span class="n">device</span>            <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">points</span><span class="o">.</span><span class="n">device</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;points&quot;</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_points</span>            <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> </div>
+
+        <span class="c1"># self.element_coords      = self.points[self.elements]</span>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the spatial dimension of the mesh.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            The spatial dimension :math:`D` (1, 2, or 3)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># type:ignore</span>
+
+    <span class="nd">@property</span> 
+    <span class="k">def</span><span class="w"> </span><span class="nf">device</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the device of the mesh tensors.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.device</span>
+<span class="sd">            The device (CPU/GPU) where the mesh tensors are stored</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">device</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the data type of the mesh tensors.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.dtype</span>
+<span class="sd">            The data type (e.g. torch.float32) of the mesh tensors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">dtype</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">element_coords</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the physical coordinates of element nodes.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            transform = Transformation(points, elements, &quot;triangle&quot;)</span>
+<span class="sd">            coords = transform.element_coords</span>
+<span class="sd">            # coords[e]    -&gt; [n_basis, dim] coordinates of all nodes in element e</span>
+<span class="sd">            # coords[e, b] -&gt; [dim] coordinate of basis node b in element e</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Element node coordinates tensor of shape :math:`[N_e, N_b, D]` where:</span>
+<span class="sd">            </span>
+<span class="sd">            * :math:`N_e` = number of elements</span>
+<span class="sd">            * :math:`N_b` = number of basis functions per element  </span>
+<span class="sd">            * :math:`D` = spatial dimension</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">]</span> <span class="c1"># type:ignore [n_element, n_basis, dim]</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">n_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the number of elements in the mesh.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            Number of elements :math:`N_e`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">basis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Tensorx1</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the basis function nodes in reference coordinates.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            transform = Transformation(points, elements, &quot;triangle&quot;, basis_order=2)</span>
+<span class="sd">            basis = transform.basis  # Get quadratic basis nodes</span>
+<span class="sd">            # For triangles: 6 nodes (3 vertices + 3 edge midpoints)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Basis node coordinates tensor of shape :math:`[N_b, D]` where:</span>
+<span class="sd">            </span>
+<span class="sd">            * :math:`N_b` = number of basis functions</span>
+<span class="sd">            * :math:`D` = spatial dimension</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">get_basis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basis_order</span><span class="p">)</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="c1"># [n_basis, dim]</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">n_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the number of basis functions per element.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            Number of basis functions :math:`N_b`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@property</span> 
+    <span class="k">def</span><span class="w"> </span><span class="nf">quadrature</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Tensorx2</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get quadrature weights and points.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            transform = Transformation(points, elements, &quot;triangle&quot;, quadrature_order=2)</span>
+<span class="sd">            weights, points = transform.quadrature</span>
+<span class="sd">            # weights: quadrature weights for numerical integration</span>
+<span class="sd">            # points: quadrature point coordinates in reference element</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Tuple[torch.Tensor, torch.Tensor]</span>
+<span class="sd">            - Quadrature weights tensor of shape :math:`[N_q]`</span>
+<span class="sd">            - Quadrature points tensor of shape :math:`[N_q, D]`</span>
+<span class="sd">            </span>
+<span class="sd">            where:</span>
+<span class="sd">            </span>
+<span class="sd">            * :math:`N_q` = number of quadrature points</span>
+<span class="sd">            * :math:`D` = spatial dimension</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;_quadrature_w&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">:</span> <span class="c1"># type: ignore</span>
+            <span class="n">w</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">get_quadrature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quadrature_order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="c1"># [n_quadrature], [n_quadrature, dim]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_quadrature_w&quot;</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_quadrature_q&quot;</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quadrature_w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quadrature_q</span> <span class="c1"># type: ignore [n_quadrature], [n_quadrature, dim]</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">n_quadrature</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the number of quadrature points per element.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            Number of quadrature points :math:`N_q`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadrature</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@property</span> 
+    <span class="k">def</span><span class="w"> </span><span class="nf">shape_val</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Tensorx1</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get shape function values at quadrature points.</span>
+
+<span class="sd">        The shape functions :math:`N_i(\boldsymbol{\xi})` are evaluated at the quadrature points</span>
+<span class="sd">        in the reference element.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            transform = Transformation(points, elements, &quot;triangle&quot;)</span>
+<span class="sd">            N = transform.shape_val</span>
+<span class="sd">            # N[i,j] is value of jth shape function at ith quadrature point</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Shape function values tensor of shape :math:`[N_q, N_b]` where:</span>
+<span class="sd">            </span>
+<span class="sd">            * :math:`N_q` = number of quadrature points</span>
+<span class="sd">            * :math:`N_b` = number of basis functions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;_shape_val&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">:</span> <span class="c1"># type: ignore</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">p</span>      <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadrature</span>
+            <span class="n">shape_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">eval_shape_val</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadrature_order</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_shape_val&quot;</span><span class="p">,</span> <span class="n">shape_val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape_val</span>  <span class="c1"># type:ignore [n_quadrature, n_basis]</span>
+
+    <span class="nd">@property</span> 
+    <span class="k">def</span><span class="w"> </span><span class="nf">shape_grad</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Tensorx1</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get shape function gradients at quadrature points.</span>
+
+<span class="sd">        The shape function gradients :math:`\nabla N_i(\mathbf{x})` are evaluated at the quadrature points</span>
+<span class="sd">        in physical coordinates.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            transform = Transformation(points, elements, &quot;triangle&quot;)</span>
+<span class="sd">            dN = transform.shape_grad</span>
+<span class="sd">            # dN[e,q,i,d] is derivative of ith shape function w.r.t.</span>
+<span class="sd">            # dth coordinate at qth quadrature point in eth element</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Shape function gradients tensor of shape :math:`[N_e, N_q, N_b, D]` where:</span>
+<span class="sd">            </span>
+<span class="sd">            * :math:`N_e` = number of elements</span>
+<span class="sd">            * :math:`N_q` = number of quadrature points</span>
+<span class="sd">            * :math:`N_b` = number of basis functions</span>
+<span class="sd">            * :math:`D` = spatial dimension</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;_shape_grad&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">:</span> <span class="c1"># type: ignore</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadrature</span>
+            <span class="n">shape_grad</span><span class="p">,</span> <span class="n">jacobian</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">eval_shape_grad</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">element_coords</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadrature_order</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_shape_grad&quot;</span><span class="p">,</span> <span class="n">shape_grad</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_jacobian&quot;</span><span class="p">,</span> <span class="n">jacobian</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape_grad</span> 
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Tensorx1</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get Jacobian matrices at basis points,</span>
+
+<span class="sd">        The Jacobian matrix :math:`\mathbf{J} = \frac{\partial\mathbf{x}}{\partial\boldsymbol{\xi}}`</span>
+<span class="sd">        maps derivatives from reference to physical coordinates.</span>
+
+<span class="sd">        The Jacobian matrix maps derivatives between reference and physical coordinates:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \frac{\partial}{\partial x_i} = \sum_{j=1}^D J^{-1}_{ij} \frac{\partial}{\partial \xi_j}</span>
+
+<span class="sd">        where :math:`J_{ij} = \frac{\partial x_i}{\partial \xi_j}` and :math:`D` is the spatial dimension.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            transform = Transformation(points, elements, &quot;triangle&quot;)</span>
+<span class="sd">            J = transform.jacobian</span>
+<span class="sd">            # J[e,q,:,:] is Jacobian matrix at qth quadrature point</span>
+<span class="sd">            # in eth element</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Jacobian matrices tensor of shape :math:`[N_e, N_q, D, D]` where:</span>
+<span class="sd">            </span>
+<span class="sd">            * :math:`N_e` = number of elements</span>
+<span class="sd">            * :math:`N_q` = number of quadrature points </span>
+<span class="sd">            * :math:`D` = spatial dimension</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;_jacobian&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">:</span> <span class="c1"># type: ignore</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">shape_grad</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jacobian</span> <span class="c1"># type:ignore [n_element, n_quadrature, dim, dim]</span>
+    
+    <span class="nd">@property</span> 
+    <span class="k">def</span><span class="w"> </span><span class="nf">facets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Union</span><span class="p">[</span><span class="n">Tensorx1</span><span class="p">,</span><span class="n">Tensorx2</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get element facet connectivity.</span>
+
+<span class="sd">        For elements with uniform facets (e.g. all triangles or all quads), returns a single tensor.</span>
+<span class="sd">        For elements with mixed facets (e.g. prism or pyramid), returns separate tensors for triangular </span>
+<span class="sd">        and quadrilateral facets.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            # For a tetrahedral mesh (uniform triangular facets)</span>
+<span class="sd">            transform = Transformation(points, elements, &quot;tetra&quot;)</span>
+<span class="sd">            facets = transform.facets  # Single tensor of triangular facets</span>
+<span class="sd">            </span>
+<span class="sd">            # For a prism mesh (mixed tri/quad facets)</span>
+<span class="sd">            transform = Transformation(points, elements, &quot;wedge&quot;) </span>
+<span class="sd">            tri_facets, quad_facets = transform.facets  # Separate tensors</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        If element has uniform facets:</span>
+<span class="sd">            torch.Tensor</span>
+<span class="sd">                Facet connectivity tensor of shape :math:`[N_f, N_b]` where:</span>
+
+<span class="sd">                * :math:`N_f` = number of facets</span>
+<span class="sd">                * :math:`N_b` = number of basis functions per facet</span>
+
+<span class="sd">        If element has mixed facets:</span>
+<span class="sd">            Tuple[torch.Tensor, torch.Tensor]</span>
+<span class="sd">                * Triangular facet tensor of shape :math:`[N_{tf}, N_{tb}]`</span>
+<span class="sd">                * Quadrilateral facet tensor of shape :math:`[N_{qf}, N_{qb}]`</span>
+<span class="sd">                </span>
+<span class="sd">                where:</span>
+
+<span class="sd">                * :math:`N_{tf}` = number of triangular facets</span>
+<span class="sd">                * :math:`N_{tb}` = number of basis functions per triangular facet</span>
+<span class="sd">                * :math:`N_{qf}` = number of quadrilateral facets  </span>
+<span class="sd">                * :math:`N_{qb}` = number of basis functions per quadrilateral facet</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">is_mix_facet</span><span class="p">:</span>
+            <span class="n">tri_facets</span><span class="p">,</span> <span class="n">quad_facets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">element_to_facet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_order</span><span class="p">)</span> <span class="c1"># type: ignore</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">tri_facets</span><span class="p">,</span> <span class="n">quad_facets</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">facets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">element_to_facet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_order</span><span class="p">)</span> <span class="c1"># type: ignore</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">facets</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">facets</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">facet_quadrature</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Union</span><span class="p">[</span><span class="n">Tensorx2</span><span class="p">,</span><span class="n">Tensorx4</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get quadrature weights and points for element facets.</span>
+
+<span class="sd">        Provides quadrature rules for numerical integration over element facets.</span>
+<span class="sd">        For mixed facet elements, returns separate quadrature rules for triangular</span>
+<span class="sd">        and quadrilateral facets.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            # For tetrahedral mesh (triangular facets)</span>
+<span class="sd">            transform = Transformation(points, elements, &quot;tetra&quot;)</span>
+<span class="sd">            weights, points = transform.facet_quadrature</span>
+<span class="sd">            </span>
+<span class="sd">            # For prism mesh (mixed facets)</span>
+<span class="sd">            transform = Transformation(points, elements, &quot;wedge&quot;)</span>
+<span class="sd">            tri_w, tri_p, quad_w, quad_p = transform.facet_quadrature</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        If element has uniform facets:</span>
+<span class="sd">            Tuple[torch.Tensor, torch.Tensor]</span>
+<span class="sd">                * Weights tensor of shape :math:`[N_f, N_q]`</span>
+<span class="sd">                * Points tensor of shape :math:`[N_f, N_q, D]`</span>
+<span class="sd">                </span>
+<span class="sd">                where:</span>
+
+<span class="sd">                * :math:`N_f` = number of facets</span>
+<span class="sd">                * :math:`N_q` = number of quadrature points per facet</span>
+<span class="sd">                * :math:`D` = spatial dimension</span>
+
+<span class="sd">        If element has mixed facets:</span>
+<span class="sd">            Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]</span>
+<span class="sd">                * Triangular facet weights of shape :math:`[N_{tf}, N_{tq}]`</span>
+<span class="sd">                * Triangular facet points of shape :math:`[N_{tf}, N_{tq}, D]`</span>
+<span class="sd">                * Quadrilateral facet weights of shape :math:`[N_{qf}, N_{qq}]`</span>
+<span class="sd">                * Quadrilateral facet points of shape :math:`[N_{qf}, N_{qq}, D]`</span>
+<span class="sd">                </span>
+<span class="sd">                where:</span>
+
+<span class="sd">                * :math:`N_{tf}` = number of triangular facets</span>
+<span class="sd">                * :math:`N_{tq}` = quadrature points per triangular facet</span>
+<span class="sd">                * :math:`N_{qf}` = number of quadrilateral facets</span>
+<span class="sd">                * :math:`N_{qq}` = quadrature points per quadrilateral facet</span>
+<span class="sd">                * :math:`D` = spatial dimension</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">is_mix_facet</span><span class="p">:</span>
+            <span class="n">tri_m</span><span class="p">,</span> <span class="n">tri_q</span><span class="p">,</span> <span class="n">quad_m</span><span class="p">,</span> <span class="n">quad_q</span><span class="p">,</span> <span class="n">tri_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">get_facet_quadrature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quadrature_order</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># type:ignore</span>
+            <span class="n">tri_m</span> <span class="o">=</span> <span class="n">tri_m</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">tri_q</span> <span class="o">=</span> <span class="n">tri_q</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">quad_m</span><span class="o">=</span> <span class="n">quad_m</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">quad_q</span><span class="o">=</span> <span class="n">quad_q</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">tri_m</span><span class="p">,</span> <span class="n">tri_q</span><span class="p">,</span> <span class="n">quad_m</span><span class="p">,</span> <span class="n">quad_q</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">m</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">get_facet_quadrature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quadrature_order</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># type:ignore [n_facet, n_quadrature_per_facet], [n_facet, n_quadrature_per_facet, dim]</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">m</span><span class="p">,</span> <span class="n">q</span>
+        
+    <span class="nd">@property</span> 
+    <span class="k">def</span><span class="w"> </span><span class="nf">facet_shape_val</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Union</span><span class="p">[</span><span class="n">Tensorx1</span><span class="p">,</span><span class="n">Tensorx2</span><span class="p">]:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get shape function values at facet quadrature points.</span>
+
+<span class="sd">        Evaluates the element shape functions at the quadrature points on each facet.</span>
+<span class="sd">        For mixed facet elements, returns separate evaluations for triangular and</span>
+<span class="sd">        quadrilateral facets.</span>
+
+<span class="sd">        The shape functions :math:`\phi_i(\mathbf{x})` are evaluated at quadrature points on each facet:</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            \phi_i(\mathbf{x}_q^f) = \phi_i(\mathbf{F}^f(\mathbf{r}_q))</span>
+
+<span class="sd">        where:</span>
+
+<span class="sd">        * :math:`\mathbf{x}_q^f` = physical coordinates of quadrature point :math:`q` on facet :math:`f`</span>
+<span class="sd">        * :math:`\mathbf{F}^f` = mapping from reference to physical facet</span>
+<span class="sd">        * :math:`\mathbf{r}_q` = reference coordinates of quadrature point :math:`q`</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            # For tetrahedral mesh (triangular facets)</span>
+<span class="sd">            transform = Transformation(points, elements, &quot;tetra&quot;)</span>
+<span class="sd">            shape_vals = transform.facet_shape_val</span>
+<span class="sd">            </span>
+<span class="sd">            # For prism mesh (mixed facets)</span>
+<span class="sd">            transform = Transformation(points, elements, &quot;wedge&quot;)</span>
+<span class="sd">            tri_vals, quad_vals = transform.facet_shape_val</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        If element has uniform facets:</span>
+<span class="sd">            torch.Tensor</span>
+<span class="sd">                Shape function values tensor of shape :math:`[N_f, N_q, N_b]` where:</span>
+
+<span class="sd">                * :math:`N_f` = number of facets</span>
+<span class="sd">                * :math:`N_q` = number of quadrature points per facet</span>
+<span class="sd">                * :math:`N_b` = number of basis functions</span>
+
+<span class="sd">        If element has mixed facets:</span>
+<span class="sd">            Tuple[torch.Tensor, torch.Tensor]</span>
+<span class="sd">                * Triangular facet values of shape :math:`[N_{tf}, N_{tq}, N_b]`</span>
+<span class="sd">                * Quadrilateral facet values of shape :math:`[N_{qf}, N_{qq}, N_b]`</span>
+<span class="sd">                </span>
+<span class="sd">                where:</span>
+
+<span class="sd">                * :math:`N_{tf}` = number of triangular facets</span>
+<span class="sd">                * :math:`N_{tq}` = quadrature points per triangular facet</span>
+<span class="sd">                * :math:`N_{qf}` = number of quadrilateral facets</span>
+<span class="sd">                * :math:`N_{qq}` = quadrature points per quadrilateral facet</span>
+<span class="sd">                * :math:`N_b` = number of basis functions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">is_mix_facet</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;_facet_shape_val_tri&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">:</span> <span class="c1"># type: ignore</span>
+                <span class="n">tri_m</span><span class="p">,</span> <span class="n">tri_p</span><span class="p">,</span> <span class="n">quad_m</span><span class="p">,</span> <span class="n">quad_p</span><span class="p">,</span> <span class="n">tri_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">facet_quadrature</span> <span class="c1"># type:ignore</span>
+                <span class="n">n_tri_facet</span><span class="p">,</span> <span class="n">n_quadrature_per_tri_facet</span><span class="p">,</span> <span class="n">_</span>   <span class="o">=</span> <span class="n">tri_p</span><span class="o">.</span><span class="n">shape</span>
+                <span class="n">n_quad_facet</span><span class="p">,</span> <span class="n">n_quadrature_per_quad_facet</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">quad_p</span><span class="o">.</span><span class="n">shape</span>
+                <span class="n">tri_shape_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">eval_shape_val</span><span class="p">(</span><span class="n">tri_p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadrature_order</span><span class="p">)</span>
+                <span class="n">quad_shape_val</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">eval_shape_val</span><span class="p">(</span><span class="n">quad_p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadrature_order</span><span class="p">)</span>
+                <span class="n">tri_shape_val</span> <span class="o">=</span> <span class="n">tri_shape_val</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n_tri_facet</span><span class="p">,</span> <span class="n">n_quadrature_per_tri_facet</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_basis</span><span class="p">)</span>
+                <span class="n">quad_shape_val</span><span class="o">=</span> <span class="n">quad_shape_val</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n_quad_facet</span><span class="p">,</span> <span class="n">n_quadrature_per_quad_facet</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_basis</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_facet_shape_val_tri&quot;</span><span class="p">,</span> <span class="n">tri_shape_val</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_facet_shape_val_quad&quot;</span><span class="p">,</span> <span class="n">quad_shape_val</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_facet_shape_val_tri</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_facet_shape_val_quad</span> <span class="c1"># type:ignore [n_tri_facet, n_quadrature_per_tri_facet, n_basis], [n_quad_facet, n_quadrature_per_quad_facet, n_basis]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;_facet_shape_val&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">:</span> <span class="c1"># type: ignore</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">facet_quadrature</span> <span class="c1"># type:ignore [n_facet, n_quadrature_per_facet], [n_facet, n_quadrature_per_facet, dim]</span>
+                <span class="n">n_facet</span><span class="p">,</span> <span class="n">n_quadrature_per_facet</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">shape</span> 
+                <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>
+                <span class="n">shape_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">eval_shape_val</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadrature_order</span><span class="p">)</span>
+                <span class="n">shape_val</span> <span class="o">=</span> <span class="n">shape_val</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n_facet</span><span class="p">,</span> <span class="n">n_quadrature_per_facet</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_basis</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_facet_shape_val&quot;</span><span class="p">,</span> <span class="n">shape_val</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_facet_shape_val</span> <span class="c1"># type:ignore [n_facet, n_quadrature_per_facet, n_basis]</span>
+              
+    <span class="nd">@property</span> 
+    <span class="k">def</span><span class="w"> </span><span class="nf">facet_shape_grad</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Union</span><span class="p">[</span><span class="n">Tensorx1</span><span class="p">,</span> <span class="n">Tensorx2</span><span class="p">]:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get shape function gradients at facet quadrature points.</span>
+
+<span class="sd">        Evaluates the gradients of element shape functions at quadrature points on each facet.</span>
+<span class="sd">        For mixed facet elements, returns separate gradient evaluations for triangular and</span>
+<span class="sd">        quadrilateral facets.</span>
+
+<span class="sd">        The shape function gradients :math:`\nabla\phi_i` are evaluated at quadrature points on each facet.</span>
+<span class="sd">        For a facet :math:`f`, the gradients are computed as:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \nabla\phi_i(\mathbf{x}_q^f) = \mathbf{J}^{-T}(\mathbf{x}_q^f) \nabla\hat{\phi}_i(\boldsymbol{\xi}_q^f)</span>
+
+<span class="sd">        where:</span>
+
+<span class="sd">        * :math:`\mathbf{x}_q^f` is the physical coordinate of quadrature point :math:`q` on facet :math:`f`</span>
+<span class="sd">        * :math:`\boldsymbol{\xi}_q^f` is the reference coordinate of the quadrature point</span>
+<span class="sd">        * :math:`\mathbf{J}` is the Jacobian matrix</span>
+<span class="sd">        * :math:`\hat{\phi}_i` is the reference element shape function</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            # For tetrahedral mesh (triangular facets)</span>
+<span class="sd">            transform = Transformation(points, elements, &quot;tetra&quot;)</span>
+<span class="sd">            grads = transform.facet_shape_grad</span>
+<span class="sd">            </span>
+<span class="sd">            # For prism mesh (mixed facets)</span>
+<span class="sd">            transform = Transformation(points, elements, &quot;wedge&quot;)</span>
+<span class="sd">            tri_grads, quad_grads = transform.facet_shape_grad</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        If element has uniform facets:</span>
+<span class="sd">            torch.Tensor</span>
+<span class="sd">                Shape function gradients tensor of shape :math:`[N_f, N_q, N_b, D]` where:</span>
+
+<span class="sd">                * :math:`N_f` = number of facets</span>
+<span class="sd">                * :math:`N_q` = number of quadrature points per facet</span>
+<span class="sd">                * :math:`N_b` = number of basis functions</span>
+<span class="sd">                * :math:`D` = spatial dimension</span>
+
+<span class="sd">        If element has mixed facets:</span>
+<span class="sd">            Tuple[torch.Tensor, torch.Tensor]</span>
+<span class="sd">                * Triangular facet gradients of shape :math:`[N_{tf}, N_{tq}, N_b, D]`</span>
+<span class="sd">                * Quadrilateral facet gradients of shape :math:`[N_{qf}, N_{qq}, N_b, D]`</span>
+<span class="sd">                </span>
+<span class="sd">                where:</span>
+
+<span class="sd">                * :math:`N_{tf}` = number of triangular facets</span>
+<span class="sd">                * :math:`N_{tq}` = quadrature points per triangular facet</span>
+<span class="sd">                * :math:`N_{qf}` = number of quadrilateral facets</span>
+<span class="sd">                * :math:`N_{qq}` = quadrature points per quadrilateral facet</span>
+<span class="sd">                * :math:`N_b` = number of basis functions</span>
+<span class="sd">                * :math:`D` = spatial dimension</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">is_mix_facet</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="s2">&quot;_facet_shape_grad_tri&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">:</span> <span class="c1"># type: ignore</span>
+
+                <span class="n">tri_m</span><span class="p">,</span> <span class="n">tri_q</span><span class="p">,</span> <span class="n">quad_m</span><span class="p">,</span> <span class="n">quad_q</span><span class="p">,</span> <span class="n">tri_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">facet_quadrature</span> <span class="c1"># type:ignore</span>
+                <span class="n">n_tri_facet</span><span class="p">,</span> <span class="n">n_quadrature_per_tri_facet</span><span class="p">,</span> <span class="n">_</span>   <span class="o">=</span> <span class="n">tri_q</span><span class="o">.</span><span class="n">shape</span>
+                <span class="n">n_quad_facet</span><span class="p">,</span> <span class="n">n_quadrature_per_quad_facet</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">quad_q</span><span class="o">.</span><span class="n">shape</span>
+
+                <span class="n">tri_q</span> <span class="o">=</span> <span class="n">tri_q</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+                <span class="n">quad_q</span><span class="o">=</span> <span class="n">quad_q</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+                <span class="n">tri_shape_grad</span><span class="p">,</span> <span class="n">tri_cell_jacobian</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">eval_shape_grad</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">element_coords</span><span class="p">,</span> <span class="n">tri_q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_order</span>
+                <span class="p">)</span> <span class="c1"># [n_element, n_quadrature, n_basis, n_dim], [n_element, n_quadrature, dim, dim]</span>
+                <span class="n">quad_shape_grad</span><span class="p">,</span> <span class="n">quad_cell_jacobian</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">eval_shape_grad</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">element_coords</span><span class="p">,</span> <span class="n">quad_q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_order</span>
+                <span class="p">)</span>
+                <span class="n">tri_shape_grad</span>    <span class="o">=</span> <span class="n">tri_shape_grad</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">n_elements</span><span class="p">,</span> <span class="n">n_tri_facet</span><span class="p">,</span> <span class="n">n_quadrature_per_tri_facet</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_basis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+                <span class="n">quad_shape_grad</span>   <span class="o">=</span> <span class="n">quad_shape_grad</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">n_elements</span><span class="p">,</span> <span class="n">n_quad_facet</span><span class="p">,</span> <span class="n">n_quadrature_per_quad_facet</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_basis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_facet_shape_grad_tri&quot;</span><span class="p">,</span> <span class="n">tri_shape_grad</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_facet_shape_grad_quad&quot;</span><span class="p">,</span> <span class="n">quad_shape_grad</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_facet_cell_jacobian_tri&quot;</span><span class="p">,</span> <span class="n">tri_cell_jacobian</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_facet_cell_jacobian_quad&quot;</span><span class="p">,</span> <span class="n">quad_cell_jacobian</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_facet_shape_grad_tri</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_facet_shape_grad_quad</span> <span class="c1"># type:ignore [n_tri_facet, n_quadrature_per_tri_facet, n_basis, dim], [n_quad_facet, n_quadrature_per_quad_facet, n_basis, dim]</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="s2">&quot;_facet_shape_grad&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">:</span> <span class="c1"># type:ignore</span>
+                <span class="n">w</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">facet_quadrature</span> <span class="c1"># type:ignore [n_facet, n_quadrature_per_facet], [n_facet, n_quadrature_per_facet, dim]</span>
+                <span class="n">n_facet</span><span class="p">,</span> <span class="n">n_quadrature_per_facet</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">shape</span>
+                
+                <span class="n">q</span>    <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+                <span class="n">shape_grad</span><span class="p">,</span> <span class="n">cell_jacobian</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">eval_shape_grad</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">element_coords</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_order</span>
+                <span class="p">)</span> <span class="c1"># [n_element, n_quadrature, n_basis, n_dim], [n_element, n_quadrature, dim, dim]</span>
+                
+                <span class="n">shape_grad</span>    <span class="o">=</span> <span class="n">shape_grad</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">n_elements</span><span class="p">,</span> <span class="n">n_facet</span><span class="p">,</span> <span class="n">n_quadrature_per_facet</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_basis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+                
+                <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_facet_shape_grad&quot;</span><span class="p">,</span> <span class="n">shape_grad</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_facet_cell_jacobian&quot;</span><span class="p">,</span> <span class="n">cell_jacobian</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_facet_shape_grad</span> <span class="c1"># type:ignore</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">facet_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Union</span><span class="p">[</span><span class="n">Tensorx1</span><span class="p">,</span><span class="n">Tensorx2</span><span class="p">]:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get Jacobian matrices at facet quadrature points.</span>
+
+<span class="sd">        The facet Jacobian matrix maps derivatives from reference facet coordinates to physical coordinates.</span>
+<span class="sd">        For mixed facet elements, returns separate Jacobians for triangular and quadrilateral facets.</span>
+
+<span class="sd">        The Jacobian matrix :math:`\mathbf{J}_f = \frac{\partial\mathbf{x}}{\partial\boldsymbol{\xi}_f}`</span>
+<span class="sd">        where :math:`\mathbf{x}` are physical coordinates and :math:`\boldsymbol{\xi}_f` are reference facet coordinates.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            # For tetrahedral mesh (triangular facets)</span>
+<span class="sd">            transform = Transformation(points, elements, &quot;tetra&quot;)</span>
+<span class="sd">            J = transform.facet_jacobian</span>
+<span class="sd">            # J[e,f,q] is Jacobian at qth quadrature point</span>
+<span class="sd">            # on fth facet of eth element</span>
+<span class="sd">            </span>
+<span class="sd">            # For prism mesh (mixed facets)</span>
+<span class="sd">            transform = Transformation(points, elements, &quot;wedge&quot;)</span>
+<span class="sd">            J_tri, J_quad = transform.facet_jacobian</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        If element has uniform facets:</span>
+<span class="sd">            torch.Tensor</span>
+<span class="sd">                Facet Jacobian tensor of shape :math:`[N_e, N_f, N_q, D-1, D]` where:</span>
+
+<span class="sd">                * :math:`N_e` = number of elements</span>
+<span class="sd">                * :math:`N_f` = number of facets per element</span>
+<span class="sd">                * :math:`N_q` = number of quadrature points per facet</span>
+<span class="sd">                * :math:`D` = spatial dimension</span>
+
+<span class="sd">        If element has mixed facets:</span>
+<span class="sd">            Tuple[torch.Tensor, torch.Tensor]</span>
+<span class="sd">                * Triangular facet Jacobians of shape :math:`[N_e, N_{tf}, N_{tq}, D-1, D]`</span>
+<span class="sd">                * Quadrilateral facet Jacobians of shape :math:`[N_e, N_{qf}, N_{qq}, D-1, D]`</span>
+<span class="sd">                </span>
+<span class="sd">                where:</span>
+
+<span class="sd">                * :math:`N_e` = number of elements</span>
+<span class="sd">                * :math:`N_{tf}` = number of triangular facets per element</span>
+<span class="sd">                * :math:`N_{tq}` = quadrature points per triangular facet</span>
+<span class="sd">                * :math:`N_{qf}` = number of quadrilateral facets per element</span>
+<span class="sd">                * :math:`N_{qq}` = quadrature points per quadrilateral facet</span>
+<span class="sd">                * :math:`D` = spatial dimension</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">is_mix_facet</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="s2">&quot;_facet_jacobian_tri&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">:</span> <span class="c1"># type: ignore</span>
+
+                <span class="n">tri_facet_jacobian</span><span class="p">,</span> <span class="n">quad_facet_jacobian</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">eval_facet_jacobian</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">element_coords</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadrature_order</span><span class="p">)</span>
+                
+                <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_facet_jacobian_tri&quot;</span><span class="p">,</span> <span class="n">tri_facet_jacobian</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_facet_jacobian_quad&quot;</span><span class="p">,</span> <span class="n">quad_facet_jacobian</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_facet_jacobian_tri</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_facet_jacobian_quad</span> <span class="c1"># type:ignore [n_element, n_tri_facet, n_quadrature_per_tri_facet, dim-1, dim], [n_element, n_quad_facet, n_quadrature_per_quad_facet, dim-1, dim]</span>
+
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="s2">&quot;_facet_jacobian&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">:</span> <span class="c1"># type:ignore</span>
+                <span class="n">facet_jacobian</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">eval_facet_jacobian</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">element_coords</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadrature_order</span><span class="p">)</span>
+                
+                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">facet_jacobian</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_facet_jacobian&quot;</span><span class="p">,</span> <span class="n">facet_jacobian</span><span class="p">)</span> 
+     
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_facet_jacobian</span> <span class="c1"># type:ignore [n_element, n_facet, n_quadrature_per_facet, dim-1, dim]</span>
+    <span class="nd">@property</span> 
+    <span class="k">def</span><span class="w"> </span><span class="nf">nanson_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Union</span><span class="p">[</span><span class="n">Tensorx1</span><span class="p">,</span><span class="n">Tensorx2</span><span class="p">]:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get Nanson scale factors for element facets.</span>
+
+<span class="sd">        The Nanson scale factor :math:`\mathbf{n}` is used to transform area elements from reference to physical space:</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            \mathbf{n} = \det(\mathbf{J}) \mathbf{J}^{-T} \mathbf{N} w</span>
+
+<span class="sd">        where:</span>
+
+<span class="sd">        * :math:`\mathbf{J}` is the facet-to-cell Jacobian matrix</span>
+<span class="sd">        * :math:`\mathbf{N}` is the outward unit normal in reference space</span>
+<span class="sd">        * :math:`w` is the quadrature weight</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            # For elements with uniform facets (e.g. tetrahedra)</span>
+<span class="sd">            transform = Transformation(points, elements, &quot;tetra&quot;)</span>
+<span class="sd">            n = transform.nanson_scale  # Single tensor for all facets</span>
+<span class="sd">            </span>
+<span class="sd">            # For elements with mixed facets (e.g. prisms)</span>
+<span class="sd">            transform = Transformation(points, elements, &quot;wedge&quot;)</span>
+<span class="sd">            n_tri, n_quad = transform.nanson_scale  # Separate tensors for tri/quad facets</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        If element has uniform facets:</span>
+<span class="sd">            torch.Tensor</span>
+<span class="sd">                Nanson scale tensor of shape :math:`[N_e, N_f, N_q]` where:</span>
+
+<span class="sd">                * :math:`N_e` = number of elements</span>
+<span class="sd">                * :math:`N_f` = number of facets per element</span>
+<span class="sd">                * :math:`N_q` = number of quadrature points per facet</span>
+
+<span class="sd">        If element has mixed facets:</span>
+<span class="sd">            Tuple[torch.Tensor, torch.Tensor]</span>
+<span class="sd">                * Triangular facet scales of shape :math:`[N_e, N_{tf}, N_{tq}]`</span>
+<span class="sd">                * Quadrilateral facet scales of shape :math:`[N_e, N_{qf}, N_{qq}]`</span>
+
+<span class="sd">                where:</span>
+
+<span class="sd">                * :math:`N_e` = number of elements</span>
+<span class="sd">                * :math:`N_{tf}` = number of triangular facets per element</span>
+<span class="sd">                * :math:`N_{tq}` = quadrature points per triangular facet</span>
+<span class="sd">                * :math:`N_{qf}` = number of quadrilateral facets per element</span>
+<span class="sd">                * :math:`N_{qq}` = quadrature points per quadrilateral facet</span>
+
+<span class="sd">        References</span>
+<span class="sd">        ----------</span>
+<span class="sd">        Wikiversity, *Continuum mechanics — Volume change and area change*:</span>
+<span class="sd">        https://en.wikiversity.org/wiki/Continuum_mechanics/Volume_change_and_area_change</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+      
+       
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">is_mix_facet</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;_nanson_scale_tri&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">:</span>
+                <span class="n">tri_w</span><span class="p">,</span> <span class="n">tri_q</span><span class="p">,</span> <span class="n">quad_w</span><span class="p">,</span> <span class="n">quad_q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">facet_quadrature</span> <span class="c1"># type:ignore</span>
+
+                <span class="c1"># compute the facet cell jacobian</span>
+                <span class="n">tri_j</span><span class="p">,</span> <span class="n">quad_j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">eval_facet_cell_jacobian</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">element_coords</span><span class="p">,</span> 
+                    <span class="bp">self</span><span class="o">.</span><span class="n">basis_order</span><span class="p">,</span> 
+                    <span class="bp">self</span><span class="o">.</span><span class="n">quadrature_order</span><span class="p">)</span>
+            
+                <span class="n">tri_inv_j</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="n">tri_j</span><span class="p">)</span> <span class="c1"># [n_element, n_tri_facet, n_quadrature_per_tri_facet, dim, dim]</span>
+                <span class="n">quad_inv_j</span><span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="n">quad_j</span><span class="p">)</span><span class="c1"># [n_element, n_quad_facet, n_quadrature_per_quad_facet, dim, dim]</span>
+                <span class="c1"># compute the nanson scale</span>
+                <span class="n">normals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">get_outwards_facet_normal</span><span class="p">()</span> <span class="c1"># [n_facet_per_element, dim]</span>
+                <span class="n">tri_normals</span> <span class="o">=</span> <span class="n">normals</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">get_tri_mask</span><span class="p">()]</span> <span class="c1"># [n_tri_facet, dim]</span>
+                <span class="n">quad_normals</span><span class="o">=</span> <span class="n">normals</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">get_quad_mask</span><span class="p">()]</span><span class="c1"># [n_quad_facet, dim]</span>
+
+                <span class="n">det_tri_j</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">tri_j</span><span class="p">)</span> <span class="c1"># [n_element, n_tri_facet, n_quadrature_per_tri_facet]</span>
+                <span class="n">det_quad_j</span><span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">quad_j</span><span class="p">)</span><span class="c1"># [n_element, n_quad_facet, n_quadrature_per_quad_facet]</span>
+
+                <span class="n">tri_nanson</span>  <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;fi,efqji-&gt;efqj&#39;</span><span class="p">,</span> <span class="n">tri_normals</span><span class="p">,</span> <span class="n">tri_inv_j</span><span class="p">)</span>  <span class="c1"># [n_element, n_tri_facet, n_quadrature_per_tri_facet, dim]</span>
+                <span class="p">)</span> <span class="c1"># [n_element, n_tri_facet, n_quadrature_per_tri_facet]</span>
+                <span class="n">quad_nanson</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;fi,efqji-&gt;efqj&#39;</span><span class="p">,</span> <span class="n">quad_normals</span><span class="p">,</span> <span class="n">quad_inv_j</span><span class="p">)</span> <span class="c1"># [n_element, n_quad_facet, n_quadrature_per_quad_facet, dim]</span>
+                <span class="p">)</span> <span class="c1"># [n_element, n_quad_facet, n_quadrature_per_quad_facet]</span>
+
+                <span class="c1"># TODO: check if the absoulte value should be added to the determinant</span>
+                <span class="n">tri_nanson</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;efq,efq,fq-&gt;efq&quot;</span><span class="p">,</span><span class="n">tri_nanson</span> <span class="p">,</span> <span class="n">det_tri_j</span> <span class="p">,</span> <span class="n">tri_w</span><span class="p">)</span>
+                <span class="n">quad_nanson</span><span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;efq,efq,fq-&gt;efq&quot;</span><span class="p">,</span><span class="n">quad_nanson</span><span class="p">,</span> <span class="n">det_quad_j</span><span class="p">,</span> <span class="n">quad_w</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_nanson_scale_tri&quot;</span><span class="p">,</span> <span class="n">tri_nanson</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_nanson_scale_quad&quot;</span><span class="p">,</span> <span class="n">quad_nanson</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nanson_scale_tri</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nanson_scale_quad</span> <span class="c1"># type:ignore [n_element, n_tri_facet, n_quadrature_per_tri_facet], [n_element, n_quad_facet, n_quadrature_per_quad_facet]</span>
+        
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># single facet shape </span>
+
+            <span class="k">if</span> <span class="s2">&quot;_nanson_scale&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">:</span>
+
+                <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">eval_facet_cell_jacobian</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">element_coords</span><span class="p">,</span> 
+                        <span class="bp">self</span><span class="o">.</span><span class="n">basis_order</span><span class="p">,</span> 
+                        <span class="bp">self</span><span class="o">.</span><span class="n">quadrature_order</span><span class="p">)</span>
+                
+                <span class="n">inv_j</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="c1"># [n_element, n_facet, n_quadrature_per_facet, dim, dim]</span>
+                <span class="n">det_j</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="c1"># [n_element, n_facet, n_quadrature_per_facet]</span>
+
+                <span class="n">normals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">get_outwards_facet_normal</span><span class="p">()</span> <span class="c1"># [n_facet, dim]</span>
+
+                <span class="n">nanson_scale</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;fi,efqji-&gt;efqj&#39;</span><span class="p">,</span> <span class="n">normals</span><span class="p">,</span> <span class="n">inv_j</span><span class="p">)</span> <span class="c1"># [n_element, n_facet, n_quadrature_per_facet, dim]</span>
+                <span class="p">)</span> <span class="c1"># [n_element, n_facet, n_quadrature_per_facet]</span>
+
+                <span class="n">nanson_scale</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;efq,efq,fq-&gt;efq&quot;</span><span class="p">,</span> <span class="n">nanson_scale</span><span class="p">,</span> <span class="n">det_j</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">facet_quadrature</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># [n_element, n_facet, n_quadrature_per_facet]</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_nanson_scale&quot;</span><span class="p">,</span> <span class="n">nanson_scale</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nanson_scale</span> <span class="c1"># type:ignore [n_element, n_facet, n_quadrature_per_facet]</span>
+
+
+        
+      
+
+
+
+    <span class="c1">###############</span>
+    <span class="c1"># Abbreviation</span>
+    <span class="c1">############### </span>
+
+
+    <span class="c1"># basis </span>
+    <span class="n">phi</span>     <span class="o">=</span> <span class="n">shape_val</span>
+    <span class="n">gradphi</span> <span class="o">=</span> <span class="n">shape_grad</span>
+    <span class="n">J</span>       <span class="o">=</span> <span class="n">jacobian</span> 
+    
+    <span class="nd">@property</span> 
+    <span class="k">def</span><span class="w"> </span><span class="nf">detJ</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Tensorx1</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get the determinant of the Jacobian matrix at quadrature points.</span>
+
+<span class="sd">        The determinant :math:`\lvert J \rvert = \det\!\left(\frac{\partial\mathbf{x}}{\partial\boldsymbol{\xi}}\right)`</span>
+<span class="sd">        is the local scaling factor between reference and physical coordinates.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            transform = Transformation(points, elements, &quot;triangle&quot;)</span>
+<span class="sd">            detJ = transform.detJ</span>
+<span class="sd">            # detJ[e,q] is Jacobian determinant at qth quadrature point</span>
+<span class="sd">            # in eth element</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Jacobian determinant tensor of shape :math:`[N_e, N_q]` where:</span>
+<span class="sd">            </span>
+<span class="sd">            * :math:`N_e` = number of elements</span>
+<span class="sd">            * :math:`N_q` = number of quadrature points</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jacobian</span><span class="p">)</span>
+    
+    <span class="nd">@property</span> 
+    <span class="k">def</span><span class="w"> </span><span class="nf">JxW</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Tensorx1</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get the Jacobian determinant times quadrature weights.</span>
+
+<span class="sd">        The JxW term :math:`\vert J\vert w` combines the Jacobian determinant with quadrature weights</span>
+<span class="sd">        for numerical integration over physical elements:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \int_\Omega f(\mathbf{x}) d\mathbf{x} = \sum_{e=1}^{N_e} \sum_{q=1}^{N_q} f(\mathbf{x}_q^e) \vert J_q^e \vert w_q</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            transform = Transformation(points, elements, &quot;triangle&quot;)</span>
+<span class="sd">            jxw = transform.JxW</span>
+<span class="sd">            # Integrate function over mesh:</span>
+<span class="sd">            integral = torch.sum(f * jxw)  # f evaluated at quadrature points</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            JxW tensor of shape :math:`[N_e, N_q]` where:</span>
+<span class="sd">            </span>
+<span class="sd">            * :math:`N_e` = number of elements</span>
+<span class="sd">            * :math:`N_q` = number of quadrature points</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;_jxw&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">:</span> <span class="c1"># type: ignore</span>
+            <span class="n">w</span><span class="p">,</span> <span class="n">_</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadrature</span>
+            <span class="n">jxw</span>        <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;q,eq-&gt;eq&#39;</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">detJ</span><span class="o">.</span><span class="n">abs</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_jxw&quot;</span><span class="p">,</span> <span class="n">jxw</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jxw</span> <span class="c1"># type:ignore [n_element, n_quadrature]</span>
+
+    <span class="n">G</span>     <span class="o">=</span> <span class="n">J</span> 
+    <span class="n">detG</span>  <span class="o">=</span> <span class="n">detJ</span> 
+    <span class="n">GxW</span>   <span class="o">=</span> <span class="n">JxW</span>
+
+    <span class="n">F</span>     <span class="o">=</span> <span class="n">facet_jacobian</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">detF</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Union</span><span class="p">[</span><span class="n">Tensorx1</span><span class="p">,</span> <span class="n">Tensorx2</span><span class="p">]:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get determinant of facet Jacobian matrices.</span>
+
+<span class="sd">        For a facet with normal :math:`\mathbf{n}`, the facet Jacobian determinant is:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            |F| = \sqrt{\det(F^T F)}</span>
+
+<span class="sd">        where :math:`F` is the facet Jacobian matrix mapping from reference to physical facets.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            # For tetrahedral mesh (triangular facets)</span>
+<span class="sd">            transform = Transformation(points, elements, &quot;tetra&quot;)</span>
+<span class="sd">            detF = transform.detF  # Single tensor for tri facets</span>
+<span class="sd">            </span>
+<span class="sd">            # For prism mesh (mixed tri/quad facets)</span>
+<span class="sd">            transform = Transformation(points, elements, &quot;wedge&quot;)</span>
+<span class="sd">            tri_detF, quad_detF = transform.detF  # Separate tensors</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        If element has uniform facets:</span>
+<span class="sd">            torch.Tensor</span>
+<span class="sd">                Facet Jacobian determinant tensor of shape :math:`[N_e, N_f, N_q]` where:</span>
+<span class="sd">                </span>
+<span class="sd">                * :math:`N_e` = number of elements</span>
+<span class="sd">                * :math:`N_f` = number of facets per element</span>
+<span class="sd">                * :math:`N_q` = number of quadrature points per facet</span>
+
+<span class="sd">        If element has mixed facets:</span>
+<span class="sd">            Tuple[torch.Tensor, torch.Tensor]</span>
+<span class="sd">                * Triangular facet determinants of shape :math:`[N_e, N_{tf}, N_{tq}]`</span>
+<span class="sd">                * Quadrilateral facet determinants of shape :math:`[N_e, N_{qf}, N_{qq}]`</span>
+<span class="sd">                </span>
+<span class="sd">                where:</span>
+
+<span class="sd">                * :math:`N_e` = number of elements</span>
+<span class="sd">                * :math:`N_{tf}` = number of triangular facets</span>
+<span class="sd">                * :math:`N_{tq}` = number of quadrature points per triangular facet</span>
+<span class="sd">                * :math:`N_{qf}` = number of quadrilateral facets</span>
+<span class="sd">                * :math:`N_{qq}` = number of quadrature points per quadrilateral facet</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">is_mix_facet</span><span class="p">:</span>
+            <span class="n">tri_fj</span><span class="p">,</span> <span class="n">quad_fj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">facet_jacobian</span> <span class="c1"># type:ignore</span>
+            <span class="n">tri_jac_det</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;efqij,efqjk-&gt;efqik&#39;</span><span class="p">,</span> <span class="n">tri_fj</span><span class="p">,</span> <span class="n">tri_fj</span><span class="p">)))</span>
+            <span class="n">quad_jac_det</span><span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;efqij,efqjk-&gt;efqik&#39;</span><span class="p">,</span> <span class="n">quad_fj</span><span class="p">,</span> <span class="n">quad_fj</span><span class="p">)))</span>
+            <span class="k">return</span> <span class="n">tri_jac_det</span><span class="p">,</span> <span class="n">quad_jac_det</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">facet_jacobian</span> <span class="c1"># type:ignore</span>
+           
+            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">fj</span> <span class="o">@</span> <span class="n">fj</span><span class="o">.</span><span class="n">mT</span><span class="p">))</span>
+   
+    <span class="nd">@property</span> 
+    <span class="k">def</span><span class="w"> </span><span class="nf">FxW</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Union</span><span class="p">[</span><span class="n">Tensorx1</span><span class="p">,</span><span class="n">Tensorx2</span><span class="p">]:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get facet Jacobian determinant times quadrature weights.</span>
+
+<span class="sd">        The FxW term :math:`|F|w` combines the facet Jacobian determinant with quadrature weights</span>
+<span class="sd">        for numerical integration over physical facets:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \int_{\Gamma} f(\mathbf{x}) d\Gamma = \sum_{e=1}^{N_e} \sum_{f=1}^{N_f} \sum_{q=1}^{N_q} f(\mathbf{x}_q^{ef}) |F_q^{ef}| w_q</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            # For tetrahedral mesh (triangular facets)</span>
+<span class="sd">            transform = Transformation(points, elements, &quot;tetra&quot;)</span>
+<span class="sd">            fxw = transform.FxW  # Single tensor for tri facets</span>
+<span class="sd">            </span>
+<span class="sd">            # For prism mesh (mixed tri/quad facets) </span>
+<span class="sd">            transform = Transformation(points, elements, &quot;wedge&quot;)</span>
+<span class="sd">            tri_fxw, quad_fxw = transform.FxW  # Separate tensors</span>
+<span class="sd">            </span>
+<span class="sd">            # Integrate function over facets:</span>
+<span class="sd">            integral = torch.sum(f * fxw)  # f evaluated at facet quadrature points</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        If element has uniform facets:</span>
+<span class="sd">            torch.Tensor</span>
+<span class="sd">                FxW tensor of shape :math:`[N_e, N_f, N_q]` where:</span>
+<span class="sd">                </span>
+<span class="sd">                * :math:`N_e` = number of elements</span>
+<span class="sd">                * :math:`N_f` = number of facets per element</span>
+<span class="sd">                * :math:`N_q` = number of quadrature points per facet</span>
+
+<span class="sd">        If element has mixed facets:</span>
+<span class="sd">            Tuple[torch.Tensor, torch.Tensor]</span>
+<span class="sd">                * Triangular facet FxW of shape :math:`[N_e, N_{tf}, N_{tq}]`</span>
+<span class="sd">                * Quadrilateral facet FxW of shape :math:`[N_e, N_{qf}, N_{qq}]`</span>
+<span class="sd">                </span>
+<span class="sd">                where:</span>
+
+<span class="sd">                * :math:`N_e` = number of elements</span>
+<span class="sd">                * :math:`N_{tf}` = number of triangular facets</span>
+<span class="sd">                * :math:`N_{tq}` = number of quadrature points per triangular facet</span>
+<span class="sd">                * :math:`N_{qf}` = number of quadrilateral facets</span>
+<span class="sd">                * :math:`N_{qq}` = number of quadrature points per quadrilateral facet</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">is_mix_facet</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;_jxf_tri&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">:</span> <span class="c1"># type: ignore</span>
+                <span class="n">tri_w</span><span class="p">,</span> <span class="n">tri_q</span><span class="p">,</span> <span class="n">quad_w</span><span class="p">,</span> <span class="n">quad_q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">facet_quadrature</span> <span class="c1"># type:ignore</span>
+                <span class="n">tri_detF</span><span class="p">,</span> <span class="n">quad_detF</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detF</span>
+                <span class="n">tri_jxf</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;fq,efq-&gt;efq&#39;</span><span class="p">,</span> <span class="n">tri_w</span><span class="p">,</span> <span class="n">tri_detF</span><span class="o">.</span><span class="n">abs</span><span class="p">())</span>
+                <span class="n">quad_jxf</span><span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;fq,efq-&gt;efq&#39;</span><span class="p">,</span> <span class="n">quad_w</span><span class="p">,</span> <span class="n">quad_detF</span><span class="o">.</span><span class="n">abs</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_jxf_tri&quot;</span><span class="p">,</span> <span class="n">tri_jxf</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_jxf_quad&quot;</span><span class="p">,</span> <span class="n">quad_jxf</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jxf_tri</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jxf_quad</span> <span class="c1"># type:ignore [n_element, n_facet, n_quadrature_per_facet]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;_jxf&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">:</span> <span class="c1"># type: ignore</span>
+                <span class="n">w</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">facet_quadrature</span> <span class="c1"># type:ignore</span>
+                <span class="n">detF</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detF</span>
+                <span class="n">jxf</span>  <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;fq,efq-&gt;efq&#39;</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">detF</span><span class="o">.</span><span class="n">abs</span><span class="p">())</span> 
+                <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;_jxf&quot;</span><span class="p">,</span> <span class="n">jxf</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jxf</span> <span class="c1"># type:ignore [n_element, n_facet, n_quadrature_per_facet]</span>
+    <span class="c1"># facet normal</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">nanson_scale</span>
+    
+
+    <span class="c1">######################</span>
+    <span class="c1"># Efficient Methods</span>
+    <span class="c1">######################</span>
+<div class="viewcode-block" id="Transformation.batch_quadrature">
+<a class="viewcode-back" href="../../../api/element.html#tensormesh.Transformation.batch_quadrature">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">batch_quadrature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Tensorx2</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get a batch of quadrature points and weights.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            transform = Transformation(points, elements, &quot;triangle&quot;)</span>
+<span class="sd">            </span>
+<span class="sd">            # Get first 10 quadrature points</span>
+<span class="sd">            w, q = transform.batch_quadrature(start=0, batch=10)</span>
+<span class="sd">            </span>
+<span class="sd">            # Get all quadrature points after index 5</span>
+<span class="sd">            w, q = transform.batch_quadrature(start=5, batch=-1)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        start : int</span>
+<span class="sd">            The starting index of the batch</span>
+<span class="sd">        batch : int</span>
+<span class="sd">            The number of quadrature points in the batch.</span>
+<span class="sd">            If -1, returns all points starting from `start`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Tuple[torch.Tensor, torch.Tensor]</span>
+<span class="sd">            * Quadrature weights tensor of shape :math:`[N_b]`</span>
+<span class="sd">            * Quadrature points tensor of shape :math:`[N_b, D]`</span>
+<span class="sd">            </span>
+<span class="sd">            where:</span>
+
+<span class="sd">            * :math:`N_b` = batch size</span>
+<span class="sd">            * :math:`D` = spatial dimension</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_quadrature</span>  
+        <span class="k">assert</span> <span class="n">start</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_quadrature</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">batch</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadrature</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadrature</span> <span class="c1"># [n_quadrature], [n_quadrature, dim]</span>
+        <span class="k">return</span> <span class="n">w</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">start</span><span class="o">+</span><span class="n">batch</span><span class="p">],</span> <span class="n">q</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">start</span><span class="o">+</span><span class="n">batch</span><span class="p">]</span> <span class="c1"># [batch], [batch, dim]</span></div>
+
+    
+<div class="viewcode-block" id="Transformation.batch_elements_coords">
+<a class="viewcode-back" href="../../../api/element.html#tensormesh.Transformation.batch_elements_coords">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">batch_elements_coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Tensorx1</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get physical coordinates for a batch of elements.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            transform = Transformation(points, elements, &quot;triangle&quot;)</span>
+<span class="sd">            </span>
+<span class="sd">            # Get coordinates for first 5 elements</span>
+<span class="sd">            coords = transform.batch_elements_coords(start=0, batch=5)</span>
+<span class="sd">            </span>
+<span class="sd">            # Get coordinates for all elements after index 10</span>
+<span class="sd">            coords = transform.batch_elements_coords(start=10, batch=-1)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        start : int</span>
+<span class="sd">            The starting element index</span>
+<span class="sd">        batch : int</span>
+<span class="sd">            The number of elements in the batch.</span>
+<span class="sd">            If -1, returns all elements starting from `start`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Element coordinates tensor of shape :math:`[N_b, N_n, D]` where:</span>
+
+<span class="sd">            * :math:`N_b` = batch size</span>
+<span class="sd">            * :math:`N_n` = nodes per element</span>
+<span class="sd">            * :math:`D` = spatial dimension</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_elements</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">batch</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">element_coords</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">elements</span><span class="p">:</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>        <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">start</span><span class="o">+</span><span class="n">batch</span><span class="p">]</span> <span class="c1"># type:ignore [batch, n_basis]</span>
+            <span class="n">elements_coords</span><span class="p">:</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="n">elements</span><span class="p">]</span> <span class="c1"># type:ignore [batch, n_basis, dim]</span>
+            <span class="k">return</span> <span class="n">elements_coords</span></div>
+
+
+<div class="viewcode-block" id="Transformation.batch_shape_val">
+<a class="viewcode-back" href="../../../api/element.html#tensormesh.Transformation.batch_shape_val">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">batch_shape_val</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Tensorx1</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get shape function values for a batch of quadrature points.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            transform = Transformation(points, elements, &quot;triangle&quot;)</span>
+<span class="sd">            </span>
+<span class="sd">            # Get shape values at first 10 quadrature points</span>
+<span class="sd">            vals = transform.batch_shape_val(start=0, batch=10)</span>
+<span class="sd">            </span>
+<span class="sd">            # Get shape values at all points after index 5</span>
+<span class="sd">            vals = transform.batch_shape_val(start=5, batch=-1)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        start : int</span>
+<span class="sd">            The starting quadrature point index</span>
+<span class="sd">        batch : int</span>
+<span class="sd">            The number of quadrature points in the batch</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Shape function values tensor of shape :math:`[N_b, N_s]` where:</span>
+
+<span class="sd">            * :math:`N_b` = batch size</span>
+<span class="sd">            * :math:`N_s` = shape functions per element</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape_val</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">start</span><span class="o">+</span><span class="n">batch</span><span class="p">]</span> <span class="c1">#  [batch, n_basis]</span></div>
+
+
+<div class="viewcode-block" id="Transformation.batch_shape_grad_jxw">
+<a class="viewcode-back" href="../../../api/element.html#tensormesh.Transformation.batch_shape_grad_jxw">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">batch_shape_grad_jxw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                            <span class="n">element_start</span><span class="p">:</span><span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                            <span class="n">element_batch</span><span class="p">:</span><span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                            <span class="n">quadrature_start</span><span class="p">:</span><span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> 
+                            <span class="n">quadrature_batch</span><span class="p">:</span><span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Tensorx2</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get shape function gradients and Jacobian weights for batches of elements and quadrature points.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            transform = Transformation(points, elements, &quot;triangle&quot;)</span>
+<span class="sd">            </span>
+<span class="sd">            # Get values for first 5 elements and first 10 quadrature points</span>
+<span class="sd">            grads, jxw = transform.batch_shape_grad_jxw(</span>
+<span class="sd">                element_start=0, element_batch=5,</span>
+<span class="sd">                quadrature_start=0, quadrature_batch=10</span>
+<span class="sd">            )</span>
+<span class="sd">            </span>
+<span class="sd">            # Get values for all elements and quadrature points</span>
+<span class="sd">            grads, jxw = transform.batch_shape_grad_jxw()</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        element_start : int, optional</span>
+<span class="sd">            The starting element index, by default 0</span>
+<span class="sd">        element_batch : int, optional</span>
+<span class="sd">            The number of elements in the batch.</span>
+<span class="sd">            If -1, uses all elements after start, by default -1</span>
+<span class="sd">        quadrature_start : int, optional</span>
+<span class="sd">            The starting quadrature point index, by default 0</span>
+<span class="sd">        quadrature_batch : int, optional</span>
+<span class="sd">            The number of quadrature points in the batch.</span>
+<span class="sd">            If -1, uses all points after start, by default -1</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Tuple[torch.Tensor, torch.Tensor]</span>
+<span class="sd">            * Shape gradients tensor of shape :math:`[N_e, N_q, N_s, D]`</span>
+<span class="sd">            * Jacobian weights tensor of shape :math:`[N_e, N_q]`</span>
+<span class="sd">            </span>
+<span class="sd">            where:</span>
+
+<span class="sd">            * :math:`N_e` = number of elements in batch</span>
+<span class="sd">            * :math:`N_q` = number of quadrature points in batch</span>
+<span class="sd">            * :math:`N_s` = shape functions per element</span>
+<span class="sd">            * :math:`D` = spatial dimension</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;_shape_grad&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span> <span class="ow">or</span> <span class="s2">&quot;_jxw&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">:</span> <span class="c1"># type: ignore</span>
+            <span class="n">w</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_quadrature</span><span class="p">(</span><span class="n">quadrature_start</span><span class="p">,</span> <span class="n">quadrature_batch</span><span class="p">)</span>
+            <span class="n">e</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_elements_coords</span><span class="p">(</span><span class="n">element_start</span><span class="p">,</span> <span class="n">element_batch</span><span class="p">)</span>
+            <span class="n">shape_grad</span><span class="p">,</span> <span class="n">jacobian</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">eval_shape_grad</span><span class="p">(</span>
+                <span class="n">e</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadrature_order</span><span class="p">)</span>
+            <span class="n">jxw</span>  <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;q,eq-&gt;eq&#39;</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">jacobian</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span><span class="p">())</span>
+            <span class="k">return</span> <span class="n">shape_grad</span><span class="p">,</span> <span class="n">jxw</span> <span class="c1"># [n_element, n_batch, n_basis, dim], [n_element, n_batch, dim, dim]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape_grad</span><span class="p">[:,</span> <span class="n">quadrature_start</span><span class="p">:</span><span class="n">quadrature_start</span><span class="o">+</span><span class="n">quadrature_batch</span><span class="p">],</span> 
+                    <span class="bp">self</span><span class="o">.</span><span class="n">JxW</span><span class="p">[:,</span> <span class="n">quadrature_start</span><span class="p">:</span><span class="n">quadrature_start</span><span class="o">+</span><span class="n">quadrature_batch</span><span class="p">])</span> <span class="c1">#type:ignore [n_element, n_batch, n_basis, dim], [n_element, n_batch, dim, dim]</span></div>
+</div>
+
+        
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, TensorMesh Contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/camlab-ethz/TensorMesh" aria-label="GitHub"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+              <a class="muted-link " href="https://discord.gg/EC9kbHSnrx" aria-label="Discord"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.576-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.05.05 0 0 0-.021.019C.356 6.024-.213 9.047.066 12.032c.002.015.01.029.02.037a13.3 13.3 0 0 0 3.995 2.01.05.05 0 0 0 .056-.019c.308-.42.582-.86.818-1.329a.05.05 0 0 0-.027-.06 8.7 8.7 0 0 1-1.248-.595.05.05 0 0 1-.005-.085c.079-.053.16-.104.248-.152a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007c.08.048.16.1.248.152a.05.05 0 0 1-.004.085 8.2 8.2 0 0 1-1.249.594.05.05 0 0 0-.027.06c.24.465.514.906.817 1.329a.05.05 0 0 0 .056.02 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.036c.334-3.451-.559-6.449-2.366-9.106a.04.04 0 0 0-.021-.02zM5.68 10.77c-.789 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.45.73 1.438 1.61 0 .886-.637 1.61-1.438 1.61zm4.842 0c-.788 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.451.73 1.438 1.61 0 .886-.63 1.61-1.438 1.61z"></path></svg></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=a58bc63e"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    </body>
+</html>

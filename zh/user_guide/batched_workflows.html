@@ -1,0 +1,582 @@
+<!doctype html>
+<html class="no-js" lang="zh-CN" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="索引" href="../genindex.html"><link rel="search" title="搜索" href="../search.html"><link rel="next" title="可微性" href="differentiability.html"><link rel="prev" title="时间积分" href="time_integration.html">
+        <link rel="prefetch" href="../_static/logo.png" as="image">
+        <link rel="prefetch" href="../_static/logo.png" as="image">
+
+    <link rel="shortcut icon" href="../_static/logo.png"><!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>批量化工作流 - TensorMesh</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=95a110e3" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #5B6EE8;
+  --color-brand-content: #149B8E;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">TensorMesh</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../_static/logo.png" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../_static/logo.png" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">TensorMesh</span>
+  
+</a><div class="sidebar-language-switcher">
+  <a href="../../user_guide/batched_workflows.html" rel="alternate" hreflang="en" title="English">English</a>
+  <span class="sep">·</span>
+  <span class="active">中文</span>
+</div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="搜索" name="q" aria-label="搜索">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">文档</span></p>
+<ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../getting_started/index.html">快速上手</a><input aria-label="Toggle navigation of 快速上手" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html">安装</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quickstart.html">快速开始</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/verify_install.html">验证安装</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">用户指南</a><input aria-label="Toggle navigation of 用户指南" checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="concepts.html">核心概念</a></li>
+<li class="toctree-l2"><a class="reference internal" href="meshes.html">网格</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elements_and_quadrature.html">单元与求积</a></li>
+<li class="toctree-l2"><a class="reference internal" href="forms.html">形式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="boundary_conditions.html">边界条件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_solvers.html">稀疏求解器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time_integration.html">时间积分</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">批量化工作流</a></li>
+<li class="toctree-l2"><a class="reference internal" href="differentiability.html">可微性</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../example_gallery/index.html">示例画廊</a><input aria-label="Toggle navigation of 示例画廊" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/basics.html">基础与可视化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/poisson.html">泊松方程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/diffusion.html">扩散</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/wave.html">波动方程</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../example_gallery/solid/index.html">固体力学</a><input aria-label="Toggle navigation of 固体力学" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/cantilever_beam.html">悬臂梁</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/hyperelastic_beam.html">超弹性梁（新胡克）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/hertzian_contact.html">赫兹接触</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/plasticity_strip.html">塑性（带各向同性硬化的 J2）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/drucker_prager_triaxial.html">岩土力学：Drucker-Prager 三轴压缩</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/elastic_footing.html">Geomechanics: elastic strip footing</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../example_gallery/fluid/index.html">流体力学</a><input aria-label="Toggle navigation of 流体力学" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/cavity.html">顶盖驱动方腔</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/cylinder_flow.html">圆柱绕流（涡脱落）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/flow_obstacles.html">绕多个障碍物的流动</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/rayleigh_benard.html">瑞利-贝纳德对流</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/taylor_green.html">泰勒-格林涡（收敛性研究）</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/maxwell.html">静磁学（麦克斯韦方程）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/inverse_design.html">反问题设计与辨识</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/physics_informed.html">物理信息学习</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/dataset.html">机器学习数据集</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/distributed.html">分布式 FEM</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/index.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/mesh.html">tensormesh.mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/element.html">tensormesh.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/assemble.html">tensormesh.assemble</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/operator.html">tensormesh.operator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/sparse.html">tensormesh.sparse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/ode.html">tensormesh.ode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/functional.html">tensormesh.functional</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/optimizer.html">tensormesh.optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/material.html">tensormesh.material</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/distributed.html">tensormesh.distributed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/nn.html">tensormesh.nn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/dataset.html">tensormesh.dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/visualization.html">tensormesh.visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../performance/index.html">性能</a><input aria-label="Toggle navigation of 性能" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../performance/benchmarks.html">基准测试</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../performance/scaling_guide.html">扩展性指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../performance/profiling.html">性能剖析</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../community/index.html">社区</a><input aria-label="Toggle navigation of 社区" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../community/discord.html">Discord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/github_discussions.html">GitHub Discussions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/github_issues.html">GitHub Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/contributing.html">贡献指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/citing.html">引用 TensorMesh</a></li>
+</ul>
+</li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/user_guide/batched_workflows.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="batched-workflows">
+<h1>批量化工作流<a class="headerlink" href="#batched-workflows" title="Link to this heading">¶</a></h1>
+<p>在 TensorMesh 中，“batch”有三种不同的含义，它们作用于流水线的不同层级。为你的问题挑对其中之一，比一次性拧动所有旋钮更重要。本章先逐一介绍这三个维度，再给出经典的“同一网格、多个源项”方案，并附上在开发工作站上实测的端到端数据。</p>
+<section id="three-axes-of-batching">
+<h2>批量化的三个维度<a class="headerlink" href="#three-axes-of-batching" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.0%" />
+<col style="width: 28.0%" />
+<col style="width: 44.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>维度</p></th>
+<th class="head"><p>所在位置</p></th>
+<th class="head"><p>何时使用</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>内存分块</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Assembler(batch_size=N)</span></code></p></td>
+<td><p>单次装配超出 GPU 内存。</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>批量右端项</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">K.solve(B)</span></code>，其中 <code class="docutils literal notranslate"><span class="pre">B</span></code> 的形状为 <code class="docutils literal notranslate"><span class="pre">[n_dof,</span> <span class="pre">n_batch]</span></code></p></td>
+<td><p>多个载荷、一个网格、一个刚度矩阵。</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>多问题数据集</strong></p></td>
+<td><p><a class="reference internal" href="../api/dataset.html#module-tensormesh.dataset" title="tensormesh.dataset"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensormesh.dataset</span></code></a></p></td>
+<td><p>机器学习训练数据：大量 <code class="docutils literal notranslate"><span class="pre">(K_i,</span> <span class="pre">b_i)</span></code> 对。</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>没有</strong>内置的功能：跨多个参数取值对 <code class="docutils literal notranslate"><span class="pre">K</span></code> 的构造进行向量化的 vmap 式装配。如果你需要这一点，可以在 Python 里循环，或手动用 <code class="docutils literal notranslate"><span class="pre">torch.vmap</span></code> 包住你的装配器调用——参见下文的 <a class="reference internal" href="#batched-not-built-in"><span class="std std-ref">尚未内置的功能</span></a>。</p>
+</section>
+<section id="axis-1-memory-chunking-with-batch-size">
+<h2>维度 1 —— 用 <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> 进行内存分块<a class="headerlink" href="#axis-1-memory-chunking-with-batch-size" title="Link to this heading">¶</a></h2>
+<p>单次 <a class="reference internal" href="../api/assemble.html#tensormesh.ElementAssembler" title="tensormesh.ElementAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElementAssembler</span></code></a> 调用会把逐单元、逐求积点的被积函数张量保存在内存中。对于细网格或高阶单元，这个张量可能过大。<code class="docutils literal notranslate"><span class="pre">batch_size</span></code> 参数将求积维度切分成若干块，逐块累加贡献：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">K</span> <span class="o">=</span> <span class="n">LaplaceElementAssembler</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)(</span><span class="n">batch_size</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>其结果与不分块的调用<strong>逐比特一致</strong>（在机器精度意义下）—— <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> 纯粹是一个内存旋钮。默认值为 <code class="docutils literal notranslate"><span class="pre">-1</span></code>（不分块，在内存允许时最快）。</p>
+<p>下图在 GPU 上、对一张约含 <span class="math notranslate nohighlight">\(1.9\times10^{5}\)</span> 个节点的二阶三角形网格装配同一个算子，求积阶数为 5（每个单元 <span class="math notranslate nohighlight">\(n_q = 7\)</span> 个求积点）。将 <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> 从完整被积函数一路缩小到每次只算一个求积点，可将峰值内存从 <strong>810 MB 降至 271 MB</strong>——降低为原来的三分之一——而几乎不增加额外时间：</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/memory_chunking.png"><img alt="../_images/memory_chunking.png" src="../_images/memory_chunking.png" style="width: 90%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 13 </span><span class="caption-text">二阶三角形网格（185 973 个节点，<span class="math notranslate nohighlight">\(n_q = 7\)</span>）上，装配时间（蓝色）与峰值 GPU 内存（红色）随 <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> 分块旋钮的变化。峰值内存从 810 MB（不分块）降至 271 MB（每块一个求积点）；每一种设置所产生的刚度矩阵，与不分块的参考结果在最大范数下相差不超过 <span class="math notranslate nohighlight">\(2 \times 10^{-15}\)</span>。</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>有两点会限制这个旋钮的效果——也解释了为何一个粗心的基准测试看起来可能毫无变化：</p>
+<ul class="simple">
+<li><p><strong>只有当</strong> <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> <span class="math notranslate nohighlight">\(&lt; n_q\)</span> <strong>时它才起作用。</strong> 由于 <code class="docutils literal notranslate"><span class="pre">n_batch</span> <span class="pre">=</span> <span class="pre">ceil(n_q</span> <span class="pre">/</span> <span class="pre">batch_size)</span></code>，任何不小于求积点数的 <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> 都会塌缩为单一块——也就是完全不分块。在<em>默认</em>求积阶数下，二阶三角形仅有 <span class="math notranslate nohighlight">\(n_q = 3\)</span> 个求积点，因此可供分块的空间极小；提高求积阶数（或使用高阶 / 向量单元）会增大临时被积函数，给这个旋钮更多发挥余地——这正是上图采用 5 阶的原因。</p></li>
+<li><p><strong>存在一个它无法触及的下限。</strong> 装配后的矩阵值、它们的 <code class="docutils literal notranslate"><span class="pre">int64</span></code> 行/列索引缓冲区，以及逐单元累加器 <code class="docutils literal notranslate"><span class="pre">[n_elem,</span> <span class="pre">n_basis,</span> <span class="pre">n_basis]</span></code> 都与单元数成正比，无论 <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> 取何值都常驻内存。只有当临时被积函数 <code class="docutils literal notranslate"><span class="pre">[n_elem,</span> <span class="pre">n_q,</span> <span class="pre">n_basis,</span> <span class="pre">n_basis]</span></code> 是占主导的分配时，分块才有收益；单纯放大<em>网格</em>本身<strong>无济于事</strong>，因为这个下限会随之增长。</p></li>
+</ul>
+<p>一个典型做法：从默认值开始；如果出现 OOM（内存不足），就把 <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> 减半（一直降到 <code class="docutils literal notranslate"><span class="pre">1</span></code>），直到装配能够装下。</p>
+<p>这个维度与跨<em>问题</em>的批量化毫无关系。其结果是一个矩阵，而非一批矩阵。</p>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p><code class="docutils literal notranslate"><span class="pre">batch_size</span></code> 在单个设备上对一次装配进行分块。当刚度矩阵即便分块后仍大到无法在单个 GPU 上容纳时，TensorMesh 还提供了一条<strong>多 GPU 分布式装配</strong>路径——目前是 beta / 研究级特性；其构件参见 <a class="reference internal" href="../example_gallery/distributed.html"><span class="doc">分布式 FEM</span></a>。未来的某个版本会让分布式装配与 <code class="docutils literal notranslate"><span class="pre">torch-sla</span></code> 中的分布式线性求解器对齐，从而在真正大规模自由度数上实现端到端闭环。</p>
+</div>
+</section>
+<section id="axis-2-batched-right-hand-sides">
+<h2>维度 2 —— 批量右端项<a class="headerlink" href="#axis-2-batched-right-hand-sides" title="Link to this heading">¶</a></h2>
+<p>当你拥有一个刚度矩阵 <code class="docutils literal notranslate"><span class="pre">K</span></code> 和许多载荷向量 <code class="docutils literal notranslate"><span class="pre">b_i</span></code> 时，把这些载荷堆叠成单个 <code class="docutils literal notranslate"><span class="pre">[n_dof,</span> <span class="pre">n_batch]</span></code> 张量，一次性把整块交给 <code class="docutils literal notranslate"><span class="pre">K.solve</span></code>：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">B</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">b_1</span><span class="p">,</span> <span class="n">b_2</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">b_64</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>   <span class="c1"># [n_dof, 64]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>                                  <span class="c1"># [n_dof, 64]</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">SparseMatrix.solve</span></code> 会委托给 <code class="docutils literal notranslate"><span class="pre">torch-sla</span></code>，后者根据<strong>矩阵性质和设备</strong>来选择后端与方法——<em>而非</em>根据右端项的形状（一维和二维右端项走的是同一条路径）。对于凝聚后的泊松算子，这意味着一次<strong>直接分解</strong>：CPU 上用 SuperLU（<code class="docutils literal notranslate"><span class="pre">scipy</span></code>，<code class="docutils literal notranslate"><span class="pre">method=&quot;lu&quot;</span></code>），GPU 上用 cuDSS（SPD 矩阵用 <code class="docutils literal notranslate"><span class="pre">method=&quot;cholesky&quot;</span></code>，对称不定矩阵用 <code class="docutils literal notranslate"><span class="pre">&quot;ldlt&quot;</span></code>）。在直接法下，传入二维右端项可让后端<strong>只分解一次 ``K``、然后对每一列回代</strong>——这正是你在此处想要的收益。相比用 Python 循环逐个独立求解，无论在 CPU 还是 GPU 上加速都十分显著，并随 <code class="docutils literal notranslate"><span class="pre">n_batch</span></code> 增长，直到回代开始占主导：</p>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/batched_rhs_scaling.png"><img alt="../_images/batched_rhs_scaling.png" src="../_images/batched_rhs_scaling.png" style="width: 80%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 14 </span><span class="caption-text">在一张 3014 个节点的泊松网格上的单问题耗时：调用 <code class="xref py py-meth docutils literal notranslate"><span class="pre">tensormesh.sparse.SparseMatrix.solve()</span></code> <code class="docutils literal notranslate"><span class="pre">n_batch</span></code> 次的 Python 循环（虚线）对比单次二维右端项调用（实线）。在 GPU 上，当 <code class="docutils literal notranslate"><span class="pre">n_batch</span> <span class="pre">=</span> <span class="pre">256</span></code> 时加速达到 <code class="docutils literal notranslate"><span class="pre">225x</span></code>。</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>结论可以从图中清晰读出。循环正好是 <code class="docutils literal notranslate"><span class="pre">n_batch</span></code> 次独立求解，因此 x 轴每跳一格其墙钟时间就翻一倍。二维右端项调用只分解一次 <code class="docutils literal notranslate"><span class="pre">K</span></code>，并将这一开销摊销到每一列上；在 GPU 上，直到 <code class="docutils literal notranslate"><span class="pre">n_batch</span> <span class="pre">=</span> <span class="pre">256</span></code>，其耗时都保持在单右端项耗时的 <span class="math notranslate nohighlight">\(\sim 15\%\)</span> 以内。</p>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>“分解一次再摊销”是<strong>直接法</strong>后端的特性。如果转而运行某种<em>迭代</em>法——超大规模的 GPU 问题会被路由到原生 PyTorch 的 CG，或者你显式传入 <code class="docutils literal notranslate"><span class="pre">method=&quot;cg&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;bicgstab&quot;</span></code>——<code class="docutils literal notranslate"><span class="pre">torch-sla</span></code> 会在内部对二维右端项的各列做循环，因此没有可复用的分解，相比 Python 循环唯一的收益就是减少了每次调用的分派开销。<code class="docutils literal notranslate"><span class="pre">torch-sla</span></code> 目前尚不缓存迭代求解器状态（即跨右端项复用的预条件子或 Krylov 基）；带缓存的迭代求解器已列入未来版本的计划。后端与方法的选择方式参见 <a class="reference internal" href="linear_solvers.html"><span class="doc">稀疏求解器</span></a>。</p>
+</div>
+<p>吞吐量是同一组数据的另一种呈现——每秒求解的问题数：</p>
+<figure class="align-center" id="id3">
+<a class="reference internal image-reference" href="../_images/throughput.png"><img alt="../_images/throughput.png" src="../_images/throughput.png" style="width: 80%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 15 </span><span class="caption-text">以每秒问题数表示的吞吐量。CPU 路径在大约 <span class="math notranslate nohighlight">\(5 \times 10^{3}\)</span> 个问题每秒处使 SuperLU 回代达到饱和；GPU 则持续攀升，在 <code class="docutils literal notranslate"><span class="pre">n_batch</span> <span class="pre">=</span> <span class="pre">1024</span></code> 时接近 <span class="math notranslate nohighlight">\(3 \times 10^{4}\)</span> 个问题每秒。</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>凝聚的工作方式相同。<a class="reference internal" href="../api/operator.html#tensormesh.Condenser.condense_rhs" title="tensormesh.Condenser.condense_rhs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">condense_rhs()</span></code></a> 接受 <code class="docutils literal notranslate"><span class="pre">[n_dof,</span> <span class="pre">...]</span></code> 形状——前导的自由度轴会被切片，而后续各轴原样透传：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">condenser</span> <span class="o">=</span> <span class="n">Condenser</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">boundary_mask</span><span class="p">)</span>
+<span class="n">K_</span><span class="p">,</span> <span class="n">_</span>    <span class="o">=</span> <span class="n">condenser</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">n_points</span><span class="p">))</span>
+<span class="n">B_inner</span> <span class="o">=</span> <span class="n">condenser</span><span class="o">.</span><span class="n">condense_rhs</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>             <span class="c1"># [n_inner, 64]</span>
+<span class="n">X_inner</span> <span class="o">=</span> <span class="n">K_</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">B_inner</span><span class="p">)</span>                     <span class="c1"># [n_inner, 64]</span>
+<span class="n">X_full</span>  <span class="o">=</span> <span class="n">condenser</span><span class="o">.</span><span class="n">recover</span><span class="p">(</span><span class="n">X_inner</span><span class="p">)</span>            <span class="c1"># [n_dof, 64]</span>
+</pre></div>
+</div>
+<p>这是机器学习训练数据生成的主力模式，也适用于每个问题都共享同一几何的参数化研究。</p>
+</section>
+<section id="axis-3-multi-problem-datasets">
+<h2>维度 3 —— 多问题数据集<a class="headerlink" href="#axis-3-multi-problem-datasets" title="Link to this heading">¶</a></h2>
+<p>对于需要大量 <code class="docutils literal notranslate"><span class="pre">(input,</span> <span class="pre">output)</span></code> 对的机器学习工作负载，<a class="reference internal" href="../api/dataset.html#module-tensormesh.dataset" title="tensormesh.dataset"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensormesh.dataset</span></code></a> 打包了两样东西：</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../api/dataset.html#tensormesh.MeshGen" title="tensormesh.MeshGen"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeshGen</span></code></a> —— 由 CSG 基元（矩形、圆、孔洞等）程序化生成、以 Gmsh 为后端的网格。</p></li>
+<li><p>多频方程类，可生成带有已知解析解的批量源项，用于监督训练：</p>
+<ul>
+<li><p><a class="reference internal" href="../api/dataset.html#tensormesh.dataset.PoissonMultiFrequency" title="tensormesh.dataset.PoissonMultiFrequency"><code class="xref py py-class docutils literal notranslate"><span class="pre">PoissonMultiFrequency</span></code></a>（以及 <code class="docutils literal notranslate"><span class="pre">…3D</span></code>）</p></li>
+<li><p><a class="reference internal" href="../api/dataset.html#tensormesh.dataset.HeatMultiFrequency" title="tensormesh.dataset.HeatMultiFrequency"><code class="xref py py-class docutils literal notranslate"><span class="pre">HeatMultiFrequency</span></code></a></p></li>
+<li><p><a class="reference internal" href="../api/dataset.html#tensormesh.dataset.WaveMultiFrequency" title="tensormesh.dataset.WaveMultiFrequency"><code class="xref py py-class docutils literal notranslate"><span class="pre">WaveMultiFrequency</span></code></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LinearElasticityMultiFrequency</span></code>（以及 <code class="docutils literal notranslate"><span class="pre">…3D</span></code>）</p></li>
+</ul>
+</li>
+</ul>
+<p>每个 <code class="docutils literal notranslate"><span class="pre">…MultiFrequency</span></code> 类都会为源项采样随机傅里叶系数，并在适用时返回相同节点上的解析解，这对训练和验证都很方便。</p>
+<p>标准的“同一网格、变化源项”方案，将这个生成器与维度 2 的批量右端项模式结合起来：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mesh</span><span class="p">,</span> <span class="n">LaplaceElementAssembler</span><span class="p">,</span> <span class="n">MassElementAssembler</span><span class="p">,</span> <span class="n">Condenser</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh.dataset</span><span class="w"> </span><span class="kn">import</span> <span class="n">PoissonMultiFrequency</span>
+
+<span class="n">device</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span>
+
+<span class="n">mesh</span>      <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">gen_rectangle</span><span class="p">(</span><span class="n">chara_length</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+<span class="n">K</span>         <span class="o">=</span> <span class="n">LaplaceElementAssembler</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)()</span><span class="o">.</span><span class="n">double</span><span class="p">()</span>
+<span class="n">M</span>         <span class="o">=</span> <span class="n">MassElementAssembler</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)()</span><span class="o">.</span><span class="n">double</span><span class="p">()</span>
+<span class="n">condenser</span> <span class="o">=</span> <span class="n">Condenser</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">boundary_mask</span><span class="p">)</span>
+<span class="n">K_</span><span class="p">,</span> <span class="n">_</span>     <span class="o">=</span> <span class="n">condenser</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">n_points</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">))</span>
+
+<span class="c1"># 1024 random Poisson source terms, all evaluated at the same nodes.</span>
+<span class="n">eq</span> <span class="o">=</span> <span class="n">PoissonMultiFrequency</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">f</span>  <span class="o">=</span> <span class="n">eq</span><span class="o">.</span><span class="n">source_term</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">&quot;rectangle&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">double</span><span class="p">()</span>  <span class="c1"># [1024, n_points]</span>
+<span class="n">b</span>  <span class="o">=</span> <span class="n">M</span> <span class="o">@</span> <span class="n">f</span><span class="o">.</span><span class="n">T</span>                                                   <span class="c1"># [n_points, 1024]</span>
+<span class="n">b_</span> <span class="o">=</span> <span class="n">condenser</span><span class="o">.</span><span class="n">condense_rhs</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>                                 <span class="c1"># [n_inner, 1024]</span>
+<span class="n">u_</span> <span class="o">=</span> <span class="n">K_</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">b_</span><span class="p">)</span>                                              <span class="c1"># [n_inner, 1024]</span>
+<span class="n">u</span>  <span class="o">=</span> <span class="n">condenser</span><span class="o">.</span><span class="n">recover</span><span class="p">(</span><span class="n">u_</span><span class="p">)</span>                                     <span class="c1"># [n_points, 1024]</span>
+</pre></div>
+</div>
+<p>在单块 RTX PRO 6000 上，上面的循环大约用 34 ms 产生 1024 个泊松解（见上方的吞吐量图）——每个问题约 <span class="math notranslate nohighlight">\(30\,\mu\mathrm{s}\)</span>，主要耗时在 cuDSS 的三角回代上。完整基准测试的驱动脚本（含跨多个 <code class="docutils literal notranslate"><span class="pre">n_batch</span></code> 取值的计时）位于 <code class="docutils literal notranslate"><span class="pre">examples/dataset/poisson/poisson_dataset.py</span></code>。</p>
+<p>对于<em>网格变化</em>的工作流，需要为每个问题重新生成 <code class="docutils literal notranslate"><span class="pre">Mesh</span></code> 并每次都付出装配开销——目前这种情况没有捷径。</p>
+</section>
+<section id="what-s-not-built-in">
+<span id="batched-not-built-in"></span><h2>尚未内置的功能<a class="headerlink" href="#what-s-not-built-in" title="Link to this heading">¶</a></h2>
+<p>目前<strong>没有</strong>内置的 vmap 式装配器来跨多个参数取值对 <code class="docutils literal notranslate"><span class="pre">K</span></code> 的构造进行向量化（例如为随机系数场的每一次实现生成一个 <code class="docutils literal notranslate"><span class="pre">K</span></code>）。当下，用户代码中有两种可行模式：</p>
+<ul class="simple">
+<li><p><strong>Python 循环</strong>——最简单，当装配相对于求解开销较小时完全够用。</p></li>
+<li><p><strong>用 ``torch.vmap`` 包住装配器调用</strong>——当变化的参数通过 <code class="docutils literal notranslate"><span class="pre">point_data</span></code> 或 <code class="docutils literal notranslate"><span class="pre">element_data</span></code> 传入、且结果形状一致时可用。请注意 <code class="docutils literal notranslate"><span class="pre">vmap</span></code> 与稀疏输出的配合较为脆弱；请先在小问题上测试。</p></li>
+</ul>
+<p>未来的某个版本可能会出现一等公民级别的批量装配 API；即便没有它，上文的数据集工作流也已涵盖了最常见的情形（同一网格、多个源项）。</p>
+</section>
+<section id="reproducing-the-numbers">
+<h2>复现这些数据<a class="headerlink" href="#reproducing-the-numbers" title="Link to this heading">¶</a></h2>
+<p>本页的三幅图均来自同一个脚本：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>docs/scripts/batched_workflows_figures.py
+</pre></div>
+</div>
+<p>它仅使用公开 API，且可仅在 CPU 上运行（在纯 CPU 机器上会跳过 GPU 相关的图）。在 CUDA 主机上，它会将 <code class="docutils literal notranslate"><span class="pre">batched_rhs_scaling.png</span></code>、<code class="docutils literal notranslate"><span class="pre">throughput.png</span></code> 和 <code class="docutils literal notranslate"><span class="pre">memory_chunking.png</span></code> 写入 <code class="docutils literal notranslate"><span class="pre">docs/source/_static/user_guide/batched_workflows/</span></code>。</p>
+</section>
+<section id="what-s-next">
+<h2>下一步<a class="headerlink" href="#what-s-next" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="linear_solvers.html"><span class="doc">稀疏求解器</span></a> —— 后端 / 方法的自动选择，以及影响批量求解的 <code class="docutils literal notranslate"><span class="pre">backend</span></code> 旋钮。</p></li>
+<li><p><a class="reference internal" href="differentiability.html"><span class="doc">可微性</span></a> —— 在批量流水线中进行反向传播。</p></li>
+<li><p><a class="reference internal" href="time_integration.html"><span class="doc">时间积分</span></a> —— 瞬态问题，其中每个时间步的内层求解本身就具有批量右端项的形状。</p></li>
+</ul>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="differentiability.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">可微性</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="time_integration.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">时间积分</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, TensorMesh Contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/camlab-ethz/TensorMesh" aria-label="GitHub"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+              <a class="muted-link " href="https://discord.gg/EC9kbHSnrx" aria-label="Discord"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.576-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.05.05 0 0 0-.021.019C.356 6.024-.213 9.047.066 12.032c.002.015.01.029.02.037a13.3 13.3 0 0 0 3.995 2.01.05.05 0 0 0 .056-.019c.308-.42.582-.86.818-1.329a.05.05 0 0 0-.027-.06 8.7 8.7 0 0 1-1.248-.595.05.05 0 0 1-.005-.085c.079-.053.16-.104.248-.152a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007c.08.048.16.1.248.152a.05.05 0 0 1-.004.085 8.2 8.2 0 0 1-1.249.594.05.05 0 0 0-.027.06c.24.465.514.906.817 1.329a.05.05 0 0 0 .056.02 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.036c.334-3.451-.559-6.449-2.366-9.106a.04.04 0 0 0-.021-.02zM5.68 10.77c-.789 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.45.73 1.438 1.61 0 .886-.637 1.61-1.438 1.61zm4.842 0c-.788 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.451.73 1.438 1.61 0 .886-.63 1.61-1.438 1.61z"></path></svg></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">批量化工作流</a><ul>
+<li><a class="reference internal" href="#three-axes-of-batching">批量化的三个维度</a></li>
+<li><a class="reference internal" href="#axis-1-memory-chunking-with-batch-size">维度 1 —— 用 <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> 进行内存分块</a></li>
+<li><a class="reference internal" href="#axis-2-batched-right-hand-sides">维度 2 —— 批量右端项</a></li>
+<li><a class="reference internal" href="#axis-3-multi-problem-datasets">维度 3 —— 多问题数据集</a></li>
+<li><a class="reference internal" href="#what-s-not-built-in">尚未内置的功能</a></li>
+<li><a class="reference internal" href="#reproducing-the-numbers">复现这些数据</a></li>
+<li><a class="reference internal" href="#what-s-next">下一步</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=c5408746"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../_static/translations.js?v=beaddf03"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

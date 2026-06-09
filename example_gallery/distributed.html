@@ -1,0 +1,596 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="API Reference" href="../api/index.html"><link rel="prev" title="ML Datasets" href="dataset.html">
+        <link rel="prefetch" href="../_static/logo.png" as="image">
+        <link rel="prefetch" href="../_static/logo.png" as="image">
+
+    <link rel="shortcut icon" href="../_static/logo.png"><!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>Distributed FEM - TensorMesh</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=95a110e3" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #5B6EE8;
+  --color-brand-content: #149B8E;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">TensorMesh</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../_static/logo.png" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../_static/logo.png" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">TensorMesh</span>
+  
+</a><div class="sidebar-language-switcher">
+  <span class="active">English</span>
+  <span class="sep">·</span>
+  <a href="../zh/example_gallery/distributed.html" rel="alternate" hreflang="zh-CN" title="中文">中文</a>
+</div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../getting_started/index.html">Get Started</a><input aria-label="Toggle navigation of Get Started" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quickstart.html">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/verify_install.html">Verify Install</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../user_guide/index.html">User Guide</a><input aria-label="Toggle navigation of User Guide" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/concepts.html">Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/meshes.html">Meshes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/elements_and_quadrature.html">Elements and Quadrature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/forms.html">Forms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/boundary_conditions.html">Boundary Conditions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/linear_solvers.html">Sparse Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/time_integration.html">Time Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/batched_workflows.html">Batched Workflows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/differentiability.html">Differentiability</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Example Gallery</a><input aria-label="Toggle navigation of Example Gallery" checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="basics.html">Basics &amp; Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poisson.html">Poisson Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diffusion.html">Diffusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wave.html">Wave Equation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="solid/index.html">Solid Mechanics</a><input aria-label="Toggle navigation of Solid Mechanics" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="solid/cantilever_beam.html">Cantilever Beam</a></li>
+<li class="toctree-l3"><a class="reference internal" href="solid/hyperelastic_beam.html">Hyperelastic Beam (Neo-Hookean)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="solid/hertzian_contact.html">Hertzian Contact</a></li>
+<li class="toctree-l3"><a class="reference internal" href="solid/plasticity_strip.html">Plasticity (J2 with Isotropic Hardening)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="solid/drucker_prager_triaxial.html">Geomechanics: Drucker-Prager triaxial compression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="solid/elastic_footing.html">Geomechanics: elastic strip footing</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="fluid/index.html">Fluid Mechanics</a><input aria-label="Toggle navigation of Fluid Mechanics" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="fluid/cavity.html">Lid-Driven Cavity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fluid/cylinder_flow.html">Cylinder Flow (Vortex Shedding)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fluid/flow_obstacles.html">Flow Past Multiple Obstacles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fluid/rayleigh_benard.html">Rayleigh-Bénard Convection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fluid/taylor_green.html">Taylor-Green Vortex (Convergence Study)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="maxwell.html">Magnetostatics (Maxwell)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inverse_design.html">Inverse Design &amp; Identification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="physics_informed.html">Physics-Informed Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataset.html">ML Datasets</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Distributed FEM</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/index.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/mesh.html">tensormesh.mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/element.html">tensormesh.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/assemble.html">tensormesh.assemble</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/operator.html">tensormesh.operator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/sparse.html">tensormesh.sparse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/ode.html">tensormesh.ode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/functional.html">tensormesh.functional</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/optimizer.html">tensormesh.optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/material.html">tensormesh.material</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/distributed.html">tensormesh.distributed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/nn.html">tensormesh.nn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/dataset.html">tensormesh.dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/visualization.html">tensormesh.visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../performance/index.html">Performance</a><input aria-label="Toggle navigation of Performance" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../performance/benchmarks.html">Benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../performance/scaling_guide.html">Scaling Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../performance/profiling.html">Profiling</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../community/index.html">Community</a><input aria-label="Toggle navigation of Community" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../community/discord.html">Discord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/github_discussions.html">GitHub Discussions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/github_issues.html">GitHub Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/contributing.html">Contributing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/citing.html">Citing TensorMesh</a></li>
+</ul>
+</li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/example_gallery/distributed.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="distributed-fem">
+<h1>Distributed FEM<a class="headerlink" href="#distributed-fem" title="Link to this heading">¶</a></h1>
+<p>Three scripts in <code class="docutils literal notranslate"><span class="pre">examples/distributed/</span></code> cover the building blocks
+for multi-GPU FEM in TensorMesh: graph coloring on the element
+adjacency graph, spectral domain decomposition, and a
+single-GPU-vs-multi-GPU assembly benchmark on a structured
+tetrahedral cube.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>The distributed layer is still under active development. The
+building blocks below (coloring, partitioning, multi-GPU
+assembly) work and the benchmarks are real, but the public API is
+not yet stable and the <a class="reference internal" href="../user_guide/index.html"><span class="doc">User Guide</span></a> deliberately
+does not document it as a first-class workflow. The next step is
+to couple it with <code class="docutils literal notranslate"><span class="pre">torch-sla</span></code>’s distributed linear solver, so
+that assembly <em>and</em> solve both run across multiple GPUs — the
+goal being to tackle very large-scale industrial problems that do
+not fit on a single device. Until then, treat the examples here
+as recipes to learn from, not as a stable interface.</p>
+</div>
+<section id="element-graph-coloring-graph-coloring-py">
+<h2>Element-graph coloring — <code class="docutils literal notranslate"><span class="pre">graph_coloring.py</span></code><a class="headerlink" href="#element-graph-coloring-graph-coloring-py" title="Link to this heading">¶</a></h2>
+<p>Race-free atomic-add assembly on GPU needs a coloring of the
+element-adjacency graph: elements that touch a common DOF must
+not share a color, so each color class can be scattered into the
+global matrix in parallel. <code class="docutils literal notranslate"><span class="pre">mesh.color()</span></code> does this in one call,
+running a parallel Welsh-Powell-style heuristic on the GPU when
+available:</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-number">Listing 23 </span><span class="caption-text">examples/distributed/graph_coloring.py (essence)</span><a class="headerlink" href="#id1" title="Link to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh.dataset.mesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">gen_rectangle</span>
+
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">gen_rectangle</span><span class="p">(</span><span class="n">chara_length</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="mi">50</span><span class="p">,</span> <span class="n">element_type</span><span class="o">=</span><span class="s2">&quot;tri&quot;</span><span class="p">)</span>
+<span class="n">mesh</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+<span class="n">colors</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">color</span><span class="p">()</span>                    <span class="c1"># one int per element</span>
+<span class="n">n_colors</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Used </span><span class="si">{</span><span class="n">n_colors</span><span class="si">}</span><span class="s2"> colors.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>For a regular triangulation of the unit square the algorithm
+typically finds 6–8 colors — close to the optimal chromatic
+number for a 2D triangle adjacency graph. The visualization paints
+each element by its color class, which gives the familiar
+striped / banded pattern.</p>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/graph_coloring_result.png"><img alt="Triangular element coloring with 7 color classes" src="../_images/graph_coloring_result.png" style="width: 75%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Fig. 60 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">graph_coloring.py</span></code> output: a triangular mesh of the unit
+square painted by element color class. The Welsh-Powell
+heuristic finds 7 colors here; elements sharing a color
+never share a node, so each color class can be assembled in
+parallel without write conflicts.</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="spectral-domain-decomposition-graph-partition-py">
+<h2>Spectral domain decomposition — <code class="docutils literal notranslate"><span class="pre">graph_partition.py</span></code><a class="headerlink" href="#spectral-domain-decomposition-graph-partition-py" title="Link to this heading">¶</a></h2>
+<p>For multi-GPU work the mesh has to be split into <code class="docutils literal notranslate"><span class="pre">n_parts</span></code>
+balanced subdomains with small interfaces. <code class="docutils literal notranslate"><span class="pre">partition_mesh</span></code>
+with <code class="docutils literal notranslate"><span class="pre">method=&quot;spectral&quot;</span></code> computes the Fiedler vector of the
+graph Laplacian and recursively bisects:</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-number">Listing 24 </span><span class="caption-text">examples/distributed/graph_partition.py (essence)</span><a class="headerlink" href="#id3" title="Link to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh.mesh.partition</span><span class="w"> </span><span class="kn">import</span> <span class="n">partition_mesh</span>
+
+<span class="n">submeshes</span> <span class="o">=</span> <span class="n">partition_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">n_parts</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;spectral&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>The returned list of <a class="reference internal" href="../api/mesh.html#tensormesh.Mesh" title="tensormesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> objects each carries
+<strong>ghost nodes</strong> — the boundary nodes that belong to two subdomains
+get duplicated, with their original global IDs stored in
+<code class="docutils literal notranslate"><span class="pre">submesh.point_data[&quot;orig_nid&quot;]</span></code>. The script’s exploded-view
+visualization separates the four subdomains in space and circles
+the shared interface nodes — the geometric picture you usually
+have to draw on a whiteboard to explain a domain decomposition.</p>
+<figure class="align-center" id="id4">
+<a class="reference internal image-reference" href="../_images/graph_partition_exploded.png"><img alt="4-way domain decomposition with ghost nodes (exploded view)" src="../_images/graph_partition_exploded.png" style="width: 90%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Fig. 61 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">graph_partition.py</span></code> output: a 4-way spectral partition of
+the unit square in exploded view. Each subdomain is rendered
+in its own color; the highlighted dots along each subdomain’s
+shared boundary are the <strong>ghost nodes</strong> — duplicated copies of
+the interface vertices that each rank owns locally, with the
+original global IDs preserved in
+<code class="docutils literal notranslate"><span class="pre">submesh.point_data[&quot;orig_nid&quot;]</span></code>.</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="multi-gpu-assembly-benchmark-benchmark-assembly-py">
+<h2>Multi-GPU assembly benchmark — <code class="docutils literal notranslate"><span class="pre">benchmark_assembly.py</span></code><a class="headerlink" href="#multi-gpu-assembly-benchmark-benchmark-assembly-py" title="Link to this heading">¶</a></h2>
+<p>The headline distributed-FEM benchmark. A structured tetrahedral
+cube of size <span class="math notranslate nohighlight">\((n+1)^3\)</span> points and <span class="math notranslate nohighlight">\(5 n^3\)</span> tets is
+assembled (i) on a single GPU, (ii) across all visible GPUs via
+<code class="docutils literal notranslate"><span class="pre">torch.multiprocessing</span></code>. The driver sweeps <span class="math notranslate nohighlight">\(n\)</span> from a
+configurable starting size until either path runs out of memory.</p>
+<p>The interesting machinery lives in
+<a class="reference internal" href="../api/distributed.html#tensormesh.distributed.DistributedMesh" title="tensormesh.distributed.DistributedMesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">DistributedMesh</span></code></a>, which wraps the
+spectral partition + per-subdomain ghost-node bookkeeping into a
+single object:</p>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-number">Listing 25 </span><span class="caption-text">examples/distributed/benchmark_assembly.py (essence)</span><a class="headerlink" href="#id5" title="Link to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch.multiprocessing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh.distributed</span><span class="w"> </span><span class="kn">import</span> <span class="n">DistributedMesh</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_mp_assemble_worker</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">submesh</span><span class="p">,</span> <span class="n">device_id</span><span class="p">,</span> <span class="n">q_order</span><span class="p">,</span> <span class="n">return_dict</span><span class="p">):</span>
+    <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cuda:</span><span class="si">{</span><span class="n">device_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">set_device</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">submesh</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">asm</span> <span class="o">=</span> <span class="n">tm</span><span class="o">.</span><span class="n">LaplaceElementAssembler</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span>
+        <span class="n">submesh</span><span class="p">,</span> <span class="n">quadrature_order</span><span class="o">=</span><span class="n">q_order</span>
+    <span class="p">)</span>
+    <span class="n">K_local</span> <span class="o">=</span> <span class="n">asm</span><span class="p">()</span>
+    <span class="c1"># …translate K_local.row/col through orig_nid into global indices…</span>
+
+<span class="n">dmesh</span> <span class="o">=</span> <span class="n">DistributedMesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">num_partitions</span><span class="o">=</span><span class="n">num_partitions</span><span class="p">)</span>
+<span class="n">manager</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Manager</span><span class="p">();</span> <span class="n">return_dict</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+<span class="n">procs</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">mp</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">_mp_assemble_worker</span><span class="p">,</span>
+               <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">dmesh</span><span class="o">.</span><span class="n">submeshes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">i</span><span class="p">,</span> <span class="n">q_order</span><span class="p">,</span> <span class="n">return_dict</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_partitions</span><span class="p">)</span>
+<span class="p">]</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">procs</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">procs</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p>A few details that matter:</p>
+<ul class="simple">
+<li><p><strong>One process per GPU.</strong> <code class="docutils literal notranslate"><span class="pre">torch.multiprocessing</span></code> with
+<code class="docutils literal notranslate"><span class="pre">set_start_method(&quot;spawn&quot;)</span></code> gives each process its own Python
+interpreter, sidestepping the GIL. Threading would not help on
+CPU-bound assembly.</p></li>
+<li><p><strong>Ghost-node bookkeeping.</strong> Each worker assembles a <em>local</em>
+<code class="docutils literal notranslate"><span class="pre">SparseMatrix</span></code> whose row/col are local DOF indices; the
+driver translates them through <code class="docutils literal notranslate"><span class="pre">orig_nid</span></code> into global indices
+before stitching the partial matrices together. The user-visible
+cost is a single GPU→CPU copy per worker.</p></li>
+<li><p><strong>Per-card memory.</strong> The benchmark’s “mem save” column reports
+<code class="docutils literal notranslate"><span class="pre">single_gpu_peak</span> <span class="pre">/</span> <span class="pre">max_per_card_peak</span></code> — typically close to
+<code class="docutils literal notranslate"><span class="pre">num_partitions</span></code> for the assembly step itself, since each
+worker only stores its own subdomain.</p></li>
+</ul>
+<p>A representative slice of the output table:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>    n |   Points |    Tets | 1-GPU time | 1-GPU mem | N-GPU wall  N-GPU max_t  N-GPU mem/card | Speedup  Mem save
+----------------------------------------------------------------------------------------------------------------
+   30 |   29,791 | 135,000 |    0.42 s  |    0.5 GB |     0.18 s     0.11 s         0.16 GB  |    2.3x      3.1x
+   50 |  132,651 | 625,000 |    1.90 s  |    2.3 GB |     0.55 s     0.34 s         0.62 GB  |    3.5x      3.7x
+   …   …          …          …            …            …            …               …          …          …
+</pre></div>
+</div>
+<p>CLI:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>benchmark_assembly.py<span class="w">                          </span><span class="c1"># auto-detect GPUs</span>
+python<span class="w"> </span>benchmark_assembly.py<span class="w"> </span>--partitions<span class="w"> </span><span class="m">4</span><span class="w"> </span>--start<span class="w"> </span><span class="m">30</span><span class="w"> </span>--max<span class="w"> </span><span class="m">200</span>
+</pre></div>
+</div>
+</section>
+<section id="running-the-examples">
+<h2>Running the examples<a class="headerlink" href="#running-the-examples" title="Link to this heading">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples/distributed
+python<span class="w"> </span>graph_coloring.py<span class="w">        </span><span class="c1"># writes graph_coloring_result.png</span>
+python<span class="w"> </span>graph_partition.py<span class="w">       </span><span class="c1"># writes graph_partition_exploded.png</span>
+python<span class="w"> </span>benchmark_assembly.py<span class="w">    </span><span class="c1"># prints benchmark table</span>
+</pre></div>
+</div>
+<p>All three are lightweight and run on a single workstation; only
+<code class="docutils literal notranslate"><span class="pre">benchmark_assembly.py</span></code> benefits from multiple GPUs.</p>
+</section>
+<section id="what-s-next">
+<h2>What’s next<a class="headerlink" href="#what-s-next" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../user_guide/concepts.html"><span class="doc">Concepts</span></a> — the module map mentions
+<a class="reference internal" href="../api/distributed.html#module-tensormesh.distributed" title="tensormesh.distributed"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tensormesh.distributed</span></code></a> as a research path.</p></li>
+<li><p><a class="reference internal" href="../user_guide/batched_workflows.html"><span class="doc">Batched Workflows</span></a> — single-GPU batching
+patterns that often suffice before reaching for multi-GPU.</p></li>
+<li><p><a class="reference internal" href="basics.html"><span class="doc">Basics &amp; Visualization</span></a> — <code class="docutils literal notranslate"><span class="pre">plot_mesh.py</span></code> has the adjacency-graph
+visualizations these algorithms operate on.</p></li>
+</ul>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../api/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">API Reference</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="dataset.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">ML Datasets</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, TensorMesh Contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/camlab-ethz/TensorMesh" aria-label="GitHub"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+              <a class="muted-link " href="https://discord.gg/EC9kbHSnrx" aria-label="Discord"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.576-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.05.05 0 0 0-.021.019C.356 6.024-.213 9.047.066 12.032c.002.015.01.029.02.037a13.3 13.3 0 0 0 3.995 2.01.05.05 0 0 0 .056-.019c.308-.42.582-.86.818-1.329a.05.05 0 0 0-.027-.06 8.7 8.7 0 0 1-1.248-.595.05.05 0 0 1-.005-.085c.079-.053.16-.104.248-.152a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007c.08.048.16.1.248.152a.05.05 0 0 1-.004.085 8.2 8.2 0 0 1-1.249.594.05.05 0 0 0-.027.06c.24.465.514.906.817 1.329a.05.05 0 0 0 .056.02 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.036c.334-3.451-.559-6.449-2.366-9.106a.04.04 0 0 0-.021-.02zM5.68 10.77c-.789 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.45.73 1.438 1.61 0 .886-.637 1.61-1.438 1.61zm4.842 0c-.788 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.451.73 1.438 1.61 0 .886-.63 1.61-1.438 1.61z"></path></svg></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Distributed FEM</a><ul>
+<li><a class="reference internal" href="#element-graph-coloring-graph-coloring-py">Element-graph coloring — <code class="docutils literal notranslate"><span class="pre">graph_coloring.py</span></code></a></li>
+<li><a class="reference internal" href="#spectral-domain-decomposition-graph-partition-py">Spectral domain decomposition — <code class="docutils literal notranslate"><span class="pre">graph_partition.py</span></code></a></li>
+<li><a class="reference internal" href="#multi-gpu-assembly-benchmark-benchmark-assembly-py">Multi-GPU assembly benchmark — <code class="docutils literal notranslate"><span class="pre">benchmark_assembly.py</span></code></a></li>
+<li><a class="reference internal" href="#running-the-examples">Running the examples</a></li>
+<li><a class="reference internal" href="#what-s-next">What’s next</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=a58bc63e"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

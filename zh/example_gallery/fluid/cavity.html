@@ -1,0 +1,596 @@
+<!doctype html>
+<html class="no-js" lang="zh-CN" data-content_root="../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="索引" href="../../genindex.html"><link rel="search" title="搜索" href="../../search.html"><link rel="next" title="圆柱绕流（涡脱落）" href="cylinder_flow.html"><link rel="prev" title="流体力学" href="index.html">
+        <link rel="prefetch" href="../../_static/logo.png" as="image">
+        <link rel="prefetch" href="../../_static/logo.png" as="image">
+
+    <link rel="shortcut icon" href="../../_static/logo.png"><!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>顶盖驱动方腔 - TensorMesh</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=95a110e3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #5B6EE8;
+  --color-brand-content: #149B8E;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">TensorMesh</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/logo.png" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/logo.png" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">TensorMesh</span>
+  
+</a><div class="sidebar-language-switcher">
+  <a href="../../../example_gallery/fluid/cavity.html" rel="alternate" hreflang="en" title="English">English</a>
+  <span class="sep">·</span>
+  <span class="active">中文</span>
+</div><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="搜索" name="q" aria-label="搜索">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">文档</span></p>
+<ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../getting_started/index.html">快速上手</a><input aria-label="Toggle navigation of 快速上手" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/installation.html">安装</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/quickstart.html">快速开始</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/verify_install.html">验证安装</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../user_guide/index.html">用户指南</a><input aria-label="Toggle navigation of 用户指南" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/concepts.html">核心概念</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/meshes.html">网格</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/elements_and_quadrature.html">单元与求积</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/forms.html">形式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/boundary_conditions.html">边界条件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/linear_solvers.html">稀疏求解器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/time_integration.html">时间积分</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/batched_workflows.html">批量化工作流</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/differentiability.html">可微性</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../index.html">示例画廊</a><input aria-label="Toggle navigation of 示例画廊" checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../basics.html">基础与可视化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../poisson.html">泊松方程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../diffusion.html">扩散</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../wave.html">波动方程</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../solid/index.html">固体力学</a><input aria-label="Toggle navigation of 固体力学" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../solid/cantilever_beam.html">悬臂梁</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solid/hyperelastic_beam.html">超弹性梁（新胡克）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solid/hertzian_contact.html">赫兹接触</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solid/plasticity_strip.html">塑性（带各向同性硬化的 J2）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solid/drucker_prager_triaxial.html">岩土力学：Drucker-Prager 三轴压缩</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solid/elastic_footing.html">Geomechanics: elastic strip footing</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="index.html">流体力学</a><input aria-label="Toggle navigation of 流体力学" checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">顶盖驱动方腔</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cylinder_flow.html">圆柱绕流（涡脱落）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flow_obstacles.html">绕多个障碍物的流动</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rayleigh_benard.html">瑞利-贝纳德对流</a></li>
+<li class="toctree-l3"><a class="reference internal" href="taylor_green.html">泰勒-格林涡（收敛性研究）</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../maxwell.html">静磁学（麦克斯韦方程）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inverse_design.html">反问题设计与辨识</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics_informed.html">物理信息学习</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dataset.html">机器学习数据集</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../distributed.html">分布式 FEM</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/index.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/mesh.html">tensormesh.mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/element.html">tensormesh.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/assemble.html">tensormesh.assemble</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/operator.html">tensormesh.operator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/sparse.html">tensormesh.sparse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ode.html">tensormesh.ode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/functional.html">tensormesh.functional</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/optimizer.html">tensormesh.optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/material.html">tensormesh.material</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/distributed.html">tensormesh.distributed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/nn.html">tensormesh.nn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/dataset.html">tensormesh.dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/visualization.html">tensormesh.visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../performance/index.html">性能</a><input aria-label="Toggle navigation of 性能" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../performance/benchmarks.html">基准测试</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../performance/scaling_guide.html">扩展性指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../performance/profiling.html">性能剖析</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../community/index.html">社区</a><input aria-label="Toggle navigation of 社区" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../community/discord.html">Discord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../community/github_discussions.html">GitHub Discussions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../community/github_issues.html">GitHub Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../community/contributing.html">贡献指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../community/citing.html">引用 TensorMesh</a></li>
+</ul>
+</li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../../_sources/example_gallery/fluid/cavity.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="lid-driven-cavity">
+<h1>顶盖驱动方腔<a class="headerlink" href="#lid-driven-cavity" title="Link to this heading">¶</a></h1>
+<p>顶盖驱动方腔是不可压缩纳维-斯托克斯求解器的教科书级基准。其物理过程很简单——一个盛有流体的方腔，顶壁以单位速度滑动，其余壁面满足无滑移条件，无体积力——但在中等雷诺数下，它已经表现出一个主涡以及若干次级角涡，任何合格的求解器都必须能复现这些结构。<code class="docutils literal notranslate"><span class="pre">examples/fluid/cavity/</span></code> 中的两个脚本在 <span class="math notranslate nohighlight">\(\mathrm{Re} = 100\)</span> 下求解稳态问题：<code class="docutils literal notranslate"><span class="pre">cavity.py</span></code> 在三角化的单位正方形上运行，<code class="docutils literal notranslate"><span class="pre">cavity_3d.py</span></code> 在四面体离散的单位立方体上运行。它们共享同一个<strong>维度通用</strong>的 <code class="docutils literal notranslate"><span class="pre">NavierStokesAssembler</span></code>，因此 3D 算例本质上只是换了网格。</p>
+<div class="admonition caution">
+<p class="admonition-title">小心</p>
+<p>TensorMesh 尚未原生支持面向耦合多物理场的<strong>混合单元函数空间</strong>——目前没有内置的 Taylor-Hood（例如 P2 速度 / P1 压力）速度-压力配对来开箱即用地满足 inf-sup（LBB）条件。因此这些算例对每个场都采用<strong>等阶 P1-P1</strong>，并借助 <strong>SUPG/PSPG 稳定化</strong>来恢复稳定性，这也是下面弱形式中带有额外的基于残差的 <code class="docutils literal notranslate"><span class="pre">tau</span></code> 项的原因。对混合单元以及更紧密的耦合多物理场工作流的原生支持已列入路线图，并将逐步加入；在此之前，请把这里的 <code class="docutils literal notranslate"><span class="pre">NavierStokesAssembler</span></code> 视为示例级范式，而非稳定的库 API。</p>
+</div>
+<section id="problem">
+<h2>问题<a class="headerlink" href="#problem" title="Link to this heading">¶</a></h2>
+<p>稳态不可压缩纳维-斯托克斯方程的强形式为</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\rho\, (\mathbf{u} \cdot \nabla)\mathbf{u}
+\;=\; -\nabla p + \mu\, \Delta \mathbf{u}
+\quad \text{in } \Omega,
+\qquad
+\nabla \cdot \mathbf{u} \;=\; 0,\]</div>
+</div>
+<p>其中 <span class="math notranslate nohighlight">\(\Omega = (0, 1)^d\)</span>、<span class="math notranslate nohighlight">\(\mu = 1/\mathrm{Re}\)</span>、<span class="math notranslate nohighlight">\(\rho = 1\)</span>，边界条件为</p>
+<ul class="simple">
+<li><p>顶盖（<span class="math notranslate nohighlight">\(y = 1\)</span>）：<span class="math notranslate nohighlight">\(\mathbf{u} = (1, 0, \dots)\)</span>（运动壁面）</p></li>
+<li><p>其余壁面：<span class="math notranslate nohighlight">\(\mathbf{u} = \mathbf{0}\)</span>（无滑移）</p></li>
+<li><p>某一节点：<span class="math notranslate nohighlight">\(p = 0\)</span>（钉定压力以消除零空间）。</p></li>
+</ul>
+</section>
+<section id="weak-form-and-stabilization">
+<h2>弱形式与稳定化<a class="headerlink" href="#weak-form-and-stabilization" title="Link to this heading">¶</a></h2>
+<p>标准的混合弱形式将速度与压力一并处理。由于这些脚本对两者都采用<strong>等阶</strong> P1-P1 单元，离散 LBB 条件被违反，朴素的伽辽金格式会出现伪压力模态。解决办法是 <strong>SUPG/PSPG 稳定化</strong>：向动量方程和连续性方程都加入一个基于残差的扰动项，并以依赖网格尺寸的参数 <span class="math notranslate nohighlight">\(\tau\)</span> 进行缩放。</p>
+<p>记 <span class="math notranslate nohighlight">\(\mathbf{w} = \mathbf{w}^{n}\)</span> 为上一个 Picard 迭代步的速度。SUPG/PSPG 稳定化弱形式寻求 <span class="math notranslate nohighlight">\(\mathbf{u} \in (H^1_0(\Omega))^d + \mathbf{u}_b\)</span> 和 <span class="math notranslate nohighlight">\(p \in L^2(\Omega)/\mathbb{R}\)</span>，使得对所有 <span class="math notranslate nohighlight">\(\mathbf{v} \in (H^1_0(\Omega))^d, q \in L^2(\Omega)/\mathbb{R}\)</span>，</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\int_\Omega \rho\,(\mathbf{w}\cdot\nabla)\mathbf{u}\cdot\mathbf{v}\,\mathrm{d}x
++ \int_\Omega \mu\,\nabla\mathbf{u} : \nabla\mathbf{v}\,\mathrm{d}x
+- \int_\Omega p\,(\nabla\cdot\mathbf{v})\,\mathrm{d}x \;+
+\int_\Omega q\,(\nabla\cdot\mathbf{u})\,\mathrm{d}x \;=\; 0 .\]</div>
+</div>
+<p>这里 <span class="math notranslate nohighlight">\(\mathbf{u}_b\)</span> 计入了非齐次的速度边界条件；<span class="math notranslate nohighlight">\(L^2(\Omega)/\mathbb{R}\)</span> 是模去常数后的空间（因为压力只能确定到一个相加常数）。</p>
+<p>对于等阶 P1-P1，这一伽辽金形式是不稳定的，因此我们逐单元附加由强动量残差构造的 <strong>SUPG/PSPG</strong> 项</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\mathbf{R}(\mathbf{u}, p) \;=\;
+\rho\,(\mathbf{w}\cdot\nabla)\mathbf{u} + \nabla p - \mu\,\Delta\mathbf{u}.\]</div>
+</div>
+<p>注意黏性项 <span class="math notranslate nohighlight">\(\mu\,\Delta\mathbf{u}\)</span> 在 P1 单元上为零。该稳定化离散对 <span class="math notranslate nohighlight">\(\mathbf{u}\)</span> 和 <span class="math notranslate nohighlight">\(p\)</span> 都使用 P1-P1 单元，并加入</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\underbrace{\sum_e \int_{\Omega_e}
+    \tau\,(\mathbf{w}\cdot\nabla)\mathbf{v}\cdot\mathbf{R}\,\mathrm{d}x}_{\text{SUPG}}
+\;+\;
+\underbrace{\sum_e \int_{\Omega_e}
+    \tau\,\nabla q\cdot\mathbf{R}\,\mathrm{d}x}_{\text{PSPG}}\]</div>
+</div>
+<p>到上述弱形式中，其中 <span class="math notranslate nohighlight">\(\tau\)</span> 为稳定化参数。</p>
+<p>其实现是一个在算例中本地定义的自定义 <a class="reference internal" href="../../api/assemble.html#tensormesh.ElementAssembler" title="tensormesh.ElementAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElementAssembler</span></code></a>。它的 <code class="docutils literal notranslate"><span class="pre">forward</span></code> 返回耦合一个测试节点与一个试探节点的 <span class="math notranslate nohighlight">\((d{+}1) \times (d{+}1)\)</span> 块——即 <span class="math notranslate nohighlight">\(d\)</span> 个速度分量加上压力——装配器会像内置的向量值装配器那样，将该块印入一个块状 COO 稀疏矩阵。这个块是由四个具名子块而非逐项构造的，因此每个物理项都清晰可见：</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-number">列表 14 </span><span class="caption-text">examples/fluid/cavity/cavity.py（核心部分）</span><a class="headerlink" href="#id1" title="Link to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">NavierStokesAssembler</span><span class="p">(</span><span class="n">ElementAssembler</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rho</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tau</span> <span class="o">=</span> <span class="n">rho</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">tau</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">gradu</span><span class="p">,</span> <span class="n">gradv</span><span class="p">,</span> <span class="n">w_prev</span><span class="p">):</span>
+        <span class="n">dim</span> <span class="o">=</span> <span class="n">gradu</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">eye</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">gradu</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">gradu</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="c1"># velocity-velocity: convection + diffusion + SUPG (diagonal in components)</span>
+        <span class="n">convection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">w_prev</span><span class="p">,</span> <span class="n">gradv</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span>
+        <span class="n">diffusion</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">gradu</span><span class="p">,</span> <span class="n">gradv</span><span class="p">)</span>
+        <span class="n">supg</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">w_prev</span><span class="p">,</span> <span class="n">gradv</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">tau</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">w_prev</span><span class="p">,</span> <span class="n">gradu</span><span class="p">)</span>
+        <span class="n">A_uu</span> <span class="o">=</span> <span class="p">(</span><span class="n">convection</span> <span class="o">+</span> <span class="n">diffusion</span> <span class="o">+</span> <span class="n">supg</span><span class="p">)</span> <span class="o">*</span> <span class="n">eye</span>               <span class="c1"># [dim, dim]</span>
+
+        <span class="c1"># pressure gradient in momentum (+ PSPG); divergence in continuity (+ PSPG)</span>
+        <span class="n">B_up</span> <span class="o">=</span> <span class="o">-</span><span class="n">v</span> <span class="o">*</span> <span class="n">gradu</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">tau</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">w_prev</span><span class="p">,</span> <span class="n">gradu</span><span class="p">)</span> <span class="o">*</span> <span class="n">gradv</span>          <span class="c1"># [dim]</span>
+        <span class="n">B_pu</span> <span class="o">=</span>  <span class="n">u</span> <span class="o">*</span> <span class="n">gradv</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">tau</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">w_prev</span><span class="p">,</span> <span class="n">gradv</span><span class="p">)</span> <span class="o">*</span> <span class="n">gradu</span>  <span class="c1"># [dim]</span>
+        <span class="n">C_pp</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">tau</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">gradv</span><span class="p">,</span> <span class="n">gradu</span><span class="p">)</span>                  <span class="c1"># PSPG pressure Laplacian</span>
+
+        <span class="n">top</span>    <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">A_uu</span><span class="p">,</span> <span class="n">B_up</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>        <span class="c1"># [dim, dim+1]</span>
+        <span class="n">bottom</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">B_pu</span><span class="p">,</span> <span class="n">C_pp</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">)])</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>    <span class="c1"># [1, dim+1]</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">top</span><span class="p">,</span> <span class="n">bottom</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>                      <span class="c1"># [dim+1, dim+1]</span>
+</pre></div>
+</div>
+</div>
+<p>这四个具名子块与上面稳定化弱形式中的各项一一对应：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">A_uu</span></code>——对流项 <span class="math notranslate nohighlight">\(\rho\,(\mathbf{w}\cdot\nabla)\mathbf{u}\cdot\mathbf{v}\)</span>、扩散项 <span class="math notranslate nohighlight">\(\mu\,\nabla\mathbf{u}:\nabla\mathbf{v}\)</span>，以及 SUPG 对流项 <span class="math notranslate nohighlight">\(\tau\,(\mathbf{w}\cdot\nabla\mathbf{v})\,\rho\,(\mathbf{w}\cdot\nabla)\mathbf{u}\)</span>（在各分量上是对角的，故乘以 <code class="docutils literal notranslate"><span class="pre">*</span> <span class="pre">eye</span></code>）；</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">B_up</span></code>——压力梯度项 <span class="math notranslate nohighlight">\(-p\,\nabla\cdot\mathbf{v}\)</span> 及其 SUPG 对应项 <span class="math notranslate nohighlight">\(\tau\,(\mathbf{w}\cdot\nabla\mathbf{v})\cdot\nabla p\)</span>；</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">B_pu</span></code>——散度项 <span class="math notranslate nohighlight">\(q\,\nabla\cdot\mathbf{u}\)</span> 及 PSPG 对流项 <span class="math notranslate nohighlight">\(\tau\,\nabla q\cdot\rho\,(\mathbf{w}\cdot\nabla)\mathbf{u}\)</span>；</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">C_pp</span></code>——PSPG 压力拉普拉斯项 <span class="math notranslate nohighlight">\(\tau\,\nabla p\cdot\nabla q\)</span>。</p></li>
+</ul>
+<p>由于 <code class="docutils literal notranslate"><span class="pre">dim</span></code> 是从 <code class="docutils literal notranslate"><span class="pre">gradu.shape[0]</span></code> 读取的，同一个 <code class="docutils literal notranslate"><span class="pre">forward</span></code> 在 2D 中产生 <span class="math notranslate nohighlight">\(3{\times}3\)</span> 块、在 3D 中产生 <span class="math notranslate nohighlight">\(4{\times}4\)</span> 块，无需任何改动。</p>
+</section>
+<section id="picard-iteration">
+<h2>Picard 迭代<a class="headerlink" href="#picard-iteration" title="Link to this heading">¶</a></h2>
+<p>对流项 <span class="math notranslate nohighlight">\((\mathbf{u}\cdot\nabla)\mathbf{u}\)</span> 通过将上一迭代步的速度 <span class="math notranslate nohighlight">\(\mathbf{w}^{n}\)</span> 作为 <code class="docutils literal notranslate"><span class="pre">w_prev</span></code> 传给装配器来线性化：</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\rho\, (\mathbf{w}^{n} \cdot \nabla)\mathbf{u}^{n+1}
+\;=\; -\nabla p^{n+1} + \mu\, \Delta \mathbf{u}^{n+1}.\]</div>
+</div>
+<p>对于中等雷诺数，该过程以几何速率收敛；脚本迭代直到 <code class="docutils literal notranslate"><span class="pre">||u_new</span> <span class="pre">-</span> <span class="pre">u_full||</span> <span class="pre">/</span> <span class="pre">||u_new||</span> <span class="pre">&lt;</span> <span class="pre">1e-4</span></code>，在 Re=100 时通常约需 8 次迭代。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">assembler</span> <span class="o">=</span> <span class="n">NavierStokesAssembler</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="n">rho</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="n">tau</span><span class="p">)</span>
+<span class="n">condenser</span> <span class="o">=</span> <span class="n">Condenser</span><span class="p">(</span><span class="n">bc_mask</span><span class="p">,</span> <span class="n">bc_val</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
+    <span class="n">w_prev</span> <span class="o">=</span> <span class="n">u_full</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_dof</span><span class="p">)[:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span>   <span class="c1"># previous velocity</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">assembler</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">point_data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;w_prev&quot;</span><span class="p">:</span> <span class="n">w_prev</span><span class="p">})</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_points</span> <span class="o">*</span> <span class="n">n_dof</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">K_</span><span class="p">,</span> <span class="n">f_</span> <span class="o">=</span> <span class="n">condenser</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+    <span class="n">u_new</span>  <span class="o">=</span> <span class="n">condenser</span><span class="o">.</span><span class="n">recover</span><span class="p">(</span><span class="n">K_</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">f_</span><span class="p">))</span>
+
+    <span class="n">diff</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u_new</span> <span class="o">-</span> <span class="n">u_full</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u_new</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1e-8</span><span class="p">)</span>
+    <span class="n">u_full</span> <span class="o">=</span> <span class="n">u_new</span>
+    <span class="k">if</span> <span class="n">diff</span> <span class="o">&lt;</span> <span class="n">tol</span><span class="p">:</span>
+        <span class="k">break</span>
+</pre></div>
+</div>
+<p>几个需要注意的细节：</p>
+<ul class="simple">
+<li><p><strong>自由度排布。</strong>未知量以节点为主序交错排列：2D 中为 <code class="docutils literal notranslate"><span class="pre">[u_0,</span> <span class="pre">v_0,</span> <span class="pre">p_0,</span> <span class="pre">u_1,</span> <span class="pre">v_1,</span> <span class="pre">p_1,</span> <span class="pre">…]</span></code>（3D 中每个节点为 <code class="docutils literal notranslate"><span class="pre">[u,</span> <span class="pre">v,</span> <span class="pre">w,</span> <span class="pre">p]</span></code>）。脚本中小巧的 <code class="docutils literal notranslate"><span class="pre">component_dofs(n_points,</span> <span class="pre">n_dof,</span> <span class="pre">comp)</span></code> 辅助函数将“每个节点上的分量 <code class="docutils literal notranslate"><span class="pre">comp</span></code>”转换为 <a class="reference internal" href="../../api/operator.html#tensormesh.Condenser" title="tensormesh.Condenser"><code class="xref py py-class docutils literal notranslate"><span class="pre">Condenser</span></code></a> 掩码所需的扁平全局索引。</p></li>
+<li><p><strong>压力钉定。</strong><code class="docutils literal notranslate"><span class="pre">bc_mask[n_dof</span> <span class="pre">-</span> <span class="pre">1]</span> <span class="pre">=</span> <span class="pre">True</span></code> 将节点 0 处的压力钉定为零——这是必要的，因为不可压缩流动中压力只能确定到一个相加常数。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">w_prev</span></code> 通过 <code class="docutils literal notranslate"><span class="pre">point_data</span></code> 按名称传入，并作为同名关键字参数到达 <code class="docutils literal notranslate"><span class="pre">forward</span></code>；分发约定参见 <a class="reference internal" href="../../user_guide/forms.html"><span class="doc">形式</span></a>。</p></li>
+</ul>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="../../_images/cavity_results.png"><img alt="Re=100 时顶盖驱动方腔的速度大小与压力" src="../../_images/cavity_results.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 47 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">cavity.py</span></code> 在 Re = 100 时的输出。左：速度大小 <span class="math notranslate nohighlight">\(\|u\|\)</span>——运动顶盖将流体拖向右上方，再沿右壁向下扫掠，形成主涡。右：压力场，在顶盖与壁面相撞滞止的右上角出现特征性的高压区。</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="going-to-3d-cavity-3d-py">
+<h2>扩展到 3D——<code class="docutils literal notranslate"><span class="pre">cavity_3d.py</span></code><a class="headerlink" href="#going-to-3d-cavity-3d-py" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">cavity_3d.py</span></code> 在单位立方体上求解相同的物理问题。由于 <code class="docutils literal notranslate"><span class="pre">NavierStokesAssembler</span></code> 是维度通用的，二者的差异都很机械：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Mesh.gen_cube(chara_length=…)</span></code>（四面体）取代了 <code class="docutils literal notranslate"><span class="pre">Mesh.gen_rectangle</span></code>。</p></li>
+<li><p>自由度排布变为每个节点 <code class="docutils literal notranslate"><span class="pre">[u,</span> <span class="pre">v,</span> <span class="pre">w,</span> <span class="pre">p]</span></code>（<code class="docutils literal notranslate"><span class="pre">n_dof</span> <span class="pre">=</span> <span class="pre">4</span></code>），而不再是 <code class="docutils literal notranslate"><span class="pre">[u,</span> <span class="pre">v,</span> <span class="pre">p]</span></code>；<code class="docutils literal notranslate"><span class="pre">w_prev</span></code> 现在切取前三个分量。</p></li>
+<li><p>输出为体数据：供 ParaView 使用的 <code class="docutils literal notranslate"><span class="pre">cavity_3d.vtu</span></code>，外加一张在 <span class="math notranslate nohighlight">\(z = 0.5\)</span> 处的横截面切片，由 PyVista 渲染为 <code class="docutils literal notranslate"><span class="pre">cavity_3d.png</span></code>。</p></li>
+</ul>
+<p>其余一切——Picard 循环、SUPG/PSPG 印块、压力钉定、<a class="reference internal" href="../../api/operator.html#tensormesh.Condenser" title="tensormesh.Condenser"><code class="xref py py-class docutils literal notranslate"><span class="pre">Condenser</span></code></a> 的使用——都保持不变：</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-number">列表 15 </span><span class="caption-text">examples/fluid/cavity/cavity_3d.py（核心部分）</span><a class="headerlink" href="#id3" title="Link to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">gen_cube</span><span class="p">(</span><span class="n">chara_length</span><span class="o">=</span><span class="n">chara_length</span><span class="p">)</span><span class="o">.</span><span class="n">double</span><span class="p">()</span>
+<span class="n">n_dof</span> <span class="o">=</span> <span class="mi">4</span>                                          <span class="c1"># [u, v, w, p] per node</span>
+<span class="n">assembler</span> <span class="o">=</span> <span class="n">NavierStokesAssembler</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="n">rho</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="n">tau</span><span class="p">)</span>
+<span class="n">condenser</span> <span class="o">=</span> <span class="n">Condenser</span><span class="p">(</span><span class="n">bc_mask</span><span class="p">,</span> <span class="n">bc_val</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
+    <span class="n">w_prev</span> <span class="o">=</span> <span class="n">u_full</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_dof</span><span class="p">)[:,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span>      <span class="c1"># 3D velocity</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">assembler</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">point_data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;w_prev&quot;</span><span class="p">:</span> <span class="n">w_prev</span><span class="p">})</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_points</span> <span class="o">*</span> <span class="n">n_dof</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">K_</span><span class="p">,</span> <span class="n">f_</span> <span class="o">=</span> <span class="n">condenser</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+    <span class="n">u_full</span> <span class="o">=</span> <span class="n">condenser</span><span class="o">.</span><span class="n">recover</span><span class="p">(</span><span class="n">K_</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">f_</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<p>每个节点 4 个自由度的排布会让线性系统迅速增大——在 <code class="docutils literal notranslate"><span class="pre">chara_length=0.05</span></code> 时约有百万级未知量——因此一旦节点数超过几千，建议使用 GPU 后端（<code class="docutils literal notranslate"><span class="pre">backend=&quot;cudss&quot;</span></code> 或 <code class="docutils literal notranslate"><span class="pre">&quot;pytorch&quot;</span></code>，参见 <a class="reference internal" href="../../user_guide/linear_solvers.html"><span class="doc">稀疏求解器</span></a>）。</p>
+<figure class="align-default" id="id4">
+<a class="reference internal image-reference" href="../../_images/cavity_3d.png"><img alt="3D 顶盖驱动方腔在 z=0.5 中平面上的速度与压力" src="../../_images/cavity_3d.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 48 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">cavity_3d.py</span></code> 的输出：穿过立方体的 <span class="math notranslate nohighlight">\(z=0.5\)</span> 中平面切片上的速度大小（左）与压力（右）。流动形态在顶盖附近与 2D 解吻合，但向前后壁面方向衰减，因此中平面表现出比严格 2D 情形更弱的回流。完整的 3D 场被写入供 ParaView 使用的 <code class="docutils literal notranslate"><span class="pre">cavity_3d.vtu</span></code>。</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="running-it">
+<h2>运行方式<a class="headerlink" href="#running-it" title="Link to this heading">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples/fluid/cavity
+python<span class="w"> </span>cavity.py<span class="w">        </span><span class="c1"># 2D, writes cavity_results.png</span>
+python<span class="w"> </span>cavity_3d.py<span class="w">     </span><span class="c1"># 3D, writes cavity_3d.vtu and cavity_3d.png</span>
+</pre></div>
+</div>
+<p>控制台会报告每个 Picard 步的相对残差以及最终的收敛信息。对于 2D，可将流函数等值线与 Ghia / Ghia / Shin（1982）在 Re=100 下的参考结果作定性比较——主涡中心应在百分之几的误差内吻合。对于 3D，可在 ParaView 中打开 <code class="docutils literal notranslate"><span class="pre">cavity_3d.vtu</span></code> 进行完整的体数据检查（流线、等值面）；PNG 仅作快速合理性检查之用。</p>
+</section>
+<section id="what-s-next">
+<h2>下一步<a class="headerlink" href="#what-s-next" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="cylinder_flow.html"><span class="doc">圆柱绕流（涡脱落）</span></a>——加入瞬态时间推进。</p></li>
+<li><p><a class="reference internal" href="taylor_green.html"><span class="doc">泰勒-格林涡（收敛性研究）</span></a>——同一系列的装配器，此处用于与精确解作定量收敛性研究。</p></li>
+<li><p><a class="reference internal" href="../../user_guide/forms.html"><span class="doc">形式</span></a>——向量值 <code class="docutils literal notranslate"><span class="pre">forward</span></code> 返回值的参数分发约定。</p></li>
+<li><p><a class="reference internal" href="../../user_guide/linear_solvers.html"><span class="doc">稀疏求解器</span></a>——针对更大的 3D 系统的后端选择。</p></li>
+</ul>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="cylinder_flow.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">圆柱绕流（涡脱落）</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">流体力学</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, TensorMesh Contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/camlab-ethz/TensorMesh" aria-label="GitHub"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+              <a class="muted-link " href="https://discord.gg/EC9kbHSnrx" aria-label="Discord"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.576-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.05.05 0 0 0-.021.019C.356 6.024-.213 9.047.066 12.032c.002.015.01.029.02.037a13.3 13.3 0 0 0 3.995 2.01.05.05 0 0 0 .056-.019c.308-.42.582-.86.818-1.329a.05.05 0 0 0-.027-.06 8.7 8.7 0 0 1-1.248-.595.05.05 0 0 1-.005-.085c.079-.053.16-.104.248-.152a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007c.08.048.16.1.248.152a.05.05 0 0 1-.004.085 8.2 8.2 0 0 1-1.249.594.05.05 0 0 0-.027.06c.24.465.514.906.817 1.329a.05.05 0 0 0 .056.02 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.036c.334-3.451-.559-6.449-2.366-9.106a.04.04 0 0 0-.021-.02zM5.68 10.77c-.789 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.45.73 1.438 1.61 0 .886-.637 1.61-1.438 1.61zm4.842 0c-.788 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.451.73 1.438 1.61 0 .886-.63 1.61-1.438 1.61z"></path></svg></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">顶盖驱动方腔</a><ul>
+<li><a class="reference internal" href="#problem">问题</a></li>
+<li><a class="reference internal" href="#weak-form-and-stabilization">弱形式与稳定化</a></li>
+<li><a class="reference internal" href="#picard-iteration">Picard 迭代</a></li>
+<li><a class="reference internal" href="#going-to-3d-cavity-3d-py">扩展到 3D——<code class="docutils literal notranslate"><span class="pre">cavity_3d.py</span></code></a></li>
+<li><a class="reference internal" href="#running-it">运行方式</a></li>
+<li><a class="reference internal" href="#what-s-next">下一步</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=c5408746"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../_static/translations.js?v=beaddf03"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

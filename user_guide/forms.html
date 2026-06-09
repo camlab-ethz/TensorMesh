@@ -1,0 +1,1242 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Boundary Conditions" href="boundary_conditions.html"><link rel="prev" title="Elements and Quadrature" href="elements_and_quadrature.html">
+        <link rel="prefetch" href="../_static/logo.png" as="image">
+        <link rel="prefetch" href="../_static/logo.png" as="image">
+
+    <link rel="shortcut icon" href="../_static/logo.png"><!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>Forms - TensorMesh</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=95a110e3" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #5B6EE8;
+  --color-brand-content: #149B8E;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">TensorMesh</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../_static/logo.png" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../_static/logo.png" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">TensorMesh</span>
+  
+</a><div class="sidebar-language-switcher">
+  <span class="active">English</span>
+  <span class="sep">·</span>
+  <a href="../zh/user_guide/forms.html" rel="alternate" hreflang="zh-CN" title="中文">中文</a>
+</div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../getting_started/index.html">Get Started</a><input aria-label="Toggle navigation of Get Started" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quickstart.html">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/verify_install.html">Verify Install</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">User Guide</a><input aria-label="Toggle navigation of User Guide" checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="concepts.html">Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="meshes.html">Meshes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elements_and_quadrature.html">Elements and Quadrature</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Forms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="boundary_conditions.html">Boundary Conditions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_solvers.html">Sparse Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time_integration.html">Time Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="batched_workflows.html">Batched Workflows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="differentiability.html">Differentiability</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../example_gallery/index.html">Example Gallery</a><input aria-label="Toggle navigation of Example Gallery" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/basics.html">Basics &amp; Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/poisson.html">Poisson Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/diffusion.html">Diffusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/wave.html">Wave Equation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../example_gallery/solid/index.html">Solid Mechanics</a><input aria-label="Toggle navigation of Solid Mechanics" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/cantilever_beam.html">Cantilever Beam</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/hyperelastic_beam.html">Hyperelastic Beam (Neo-Hookean)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/hertzian_contact.html">Hertzian Contact</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/plasticity_strip.html">Plasticity (J2 with Isotropic Hardening)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/drucker_prager_triaxial.html">Geomechanics: Drucker-Prager triaxial compression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/solid/elastic_footing.html">Geomechanics: elastic strip footing</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../example_gallery/fluid/index.html">Fluid Mechanics</a><input aria-label="Toggle navigation of Fluid Mechanics" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/cavity.html">Lid-Driven Cavity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/cylinder_flow.html">Cylinder Flow (Vortex Shedding)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/flow_obstacles.html">Flow Past Multiple Obstacles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/rayleigh_benard.html">Rayleigh-Bénard Convection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../example_gallery/fluid/taylor_green.html">Taylor-Green Vortex (Convergence Study)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/maxwell.html">Magnetostatics (Maxwell)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/inverse_design.html">Inverse Design &amp; Identification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/physics_informed.html">Physics-Informed Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/dataset.html">ML Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../example_gallery/distributed.html">Distributed FEM</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/index.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/mesh.html">tensormesh.mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/element.html">tensormesh.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/assemble.html">tensormesh.assemble</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/operator.html">tensormesh.operator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/sparse.html">tensormesh.sparse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/ode.html">tensormesh.ode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/functional.html">tensormesh.functional</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/optimizer.html">tensormesh.optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/material.html">tensormesh.material</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/distributed.html">tensormesh.distributed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/nn.html">tensormesh.nn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/dataset.html">tensormesh.dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/visualization.html">tensormesh.visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../performance/index.html">Performance</a><input aria-label="Toggle navigation of Performance" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../performance/benchmarks.html">Benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../performance/scaling_guide.html">Scaling Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../performance/profiling.html">Profiling</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../community/index.html">Community</a><input aria-label="Toggle navigation of Community" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../community/discord.html">Discord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/github_discussions.html">GitHub Discussions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/github_issues.html">GitHub Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/contributing.html">Contributing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/citing.html">Citing TensorMesh</a></li>
+</ul>
+</li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/user_guide/forms.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="forms">
+<h1>Forms<a class="headerlink" href="#forms" title="Link to this heading">¶</a></h1>
+<p>Solving a PDE in TensorMesh starts with two pieces of math:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[a(u, v) \;=\; \int_{\Omega} \cdots \, \mathrm{d}\Omega
+\qquad
+l(v) \;=\; \int_{\Omega} \cdots \, \mathrm{d}\Omega\]</div>
+</div>
+<p>The bilinear form <span class="math notranslate nohighlight">\(a(u, v)\)</span> becomes a stiffness matrix; the linear
+form <span class="math notranslate nohighlight">\(l(v)\)</span> becomes a load vector. In TensorMesh you write each
+integrand as a single Python function and the library handles
+quadrature, geometry, and the global scatter into a sparse matrix or
+vector. This is the layer most users interact with — once you have
+worked through this page you can express almost any FEM weak form in a
+few lines of Python.</p>
+<p>Three base classes cover the common cases. The choice depends on the
+<em>shape</em> of the object you want to assemble:</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 26.0%" />
+<col style="width: 18.0%" />
+<col style="width: 24.0%" />
+<col style="width: 32.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Base class</p></th>
+<th class="head"><p>Math object</p></th>
+<th class="head"><p>Output</p></th>
+<th class="head"><p>Typical use</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/assemble.html#tensormesh.ElementAssembler" title="tensormesh.ElementAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElementAssembler</span></code></a></p></td>
+<td><p>bilinear form <span class="math notranslate nohighlight">\(a(u, v)\)</span></p></td>
+<td><p><a class="reference internal" href="../api/sparse.html#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SparseMatrix</span></code></a></p></td>
+<td><p>stiffness, mass, elasticity, advection-diffusion, …</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/assemble.html#tensormesh.NodeAssembler" title="tensormesh.NodeAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">NodeAssembler</span></code></a></p></td>
+<td><p>linear form <span class="math notranslate nohighlight">\(l(v)\)</span></p></td>
+<td><p>1-D <a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a></p></td>
+<td><p>body forces, RHS of <span class="math notranslate nohighlight">\(L^2\)</span> projections, residuals, …</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/assemble.html#tensormesh.FacetAssembler" title="tensormesh.FacetAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">FacetAssembler</span></code></a></p></td>
+<td><p>surface integral</p></td>
+<td><p>1-D <a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a></p></td>
+<td><p>Neumann tractions, penalty contact, Robin BCs, surface tension, …</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>All three share the same dispatch contract for <code class="docutils literal notranslate"><span class="pre">forward(...)</span></code>, the
+same <code class="docutils literal notranslate"><span class="pre">from_mesh(...)</span></code> / <code class="docutils literal notranslate"><span class="pre">from_assembler(...)</span></code> constructors, and the
+same call-time data plumbing. Learn the contract once and the three
+classes feel like a single tool.</p>
+<section id="the-weak-form-contract">
+<span id="forms-contract"></span><h2>The weak-form contract<a class="headerlink" href="#the-weak-form-contract" title="Link to this heading">¶</a></h2>
+<p>Every assembler subclass overrides <code class="docutils literal notranslate"><span class="pre">forward(...)</span></code>. The base class
+inspects the parameter <em>names</em> of your function and supplies the right
+tensor for each one, evaluated at every quadrature point of every
+element. The bookkeeping — Jacobians, basis values, quadrature weights,
+global scatter — happens behind the scenes.</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 18.0%" />
+<col style="width: 32.0%" />
+<col style="width: 22.0%" />
+<col style="width: 28.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Argument name</p></th>
+<th class="head"><p>Provided by</p></th>
+<th class="head"><p>Per-point shape</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">u</span></code>, <code class="docutils literal notranslate"><span class="pre">v</span></code></p></td>
+<td><p>the basis itself at one quadrature point</p></td>
+<td><p>0D <code class="docutils literal notranslate"><span class="pre">[]</span></code> (Element / Node) or 1D <code class="docutils literal notranslate"><span class="pre">[B]</span></code> (Facet)</p></td>
+<td><p>the inner vmap layer turns this into a scalar in Element / Node <code class="docutils literal notranslate"><span class="pre">forward</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">gradu</span></code>, <code class="docutils literal notranslate"><span class="pre">gradv</span></code></p></td>
+<td><p>basis gradient in physical coordinates</p></td>
+<td><p>1D <code class="docutils literal notranslate"><span class="pre">[D]</span></code> (Element / Node) or 2D <code class="docutils literal notranslate"><span class="pre">[B,</span> <span class="pre">D]</span></code> (Facet)</p></td>
+<td><p>already the physical-space gradient — the <span class="math notranslate nohighlight">\(J^{-T}\)</span> chain rule is applied for you</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">x</span></code></p></td>
+<td><p>physical coordinate at the quadrature point</p></td>
+<td><p>1D <code class="docutils literal notranslate"><span class="pre">[D]</span></code></p></td>
+<td><p>auto-supplied from <code class="docutils literal notranslate"><span class="pre">mesh.points</span></code>; no need to pass it explicitly</p></td>
+</tr>
+<tr class="row-odd"><td><p>any key in <code class="docutils literal notranslate"><span class="pre">point_data</span></code></p></td>
+<td><p>your nodal tensor interpolated to the quadrature point</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[...]</span></code> (per-node trailing dims preserved)</p></td>
+<td><p>e.g. pass <code class="docutils literal notranslate"><span class="pre">point_data={&quot;kappa&quot;:</span> <span class="pre">kappa}</span></code> then use <code class="docutils literal notranslate"><span class="pre">kappa</span></code> as a <code class="docutils literal notranslate"><span class="pre">forward</span></code> parameter</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">grad</span></code> + key in <code class="docutils literal notranslate"><span class="pre">point_data</span></code></p></td>
+<td><p>gradient of that field at the quadrature point</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[...,</span> <span class="pre">D]</span></code></p></td>
+<td><p>automatic — request it by name, do not pass anything extra</p></td>
+</tr>
+<tr class="row-odd"><td><p>any key in <code class="docutils literal notranslate"><span class="pre">element_data</span></code></p></td>
+<td><p>per-element constant or per-(element, quadrature) varying tensor</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[...]</span></code></p></td>
+<td><p>good for history variables in plasticity or pre-computed cell parameters</p></td>
+</tr>
+<tr class="row-even"><td><p>any key in <code class="docutils literal notranslate"><span class="pre">scalar_data</span></code></p></td>
+<td><p>global scalar</p></td>
+<td><p>scalar</p></td>
+<td><p>passed verbatim (no vmap broadcasting); use for time steps, penalty weights, …</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Inside <code class="docutils literal notranslate"><span class="pre">forward</span></code> you write the integrand as a normal tensor
+expression. The base class:</p>
+<ol class="arabic simple">
+<li><p>broadcasts your function across elements and quadrature points
+(using <a class="reference external" href="https://docs.pytorch.org/docs/stable/generated/torch.vmap.html#torch.vmap" title="(in PyTorch v2.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">torch.vmap()</span></code></a>),</p></li>
+<li><p>multiplies the returned integrand by <span class="math notranslate nohighlight">\(|\det J|\,w\)</span> (the
+<code class="docutils literal notranslate"><span class="pre">JxW</span></code> per quadrature point — see <a class="reference internal" href="elements_and_quadrature.html"><span class="doc">Elements and Quadrature</span></a>),</p></li>
+<li><p>scatters the result into the right global slot.</p></li>
+</ol>
+<p>The dispatch is <strong>by name, not by position</strong> — <code class="docutils literal notranslate"><span class="pre">forward(self,</span> <span class="pre">u,</span> <span class="pre">v)</span></code>
+and <code class="docutils literal notranslate"><span class="pre">forward(self,</span> <span class="pre">v,</span> <span class="pre">u)</span></code> are equivalent. The contract only fails if
+you use an unrecognised name; you will get a clear <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> at
+call time pointing to the bad argument.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You never call <code class="docutils literal notranslate"><span class="pre">forward</span></code> yourself. The library calls it under
+<code class="docutils literal notranslate"><span class="pre">vmap</span></code> for every quadrature point of every element, so even a
+trivial <code class="docutils literal notranslate"><span class="pre">print(u)</span></code> inside <code class="docutils literal notranslate"><span class="pre">forward</span></code> will fire <span class="math notranslate nohighlight">\(N_e \times
+N_q\)</span> times and produce strange-looking traced tensors. For debugging
+weak forms, set <code class="docutils literal notranslate"><span class="pre">batch_size=1</span></code> and call the assembler on a
+one-element mesh, or check the assembled output directly with
+<code class="docutils literal notranslate"><span class="pre">K.to_dense()</span></code>.</p>
+</div>
+</section>
+<section id="elementassembler-bilinear-forms">
+<span id="forms-element-assembler"></span><h2>ElementAssembler — bilinear forms<a class="headerlink" href="#elementassembler-bilinear-forms" title="Link to this heading">¶</a></h2>
+<p>For <code class="docutils literal notranslate"><span class="pre">a(u,</span> <span class="pre">v)</span></code>, write a <code class="docutils literal notranslate"><span class="pre">forward(...)</span></code> that returns the integrand
+and call <code class="docutils literal notranslate"><span class="pre">from_mesh(...)</span></code> + <code class="docutils literal notranslate"><span class="pre">()</span></code>. Calling the assembler returns a
+<a class="reference internal" href="../api/sparse.html#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SparseMatrix</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mesh</span><span class="p">,</span> <span class="n">ElementAssembler</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">LaplaceAssembler</span><span class="p">(</span><span class="n">ElementAssembler</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;a(u, v) = ∫ ∇u · ∇v dΩ&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradu</span><span class="p">,</span> <span class="n">gradv</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">gradu</span> <span class="o">@</span> <span class="n">gradv</span>
+
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">gen_rectangle</span><span class="p">(</span><span class="n">chara_length</span><span class="o">=</span><span class="mf">0.15</span><span class="p">)</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">LaplaceAssembler</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)()</span>
+<span class="n">K</span><span class="o">.</span><span class="n">shape</span>
+<span class="c1"># (143, 143)</span>
+</pre></div>
+</div>
+<p>That’s the whole user story for a scalar bilinear form: one <code class="docutils literal notranslate"><span class="pre">forward</span></code>
+method, three lines of glue, sparse matrix in hand.</p>
+<p>The full call signature is</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>__call__(points=None, func=None, point_data=None,
+         element_data=None, scalar_data=None, batch_size=-1)
+</pre></div>
+</div>
+<p>with all arguments optional. The mesh’s own <code class="docutils literal notranslate"><span class="pre">points</span></code> are used when
+<code class="docutils literal notranslate"><span class="pre">points=None</span></code>; <code class="docutils literal notranslate"><span class="pre">func</span></code> lets you swap in a different integrand without
+defining a new subclass (handy in inverse problems where the bilinear
+form is a moving target); the three <code class="docutils literal notranslate"><span class="pre">*_data</span></code> dicts plumb call-time
+inputs into your <code class="docutils literal notranslate"><span class="pre">forward</span></code> parameters (see
+<a class="reference internal" href="#forms-data-plumbing"><span class="std std-ref">Choosing where call-time parameters live</span></a>); <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> is a memory knob covered in
+<a class="reference internal" href="#forms-batching"><span class="std std-ref">Memory batching with batch_size</span></a>.</p>
+<section id="parameters-that-vary-by-mesh-point-data-element-data-scalar-data">
+<h3>Parameters that vary by mesh: <code class="docutils literal notranslate"><span class="pre">point_data</span></code>, <code class="docutils literal notranslate"><span class="pre">element_data</span></code>, <code class="docutils literal notranslate"><span class="pre">scalar_data</span></code><a class="headerlink" href="#parameters-that-vary-by-mesh-point-data-element-data-scalar-data" title="Link to this heading">¶</a></h3>
+<p>Most weak forms involve coefficients beyond just <span class="math notranslate nohighlight">\(u, v, \nabla u,
+\nabla v\)</span>. The three call-time dicts let you pass them in without
+changing the assembler class itself:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="n">kappa_field</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">n_points</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">mesh</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>  <span class="c1"># spatially varying coef</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">WeightedLaplace</span><span class="p">(</span><span class="n">ElementAssembler</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradu</span><span class="p">,</span> <span class="n">gradv</span><span class="p">,</span> <span class="n">kappa</span><span class="p">):</span>
+        <span class="c1"># `kappa` has shape [] at each quadrature point — interpolated</span>
+        <span class="c1"># from the nodal values via the same basis functions used for u, v.</span>
+        <span class="k">return</span> <span class="n">kappa</span> <span class="o">*</span> <span class="p">(</span><span class="n">gradu</span> <span class="o">@</span> <span class="n">gradv</span><span class="p">)</span>
+
+<span class="n">K</span> <span class="o">=</span> <span class="n">WeightedLaplace</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)(</span><span class="n">point_data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;kappa&quot;</span><span class="p">:</span> <span class="n">kappa_field</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>You can also bake parameters into the subclass via <code class="docutils literal notranslate"><span class="pre">__post_init__</span></code>,
+which runs once after the projector + quadrature are wired up:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ScaledLaplace</span><span class="p">(</span><span class="n">ElementAssembler</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradu</span><span class="p">,</span> <span class="n">gradv</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">*</span> <span class="p">(</span><span class="n">gradu</span> <span class="o">@</span> <span class="n">gradv</span><span class="p">)</span>
+
+<span class="n">K</span> <span class="o">=</span> <span class="n">ScaledLaplace</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">2.5</span><span class="p">)()</span>         <span class="c1"># alpha is a constructor kw</span>
+</pre></div>
+</div>
+<p>Either pattern works; pick whichever matches the lifetime of the
+parameter (constant across many solves → <code class="docutils literal notranslate"><span class="pre">__post_init__</span></code>; varies from
+call to call → call-time dict).</p>
+</section>
+<section id="sparsity-what-the-assembled-output-actually-looks-like">
+<h3>Sparsity: what the assembled output actually looks like<a class="headerlink" href="#sparsity-what-the-assembled-output-actually-looks-like" title="Link to this heading">¶</a></h3>
+<p>The <a class="reference internal" href="../api/sparse.html#tensormesh.sparse.SparseMatrix" title="tensormesh.sparse.SparseMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SparseMatrix</span></code></a> is COO-format on top of
+<code class="docutils literal notranslate"><span class="pre">torch_sla.SparseTensor</span></code>; you can <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> against it, <code class="docutils literal notranslate"><span class="pre">.solve(b)</span></code>
+against it, or densify it for inspection. The two panels below show the
+sparsity pattern of the Laplace stiffness above, next to the
+2D-elasticity stiffness on the <em>same</em> mesh:</p>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="../_images/sparsity.png"><img alt="Stiffness sparsity, scalar Laplace vs 2D elasticity" src="../_images/sparsity.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Fig. 8 </span><span class="caption-text">The scalar Laplace stiffness has one entry per <code class="docutils literal notranslate"><span class="pre">(i,</span> <span class="pre">j)</span></code> adjacent
+node pair. The 2D-elasticity stiffness has the <em>same</em> connectivity
+but each entry is now a <span class="math notranslate nohighlight">\(2 \times 2\)</span> block (one row/col per
+displacement component), giving a matrix four times larger with
+sixteen times the non-zeros. The library detects the block structure
+from the rank of your <code class="docutils literal notranslate"><span class="pre">forward</span></code> return — see the next section.</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="vector-valued-forms-and-block-csr-output">
+<h3>Vector-valued forms and block-CSR output<a class="headerlink" href="#vector-valued-forms-and-block-csr-output" title="Link to this heading">¶</a></h3>
+<p>For vector-valued problems (linear elasticity, Stokes velocity blocks,
+electromagnetics in vector form) each node carries <span class="math notranslate nohighlight">\(H &gt; 1\)</span>
+degrees of freedom. The bilinear form integrand for an entry
+<span class="math notranslate nohighlight">\((i, j)\)</span> is then a <span class="math notranslate nohighlight">\(H \times H\)</span> block, and the assembled
+matrix has shape <span class="math notranslate nohighlight">\([N_\text{points}\, H,\, N_\text{points}\, H]\)</span>.</p>
+<p>The library decides scalar vs block by inspecting the <em>rank</em> of what
+your <code class="docutils literal notranslate"><span class="pre">forward</span></code> returns:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">forward</span></code> returns a 2-D tensor <code class="docutils literal notranslate"><span class="pre">[B,</span> <span class="pre">B]</span></code> → scalar, output shape
+<span class="math notranslate nohighlight">\([N_\text{points}, N_\text{points}]\)</span>;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">forward</span></code> returns a 4-D tensor <code class="docutils literal notranslate"><span class="pre">[B,</span> <span class="pre">B,</span> <span class="pre">H,</span> <span class="pre">H]</span></code> → block, output
+shape <span class="math notranslate nohighlight">\([N_\text{points}\, H, N_\text{points}\, H]\)</span>.</p></li>
+</ul>
+<p>For linear elasticity in 2D, the integrand at a quadrature point is</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[K_{ij}^{\alpha\beta} \;=\;
+\int_\Omega \mathbf{B}_i^T\, \mathbf{C}\, \mathbf{B}_j \,\mathrm{d}\Omega,
+\qquad
+\mathbf{B}_i \;=\; \text{Voigt}(\nabla \phi_i),\]</div>
+</div>
+<p>which is exactly the built-in
+<a class="reference internal" href="../api/assemble.html#tensormesh.LinearElasticityElementAssembler" title="tensormesh.LinearElasticityElementAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinearElasticityElementAssembler</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tensormesh.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Elasticity</span><span class="p">(</span><span class="n">ElementAssembler</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="mf">0.3</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span> <span class="o">=</span> <span class="n">E</span><span class="p">,</span> <span class="n">nu</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradu</span><span class="p">,</span> <span class="n">gradv</span><span class="p">):</span>
+        <span class="n">Ba</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">voigt_shape_grad</span><span class="p">(</span><span class="n">gradu</span><span class="p">)</span>              <span class="c1"># [3, dim*dim] in 2D</span>
+        <span class="n">Bb</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">voigt_shape_grad</span><span class="p">(</span><span class="n">gradv</span><span class="p">)</span>
+        <span class="n">C</span>  <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">voigt_stiffness</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="n">gradu</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">C</span>  <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">gradu</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">gradu</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Ba</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">C</span> <span class="o">@</span> <span class="n">Bb</span>                        <span class="c1"># [dim, dim] block</span>
+</pre></div>
+</div>
+<p>The whole 2D mesh of 143 nodes produces a <span class="math notranslate nohighlight">\(286 \times 286\)</span>
+stiffness — see the right panel of the figure above. Everything you
+read about scalar problems on this page applies unchanged to block
+problems; only the matrix shape grows.</p>
+</section>
+</section>
+<section id="nodeassembler-linear-forms">
+<span id="forms-node-assembler"></span><h2>NodeAssembler — linear forms<a class="headerlink" href="#nodeassembler-linear-forms" title="Link to this heading">¶</a></h2>
+<p>For <span class="math notranslate nohighlight">\(l(v)\)</span>, the same pattern but with a single basis and a vector
+result:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span><span class="o">,</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">NodeAssembler</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">L2Source</span><span class="p">(</span><span class="n">NodeAssembler</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;b_i = ∫ f(x) φ_i dΩ for f(x, y) = sin(π x) sin(π y).&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">v</span>
+
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">gen_rectangle</span><span class="p">(</span><span class="n">chara_length</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">L2Source</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)()</span>                     <span class="c1"># torch.Tensor [n_points]</span>
+</pre></div>
+</div>
+<p>Call signature:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>__call__(points=None, func=None, point_data=None,
+         scalar_data=None, batch_size=1)
+</pre></div>
+</div>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">element_data</span></code> is <em>not</em> accepted (linear forms rarely need
+per-element scratch data), and that the default <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> is <code class="docutils literal notranslate"><span class="pre">1</span></code>
+rather than the <code class="docutils literal notranslate"><span class="pre">-1</span></code> used by <a class="reference internal" href="../api/assemble.html#tensormesh.ElementAssembler" title="tensormesh.ElementAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElementAssembler</span></code></a>.
+To disable batching here pass <code class="docutils literal notranslate"><span class="pre">batch_size=-1</span></code> or <code class="docutils literal notranslate"><span class="pre">batch_size=None</span></code>;
+see <a class="reference internal" href="#forms-batching"><span class="std std-ref">Memory batching with batch_size</span></a> for details.</p>
+<p>End-to-end check: combining mass + load to project a function into the
+FE space. The mass matrix <span class="math notranslate nohighlight">\(M\)</span> is SPD, so we can invert it without
+Dirichlet conditions:</p>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="../_images/l2_projection.png"><img alt="NodeAssembler load vector and L2 projection" src="../_images/l2_projection.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Fig. 9 </span><span class="caption-text">Left: the assembled load vector <span class="math notranslate nohighlight">\(b_i = \int_\Omega f\, \phi_i\,
+\mathrm{d}\Omega\)</span>, plotted as colored nodal values on the mesh.
+Right: the <span class="math notranslate nohighlight">\(L^2\)</span> projection <span class="math notranslate nohighlight">\(u_h = M^{-1} b\)</span>. The
+nodal-error magnitude of ~3 × 10<sup>-3</sup> matches the expected
+<span class="math notranslate nohighlight">\(O(h^2)\)</span> discretisation error for P1 elements on this mesh.</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>This is the smallest possible “weak form → assembled output → solved
+field” loop; the more general workflow with boundary conditions and
+linear-solver options is the topic of <a class="reference internal" href="boundary_conditions.html"><span class="doc">Boundary Conditions</span></a> and
+<a class="reference internal" href="linear_solvers.html"><span class="doc">Sparse Solvers</span></a>.</p>
+<p>The simplest possible load — a constant body force <span class="math notranslate nohighlight">\(\int c\, v\,
+\mathrm{d}\Omega\)</span> — ships pre-built as
+<a class="reference internal" href="../api/assemble.html#tensormesh.const_node_assembler" title="tensormesh.const_node_assembler"><code class="xref py py-func docutils literal notranslate"><span class="pre">const_node_assembler()</span></code></a>; see <a class="reference internal" href="#forms-builtins"><span class="std std-ref">Built-in assemblers</span></a>.</p>
+</section>
+<section id="facetassembler-boundary-integrals">
+<span id="forms-facet-assembler"></span><h2>FacetAssembler — boundary integrals<a class="headerlink" href="#facetassembler-boundary-integrals" title="Link to this heading">¶</a></h2>
+<p>For surface terms — Neumann tractions, Robin BCs, penalty contact —
+<a class="reference internal" href="../api/assemble.html#tensormesh.FacetAssembler" title="tensormesh.FacetAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">FacetAssembler</span></code></a> runs the same dispatch over
+<em>facet</em> quadrature instead of volume quadrature. The signature contract
+is identical to <a class="reference internal" href="../api/assemble.html#tensormesh.NodeAssembler" title="tensormesh.NodeAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">NodeAssembler</span></code></a>’s except that the basis arguments
+<code class="docutils literal notranslate"><span class="pre">u,</span> <span class="pre">v,</span> <span class="pre">gradu,</span> <span class="pre">gradv</span></code> keep their basis dimension explicitly (1D <code class="docutils literal notranslate"><span class="pre">[B]</span></code>
+or 2D <code class="docutils literal notranslate"><span class="pre">[B,</span> <span class="pre">D]</span></code>):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">FacetAssembler</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">IntegrateOne</span><span class="p">(</span><span class="n">FacetAssembler</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;b_i = ∫_∂Ω φ_i dS — the per-node boundary-integral weights.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">v</span>
+
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">gen_rectangle</span><span class="p">(</span><span class="n">chara_length</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">IntegrateOne</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)()</span>
+<span class="n">b</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>                                     <span class="c1"># 4.0 (exact perimeter of [0,1]^2)</span>
+</pre></div>
+</div>
+<figure class="align-center" id="id3">
+<a class="reference internal image-reference" href="../_images/facet_integral.png"><img alt="Per-node boundary-integral weights on the unit square" src="../_images/facet_integral.png" style="width: 70%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Fig. 10 </span><span class="caption-text">The assembled vector <code class="docutils literal notranslate"><span class="pre">b</span></code> has support only on the boundary nodes
+(interior entries are zero). Summing all entries recovers the
+perimeter exactly. <code class="docutils literal notranslate"><span class="pre">FacetAssembler</span></code> defaults to integrating over
+<code class="docutils literal notranslate"><span class="pre">mesh.boundary_mask</span></code>; pass <code class="docutils literal notranslate"><span class="pre">boundary_mask=...</span></code> to <code class="docutils literal notranslate"><span class="pre">from_mesh</span></code>
+to restrict to a labelled sub-boundary.</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Call signature:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>__call__(points=None, func=None, point_data=None)
+</pre></div>
+</div>
+<p>(no <code class="docutils literal notranslate"><span class="pre">element_data</span></code>, <code class="docutils literal notranslate"><span class="pre">scalar_data</span></code>, or <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> for facet
+forms.) A worked penalty-contact example using
+<a class="reference internal" href="../api/assemble.html#tensormesh.assemble.ContactAssembler" title="tensormesh.assemble.ContactAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContactAssembler</span></code></a> (a facet <em>energy</em>
+assembler) lives in the <a class="reference internal" href="../example_gallery/index.html"><span class="doc">Example Gallery</span></a>.</p>
+</section>
+<section id="choosing-where-call-time-parameters-live">
+<span id="forms-data-plumbing"></span><h2>Choosing where call-time parameters live<a class="headerlink" href="#choosing-where-call-time-parameters-live" title="Link to this heading">¶</a></h2>
+<p>Three dicts — <code class="docutils literal notranslate"><span class="pre">point_data</span></code>, <code class="docutils literal notranslate"><span class="pre">element_data</span></code>, <code class="docutils literal notranslate"><span class="pre">scalar_data</span></code> — cover
+every flavour of “data that varies across the mesh and is not part of
+the basis itself”. The decision tree:</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 26.0%" />
+<col style="width: 26.0%" />
+<col style="width: 22.0%" />
+<col style="width: 26.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>You have a value …</p></th>
+<th class="head"><p>Pass it as</p></th>
+<th class="head"><p>It enters <code class="docutils literal notranslate"><span class="pre">forward</span></code> as</p></th>
+<th class="head"><p>Examples</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>per node, with one trailing field shape</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">point_data={&quot;kappa&quot;:</span> <span class="pre">kappa}</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">kappa</span></code> (shape <code class="docutils literal notranslate"><span class="pre">[...]</span></code>, interpolated to the quadrature point) and <code class="docutils literal notranslate"><span class="pre">gradkappa</span></code> (shape <code class="docutils literal notranslate"><span class="pre">[...,</span> <span class="pre">D]</span></code>)</p></td>
+<td><p>material coefficient defined at nodes, displacement field from a previous solve</p></td>
+</tr>
+<tr class="row-odd"><td><p>per element (one value per cell)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">element_data={&quot;E&quot;:</span> <span class="pre">E}</span></code> or <code class="docutils literal notranslate"><span class="pre">element_data={&quot;E&quot;:</span> <span class="pre">{&quot;triangle&quot;:</span> <span class="pre">E_tri}}</span></code></p></td>
+<td><p>the whole per-element slice (shape <code class="docutils literal notranslate"><span class="pre">[...]</span></code>); same value at every quadrature point inside that cell</p></td>
+<td><p>per-cell Young’s modulus, marker labels, any quantity constant on the element</p></td>
+</tr>
+<tr class="row-even"><td><p>per (element, quadrature point) — <code class="docutils literal notranslate"><span class="pre">.energy()</span></code> path only</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">element_data={&quot;eps_p&quot;:</span> <span class="pre">eps_p}</span></code> with shape <code class="docutils literal notranslate"><span class="pre">[n_elem,</span> <span class="pre">n_quad,</span> <span class="pre">...]</span></code></p></td>
+<td><p>the value at the current quadrature point (shape <code class="docutils literal notranslate"><span class="pre">[...]</span></code>)</p></td>
+<td><p>plastic strain history in <a class="reference internal" href="../api/assemble.html#tensormesh.assemble.J2Plasticity" title="tensormesh.assemble.J2Plasticity"><code class="xref py py-class docutils literal notranslate"><span class="pre">J2Plasticity</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>global scalar</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">scalar_data={&quot;dt&quot;:</span> <span class="pre">dt}</span></code></p></td>
+<td><p>the scalar value (no vmap broadcasting)</p></td>
+<td><p>time step <span class="math notranslate nohighlight">\(\Delta t\)</span>, penalty weight <span class="math notranslate nohighlight">\(\kappa\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The <em>name</em> of the dict key becomes the parameter name in <code class="docutils literal notranslate"><span class="pre">forward</span></code>;
+the same name must not collide with a built-in (<code class="docutils literal notranslate"><span class="pre">u</span></code>, <code class="docutils literal notranslate"><span class="pre">v</span></code>, <code class="docutils literal notranslate"><span class="pre">gradu</span></code>,
+<code class="docutils literal notranslate"><span class="pre">gradv</span></code>, <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">gradx</span></code>). For <code class="docutils literal notranslate"><span class="pre">point_data</span></code> keys, you can also
+request the gradient by prefixing <code class="docutils literal notranslate"><span class="pre">&quot;grad&quot;</span></code> to the name — no extra
+plumbing is needed.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Per-(element, quadrature) <code class="docutils literal notranslate"><span class="pre">element_data</span></code> is auto-detected only by
+<code class="docutils literal notranslate"><span class="pre">ElementAssembler.energy</span></code> (see <a class="reference internal" href="#forms-energy"><span class="std std-ref">Energy-based assemblers (element_energy + .energy())</span></a>), not by the
+matrix-assembling <code class="docutils literal notranslate"><span class="pre">ElementAssembler.__call__</span></code> path. If you pass a
+tensor of shape <code class="docutils literal notranslate"><span class="pre">[n_elem,</span> <span class="pre">n_quad,</span> <span class="pre">...]</span></code> to <code class="docutils literal notranslate"><span class="pre">__call__</span></code>, the <em>whole</em>
+<code class="docutils literal notranslate"><span class="pre">[n_quad,</span> <span class="pre">...]</span></code> slice is handed to <code class="docutils literal notranslate"><span class="pre">forward</span></code> for each element —
+not the per-quadrature value. For matrix assembly today, keep
+<code class="docutils literal notranslate"><span class="pre">element_data</span></code> strictly per-element.</p>
+</div>
+<section id="feature-matrix">
+<h3>Feature matrix<a class="headerlink" href="#feature-matrix" title="Link to this heading">¶</a></h3>
+<p>The four call paths do not all support every plumbing knob. Use this
+table when you’re unsure whether a feature is available on the assembler
+you have:</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.0%" />
+<col style="width: 14.0%" />
+<col style="width: 14.0%" />
+<col style="width: 14.0%" />
+<col style="width: 16.0%" />
+<col style="width: 14.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">Element</span></code>
+<code class="docutils literal notranslate"><span class="pre">__call__</span></code></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">Element</span></code>
+<code class="docutils literal notranslate"><span class="pre">.energy()</span></code></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">Node</span></code>
+<code class="docutils literal notranslate"><span class="pre">__call__</span></code></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">Facet</span></code>
+<code class="docutils literal notranslate"><span class="pre">__call__</span></code></p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">points</span></code> override</p></td>
+<td><p>✓</p></td>
+<td><p>✓</p></td>
+<td><p>✓</p></td>
+<td><p>✓</p></td>
+<td><p>all paths re-cache the <a class="reference internal" href="../api/element.html#tensormesh.Transformation" title="tensormesh.Transformation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transformation</span></code></a> on new <code class="docutils literal notranslate"><span class="pre">points</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">func</span></code> override</p></td>
+<td><p>✓</p></td>
+<td><p>✓</p></td>
+<td><p>✓ (forces vmap path)</p></td>
+<td><p>✓</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Node</span></code> with <code class="docutils literal notranslate"><span class="pre">compile()</span></code> falls back to vmap when <code class="docutils literal notranslate"><span class="pre">func</span></code> is set</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">point_data</span></code> keys + <code class="docutils literal notranslate"><span class="pre">grad</span></code> + key</p></td>
+<td><p>✓</p></td>
+<td><p>✓</p></td>
+<td><p>✓</p></td>
+<td><p>✓</p></td>
+<td><p>same nodal-interpolation contract everywhere</p></td>
+</tr>
+<tr class="row-odd"><td><p>per-element <code class="docutils literal notranslate"><span class="pre">element_data</span></code></p></td>
+<td><p>✓</p></td>
+<td><p>✓</p></td>
+<td><p>✗</p></td>
+<td><p>✗</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Node</span></code> / <code class="docutils literal notranslate"><span class="pre">Facet</span></code> <code class="docutils literal notranslate"><span class="pre">__call__</span></code> signatures don’t take it</p></td>
+</tr>
+<tr class="row-even"><td><p>per-(element, quadrature) <code class="docutils literal notranslate"><span class="pre">element_data</span></code></p></td>
+<td><p>✗ (whole slice)</p></td>
+<td><p>✓ (auto-detect by <code class="docutils literal notranslate"><span class="pre">shape[1]</span> <span class="pre">==</span> <span class="pre">n_quad</span></code>)</p></td>
+<td><p>✗</p></td>
+<td><p>✗</p></td>
+<td><p>only <code class="docutils literal notranslate"><span class="pre">.energy()</span></code> recognises the per-quadrature layout</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">scalar_data</span></code></p></td>
+<td><p>✓</p></td>
+<td><p>✓</p></td>
+<td><p>✓</p></td>
+<td><p>✗</p></td>
+<td><p>facet integrals don’t take it</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">batch_size</span></code></p></td>
+<td><p>✓ (default <code class="docutils literal notranslate"><span class="pre">-1</span></code>)</p></td>
+<td><p>✓ (default <code class="docutils literal notranslate"><span class="pre">-1</span></code>)</p></td>
+<td><p>✓ (default <code class="docutils literal notranslate"><span class="pre">1</span></code>, disable with <code class="docutils literal notranslate"><span class="pre">-1</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></td>
+<td><p>✗</p></td>
+<td><p>see <a class="reference internal" href="#forms-batching"><span class="std std-ref">Memory batching with batch_size</span></a> for the per-class disable sentinels</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">.compile()</span></code> fast path</p></td>
+<td><p>✗</p></td>
+<td><p>✗</p></td>
+<td><p>✓ (single element type, no <code class="docutils literal notranslate"><span class="pre">func</span></code>)</p></td>
+<td><p>✗</p></td>
+<td><p>falls back to vmap when conditions aren’t met</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="built-in-assemblers">
+<span id="forms-builtins"></span><h2>Built-in assemblers<a class="headerlink" href="#built-in-assemblers" title="Link to this heading">¶</a></h2>
+<p>The most common forms are pre-written so you don’t have to. All of
+them are importable directly from <code class="docutils literal notranslate"><span class="pre">tensormesh</span></code>:</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 38.0%" />
+<col style="width: 12.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Class / factory</p></th>
+<th class="head"><p>Kind</p></th>
+<th class="head"><p>What it computes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/assemble.html#tensormesh.LaplaceElementAssembler" title="tensormesh.LaplaceElementAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">LaplaceElementAssembler</span></code></a></p></td>
+<td><p>Element</p></td>
+<td><p><span class="math notranslate nohighlight">\(\int \nabla u \cdot \nabla v\, \mathrm{d}\Omega\)</span> — Laplacian / diffusion stiffness</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/assemble.html#tensormesh.MassElementAssembler" title="tensormesh.MassElementAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">MassElementAssembler</span></code></a></p></td>
+<td><p>Element</p></td>
+<td><p><span class="math notranslate nohighlight">\(\int u\, v\, \mathrm{d}\Omega\)</span> — mass matrix (transient, <span class="math notranslate nohighlight">\(L^2\)</span> projection)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/assemble.html#tensormesh.LinearElasticityElementAssembler" title="tensormesh.LinearElasticityElementAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinearElasticityElementAssembler</span></code></a></p></td>
+<td><p>Element (vector)</p></td>
+<td><p>small-strain isotropic elasticity (parameters <code class="docutils literal notranslate"><span class="pre">E</span></code>, <code class="docutils literal notranslate"><span class="pre">nu</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/assemble.html#tensormesh.assemble.NeoHookeanModel" title="tensormesh.assemble.NeoHookeanModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">NeoHookeanModel</span></code></a></p></td>
+<td><p>Element (energy)</p></td>
+<td><p>Neo-Hookean hyperelasticity strain energy density</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/assemble.html#tensormesh.assemble.J2Plasticity" title="tensormesh.assemble.J2Plasticity"><code class="xref py py-class docutils literal notranslate"><span class="pre">J2Plasticity</span></code></a></p></td>
+<td><p>Element (energy)</p></td>
+<td><p><span class="math notranslate nohighlight">\(J_2\)</span> plasticity with isotropic hardening, return-mapping</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/assemble.html#tensormesh.assemble.ContactAssembler" title="tensormesh.assemble.ContactAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContactAssembler</span></code></a></p></td>
+<td><p>Facet (energy)</p></td>
+<td><p>base class for penalty / barrier contact and surface terms</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/assemble.html#tensormesh.const_node_assembler" title="tensormesh.const_node_assembler"><code class="xref py py-func docutils literal notranslate"><span class="pre">const_node_assembler()</span></code></a></p></td>
+<td><p>Node (factory)</p></td>
+<td><p><span class="math notranslate nohighlight">\(\int c\, v\, \mathrm{d}\Omega\)</span> — uniform body force; returns a class</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/assemble.html#tensormesh.func_node_assembler" title="tensormesh.func_node_assembler"><code class="xref py py-func docutils literal notranslate"><span class="pre">func_node_assembler()</span></code></a></p></td>
+<td><p>Node (factory)</p></td>
+<td><p><span class="math notranslate nohighlight">\(\int f(\mathbf{x})\, v\, \mathrm{d}\Omega\)</span> — spatially varying load; returns a class</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Factory style for the node loads:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">const_node_assembler</span><span class="p">,</span> <span class="n">func_node_assembler</span>
+
+<span class="n">ConstantLoad</span> <span class="o">=</span> <span class="n">const_node_assembler</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="mf">9.81</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">ConstantLoad</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)()</span>
+
+<span class="n">SineSource</span> <span class="o">=</span> <span class="n">func_node_assembler</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">SineSource</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)()</span>
+</pre></div>
+</div>
+<p>The factories exist because Python class objects can’t be partially
+applied; a factory returns a freshly minted subclass that bakes the
+constant or function into <code class="docutils literal notranslate"><span class="pre">__post_init__</span></code>.</p>
+<section id="energy-based-assemblers-element-energy-energy">
+<span id="forms-energy"></span><h3>Energy-based assemblers (<code class="docutils literal notranslate"><span class="pre">element_energy</span></code> + <code class="docutils literal notranslate"><span class="pre">.energy()</span></code>)<a class="headerlink" href="#energy-based-assemblers-element-energy-energy" title="Link to this heading">¶</a></h3>
+<p>For nonlinear materials the most natural quantity to define is the
+<em>strain energy density</em> <span class="math notranslate nohighlight">\(\Psi\)</span>, not the residual or stiffness:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\Pi(\mathbf{u}) \;=\; \int_\Omega \Psi(\nabla \mathbf{u})\, \mathrm{d}\Omega,
+\qquad
+\mathbf{f}_\text{int} \;=\; \frac{\partial \Pi}{\partial \mathbf{u}},
+\qquad
+\mathbf{K}_\text{tan} \;=\; \frac{\partial^2 \Pi}{\partial \mathbf{u}^2}.\]</div>
+</div>
+<p><a class="reference internal" href="../api/assemble.html#tensormesh.ElementAssembler" title="tensormesh.ElementAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElementAssembler</span></code></a> supports this pattern via a
+parallel method, <code class="docutils literal notranslate"><span class="pre">ElementAssembler.energy</span></code>, that
+integrates an <code class="docutils literal notranslate"><span class="pre">element_energy</span></code> override and returns a scalar
+<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a>. Because the entire pipeline is differentiable,
+<code class="docutils literal notranslate"><span class="pre">E.backward()</span></code> populates <code class="docutils literal notranslate"><span class="pre">u.grad</span></code> with the internal force vector,
+and <a class="reference external" href="https://docs.pytorch.org/docs/stable/generated/torch.autograd.functional.hessian.html#torch.autograd.functional.hessian" title="(in PyTorch v2.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">torch.autograd.functional.hessian()</span></code></a> (or a Krylov-friendly
+Hessian-vector product) gives the tangent stiffness:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh.assemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">NeoHookeanModel</span>
+
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">gen_cube</span><span class="p">(</span><span class="n">chara_length</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">NeoHookeanModel</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="mf">1e6</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="mf">0.45</span><span class="p">)</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">E</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">energy</span><span class="p">(</span><span class="n">point_data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;displacement&quot;</span><span class="p">:</span> <span class="n">u</span><span class="p">})</span>
+<span class="n">E</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+<span class="n">F_internal</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">grad</span>                                <span class="c1"># internal force vector</span>
+</pre></div>
+</div>
+<p>Use the matrix-based path (<code class="docutils literal notranslate"><span class="pre">__call__</span></code> returning a
+<code class="docutils literal notranslate"><span class="pre">SparseMatrix</span></code>) for <em>linear</em> and <em>bilinear-symmetric</em> problems where
+you already have a closed-form integrand; use the energy path for
+hyperelasticity, plasticity, and any case where autograd through the
+constitutive law is the cleanest expression of the physics.</p>
+</section>
+</section>
+<section id="a-custom-form-reaction-diffusion">
+<h2>A custom form: reaction-diffusion<a class="headerlink" href="#a-custom-form-reaction-diffusion" title="Link to this heading">¶</a></h2>
+<p>Combining stiffness and mass in one assembler:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[a(u, v) \;=\; \int_{\Omega} \nabla u \cdot \nabla v \;+\; \kappa \, u v \, \mathrm{d}\Omega\]</div>
+</div>
+<p>is just two terms inside <code class="docutils literal notranslate"><span class="pre">forward</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ReactionDiffusion</span><span class="p">(</span><span class="n">ElementAssembler</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kappa</span> <span class="o">=</span> <span class="n">kappa</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">gradu</span><span class="p">,</span> <span class="n">gradv</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">gradu</span> <span class="o">@</span> <span class="n">gradv</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">kappa</span> <span class="o">*</span> <span class="p">(</span><span class="n">u</span> <span class="o">*</span> <span class="n">v</span><span class="p">)</span>
+
+<span class="n">K</span> <span class="o">=</span> <span class="n">ReactionDiffusion</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="mf">2.5</span><span class="p">)()</span>
+</pre></div>
+</div>
+<p>Argument order doesn’t matter — the dispatch is by name. Mixing in
+<code class="docutils literal notranslate"><span class="pre">point_data</span></code> is just more parameters:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">WeightedReactionDiffusion</span><span class="p">(</span><span class="n">ElementAssembler</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradu</span><span class="p">,</span> <span class="n">gradv</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">kappa</span><span class="p">,</span> <span class="n">reaction</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">kappa</span> <span class="o">*</span> <span class="p">(</span><span class="n">gradu</span> <span class="o">@</span> <span class="n">gradv</span><span class="p">)</span> <span class="o">+</span> <span class="n">reaction</span> <span class="o">*</span> <span class="p">(</span><span class="n">u</span> <span class="o">*</span> <span class="n">v</span><span class="p">)</span>
+
+<span class="n">K</span> <span class="o">=</span> <span class="n">WeightedReactionDiffusion</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)(</span>
+    <span class="n">point_data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;kappa&quot;</span><span class="p">:</span> <span class="n">kappa_field</span><span class="p">,</span> <span class="s2">&quot;reaction&quot;</span><span class="p">:</span> <span class="n">r_field</span><span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>This generalises straightforwardly: anything you can write as one
+algebraic expression in PyTorch can go inside <code class="docutils literal notranslate"><span class="pre">forward</span></code>, as long as
+the return shape obeys the contract in <a class="reference internal" href="#forms-contract"><span class="std std-ref">The weak-form contract</span></a>.</p>
+</section>
+<section id="memory-batching-with-batch-size">
+<span id="forms-batching"></span><h2>Memory batching with <code class="docutils literal notranslate"><span class="pre">batch_size</span></code><a class="headerlink" href="#memory-batching-with-batch-size" title="Link to this heading">¶</a></h2>
+<p>For very fine meshes or high-order elements, holding all per-element
+quadrature tensors in memory at once may not fit. The assembler
+<code class="docutils literal notranslate"><span class="pre">__call__</span></code> accepts a <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> argument that splits the
+<em>quadrature</em> dimension into chunks and accumulates the contribution:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">K</span> <span class="o">=</span> <span class="n">LaplaceAssembler</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)(</span><span class="n">batch_size</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is a memory knob, not problem-level vectorisation; for the latter
+see <a class="reference internal" href="batched_workflows.html"><span class="doc">Batched Workflows</span></a>.</p>
+<p>How to disable batching:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../api/assemble.html#tensormesh.ElementAssembler" title="tensormesh.ElementAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElementAssembler</span></code></a> — default <code class="docutils literal notranslate"><span class="pre">batch_size=-1</span></code>
+processes all quadrature at once.</p></li>
+<li><p><a class="reference internal" href="../api/assemble.html#tensormesh.NodeAssembler" title="tensormesh.NodeAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">NodeAssembler</span></code></a> — default <code class="docutils literal notranslate"><span class="pre">batch_size=1</span></code> processes
+one quadrature point at a time; pass <code class="docutils literal notranslate"><span class="pre">-1</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code> to disable
+batching and process all quadrature points at once.</p></li>
+<li><p><a class="reference internal" href="../api/assemble.html#tensormesh.FacetAssembler" title="tensormesh.FacetAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">FacetAssembler</span></code></a> — does not expose <code class="docutils literal notranslate"><span class="pre">batch_size</span></code>;
+facet integrals are small enough that batching has not been needed.</p></li>
+</ul>
+<p>Any positive integer <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> produces the same assembled result as
+the un-batched call. When <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> does not evenly divide the
+per-element quadrature count, the loop runs one extra (shorter) batch on
+the tail; values larger than <code class="docutils literal notranslate"><span class="pre">n_quadrature</span></code> simply collapse to a single
+full batch.</p>
+<section id="speeding-up-nodeassembler-with-compile">
+<h3>Speeding up NodeAssembler with <code class="docutils literal notranslate"><span class="pre">compile</span></code><a class="headerlink" href="#speeding-up-nodeassembler-with-compile" title="Link to this heading">¶</a></h3>
+<p><a class="reference internal" href="../api/assemble.html#tensormesh.NodeAssembler" title="tensormesh.NodeAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">NodeAssembler</span></code></a> ships a fast path that bypasses
+<a class="reference external" href="https://docs.pytorch.org/docs/stable/generated/torch.vmap.html#torch.vmap" title="(in PyTorch v2.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">torch.vmap()</span></code></a> and uses direct broadcast operations instead. Enable
+it by chaining <a class="reference internal" href="../api/assemble.html#tensormesh.NodeAssembler.compile" title="tensormesh.NodeAssembler.compile"><code class="xref py py-meth docutils literal notranslate"><span class="pre">compile()</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Ones</span><span class="p">(</span><span class="n">NodeAssembler</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">v</span>
+
+<span class="c1"># Default — uses vmap dispatch (predictable, slowest startup):</span>
+<span class="n">asm</span> <span class="o">=</span> <span class="n">Ones</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">asm</span><span class="p">()</span>
+
+<span class="c1"># Compile mode — bypass vmap, use direct broadcast (5–30× faster in tight loops):</span>
+<span class="n">asm</span> <span class="o">=</span> <span class="n">Ones</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">asm</span><span class="p">()</span>
+
+<span class="c1"># Disable for debugging (so breakpoints inside `forward` fire as expected):</span>
+<span class="n">asm</span><span class="o">.</span><span class="n">reset_compile</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">mode</span></code> argument additionally controls whether <code class="docutils literal notranslate"><span class="pre">torch.compile</span></code> is
+layered on top: <code class="docutils literal notranslate"><span class="pre">&quot;disable&quot;</span></code> (default) does the vmap bypass only,
+<code class="docutils literal notranslate"><span class="pre">&quot;default&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;reduce-overhead&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;max-autotune&quot;</span></code> enable
+<code class="docutils literal notranslate"><span class="pre">torch.compile</span></code> with the given level of optimisation. For most users
+the default <code class="docutils literal notranslate"><span class="pre">compile()</span></code> (no <code class="docutils literal notranslate"><span class="pre">torch.compile</span></code>) is already a large
+speedup with no warm-up cost. <a class="reference internal" href="../api/assemble.html#tensormesh.NodeAssembler.flat_mode" title="tensormesh.NodeAssembler.flat_mode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">flat_mode()</span></code></a>
+is a synonym for <code class="docutils literal notranslate"><span class="pre">compile(mode=&quot;disable&quot;)</span></code>.</p>
+<p>The fast path only fires when <strong>all three</strong> of the following hold; if any
+of them fails the call falls back transparently to the vmap path:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.compile()</span></code> has been called on the assembler (<code class="docutils literal notranslate"><span class="pre">is_compiled</span></code>
+returns <code class="docutils literal notranslate"><span class="pre">True</span></code>).</p></li>
+<li><p>The mesh has exactly one element type
+(<code class="docutils literal notranslate"><span class="pre">len(self.element_types)</span> <span class="pre">==</span> <span class="pre">1</span></code>). Mixed-element meshes use the
+vmap path even with compile enabled.</p></li>
+<li><p>No <code class="docutils literal notranslate"><span class="pre">func=</span></code> override is passed at call time. Calling
+<code class="docutils literal notranslate"><span class="pre">asm(func=alt_form)</span></code> always goes through the vmap path so that you
+can swap integrands without recompiling.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The fast path replaces vmap with explicit broadcast operations, which
+imposes a stricter contract on <code class="docutils literal notranslate"><span class="pre">forward</span></code>: it must work when
+<code class="docutils literal notranslate"><span class="pre">v</span></code> / <code class="docutils literal notranslate"><span class="pre">gradv</span></code> arrive with leading <code class="docutils literal notranslate"><span class="pre">[n_quadrature,</span> <span class="pre">...]</span></code> /
+<code class="docutils literal notranslate"><span class="pre">[n_element,</span> <span class="pre">n_quadrature,</span> <span class="pre">...]</span></code> dimensions rather than as
+scalars. Closed-form forms that compose those tensors via element-wise
+ops (<code class="docutils literal notranslate"><span class="pre">return</span> <span class="pre">v</span></code>, <code class="docutils literal notranslate"><span class="pre">return</span> <span class="pre">gradv</span> <span class="pre">&#64;</span> <span class="pre">vec</span></code>) work as-is; forms that
+index or reshape per-quadrature inputs may need a few broadcast
+tweaks, or are simpler to leave on the default vmap path. The fast
+path also does not auto-supply <code class="docutils literal notranslate"><span class="pre">x</span></code>; if you need coordinates,
+pass them in under a custom name (<code class="docutils literal notranslate"><span class="pre">point_data={&quot;xy&quot;:</span> <span class="pre">mesh.points}</span></code>
+then <code class="docutils literal notranslate"><span class="pre">forward(self,</span> <span class="pre">xy,</span> <span class="pre">v)</span></code>).</p>
+</div>
+</section>
+</section>
+<section id="writing-your-own-assembler">
+<h2>Writing your own assembler<a class="headerlink" href="#writing-your-own-assembler" title="Link to this heading">¶</a></h2>
+<p>The library’s design assumes most users will, at some point, write a
+custom assembler. Here is the practical recipe.</p>
+<p><strong>1. Pick the base class</strong> by what you’re assembling — a matrix
+(<a class="reference internal" href="../api/assemble.html#tensormesh.ElementAssembler" title="tensormesh.ElementAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElementAssembler</span></code></a>), a load vector
+(<a class="reference internal" href="../api/assemble.html#tensormesh.NodeAssembler" title="tensormesh.NodeAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">NodeAssembler</span></code></a>), or a boundary term
+(<a class="reference internal" href="../api/assemble.html#tensormesh.FacetAssembler" title="tensormesh.FacetAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">FacetAssembler</span></code></a>). If the integrand is most
+naturally expressed as a scalar energy density, use the <code class="docutils literal notranslate"><span class="pre">.energy()</span></code>
+path on <a class="reference internal" href="../api/assemble.html#tensormesh.ElementAssembler" title="tensormesh.ElementAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElementAssembler</span></code></a> instead of writing the
+residual + stiffness by hand — autograd will do that for you.</p>
+<p><strong>2. Implement ``forward(self, …)``</strong>. Use only the parameter names
+listed in <a class="reference internal" href="#forms-contract"><span class="std std-ref">The weak-form contract</span></a> (<code class="docutils literal notranslate"><span class="pre">u</span></code>, <code class="docutils literal notranslate"><span class="pre">v</span></code>, <code class="docutils literal notranslate"><span class="pre">gradu</span></code>, <code class="docutils literal notranslate"><span class="pre">gradv</span></code>,
+<code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">gradx</span></code>), plus any keys you intend to pass through
+<code class="docutils literal notranslate"><span class="pre">point_data</span></code>, <code class="docutils literal notranslate"><span class="pre">element_data</span></code>, <code class="docutils literal notranslate"><span class="pre">scalar_data</span></code>. Return the per-point
+integrand at the right rank: scalar problems return <code class="docutils literal notranslate"><span class="pre">[B,</span> <span class="pre">B]</span></code>
+(Element) or <code class="docutils literal notranslate"><span class="pre">[B]</span></code> (Node / Facet); block problems return <code class="docutils literal notranslate"><span class="pre">[B,</span> <span class="pre">B,</span> <span class="pre">H,</span>
+<span class="pre">H]</span></code> or <code class="docutils literal notranslate"><span class="pre">[B,</span> <span class="pre">H]</span></code>.</p>
+<p><strong>3. Stash parameters in ``__post_init__``</strong>, not <code class="docutils literal notranslate"><span class="pre">__init__</span></code>. The
+base class’s <code class="docutils literal notranslate"><span class="pre">__init__</span></code> wires up the projector, transformation, and
+edges; <code class="docutils literal notranslate"><span class="pre">__post_init__</span></code> runs immediately after with the constructor
+kwargs and is where <code class="docutils literal notranslate"><span class="pre">self.E</span> <span class="pre">=</span> <span class="pre">E</span></code> belongs.</p>
+<p><strong>4. Build the assembler via</strong> <a class="reference internal" href="../api/assemble.html#tensormesh.ElementAssembler.from_mesh" title="tensormesh.ElementAssembler.from_mesh"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_mesh()</span></code></a>
+<strong>and call it.</strong> Constructor kwargs are forwarded to <code class="docutils literal notranslate"><span class="pre">__post_init__</span></code>.
+The instance is callable (and is an <a class="reference external" href="https://docs.pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch v2.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.Module</span></code></a>, so
+<code class="docutils literal notranslate"><span class="pre">.to(device)</span></code> / <code class="docutils literal notranslate"><span class="pre">.double()</span></code> Just Work).</p>
+<p>A self-contained template covering both styles:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tensormesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mesh</span><span class="p">,</span> <span class="n">ElementAssembler</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyForm</span><span class="p">(</span><span class="n">ElementAssembler</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;a(u, v) = ∫ α ∇u · ∇v + β u v dΩ.</span>
+
+<span class="sd">    α is a per-element coefficient, β a global scalar.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="n">beta</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradu</span><span class="p">,</span> <span class="n">gradv</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">alpha</span> <span class="o">*</span> <span class="p">(</span><span class="n">gradu</span> <span class="o">@</span> <span class="n">gradv</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">*</span> <span class="p">(</span><span class="n">u</span> <span class="o">*</span> <span class="n">v</span><span class="p">)</span>
+
+<span class="n">mesh</span>   <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">gen_rectangle</span><span class="p">(</span><span class="n">chara_length</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">alpha</span>  <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="s2">&quot;triangle&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">mesh</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>  <span class="c1"># per-cell coef</span>
+
+<span class="n">K</span> <span class="o">=</span> <span class="n">MyForm</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">2.5</span><span class="p">)(</span>
+    <span class="n">element_data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <span class="n">alpha</span><span class="p">},</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Debugging tips</strong></p>
+<ul class="simple">
+<li><p>If the dispatch fails with <code class="docutils literal notranslate"><span class="pre">ValueError:</span> <span class="pre">&lt;name&gt;</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">supported</span></code>,
+the parameter name doesn’t match any built-in or any key you passed
+in the data dicts. Check for typos like <code class="docutils literal notranslate"><span class="pre">grad_u</span></code> vs <code class="docutils literal notranslate"><span class="pre">gradu</span></code> or
+<code class="docutils literal notranslate"><span class="pre">displacment</span></code> vs <code class="docutils literal notranslate"><span class="pre">displacement</span></code>.</p></li>
+<li><p>If you hit a shape error inside <code class="docutils literal notranslate"><span class="pre">forward</span></code>, set <code class="docutils literal notranslate"><span class="pre">batch_size=1</span></code> and
+call the assembler on a one-element mesh; the tensors handed in are
+then small enough to <code class="docutils literal notranslate"><span class="pre">print</span></code> and reason about. Remember that
+<code class="docutils literal notranslate"><span class="pre">forward</span></code> runs <em>under vmap</em> — what you see has the leading element
+/ quadrature dimensions stripped.</p></li>
+<li><p>For sanity-checking the assembled output, run a known integral: a
+<code class="docutils literal notranslate"><span class="pre">MassElementAssembler</span></code> should give <code class="docutils literal notranslate"><span class="pre">1^T</span> <span class="pre">M</span> <span class="pre">1</span> <span class="pre">==</span> <span class="pre">area</span></code> for the unit
+function; a <code class="docutils literal notranslate"><span class="pre">FacetAssembler</span></code> returning <code class="docutils literal notranslate"><span class="pre">v</span></code> should sum to the
+boundary length; a <code class="docutils literal notranslate"><span class="pre">LaplaceElementAssembler</span></code> applied to a linear
+field <code class="docutils literal notranslate"><span class="pre">u</span> <span class="pre">=</span> <span class="pre">x</span></code> should yield zero residual. The
+<code class="docutils literal notranslate"><span class="pre">tests/assemble/test_facet.py</span></code> file has a battery of these
+closed-form checks.</p></li>
+</ul>
+<p>For exhaustive examples covering hyperelasticity, plasticity, contact,
+and fluid problems, see the <a class="reference internal" href="../example_gallery/index.html"><span class="doc">Example Gallery</span></a>.</p>
+</section>
+<section id="what-s-next">
+<h2>What’s next<a class="headerlink" href="#what-s-next" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="boundary_conditions.html"><span class="doc">Boundary Conditions</span></a> — apply Dirichlet BCs to the matrix and
+vector you just assembled.</p></li>
+<li><p><a class="reference internal" href="linear_solvers.html"><span class="doc">Sparse Solvers</span></a> — solve <code class="docutils literal notranslate"><span class="pre">K</span> <span class="pre">x</span> <span class="pre">=</span> <span class="pre">b</span></code> with the right backend.</p></li>
+<li><p><a class="reference internal" href="differentiability.html"><span class="doc">Differentiability</span></a> — backprop a loss through assembly and
+solve, for inverse problems and topology optimisation.</p></li>
+<li><p><a class="reference internal" href="batched_workflows.html"><span class="doc">Batched Workflows</span></a> — go from “one mesh per call” to “thousands
+of meshes per call” for ML dataset generation.</p></li>
+<li><p><a class="reference internal" href="../example_gallery/index.html"><span class="doc">Example Gallery</span></a> — worked examples for elasticity,
+hyperelasticity, plasticity, contact, and fluids.</p></li>
+</ul>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="boundary_conditions.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Boundary Conditions</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="elements_and_quadrature.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Elements and Quadrature</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, TensorMesh Contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/camlab-ethz/TensorMesh" aria-label="GitHub"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+              <a class="muted-link " href="https://discord.gg/EC9kbHSnrx" aria-label="Discord"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.576-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.05.05 0 0 0-.021.019C.356 6.024-.213 9.047.066 12.032c.002.015.01.029.02.037a13.3 13.3 0 0 0 3.995 2.01.05.05 0 0 0 .056-.019c.308-.42.582-.86.818-1.329a.05.05 0 0 0-.027-.06 8.7 8.7 0 0 1-1.248-.595.05.05 0 0 1-.005-.085c.079-.053.16-.104.248-.152a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007c.08.048.16.1.248.152a.05.05 0 0 1-.004.085 8.2 8.2 0 0 1-1.249.594.05.05 0 0 0-.027.06c.24.465.514.906.817 1.329a.05.05 0 0 0 .056.02 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.036c.334-3.451-.559-6.449-2.366-9.106a.04.04 0 0 0-.021-.02zM5.68 10.77c-.789 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.45.73 1.438 1.61 0 .886-.637 1.61-1.438 1.61zm4.842 0c-.788 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.451.73 1.438 1.61 0 .886-.63 1.61-1.438 1.61z"></path></svg></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Forms</a><ul>
+<li><a class="reference internal" href="#the-weak-form-contract">The weak-form contract</a></li>
+<li><a class="reference internal" href="#elementassembler-bilinear-forms">ElementAssembler — bilinear forms</a><ul>
+<li><a class="reference internal" href="#parameters-that-vary-by-mesh-point-data-element-data-scalar-data">Parameters that vary by mesh: <code class="docutils literal notranslate"><span class="pre">point_data</span></code>, <code class="docutils literal notranslate"><span class="pre">element_data</span></code>, <code class="docutils literal notranslate"><span class="pre">scalar_data</span></code></a></li>
+<li><a class="reference internal" href="#sparsity-what-the-assembled-output-actually-looks-like">Sparsity: what the assembled output actually looks like</a></li>
+<li><a class="reference internal" href="#vector-valued-forms-and-block-csr-output">Vector-valued forms and block-CSR output</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#nodeassembler-linear-forms">NodeAssembler — linear forms</a></li>
+<li><a class="reference internal" href="#facetassembler-boundary-integrals">FacetAssembler — boundary integrals</a></li>
+<li><a class="reference internal" href="#choosing-where-call-time-parameters-live">Choosing where call-time parameters live</a><ul>
+<li><a class="reference internal" href="#feature-matrix">Feature matrix</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#built-in-assemblers">Built-in assemblers</a><ul>
+<li><a class="reference internal" href="#energy-based-assemblers-element-energy-energy">Energy-based assemblers (<code class="docutils literal notranslate"><span class="pre">element_energy</span></code> + <code class="docutils literal notranslate"><span class="pre">.energy()</span></code>)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#a-custom-form-reaction-diffusion">A custom form: reaction-diffusion</a></li>
+<li><a class="reference internal" href="#memory-batching-with-batch-size">Memory batching with <code class="docutils literal notranslate"><span class="pre">batch_size</span></code></a><ul>
+<li><a class="reference internal" href="#speeding-up-nodeassembler-with-compile">Speeding up NodeAssembler with <code class="docutils literal notranslate"><span class="pre">compile</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#writing-your-own-assembler">Writing your own assembler</a></li>
+<li><a class="reference internal" href="#what-s-next">What’s next</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=a58bc63e"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>
