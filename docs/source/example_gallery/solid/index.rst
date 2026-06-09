@@ -1,7 +1,7 @@
 Solid Mechanics
 ===============
 
-Five worked solid-mechanics examples in ``examples/solid/``, built
+Six worked solid-mechanics examples in ``examples/solid/``, built
 as a progressive ladder — each rung adds exactly one new concept on
 top of the previous one:
 
@@ -17,12 +17,15 @@ top of the previous one:
 #. **Geomechanics (Drucker-Prager)** — adds pressure-dependent
    yield, reusing the J2 history-variable pattern in an
    example-local constitutive driver for soils and weak rock.
+#. **Geomechanics (elastic footing)** — solves a small
+   boundary-value problem for footing settlement using the direct
+   linear-elasticity workflow.
 
 Together they cover the two solver patterns TensorMesh uses for
 solid problems:
 
 * **Direct linear solve** for small-strain linear elasticity
-  (``cantilever_beam``).
+  (``cantilever_beam``, ``elastic_footing``).
 * **L-BFGS energy minimization** for nonlinear problems where the
   potential energy is well-defined — hyperelasticity, contact, and
   plasticity (``hyperelastic_beam``, ``hertzian_contact``,
@@ -68,6 +71,14 @@ The order below mirrors solver complexity.
 
       Pressure-dependent Drucker-Prager plasticity in a small triaxial-compression driver.
 
+   .. grid-item-card:: Geomechanics: elastic footing
+      :link: elastic_footing
+      :link-type: doc
+      :img-top: /_static/solid_mechanics/elastic_footing.png
+
+      Linear-elastic soil block under a centered strip footing, with settlement
+      contours and a reaction/load-balance sanity check.
+
 
 .. toctree::
    :hidden:
@@ -78,3 +89,4 @@ The order below mirrors solver complexity.
    hertzian_contact
    plasticity_strip
    drucker_prager_triaxial
+   elastic_footing
