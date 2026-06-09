@@ -2,11 +2,11 @@
 
 Planned directions for core source code of TensorMesh, roughly ordered by priority. Solver-side items (backends, complex adjoint, multi-GPU) live in the [torch-sla ROADMAP](https://github.com/sparsexlab/torch-sla).
 
-_Last updated: 2026-05._
+_Last updated: 2026-06._
 
-## 1. Mixed (multi-field / block) assembly for Lagrange spaces
+## 1. Mixed (multi-field / block) assembly for Lagrange spaces — ✅ shipped
 
-Support weak forms over several Lagrange function spaces at once — e.g. Taylor–Hood P2–P1 for Stokes / incompressible flow — assembling block systems with off-diagonal coupling blocks. This needs **no new element type**: it extends the assembler's argument dispatch and the projector's scatter to a block DOF layout. Highest priority because it removes the manual block/offset bookkeeping that currently makes multi-field (fluids) assemblers far too verbose, and it is the foundation that the complex (item 2) and mixed-element (item 3) work both reuse.
+Shipped as `MixedElementAssembler` + `Field` (`tensormesh/assemble/mixed_assembler.py`): the fields are declared once (e.g. `Field(trial="u", test="v", order=2, components=2)` + `Field(trial="p", test="q", order=1)` for Taylor–Hood P2–P1) and the weak form is written as a single scalar integrand with tensor-valued trial/test arguments; the assembler extracts every coupling block by one-hot evaluation and scatters into one block `SparseMatrix`, while `assembler.layout` provides the block-DOF helpers (offsets, `dof_mask`/`dof_index`, `split`/`cat`, `restrict`/`prolong`) that the hand-rolled fluids assemblers used to reimplement — see the rewritten `examples/fluid/cavity/cavity.py` (true Taylor–Hood, stabilization-free). Remaining gap: per-field order is restricted to {1, mesh order} (corner-extraction subspaces), so generalized pairs (P3–P2 etc., which need geometric node matching) stay future work. The block machinery is the foundation that the complex (item 2) and mixed-element (item 3) work both reuse.
 
 ## 2. Complex-valued FEM → Helmholtz, PML, metamaterial topology optimization
 
