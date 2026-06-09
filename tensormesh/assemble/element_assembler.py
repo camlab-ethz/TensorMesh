@@ -3,12 +3,11 @@ import inspect
 import math
 from typing import Optional, Callable, List, Mapping, Union
 
-import numpy as np
-import scipy.sparse
 import torch
 import torch.nn as nn
 
 from .projector import ReduceProjector, SparseProjector, Projector
+from .topology import build_edges
 from ..nn import BufferDict
 from ..element import element_type2dimension, Transformation
 from ..sparse import SparseMatrix
@@ -808,45 +807,26 @@ class ElementAssembler(nn.Module):
         ######################
         # compute the edges
         ######################
-        elem_u, elem_v = [], []
+        edges, elem_eids = build_edges(
+            {element_type: (value, value) for element_type, value in elements.items()},
+            shape=(n_points, n_points),
+        )
+        num_edges = edges.shape[1]
+
         for element_type, value in elements.items():
             n_element, n_basis = value.shape
-            for i in range(n_basis):
-                for j in range(n_basis):
-                    elem_u.append(value[:, i])
-                    elem_v.append(value[:, j])
-
-        elem_u, elem_v = torch.stack(elem_u, -1).flatten(), torch.stack(elem_v, -1).flatten() # [num_elements * num_basis * num_basis]
-        elem_u, elem_v = elem_u.cpu().numpy().copy(), elem_v.cpu().numpy().copy()
-        tmp = scipy.sparse.coo_matrix(( # used to remove duplicated edges
-            np.ones_like(elem_u), # data
-            (elem_u, elem_v), # (row, col)
-        ), shape = (n_points,  n_points)).tocsr().tocoo()
-        edge_u, edge_v = tmp.row, tmp.col
-        num_edges  = len(edge_u)
-        eids_csr = scipy.sparse.coo_matrix((
-            np.arange(num_edges), (edge_u, edge_v)
-        ), shape=(n_points, n_points)).tocsr()    
-        elem_eids     = np.array(eids_csr[elem_u, elem_v].copy()).ravel()
-
-        ptr = 0
-        for element_type, value in elements.items():
-            n_element, n_basis = value.shape
-            elem_eids  = np.array(eids_csr[elem_u[ptr:ptr+n_element*n_basis*n_basis], elem_v[ptr:ptr+n_element*n_basis*n_basis]].copy()).ravel()
-            ptr += n_element * n_basis * n_basis
-
 
             if project == "reduce":
                 projector[element_type] = ReduceProjector( # [n_element, n_basis, n_basis] -> [num_edges]
-                                            indices    = torch.from_numpy(elem_eids),
-                                            from_shape = (n_element, n_basis, n_basis), 
+                                            indices    = elem_eids[element_type],
+                                            from_shape = (n_element, n_basis, n_basis),
                                             to_shape = (num_edges,),
                                         )
             elif project == "sparse":
                 projector[element_type] = SparseProjector( # [n_element, n_basis, n_basis] -> [num_edges]
-                                            from_  = torch.arange(len(elem_eids), device=points.device),
-                                            to_    = torch.from_numpy(elem_eids),
-                                            from_shape = (n_element, n_basis, n_basis), 
+                                            from_  = torch.arange(elem_eids[element_type].numel(), device=points.device),
+                                            to_    = elem_eids[element_type],
+                                            from_shape = (n_element, n_basis, n_basis),
                                             to_shape = (num_edges,),
                                         )
             else:
@@ -855,12 +835,9 @@ class ElementAssembler(nn.Module):
             transformations[element_type] = Transformation(
                                         points  = points,
                                         elements = value,
-                                        element_type   = element_type, 
+                                        element_type   = element_type,
                                         quadrature_order= quadrature_order
                                     )
-            
-         
-        edges = torch.from_numpy(np.stack([edge_u, edge_v], 0))
 
 
         projector          = nn.ModuleDict(projector)
