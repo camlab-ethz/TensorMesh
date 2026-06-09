@@ -9,6 +9,7 @@ J2 plasticity, contact, constant/function loads).
 """
 
 from .element_assembler import ElementAssembler
+from .mixed_assembler import MixedElementAssembler, Field, BlockLayout
 from .node_assembler import NodeAssembler
 from .facet_assembler import FacetAssembler
 from .builtin import (
@@ -24,6 +25,9 @@ from .builtin import (
 
 __all__ = [
     "ElementAssembler",
+    "MixedElementAssembler",
+    "Field",
+    "BlockLayout",
     "NodeAssembler",
     "FacetAssembler",
     "LaplaceElementAssembler",

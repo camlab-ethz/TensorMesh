@@ -14,7 +14,7 @@ from .element.element_type2order import element_type2order
 from .element.element_type2dimension import element_type2dimension
 from .element import element_type2element,\
                         element_types
-from .assemble import ElementAssembler, NodeAssembler, FacetAssembler
+from .assemble import ElementAssembler, MixedElementAssembler, Field, NodeAssembler, FacetAssembler
 from .assemble import LaplaceElementAssembler, MassElementAssembler, LinearElasticityElementAssembler, const_node_assembler, func_node_assembler
 from .functional import *
 from .dataset import MeshGen
