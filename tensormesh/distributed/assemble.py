@@ -22,10 +22,48 @@ from ..sparse import SparseMatrix
 from .mesh import DistributedMesh
 
 try:
-    from torch_sla import DSparseTensor
+    from torch_sla import DSparseTensor, SparseTensor
     HAS_DSPARSE = True
 except ImportError:
     HAS_DSPARSE = False
+
+
+def _build_dsparse(global_values, global_row, global_col, N, dmesh):
+    """Wrap the merged global COO as a torch-sla DSparseTensor.
+
+    Two paths:
+
+    * ``torch.distributed`` is **initialised** -> partition the global
+      ``SparseTensor`` across the live mesh; each rank gets its own
+      shard. This is the real distributed-solve path.
+    * Not initialised -> return a single-rank DSparseTensor that holds
+      the whole matrix locally. Useful for single-process drivers
+      (CPU multi-thread assembly + sequential solve) and for unit
+      tests; matvec / solve still work via the standard API.
+
+    Either way the caller gets a ``DSparseTensor`` whose ``@`` and
+    ``solve`` methods compose with the rest of torch-sla.
+    """
+    A_global = SparseTensor(global_values, global_row, global_col, (N, N))
+    coords = dmesh.global_mesh.points.cpu()
+
+    if torch.distributed.is_available() and torch.distributed.is_initialized():
+        # Build (or look up) a device mesh sized to the running world.
+        from torch.distributed.device_mesh import init_device_mesh
+        world = torch.distributed.get_world_size()
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        mesh = init_device_mesh(device, (world,))
+        return DSparseTensor.partition(
+            A_global, mesh,
+            partition_method="rcb", coords=coords,
+        )
+    # Single-process simulator: mesh=None gives rank=0, world=1 so the
+    # DSparseTensor holds the entire matrix. The partition still uses
+    # ``dmesh.num_partitions`` as a label for downstream inspection.
+    return DSparseTensor.partition(
+        A_global, mesh=None,
+        partition_method="rcb", coords=coords,
+    )
 
 
 # ─── Warmup helpers ─────────────────────────────────────────────────
@@ -311,13 +349,7 @@ def distributed_element_assemble(
             global_values, global_row, global_col, N
         )
 
-    return DSparseTensor(
-        global_values, global_row, global_col,
-        shape=(N, N),
-        num_partitions=dmesh.num_partitions,
-        coords=dmesh.global_mesh.points.cpu(),
-        partition_method='rcb',
-    )
+    return _build_dsparse(global_values, global_row, global_col, N, dmesh)
 
 
 def distributed_element_assemble_to_sparse(

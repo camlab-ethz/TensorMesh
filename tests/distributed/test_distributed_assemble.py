@@ -225,5 +225,86 @@ class TestDistributedSolve:
             f"Max diff: {(u_ref - u_dist).abs().max().item():.2e}"
 
 
+def _multiproc_assemble_worker(rank, world, port, q):
+    """Per-rank worker for the multi-process distributed-assembly smoke test."""
+    import os
+    import torch.distributed as dist
+
+    os.environ.setdefault("MASTER_ADDR", "127.0.0.1")
+    os.environ["MASTER_PORT"] = str(port)
+    dist.init_process_group(backend="gloo", rank=rank, world_size=world)
+    try:
+        mesh = Mesh.gen_rectangle(chara_length=0.2, element_type="tri")
+        dmesh = DistributedMesh(mesh, num_partitions=world, devices=_cpu_devices(world))
+        K_dist = distributed_element_assemble(
+            LaplaceElementAssembler, dmesh, quadrature_order=2
+        )
+
+        # Reference assembly (every rank can do it; small mesh).
+        K_ref = LaplaceElementAssembler.from_mesh(mesh)()
+
+        # Same global x on every rank.
+        torch.manual_seed(0)
+        x = torch.randn(mesh.n_points, dtype=K_ref.dtype)
+        y_ref = K_ref @ x
+
+        # DSparseTensor matvec lives in Shard(0) space -- pass this
+        # rank's owned slice, not the global vector.
+        partition = K_dist._spec.placement.partition
+        owned = partition.owned_nodes.long()
+        x_owned = x[owned]
+        y_dist = K_dist @ x_owned
+        # Allgather across ranks
+        idx_pad = torch.zeros(mesh.n_points, dtype=torch.long)
+        idx_pad[: owned.numel()] = owned
+        val_pad = torch.zeros(mesh.n_points, dtype=y_dist.dtype)
+        val_pad[: y_dist.numel()] = y_dist
+        sz_local = torch.tensor([owned.numel()], dtype=torch.long)
+        all_sz = [torch.zeros_like(sz_local) for _ in range(world)]
+        all_idx = [torch.zeros_like(idx_pad) for _ in range(world)]
+        all_val = [torch.zeros_like(val_pad) for _ in range(world)]
+        dist.all_gather(all_sz, sz_local)
+        dist.all_gather(all_idx, idx_pad)
+        dist.all_gather(all_val, val_pad)
+        y_global = torch.zeros(mesh.n_points, dtype=y_dist.dtype)
+        for sz, ix, vl in zip(all_sz, all_idx, all_val):
+            n = int(sz.item())
+            y_global[ix[:n]] = vl[:n]
+
+        rel = (y_global - y_ref).abs().max() / y_ref.abs().max()
+        q.put({"rank": rank, "rel_err": float(rel)})
+    finally:
+        dist.destroy_process_group()
+
+
+def test_multiproc_distributed_assemble_matvec_2procs():
+    """End-to-end multi-process: assemble via TensorMesh, partition via
+    DSparseTensor, matvec across ranks, gather and compare to reference."""
+    import torch.distributed as dist
+    if not dist.is_available():
+        pytest.skip("torch.distributed not available")
+
+    import torch.multiprocessing as mp
+    world = 2
+    port = 29770
+    ctx = mp.get_context("spawn")
+    q = ctx.Queue()
+    procs = [ctx.Process(target=_multiproc_assemble_worker,
+                          args=(rank, world, port, q))
+             for rank in range(world)]
+    for p in procs:
+        p.start()
+    for p in procs:
+        p.join(timeout=120)
+
+    results = []
+    while not q.empty():
+        results.append(q.get())
+    assert len(results) == world, f"expected {world} rank results, got {len(results)}"
+    for r in results:
+        assert r["rel_err"] < 1e-8, (
+            f"rank {r['rank']}: matvec rel err {r['rel_err']:.2e} too large")
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
