@@ -557,7 +557,12 @@ def _multiproc_poisson_dirichlet_dsparse_worker(rank, world, port, q):
         from tensormesh import Condenser
         from torch_sla import SparseTensor, DSparseTensor
         from torch_sla.distributed.solve import cg_shard
-        from torch.distributed.device_mesh import init_device_mesh
+        try:
+            # torch >= 2.2
+            from torch.distributed.device_mesh import init_device_mesh
+        except ImportError:
+            # torch 2.0-2.1 keeps it under the private namespace
+            from torch.distributed._tensor.device_mesh import init_device_mesh
 
         mesh = Mesh.gen_rectangle(chara_length=0.2, element_type="tri")
         boundary_mask = mesh.boundary_mask
