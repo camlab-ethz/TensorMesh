@@ -329,7 +329,7 @@ def _multiproc_solve_worker(rank, world, port, q):
     os.environ["MASTER_PORT"] = str(port)
     dist.init_process_group(backend="gloo", rank=rank, world_size=world)
     try:
-        from torch_sla.distributed.solve import cg_shard
+        from torch_sla import solve, SolverConfig
 
         mesh = Mesh.gen_rectangle(chara_length=0.2, element_type="tri")
         dmesh = DistributedMesh(mesh, num_partitions=world, devices=_cpu_devices(world))
@@ -352,12 +352,11 @@ def _multiproc_solve_worker(rank, world, port, q):
         owned = partition.owned_nodes.long()
         b_owned = b_global[owned]
 
-        # Distributed CG in Shard(0) space (raw tensor in, raw tensor out).
-        x_owned = cg_shard(
-            M_dist, b_owned,
-            M_apply=lambda r: r,
-            atol=1e-12, rtol=1e-10, maxiter=2000, verbose=False,
-        )
+        # Distributed solve via the user-facing API. SolverConfig scopes
+        # the iterative defaults; ``solve`` dispatches to the Shard(0) CG
+        # path automatically when A is a DSparseTensor.
+        with SolverConfig(method="cg", atol=1e-12, rtol=1e-10, maxiter=2000):
+            x_owned = solve(M_dist, b_owned)
 
         # Distributed residual.
         r_owned = b_owned - M_dist @ x_owned
@@ -539,7 +538,7 @@ def _multiproc_poisson_dirichlet_dsparse_worker(rank, world, port, q):
       3. Wrap K_inner as a torch-sla ``SparseTensor`` and call
          ``DSparseTensor.partition`` -> each rank gets a row-shard.
       4. Slice f_inner to this rank's owned rows and run distributed
-         CG via ``cg_shard``.
+         solve via ``torch_sla.solve`` (SolverConfig-scoped).
       5. Allgather x_owned -> u_inner_global, recover full-DOF u via
          ``condenser.recover``, compare to single-process reference u.
 
@@ -555,8 +554,7 @@ def _multiproc_poisson_dirichlet_dsparse_worker(rank, world, port, q):
     dist.init_process_group(backend="gloo", rank=rank, world_size=world)
     try:
         from tensormesh import Condenser
-        from torch_sla import SparseTensor, DSparseTensor
-        from torch_sla.distributed.solve import cg_shard
+        from torch_sla import SparseTensor, DSparseTensor, solve, SolverConfig
         try:
             # torch >= 2.2
             from torch.distributed.device_mesh import init_device_mesh
@@ -602,11 +600,8 @@ def _multiproc_poisson_dirichlet_dsparse_worker(rank, world, port, q):
         owned = partition.owned_nodes.long()
         b_owned = f_inner[owned]
 
-        x_owned = cg_shard(
-            D, b_owned,
-            M_apply=lambda r: r,
-            atol=1e-12, rtol=1e-10, maxiter=4000, verbose=False,
-        )
+        with SolverConfig(method="cg", atol=1e-12, rtol=1e-10, maxiter=4000):
+            x_owned = solve(D, b_owned)
 
         # Allgather x_owned -> x_inner_global on every rank.
         N_inner = int(A_global.shape[0])
@@ -640,7 +635,7 @@ def _multiproc_poisson_dirichlet_dsparse_worker(rank, world, port, q):
 
 def test_multiproc_poisson_dirichlet_dsparse_2procs():
     """End-to-end PDE solve via TRUE DSparseTensor distributed path:
-    assemble + Dirichlet + DSparseTensor.partition + cg_shard + recover."""
+    assemble + Dirichlet + DSparseTensor.partition + solve + recover."""
     import torch.distributed as dist
     if not dist.is_available():
         pytest.skip("torch.distributed not available")
