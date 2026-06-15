@@ -12,9 +12,11 @@ from .assemble import (
     distributed_element_assemble_per_rank,
     distributed_node_assemble,
 )
+from .assembler import distributed
 
 __all__ = [
     'DistributedMesh',
+    'distributed',
     'distributed_element_assemble',
     'distributed_element_assemble_to_sparse',
     'distributed_element_assemble_per_rank',

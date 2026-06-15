@@ -24,6 +24,7 @@ instead — see :doc:`/user_guide/linear_solvers`.
 from torch_sla import SparseTensor
 
 from .matrix import SparseMatrix
+from .dmatrix import DSparseMatrix
 from .solve import spsolve
 from .mm import spmm
 from .nonlinear_solve import nonlinear_solve
@@ -31,6 +32,7 @@ from .utils import is_petsc_available, is_cupy_available
 
 __all__ = [
     'SparseMatrix',
+    'DSparseMatrix',
     'SparseTensor',
     'spsolve',
     'spmm',
