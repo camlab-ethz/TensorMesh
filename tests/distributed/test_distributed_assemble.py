@@ -250,26 +250,12 @@ def _multiproc_assemble_worker(rank, world, port, q):
 
         # DSparseTensor matvec lives in Shard(0) space -- pass this
         # rank's owned slice, not the global vector.
+        from torch_sla.distributed import gather_owned_to_global
         partition = K_dist._spec.placement.partition
         owned = partition.owned_nodes.long()
         x_owned = x[owned]
         y_dist = K_dist @ x_owned
-        # Allgather across ranks
-        idx_pad = torch.zeros(mesh.n_points, dtype=torch.long)
-        idx_pad[: owned.numel()] = owned
-        val_pad = torch.zeros(mesh.n_points, dtype=y_dist.dtype)
-        val_pad[: y_dist.numel()] = y_dist
-        sz_local = torch.tensor([owned.numel()], dtype=torch.long)
-        all_sz = [torch.zeros_like(sz_local) for _ in range(world)]
-        all_idx = [torch.zeros_like(idx_pad) for _ in range(world)]
-        all_val = [torch.zeros_like(val_pad) for _ in range(world)]
-        dist.all_gather(all_sz, sz_local)
-        dist.all_gather(all_idx, idx_pad)
-        dist.all_gather(all_val, val_pad)
-        y_global = torch.zeros(mesh.n_points, dtype=y_dist.dtype)
-        for sz, ix, vl in zip(all_sz, all_idx, all_val):
-            n = int(sz.item())
-            y_global[ix[:n]] = vl[:n]
+        y_global = gather_owned_to_global(owned, y_dist, mesh.n_points)
 
         rel = (y_global - y_ref).abs().max() / y_ref.abs().max()
         q.put({"rank": rank, "rel_err": float(rel)})
@@ -367,19 +353,8 @@ def _multiproc_solve_worker(rank, world, port, q):
         rel_residual = float((r_sq.sqrt() / b_sq.sqrt()).item())
 
         # Allgather x_owned -> x_global, compare to x_ref.
-        idx_pad = torch.zeros(N, dtype=torch.long); idx_pad[:owned.numel()] = owned
-        val_pad = torch.zeros(N, dtype=x_owned.dtype); val_pad[:x_owned.numel()] = x_owned
-        sz = torch.tensor([owned.numel()], dtype=torch.long)
-        all_sz = [torch.zeros_like(sz) for _ in range(world)]
-        all_idx = [torch.zeros_like(idx_pad) for _ in range(world)]
-        all_val = [torch.zeros_like(val_pad) for _ in range(world)]
-        dist.all_gather(all_sz, sz)
-        dist.all_gather(all_idx, idx_pad)
-        dist.all_gather(all_val, val_pad)
-        x_global = torch.zeros_like(x_ref)
-        for s, i, v in zip(all_sz, all_idx, all_val):
-            n = int(s.item())
-            x_global[i[:n]] = v[:n]
+        from torch_sla.distributed import gather_owned_to_global
+        x_global = gather_owned_to_global(owned, x_owned, N)
 
         rel_to_xref = float(((x_global - x_ref).norm() / x_ref.norm()).item())
 
@@ -604,22 +579,9 @@ def _multiproc_poisson_dirichlet_dsparse_worker(rank, world, port, q):
             x_owned = solve(D, b_owned)
 
         # Allgather x_owned -> x_inner_global on every rank.
+        from torch_sla.distributed import gather_owned_to_global
         N_inner = int(A_global.shape[0])
-        idx_pad = torch.zeros(N_inner, dtype=torch.long)
-        idx_pad[: owned.numel()] = owned
-        val_pad = torch.zeros(N_inner, dtype=x_owned.dtype)
-        val_pad[: x_owned.numel()] = x_owned
-        sz = torch.tensor([owned.numel()], dtype=torch.long)
-        all_sz = [torch.zeros_like(sz) for _ in range(world)]
-        all_idx = [torch.zeros_like(idx_pad) for _ in range(world)]
-        all_val = [torch.zeros_like(val_pad) for _ in range(world)]
-        dist.all_gather(all_sz, sz)
-        dist.all_gather(all_idx, idx_pad)
-        dist.all_gather(all_val, val_pad)
-        u_inner = torch.zeros(N_inner, dtype=x_owned.dtype)
-        for s, ix, vl in zip(all_sz, all_idx, all_val):
-            n = int(s.item())
-            u_inner[ix[:n]] = vl[:n]
+        u_inner = gather_owned_to_global(owned, x_owned, N_inner)
 
         # Recover full-DOF u via the distributed Condenser (cached state
         # is per-rank; recover is a scatter so each rank gets the same u).
