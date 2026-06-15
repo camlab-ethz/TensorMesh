@@ -328,23 +328,39 @@ class Condenser(nn.Module):
             "Condenser is a follow-up PR; this path keeps the API working.",
             stacklevel=2,
         )
-        # Round-trip to single-device
-        K_global = dmatrix.to_single()
+        # Round-trip to single-device. Force CPU because the cached
+        # dirichlet_mask in this Condenser lives on the device chosen
+        # at construction time (typically CPU); avoid a cross-device
+        # index in _compute_layout. Result is moved back to dmatrix's
+        # device before re-partitioning below.
+        target_device = dmatrix.device
+        K_global = dmatrix.to_single().cpu()
         if rhs is None:
             f_global = None
         else:
             # rhs comes in as either DTensor (Shard(0)) or owned slice;
-            # for the round-trip we need the full vector.
-            from torch.distributed.tensor import DTensor as _DTensor  # noqa: F401
+            # for the round-trip we need the full vector. DTensor moved
+            # from torch.distributed._tensor (torch 2.0-2.1) to
+            # torch.distributed.tensor (torch >= 2.2); accept both.
+            DTensor = None
             try:
-                from torch.distributed.tensor import DTensor
-                if isinstance(rhs, DTensor):
-                    f_global = rhs.full_tensor()
-                else:
-                    f_global = rhs
+                from torch.distributed.tensor import DTensor as _DT
+                DTensor = _DT
             except ImportError:
+                try:
+                    from torch.distributed._tensor import DTensor as _DT
+                    DTensor = _DT
+                except ImportError:
+                    pass
+            if DTensor is not None and isinstance(rhs, DTensor):
+                f_global = rhs.full_tensor()
+            else:
                 f_global = rhs
+            if f_global is not None:
+                f_global = f_global.cpu()
         K_inner, f_inner = self.__call__(K_global, f_global)
+        K_inner = K_inner.to(target_device)
+        f_inner = f_inner.to(target_device)
         # Re-partition the condensed result so downstream stays distributed.
         # Use the same partition_method the caller's DSparseMatrix used.
         from ..sparse import DSparseMatrix as _DM
