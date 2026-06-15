@@ -522,5 +522,174 @@ def test_multiproc_poisson_dirichlet_2procs():
             f"rank {r['rank']}: max u diff vs single-proc {r['max_diff']:.2e}")
 
 
+def _multiproc_poisson_dirichlet_dsparse_worker(rank, world, port, q):
+    """Per-rank worker for TRUE end-to-end Poisson-Dirichlet via DSparseTensor.
+
+    Unlike ``_multiproc_poisson_dirichlet_worker`` (which exercises the
+    ``distributed_element_assemble_to_sparse`` path returning a
+    single-process ``SparseMatrix``), this test threads the actual
+    ``DSparseTensor`` distributed-solve path end-to-end:
+
+      1. Each rank runs TensorMesh distributed assembly to build the
+         global Laplace stiffness K and load vector f.
+      2. Single-process ``Condenser`` strips out Dirichlet DOFs ->
+         (K_inner, f_inner). Both still live on every rank as the same
+         global matrix (cheap at this size; the partitioning happens
+         in step 3, not here).
+      3. Wrap K_inner as a torch-sla ``SparseTensor`` and call
+         ``DSparseTensor.partition`` -> each rank gets a row-shard.
+      4. Slice f_inner to this rank's owned rows and run distributed
+         CG via ``cg_shard``.
+      5. Allgather x_owned -> u_inner_global, recover full-DOF u via
+         ``condenser.recover``, compare to single-process reference u.
+
+    This is the "real" sales pitch of the TensorMesh+torch-sla integration:
+    physical PDE, true distributed matrix, distributed solver, end-to-end
+    matches single-process.
+    """
+    import os
+    import torch.distributed as dist
+
+    os.environ.setdefault("MASTER_ADDR", "127.0.0.1")
+    os.environ["MASTER_PORT"] = str(port)
+    dist.init_process_group(backend="gloo", rank=rank, world_size=world)
+    try:
+        from tensormesh import Condenser
+        from torch_sla import SparseTensor, DSparseTensor
+        from torch_sla.distributed.solve import cg_shard
+        from torch.distributed.device_mesh import init_device_mesh
+
+        mesh = Mesh.gen_rectangle(chara_length=0.2, element_type="tri")
+        boundary_mask = mesh.boundary_mask
+
+        # ---- Reference (single-process) ---- #
+        K_ref = LaplaceElementAssembler.from_mesh(mesh)()
+        ConstLoad = const_node_assembler()
+        f_ref = ConstLoad.from_mesh(mesh)()
+        cond_ref = Condenser(boundary_mask)
+        K_c_ref, f_c_ref = cond_ref(K_ref, f_ref)
+        u_ref = cond_ref.recover(K_c_ref.solve(f_c_ref))
+
+        # ---- Distributed assembly -> Condenser -> DSparseTensor -> CG ---- #
+        dmesh = DistributedMesh(mesh, num_partitions=world, devices=_cpu_devices(world))
+        K_sparse = distributed_element_assemble_to_sparse(
+            LaplaceElementAssembler, dmesh, quadrature_order=2
+        )
+        f_dist = distributed_node_assemble(ConstLoad, dmesh, quadrature_order=2)
+
+        cond_dist = Condenser(boundary_mask)
+        K_inner, f_inner = cond_dist(K_sparse, f_dist)
+
+        # Build a torch-sla SparseTensor from the condensed global matrix,
+        # then partition it across the live torch.distributed world.
+        A_global = SparseTensor(
+            K_inner.edata, K_inner.row_indices, K_inner.col_indices,
+            (int(K_inner.shape[0]), int(K_inner.shape[1])),
+        )
+        device_mesh = init_device_mesh("cpu", (world,))
+        # Use a graph-based partitioner (no coords needed). The inner-DOF
+        # numbering after Condenser no longer maps 1:1 to mesh points so
+        # we can't pass mesh.points directly; METIS partitions on the
+        # adjacency graph of K_inner.
+        D = DSparseTensor.partition(A_global, device_mesh, partition_method="metis")
+
+        partition = D._spec.placement.partition
+        owned = partition.owned_nodes.long()
+        b_owned = f_inner[owned]
+
+        x_owned = cg_shard(
+            D, b_owned,
+            M_apply=lambda r: r,
+            atol=1e-12, rtol=1e-10, maxiter=4000, verbose=False,
+        )
+
+        # Allgather x_owned -> x_inner_global on every rank.
+        N_inner = int(A_global.shape[0])
+        idx_pad = torch.zeros(N_inner, dtype=torch.long)
+        idx_pad[: owned.numel()] = owned
+        val_pad = torch.zeros(N_inner, dtype=x_owned.dtype)
+        val_pad[: x_owned.numel()] = x_owned
+        sz = torch.tensor([owned.numel()], dtype=torch.long)
+        all_sz = [torch.zeros_like(sz) for _ in range(world)]
+        all_idx = [torch.zeros_like(idx_pad) for _ in range(world)]
+        all_val = [torch.zeros_like(val_pad) for _ in range(world)]
+        dist.all_gather(all_sz, sz)
+        dist.all_gather(all_idx, idx_pad)
+        dist.all_gather(all_val, val_pad)
+        u_inner = torch.zeros(N_inner, dtype=x_owned.dtype)
+        for s, ix, vl in zip(all_sz, all_idx, all_val):
+            n = int(s.item())
+            u_inner[ix[:n]] = vl[:n]
+
+        # Recover full-DOF u via the distributed Condenser (cached state
+        # is per-rank; recover is a scatter so each rank gets the same u).
+        u_dist = cond_dist.recover(u_inner)
+
+        max_diff = (u_ref - u_dist).abs().max().item()
+        rel_diff = max_diff / max(u_ref.abs().max().item(), 1e-12)
+        q.put({"rank": rank, "max_diff": max_diff, "rel_diff": rel_diff,
+               "u_norm": u_ref.norm().item()})
+    finally:
+        dist.destroy_process_group()
+
+
+def test_multiproc_poisson_dirichlet_dsparse_2procs():
+    """End-to-end PDE solve via TRUE DSparseTensor distributed path:
+    assemble + Dirichlet + DSparseTensor.partition + cg_shard + recover."""
+    import torch.distributed as dist
+    if not dist.is_available():
+        pytest.skip("torch.distributed not available")
+    import torch.multiprocessing as mp
+    world = 2
+    port = 29778
+    ctx = mp.get_context("spawn")
+    q = ctx.Queue()
+    procs = [ctx.Process(target=_multiproc_poisson_dirichlet_dsparse_worker,
+                          args=(rank, world, port, q))
+             for rank in range(world)]
+    for p in procs:
+        p.start()
+    for p in procs:
+        p.join(timeout=180)
+
+    results = []
+    while not q.empty():
+        results.append(q.get())
+    assert len(results) == world
+    for r in results:
+        assert r["rel_diff"] < 1e-6, (
+            f"rank {r['rank']}: distributed u differs from single-proc "
+            f"by rel={r['rel_diff']:.2e} (max abs {r['max_diff']:.2e}, "
+            f"||u_ref||={r['u_norm']:.4f})"
+        )
+
+
+def test_multiproc_poisson_dirichlet_dsparse_4procs():
+    """Same end-to-end PDE path but world=4 (more partitions, more halo)."""
+    import torch.distributed as dist
+    if not dist.is_available():
+        pytest.skip("torch.distributed not available")
+    import torch.multiprocessing as mp
+    world = 4
+    port = 29780
+    ctx = mp.get_context("spawn")
+    q = ctx.Queue()
+    procs = [ctx.Process(target=_multiproc_poisson_dirichlet_dsparse_worker,
+                          args=(rank, world, port, q))
+             for rank in range(world)]
+    for p in procs:
+        p.start()
+    for p in procs:
+        p.join(timeout=180)
+
+    results = []
+    while not q.empty():
+        results.append(q.get())
+    assert len(results) == world
+    for r in results:
+        assert r["rel_diff"] < 1e-6, (
+            f"rank {r['rank']}: rel={r['rel_diff']:.2e}")
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
