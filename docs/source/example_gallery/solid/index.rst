@@ -1,7 +1,7 @@
 Solid Mechanics
 ===============
 
-Six worked solid-mechanics examples in ``examples/solid/``, built
+Seven worked solid-mechanics examples in ``examples/solid/``, built
 as a progressive ladder — each rung adds exactly one new concept on
 top of the previous one:
 
@@ -20,6 +20,9 @@ top of the previous one:
 #. **Geomechanics (elastic footing)** — solves a small
    boundary-value problem for footing settlement using the direct
    linear-elasticity workflow.
+#. **Geomechanics (Drucker-Prager footing)** — combines the footing
+   boundary-value setup with pressure-dependent plasticity, load
+   stepping, and committed per-quadrature history variables.
 
 Together they cover the two solver patterns TensorMesh uses for
 solid problems:
@@ -29,7 +32,7 @@ solid problems:
 * **L-BFGS energy minimization** for nonlinear problems where the
   potential energy is well-defined — hyperelasticity, contact, and
   plasticity (``hyperelastic_beam``, ``hertzian_contact``,
-  ``plasticity_strip``).
+  ``plasticity_strip``, ``drucker_prager_footing``).
 
 The order below mirrors solver complexity.
 
@@ -79,6 +82,14 @@ The order below mirrors solver complexity.
       Linear-elastic soil block under a centered strip footing, with settlement
       contours and a reaction/load-balance sanity check.
 
+   .. grid-item-card:: Geomechanics: Drucker-Prager footing
+      :link: drucker_prager_footing
+      :link-type: doc
+      :img-top: /_static/solid_mechanics/drucker_prager_footing.png
+
+      Nonlinear strip-footing settlement with pressure-dependent plasticity,
+      plastic-history contours, and a load-settlement sanity check.
+
 
 .. toctree::
    :hidden:
@@ -90,3 +101,4 @@ The order below mirrors solver complexity.
    plasticity_strip
    drucker_prager_triaxial
    elastic_footing
+   drucker_prager_footing
