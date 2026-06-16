@@ -816,7 +816,8 @@ class ElementAssembler(nn.Module):
                     elem_u.append(value[:, i])
                     elem_v.append(value[:, j])
 
-        elem_u, elem_v = torch.stack(elem_u, -1).flatten(), torch.stack(elem_v, -1).flatten() # [num_elements * num_basis * num_basis]
+        elem_u = torch.cat([t.flatten() for t in elem_u])  # [total_elements * num_basis * num_basis]
+    elem_v = torch.cat([t.flatten() for t in elem_v])  # [total_elements * num_basis * num_basis]
         elem_u, elem_v = elem_u.cpu().numpy().copy(), elem_v.cpu().numpy().copy()
         tmp = scipy.sparse.coo_matrix(( # used to remove duplicated edges
             np.ones_like(elem_u), # data
