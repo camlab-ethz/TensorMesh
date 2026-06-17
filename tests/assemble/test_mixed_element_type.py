@@ -219,6 +219,20 @@ def test_from_mesh_handles_every_combination(
     )
     assert K.nnz > 0, "every assembler should produce non-zero coupling"
 
+    # Symmetry is the most sensitive shape-blind check: if the underlying
+    # per-element dof ordering gets scrambled (e.g. by switching ``stack``
+    # for ``cat`` without preserving the per-type layout), single-type
+    # meshes still produce the right *shape*/*nnz* but the matrix is no
+    # longer symmetric. Pure-quad/tri/hex/tet baselines catch that here.
+    K_dense = K.to_dense()
+    K_max = K_dense.abs().max().clamp(min=1.0)
+    asym = (K_dense - K_dense.transpose(-1, -2)).abs().max()
+    assert (asym / K_max).item() < 1e-10, (
+        f"{AsmCls.__name__} on {mesh_name} (reorder={reorder}): "
+        f"assembled matrix is not symmetric "
+        f"(max|K-K.T|={asym.item():.3e}, max|K|={K_max.item():.3e})"
+    )
+
 
 # --------------------------------------------------------------------- #
 # Spot-check the headline case from the issue verbatim
