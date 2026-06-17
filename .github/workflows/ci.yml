@@ -49,20 +49,10 @@ jobs:
         # resolves torch from PyPI's CPU index instead of pulling the
         # multi-GB CUDA build. torch-sla's base install is CPU-compatible;
         # the GPU backends ([cupy] / [cudss]) are not exercised in CI.
-        #
-        # After the editable install, force-reinstall torch-sla's ``dev``
-        # branch over the PyPI release: this PR depends on the
-        # ``DSparseTensor.partition`` classmethod + ``gather_owned_to_global``
-        # helper + ``SparseTensor.requires_grad_`` restoration that landed
-        # post-0.2.1 (PRs #41 and #42, both merged into dev). Once torch-sla
-        # cuts 0.3.0 the ``--force-reinstall`` line can go away and the
-        # pyproject pin can bump to ``torch-sla>=0.3.0``.
         run: |
           python -m pip install --upgrade pip
           pip install torch --index-url https://download.pytorch.org/whl/cpu
           pip install -e ".[test]"
-          pip install --no-deps --force-reinstall \
-            "git+https://github.com/sparsexlab/torch-sla.git@dev"
 
       - name: Run test suite
         # CPU + float64 by convention; the CUDA-only tests carry
