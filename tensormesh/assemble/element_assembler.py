@@ -816,7 +816,14 @@ class ElementAssembler(nn.Module):
                     elem_u.append(value[:, i])
                     elem_v.append(value[:, j])
 
-        elem_u, elem_v = torch.stack(elem_u, -1).flatten(), torch.stack(elem_v, -1).flatten() # [num_elements * num_basis * num_basis]
+        # ``torch.cat`` not ``torch.stack`` so that mixed-type meshes,
+        # where the per-element-type contributions in ``elem_u`` /
+        # ``elem_v`` have different lengths (e.g. one quad block of
+        # ``(n_quads,)`` + one triangle block of ``(n_tris,)``),
+        # concatenate cleanly instead of requiring a common length.
+        # Single-type meshes hit the same code path.
+        elem_u = torch.cat([t.flatten() for t in elem_u])
+        elem_v = torch.cat([t.flatten() for t in elem_v])
         elem_u, elem_v = elem_u.cpu().numpy().copy(), elem_v.cpu().numpy().copy()
         tmp = scipy.sparse.coo_matrix(( # used to remove duplicated edges
             np.ones_like(elem_u), # data
