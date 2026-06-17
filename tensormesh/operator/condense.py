@@ -132,7 +132,7 @@ class Condenser(nn.Module):
     n_inner_dof:Optional[int]
     n_outer_dof:Optional[int]
     n_dof:Optional[int]
-    layout_hash:Optional[int]
+    layout_signature:Optional[Tuple]
     K_ou2in:Optional[SparseMatrix]
 
     _LAZY_BUFFERS = (
@@ -160,8 +160,8 @@ class Condenser(nn.Module):
         self.ou2in_shape   = None
         self.n_inner_dof   = None
         self.n_outer_dof   = None
-        self.n_dof         = None
-        self.layout_hash   = None
+        self.n_dof          = None
+        self.layout_signature = None
         self.K_ou2in       = None
 
     def _normalize_value(self, value:Optional[torch.Tensor])->torch.Tensor:
@@ -217,7 +217,7 @@ class Condenser(nn.Module):
         self.n_inner_dof   = n_inner_dofs
         self.n_outer_dof   = n_outer_dofs
         self.n_dof         = n_dof
-        self.layout_hash   = matrix.layout_hash
+        self.layout_signature = matrix.layout_signature
 
     def update_dirichlet(self, dirichlet_value:torch.Tensor):
         """Replace the cached prescribed boundary values.
@@ -236,9 +236,9 @@ class Condenser(nn.Module):
         self.dirichlet_value = self._normalize_value(dirichlet_value)
 
     def __call__(self,
-                 matrix:SparseMatrix,
+                 matrix,
                  rhs:Optional[torch.Tensor] = None,
-                 )->Tuple[SparseMatrix, torch.Tensor]:
+                 ):
         """Condense both the matrix and the right-hand side.
 
         Parameters
@@ -267,6 +267,19 @@ class Condenser(nn.Module):
         condense a matrix with a different sparsity pattern, instantiate a
         new :class:`Condenser`.
         """
+        # ---- DSparseMatrix dispatch ---------------------------------- #
+        # The single-device condensation logic indexes ``matrix.edata``
+        # by cached position-aware boolean masks (``is_inner_edge`` /
+        # ``is_ou2in_edge``). Adapting that to a row-sharded
+        # DSparseMatrix requires a from-scratch implementation (boundary
+        # mask broadcast + per-rank inner/outer partition + repartition
+        # of the condensed system). Until that lands, fall back through
+        # ``.to_single()`` so the API contract is honoured and meshes
+        # below the cluster threshold keep working.
+        from ..distributed import DSparseMatrix
+        if isinstance(matrix, DSparseMatrix):
+            return self._call_distributed(matrix, rhs)
+
         if rhs is None:
             rhs = torch.zeros(matrix.shape[0])
 
@@ -275,7 +288,7 @@ class Condenser(nn.Module):
 
         assert matrix.shape[0] == self.n_dof, f"the shape of matrix must be [{self.n_dof}, {self.n_dof}], but got {matrix.shape}"
         assert matrix.shape[1] == self.n_dof, f"the shape of matrix must be [{self.n_dof}, {self.n_dof}], but got {matrix.shape}"
-        assert matrix.has_same_layout(self.layout_hash), "the layout of the matrix is changed, please recompute the condensed matrix"
+        assert matrix.has_same_layout(self.layout_signature), "the layout of the matrix is changed, please recompute the condensed matrix"
         assert rhs.shape[0] == self.n_dof, f"the shape of rhs must be [{self.n_dof}, ...], but got {rhs.shape}"
 
         K_inner = SparseMatrix(
@@ -294,6 +307,83 @@ class Condenser(nn.Module):
             minus_term = minus_term.unsqueeze(-1)
 
         return K_inner, rhs[self.is_inner_dof] - minus_term
+
+    def _call_distributed(self, dmatrix, rhs):
+        """Condense a :class:`DSparseMatrix` by round-tripping through
+        the single-device path (``.to_single()`` allgather, condense,
+        re-partition).
+
+        Correct but inefficient: cost is one global allgather of the
+        COO triples plus a re-partition. Intended as the interim
+        contract while the true per-rank Condenser is designed.
+
+        TODO(future PR): native distributed condensation that keeps the
+        matrix sharded throughout (boundary mask broadcast + per-rank
+        inner/outer split + automatic owned/halo rewrite).
+        """
+        import warnings
+        warnings.warn(
+            "Condenser on DSparseMatrix currently routes through .to_single() "
+            "(allgather + condense + re-partition). The per-rank distributed "
+            "Condenser is a follow-up PR; this path keeps the API working.",
+            stacklevel=2,
+        )
+        # Round-trip to single-device. Force CPU because the cached
+        # dirichlet_mask in this Condenser lives on the device chosen
+        # at construction time (typically CPU); avoid a cross-device
+        # index in _compute_layout. Result is moved back to dmatrix's
+        # device before re-partitioning below.
+        target_device = dmatrix.device
+        K_global = dmatrix.to_single().cpu()
+        if rhs is None:
+            f_global = None
+        else:
+            # rhs comes in as either DTensor (Shard(0)) or owned slice;
+            # for the round-trip we need the full vector. DTensor moved
+            # from torch.distributed._tensor (torch 2.0-2.1) to
+            # torch.distributed.tensor (torch >= 2.2); accept both.
+            DTensor = None
+            try:
+                from torch.distributed.tensor import DTensor as _DT
+                DTensor = _DT
+            except ImportError:
+                try:
+                    from torch.distributed._tensor import DTensor as _DT
+                    DTensor = _DT
+                except ImportError:
+                    pass
+            if DTensor is not None and isinstance(rhs, DTensor):
+                f_global = rhs.full_tensor()
+            else:
+                f_global = rhs
+            if f_global is not None:
+                f_global = f_global.cpu()
+        K_inner, f_inner = self.__call__(K_global, f_global)
+        K_inner = K_inner.to(target_device)
+        f_inner = f_inner.to(target_device)
+        # Re-partition the condensed result so downstream stays distributed.
+        # Use the same partition_method the caller's DSparseMatrix used.
+        from ..distributed import DSparseMatrix as _DM
+        from torch_sla.distributed import DSparseTensor
+        try:
+            from torch.distributed.device_mesh import init_device_mesh
+        except ImportError:
+            from torch.distributed._tensor.device_mesh import init_device_mesh
+        import torch.distributed as dist
+        if dist.is_available() and dist.is_initialized():
+            world = dist.get_world_size()
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+            mesh = init_device_mesh(device, (world,))
+            K_inner_d_tensor = DSparseTensor.partition(
+                K_inner, mesh, partition_method="metis",
+            )
+        else:
+            K_inner_d_tensor = DSparseTensor.partition(K_inner, mesh=None,
+                                                       partition_method="metis")
+        # Fresh UUID -- this is a new partition build that won't share
+        # caches with the input's partition.
+        K_inner_d = _DM(K_inner_d_tensor)
+        return K_inner_d, f_inner
 
     def condense_rhs(self, rhs:torch.Tensor)->torch.Tensor:
         """Condense the right-hand side only, reusing the cached matrix layout.

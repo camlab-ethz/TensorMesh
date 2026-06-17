@@ -1248,4 +1248,65 @@ class Mesh(nn.Module):
         from ..dataset import gen_hollow_sphere
         return gen_hollow_sphere(chara_length, order, cx, cy, cz, r_inner, r_outer, visualize, cache_path)
 
+def _partition(self, num_parts=None, method='coordinate', devices=None):
+    """Partition this mesh into submeshes for distributed assembly.
+
+    Thin syntactic-sugar wrapper around
+    :class:`~tensormesh.distributed.DistributedMesh` --
+    ``mesh.partition(num_parts=4)`` is equivalent to
+    ``DistributedMesh(mesh, num_partitions=4)``.
+
+    **Distributed-by-default convention**
+
+    The returned object is meant to be paired with
+    :func:`~tensormesh.distributed.distributed_element_assemble_per_rank`
+    inside a ``torch.distributed`` context. Each rank's assembly only
+    runs on its own submesh; cross-rank halo contributions are routed via
+    ``all_to_all_single``. Total cluster compute matches single-process,
+    instead of every rank duplicating the full work.
+
+    For a single-process driver (no ``init_process_group``) the same
+    object works with :func:`~tensormesh.distributed.distributed_element_assemble`
+    (multi-threaded one-process pseudo-distributed assembly) -- mostly
+    useful for tests and small examples.
+
+    Parameters
+    ----------
+    num_parts : int, optional
+        Number of partitions. Default: ``torch.cuda.device_count()``,
+        or 2 if no CUDA devices are available.
+    method : str, optional
+        Partitioning method. ``'coordinate'`` (RCB, default),
+        ``'metis'`` (requires pymetis), ``'spectral'``.
+    devices : list of torch.device, optional
+        Device per partition. Defaults to ``cuda:0..cuda:N`` or all CPU.
+
+    Returns
+    -------
+    DistributedMesh
+
+    Examples
+    --------
+    Single-process driver::
+
+        mesh = tm.Mesh.gen_rectangle(chara_length=0.1)
+        dmesh = mesh.partition(num_parts=4)
+        K_dist = distributed_element_assemble(LaplaceElementAssembler, dmesh)
+
+    Multi-rank distributed (each rank does only its own submesh)::
+
+        dist.init_process_group(backend='nccl', rank=rank, world_size=N)
+        mesh = tm.Mesh.gen_rectangle(chara_length=0.1)
+        dmesh = mesh.partition(num_parts=N)
+        K_dist = distributed_element_assemble_per_rank(
+            LaplaceElementAssembler, dmesh, rank=rank,
+        )
+    """
+    from ..distributed import DistributedMesh
+    return DistributedMesh(self, num_partitions=num_parts,
+                            method=method, devices=devices)
+
+
+Mesh.partition = _partition
+
 Mesh.__autodoc__ = [i for i in dir(Mesh) if not i.startswith("_")]

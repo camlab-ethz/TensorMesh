@@ -1,18 +1,20 @@
 """FEM-flavoured COO sparse matrix.
 
 :class:`SparseMatrix` extends :class:`torch_sla.SparseTensor` with helpers
-that come up in finite-element assembly: block-COO construction, layout
-hashing for sparsity-pattern equality checks, scipy interoperability, and
-block-stacking. Arithmetic and device-conversion methods are overridden
-so that the result type is preserved (``A + B`` of two ``SparseMatrix``
-returns ``SparseMatrix``, not the parent type).
+that come up in finite-element assembly: block-COO construction, sequence-
+identity :attr:`layout_signature` for sparsity-pattern caching, scipy
+interoperability, and block-stacking. Arithmetic and device-conversion
+methods are overridden so that the result type is preserved (``A + B``
+of two ``SparseMatrix`` returns ``SparseMatrix``, not the parent type).
 """
 
+import warnings
 import numpy as np
 import torch
 import scipy.sparse
-import hashlib
 from typing import List, Optional, Tuple, Union
+
+from .mixin import _FEMSparsityMixin
 
 try:
     from torch_sla import SparseTensor
@@ -23,7 +25,7 @@ except ImportError as e:
     ) from e
 
 
-class SparseMatrix(SparseTensor):
+class SparseMatrix(_FEMSparsityMixin, SparseTensor):
     """COO sparse matrix with FEM-flavoured helpers.
 
     Subclass of ``torch_sla.SparseTensor``. Inherits ``@`` (spmm),
@@ -73,17 +75,13 @@ class SparseMatrix(SparseTensor):
         K = SparseMatrix.from_block_coo(block_data, elem_row, elem_col, (10, 10))
     """
 
-    def __init__(self, edata: torch.Tensor, row: torch.Tensor, 
+    def __init__(self, edata: torch.Tensor, row: torch.Tensor,
                  col: torch.Tensor, shape: Tuple[int, int]):
         # Initialize parent SparseTensor
         super().__init__(edata, row.long(), col.long(), shape)
-        
-        # Compute layout hash for FEM assembly comparison
-        row_cpu = row.detach().cpu()
-        col_cpu = col.detach().cpu()
-        self._layout_hash = hashlib.sha256(
-            row_cpu.numpy().tobytes() + col_cpu.numpy().tobytes()
-        ).hexdigest()
+        # NB: layout identity now lives in :attr:`layout_signature` (mixin);
+        # see ``tensormesh.sparse.mixin`` for the reasoning. Cost of the old
+        # SHA-256-at-__init__ is gone -- signature is lazy + zero GPU sync.
 
     # ==================== Backward Compatibility Properties ====================
 
@@ -108,9 +106,21 @@ class SparseMatrix(SparseTensor):
         return torch.stack([self.row_indices, self.col_indices], dim=0)
 
     @property
-    def layout_hash(self) -> str:
-        """SHA-256 of the sparsity pattern; see the class-level ``Attributes`` section."""
-        return self._layout_hash
+    def layout_hash(self):
+        """**Deprecated.** Use :attr:`layout_signature` instead.
+
+        Returns the new sequence-identity signature wrapped in a small
+        compat shell: equality with another deprecated ``layout_hash``
+        still works (both routed through :attr:`layout_signature`).
+        Kept so existing callers keep functioning during the migration.
+        """
+        warnings.warn(
+            "SparseMatrix.layout_hash is deprecated; use layout_signature "
+            "(an opaque hashable tuple) instead. layout_hash now returns "
+            "the same signature so old call sites keep working.",
+            DeprecationWarning, stacklevel=2,
+        )
+        return self.layout_signature
 
     @property
     def layout_mask(self) -> torch.Tensor:
@@ -190,31 +200,15 @@ class SparseMatrix(SparseTensor):
 
     # ==================== FEM-Specific Methods ====================
 
-    def has_same_layout(self, other: Union[str, 'SparseMatrix']) -> bool:
+    def has_same_layout(self, other) -> bool:
         """Check whether ``other`` shares this matrix's sparsity pattern.
 
-        Parameters
-        ----------
-        other : str or SparseMatrix
-            Either another :class:`SparseMatrix` or a ``layout_hash``
-            string to compare against.
-
-        Returns
-        -------
-        bool
-            ``True`` iff both have identical ``(row, col)`` arrays.
-
-        Raises
-        ------
-        TypeError
-            If ``other`` is neither a string nor a :class:`SparseMatrix`.
+        Accepts another :class:`SparseMatrix`, an opaque
+        :attr:`layout_signature` tuple, or — for legacy callers — the
+        previously-deprecated ``layout_hash`` value (which now returns
+        the same tuple). Inherits the mixin implementation.
         """
-        if isinstance(other, str):
-            return self._layout_hash == other
-        elif isinstance(other, SparseMatrix):
-            return self._layout_hash == other._layout_hash
-        else:
-            raise TypeError(f"Expected str or SparseMatrix, got {type(other)}")
+        return super().has_same_layout(other)
 
     def degree(self, axis: int = 0) -> torch.Tensor:
         """Non-zero count per row (``axis=0``) or per column (``axis=1``).
