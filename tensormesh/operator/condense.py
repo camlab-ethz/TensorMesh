@@ -276,7 +276,7 @@ class Condenser(nn.Module):
         # of the condensed system). Until that lands, fall back through
         # ``.to_single()`` so the API contract is honoured and meshes
         # below the cluster threshold keep working.
-        from ..sparse import DSparseMatrix
+        from ..distributed import DSparseMatrix
         if isinstance(matrix, DSparseMatrix):
             return self._call_distributed(matrix, rhs)
 
@@ -363,7 +363,7 @@ class Condenser(nn.Module):
         f_inner = f_inner.to(target_device)
         # Re-partition the condensed result so downstream stays distributed.
         # Use the same partition_method the caller's DSparseMatrix used.
-        from ..sparse import DSparseMatrix as _DM
+        from ..distributed import DSparseMatrix as _DM
         from torch_sla.distributed import DSparseTensor
         try:
             from torch.distributed.device_mesh import init_device_mesh

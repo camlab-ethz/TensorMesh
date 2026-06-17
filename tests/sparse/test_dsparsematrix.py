@@ -24,7 +24,7 @@ def _simple_dsparse(world, rank, port, q, what):
     os.environ["MASTER_PORT"] = str(port)
     dist.init_process_group(backend="gloo", rank=rank, world_size=world)
     try:
-        from tensormesh.sparse import DSparseMatrix
+        from tensormesh.distributed import DSparseMatrix
         from torch_sla import SparseTensor
         from torch_sla.distributed import DSparseTensor
         try:

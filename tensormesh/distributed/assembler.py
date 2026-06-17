@@ -97,7 +97,7 @@ def distributed(asm_cls: Type[T]) -> Type[T]:
             or a per-rank :class:`torch.Tensor` (node flavour).
             """
             if is_element:
-                from ..sparse import DSparseMatrix
+                from . import DSparseMatrix
                 dst = distributed_element_assemble(
                     asm_cls, self._dmesh,
                     **self._from_mesh_kw,

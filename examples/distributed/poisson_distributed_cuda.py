@@ -51,7 +51,7 @@ def run(rank: int, world: int, *, chara_length: float = 0.05,
         DistributedMesh, broadcast_from_rank0,
         distributed, distributed_node_assemble,
     )
-    from tensormesh.sparse import DSparseMatrix
+    from tensormesh.distributed import DSparseMatrix
     from torch_sla import SolverConfig, solve
 
     # ---- Mesh ---------------------------------------------------------

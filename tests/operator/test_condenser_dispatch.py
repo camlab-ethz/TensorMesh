@@ -42,7 +42,7 @@ def _dsparse_condense_worker(rank, world, port, q):
         from tensormesh.distributed import (
             DistributedMesh, distributed_element_assemble,
         )
-        from tensormesh.sparse import DSparseMatrix
+        from tensormesh.distributed import DSparseMatrix
 
         mesh = Mesh.gen_rectangle(chara_length=0.2, element_type="tri")
         dmesh = DistributedMesh(

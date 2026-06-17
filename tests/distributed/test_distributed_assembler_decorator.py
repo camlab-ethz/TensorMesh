@@ -25,7 +25,7 @@ def _worker(rank, world, port, q):
         from tensormesh import Mesh
         from tensormesh.assemble import LaplaceElementAssembler
         from tensormesh.distributed import DistributedMesh, distributed
-        from tensormesh.sparse import DSparseMatrix
+        from tensormesh.distributed import DSparseMatrix
 
         mesh = Mesh.gen_rectangle(chara_length=0.2, element_type="tri")
         K_ref = LaplaceElementAssembler.from_mesh(mesh)()

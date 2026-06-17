@@ -66,7 +66,7 @@ try:
 except ImportError:
     _DIST_AVAILABLE = False
 
-from .mixin import _FEMSparsityMixin
+from ..sparse.mixin import _FEMSparsityMixin
 
 
 def _generate_partition_uuid() -> int:
@@ -240,7 +240,7 @@ class DSparseMatrix(_FEMSparsityMixin, DSparseTensor):
         :class:`Condenser`). Costs an all-gather of the COO triples;
         avoid in hot paths.
         """
-        from .matrix import SparseMatrix
+        from ..sparse.matrix import SparseMatrix
         st_global = self.full_tensor()
         return SparseMatrix(
             st_global.values, st_global.row_indices, st_global.col_indices,

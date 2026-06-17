@@ -39,7 +39,7 @@ def _matvec_worker(rank, world, port, q):
         from tensormesh import Mesh
         from tensormesh.assemble import LaplaceElementAssembler
         from tensormesh.distributed import DistributedMesh, distributed
-        from tensormesh.sparse import DSparseMatrix
+        from tensormesh.distributed import DSparseMatrix
         from torch_sla.distributed import gather_owned_to_global, DSparseTensor
 
         mesh = Mesh.gen_rectangle(chara_length=0.2, element_type="tri")
@@ -88,7 +88,7 @@ def _uuid_worker(rank, world, port, q):
     torch.cuda.set_device(rank)
     dist.init_process_group(backend="nccl", rank=rank, world_size=world)
     try:
-        from tensormesh.sparse import DSparseMatrix
+        from tensormesh.distributed import DSparseMatrix
         from torch_sla import SparseTensor
         from torch_sla.distributed import DSparseTensor
         try:
@@ -130,7 +130,7 @@ def _solve_worker(rank, world, port, q):
     torch.cuda.set_device(rank)
     dist.init_process_group(backend="nccl", rank=rank, world_size=world)
     try:
-        from tensormesh.sparse import DSparseMatrix
+        from tensormesh.distributed import DSparseMatrix
         from torch_sla import SparseTensor, SolverConfig, solve
         from torch_sla.distributed import DSparseTensor, gather_owned_to_global
         try:

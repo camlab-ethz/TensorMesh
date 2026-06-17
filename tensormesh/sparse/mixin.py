@@ -30,7 +30,7 @@ For distributed sparse matrices the signature must additionally tag the
 ``DSparseMatrix`` instances that share local ``(row, col)`` storage but
 were built against different partitions do not alias each other's
 caches. The distributed subclass overrides the mixin's signature with a
-broadcasted partition UUID; see :mod:`tensormesh.sparse.dmatrix`.
+broadcasted partition UUID; see :mod:`tensormesh.distributed.dmatrix`.
 """
 from __future__ import annotations
 
