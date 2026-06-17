@@ -808,15 +808,25 @@ class ElementAssembler(nn.Module):
         ######################
         # compute the edges
         ######################
+        # Per-type stack-then-flatten preserves the original
+        # ``[e0:b0b0, e0:b0b1, ..., e0:bNbN, e1:b0b0, ...]`` ordering
+        # that the downstream ``reshape(n_element, n_basis, n_basis)``
+        # consumer expects. Across types we ``cat`` so mixed-type meshes
+        # (quad+tri, hex+tet, ...) with different per-type lengths
+        # concatenate cleanly instead of failing the stack same-size check.
         elem_u, elem_v = [], []
         for element_type, value in elements.items():
             n_element, n_basis = value.shape
+            per_u, per_v = [], []
             for i in range(n_basis):
                 for j in range(n_basis):
-                    elem_u.append(value[:, i])
-                    elem_v.append(value[:, j])
+                    per_u.append(value[:, i])
+                    per_v.append(value[:, j])
+            elem_u.append(torch.stack(per_u, -1).flatten())
+            elem_v.append(torch.stack(per_v, -1).flatten())
 
-        elem_u, elem_v = torch.stack(elem_u, -1).flatten(), torch.stack(elem_v, -1).flatten() # [num_elements * num_basis * num_basis]
+        elem_u = torch.cat(elem_u)
+        elem_v = torch.cat(elem_v)
         elem_u, elem_v = elem_u.cpu().numpy().copy(), elem_v.cpu().numpy().copy()
         tmp = scipy.sparse.coo_matrix(( # used to remove duplicated edges
             np.ones_like(elem_u), # data

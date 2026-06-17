@@ -325,17 +325,7 @@ def main():
                 u_blk.grad[blk_push_nodes] = 0
                 
         return loss
-        
-        if loss.requires_grad:
-            loss.backward()
-            
-        with torch.no_grad():
-            if u_ind.grad is not None:
-                u_ind.grad[ind_fix_nodes] = 0
-            if u_blk.grad is not None:
-                u_blk.grad[blk_push_nodes] = 0
-                
-        return loss
+
 
     # Pre-sort Circle indices for Master use
     surf1_y = ind_pts[surf1_indices, 1]
