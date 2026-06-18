@@ -253,8 +253,13 @@ def _triangles_from_mesh(mesh) -> "object":
         if arr.shape[1] == 3:
             triangles.append(arr)
         elif arr.shape[1] == 4:
-            triangles.append(arr[:, [0, 1, 2]])
-            triangles.append(arr[:, [0, 2, 3]])
+            # TensorMesh stores quads in FEniCS CCW order [BL, BR, TR, TL]
+            # = node indices [0, 1, 3, 2]. The two non-overlapping triangles
+            # along the BL-TR diagonal are [0, 1, 3] and [0, 3, 2]; the naive
+            # [0,1,2]+[0,2,3] split produces the bowtie pattern reported in
+            # plots of these examples.
+            triangles.append(arr[:, [0, 1, 3]])
+            triangles.append(arr[:, [0, 3, 2]])
 
     if not triangles:
         raise RuntimeError("No triangular or quadrilateral cells found for plotting.")

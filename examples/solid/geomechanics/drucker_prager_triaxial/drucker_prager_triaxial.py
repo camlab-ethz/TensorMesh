@@ -118,13 +118,17 @@ class DruckerPragerPlasticity(ElementAssembler):
 
     @staticmethod
     def _small_strain_3d(graddisplacement: torch.Tensor) -> torch.Tensor:
-        """Return the 3D small-strain tensor for 2D or 3D input gradients."""
+        """Return the 3D small-strain tensor for 2D or 3D input gradients.
+
+        The 2D (plane-strain) branch embeds the in-plane strain into a 3x3
+        tensor out-of-place with ``pad`` so it is safe both for batched inputs
+        and under the ``vmap`` that ``energy`` applies per quadrature point.  An
+        in-place embed into a freshly allocated tensor is not vmap-safe.
+        """
         dim = graddisplacement.shape[-1]
         if dim == 2:
             eps_2d = 0.5 * (graddisplacement + graddisplacement.transpose(-1, -2))
-            eps = torch.zeros((3, 3), device=graddisplacement.device, dtype=graddisplacement.dtype)
-            eps[:2, :2] = eps_2d
-            return eps
+            return torch.nn.functional.pad(eps_2d, (0, 1, 0, 1))
         return 0.5 * (graddisplacement + graddisplacement.transpose(-1, -2))
 
     def _elastic_stress(self, eps_e: torch.Tensor) -> torch.Tensor:
