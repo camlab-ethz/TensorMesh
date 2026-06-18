@@ -40,6 +40,24 @@ h=0.050  n_dofs= 509  L2 err = 1.506e-02
 h=0.025  n_dofs=1934  L2 err = 3.935e-03
 ```
 
+## Cross-validation against scikit-fem
+
+`tests/assemble/test_helmholtz_example.py::test_helmholtz_cross_validates_against_scikit_fem`
+hands the same `(points, cells)` to scikit-fem's `MeshTri` and assembles
+the same form with its built-in `laplace` / `mass` integrators, solves
+via `scipy.sparse.linalg.spsolve`, and compares node-by-node.
+On `h = 0.1` (143 nodes), `k = 2π`:
+
+```
+max |u_tensormesh - u_skfem|              = 2.3e-15
+max |u_tensormesh - u_skfem| / max |u|    = 2.3e-15      # machine ε
+both vs analytic exp(ikx)                 = 5.274e-02   # identical to 4 sig figs
+```
+
+i.e. the two pipelines agree to floating-point precision and inherit
+the same discretisation error, which is the strongest correctness
+signal available for the complex assembly path.
+
 ## What's next (PML follow-up)
 
 The current example uses a constant scalar `k²` coefficient. The
