@@ -110,14 +110,21 @@ class ReduceProjector(Projector):
 
         dim_shape = x.shape[len(self.from_shape):]
         x = x.reshape(self._from_size, *dim_shape)
-        o = torch.zeros(self._to_size, *dim_shape, device=x.device, dtype=x.dtype)
 
         if self.use_fp64:
-            dtype = x.dtype
-            x = x.double()
+            original_dtype = x.dtype
+            # Pick the right wider precision: complex128 for complex inputs,
+            # float64 otherwise. ``.double()`` would silently drop the
+            # imaginary part on a complex tensor.
+            wide_dtype = torch.complex128 if x.is_complex() else torch.float64
+            x = x.to(wide_dtype)
+            o = torch.zeros(self._to_size, *dim_shape, device=x.device, dtype=wide_dtype)
+        else:
+            o = torch.zeros(self._to_size, *dim_shape, device=x.device, dtype=x.dtype)
+
         o = o.index_add_(0, self.indices, x)
         if self.use_fp64:
-            o = o.type(dtype)
+            o = o.to(original_dtype)
 
         o = o.reshape(*self.to_shape, *dim_shape)
         return o
@@ -190,11 +197,16 @@ class SparseProjector(Projector):
             to_   = torch.from_numpy(to_)
         assert from_.shape == to_.shape, f"from_ and to_ must have the same shape, but got {from_.shape}, {to_.shape}"
         assert len(from_.shape) == 1, f"from_ and to_ must be 1D, but got {from_.shape}, {to_.shape}"
-        if dtype is None:
-            dtype = from_.dtype
+        # ``from_`` is a long index tensor — only use it as the dtype hint
+        # if the caller didn't override. Default to ``float32`` for the
+        # projection-matrix data so existing call sites keep their behaviour;
+        # callers needing complex / float64 pass ``dtype`` explicitly or
+        # cast later via ``.type(...)``.
+        if dtype is None or not (dtype.is_floating_point or dtype.is_complex):
+            dtype = torch.float32
         projection = torch.sparse_coo_tensor(
-            torch.stack([to_,from_],0), 
-            torch.ones_like(from_,dtype=torch.float32),
+            torch.stack([to_,from_],0),
+            torch.ones_like(from_, dtype=dtype),
             size = (np.prod(to_shape), np.prod(from_shape))
         ).to_sparse_csr()
         self.register_buffer("projection", projection)

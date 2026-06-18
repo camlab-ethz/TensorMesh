@@ -193,6 +193,23 @@ class Transformation(nn.Module):
             The data type (e.g. torch.float32) of the mesh tensors
         """
         return self.points.dtype
+
+    def _apply(self, fn, recurse: bool = True):
+        # Keep geometry buffers (points / jacobians / quadrature) real even
+        # when the enclosing assembler is cast to a complex dtype. The
+        # bilinear form's complex content enters through ``point_data`` /
+        # ``element_data`` coefficients (multiplied in the assembler's
+        # ``forward``), not through the mesh geometry itself — see
+        # ROADMAP item 2.
+        def _real_only(t):
+            out = fn(t)
+            if out.is_complex():
+                real_dtype = (
+                    torch.float32 if out.dtype == torch.complex64 else torch.float64
+                )
+                out = out.real.to(real_dtype)
+            return out
+        return super()._apply(_real_only, recurse=recurse)
     
     @property
     def element_coords(self)->torch.Tensor:
