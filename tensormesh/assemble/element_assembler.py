@@ -179,20 +179,32 @@ class ElementAssembler(nn.Module):
         return next(iter(self.transformation.values())).dtype  # type: ignore
 
     def type(self, dtype:torch.dtype):
-        if dtype == torch.float64:
-            self.double()
-        elif dtype == torch.float32:
-            self.float()
-        else:
-            raise Exception(f"the dtype {dtype} is not supported")
+        # Accept any floating-point or complex dtype. Geometry / basis
+        # buffers carry a ``_apply`` override (see ``Transformation``,
+        # ``Polynomial``) that strips the complex part, so a complex
+        # request is effectively an intent marker — the imaginary
+        # content of the bilinear form enters through ``point_data`` /
+        # ``element_data`` coefficients, not through the mesh itself.
+        if not (dtype.is_floating_point or dtype.is_complex):
+            raise Exception(
+                f"the dtype {dtype} is not supported "
+                f"(must be floating-point or complex)"
+            )
+        self.to(dtype)
         return self
 
     def _integrate(self, batch_integral, jxw, n_element, n_basis, use_element_parallel):
+        # If the forward result is complex (e.g. complex Helmholtz
+        # coefficient), promote the real-valued ``jxw`` so the einsum
+        # doesn't error on the dtype mismatch — torch.einsum doesn't
+        # auto-promote complex+real the way ordinary multiplication does.
+        if batch_integral.is_complex() and not jxw.is_complex():
+            jxw = jxw.to(batch_integral.dtype)
         if use_element_parallel:
             error_msg = f"the shape returned by forward function is {[*batch_integral.shape]} which is not supported, should either be [{n_element}, batch_size, {n_basis},{n_basis}] or [{n_element}, batch_size,{n_basis},{n_basis}, dof_per_point, dof_per_point]"
             assert batch_integral.dim() == 4 or batch_integral.dim() == 6, error_msg
             assert batch_integral.shape[0] == n_element, error_msg
-            assert batch_integral.shape[2] == n_basis, error_msg 
+            assert batch_integral.shape[2] == n_basis, error_msg
             assert batch_integral.shape[3] == n_basis, error_msg
             if batch_integral.dim() == 6:
                 assert batch_integral.shape[-1] == batch_integral.shape[-2], error_msg
@@ -420,10 +432,19 @@ class ElementAssembler(nn.Module):
                     elif key in ["gradu", "gradv"]:
                         args.append(shape_grad)
                     elif key in ele_point_data:
-                        args.append(torch.einsum("eb...,qb->eq...",ele_point_data[key], shape_val))
+                        # Promote real ``shape_val`` to match complex
+                        # coefficients — einsum doesn't auto-promote.
+                        sv = shape_val
+                        if ele_point_data[key].is_complex() and not sv.is_complex():
+                            sv = sv.to(ele_point_data[key].dtype)
+                        args.append(torch.einsum("eb...,qb->eq...",ele_point_data[key], sv))
                         # point data : [element_batch, quadrature_batch, ...]
                     elif key.startswith("grad") and key[4:] in ele_point_data: # grad point data
-                        args.append(torch.einsum("eb...,eqbd->eq...d",ele_point_data[key[4:]], shape_grad)) 
+                        coeff = ele_point_data[key[4:]]
+                        sg = shape_grad
+                        if coeff.is_complex() and not sg.is_complex():
+                            sg = sg.to(coeff.dtype)
+                        args.append(torch.einsum("eb...,eqbd->eq...d", coeff, sg))
                         # grad point data : [element_batch, quadrature_batch, ..., dim]
                     elif key in element_data: # type:ignore
                         args.append(element_data[key][element_type]) # type:ignore
