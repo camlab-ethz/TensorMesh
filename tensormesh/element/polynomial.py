@@ -137,6 +137,26 @@ class Polynomial(nn.Module):
     def dtype(self):
         return self._coef.dtype
 
+    def _apply(self, fn, recurse: bool = True):
+        # ``nn.Module._apply`` is the hook ``.to(dtype)`` / ``.float()`` /
+        # ``.cfloat()`` ultimately call. Polynomials describe basis-function
+        # forms (real-valued coefficients/exponents); complex behaviour in
+        # the assembler enters through external ``point_data`` /
+        # ``element_data`` coefficients, NOT the basis itself. Casting
+        # ``_exp`` to complex also triggers ``torch.pow(0, complex(0))``
+        # producing NaN at quadrature node 0 of every reference element
+        # — see ROADMAP item 2. So strip complex requests here.
+        def _real_only(t):
+            out = fn(t)
+            if out.is_complex():
+                # Map complex64 / complex128 back to the matching real dtype.
+                real_dtype = (
+                    torch.float32 if out.dtype == torch.complex64 else torch.float64
+                )
+                out = out.real.to(real_dtype)
+            return out
+        return super()._apply(_real_only, recurse=recurse)
+
     def __len__(self):
         """Get number of terms in polynomial.
 
@@ -979,6 +999,21 @@ class Polynomials(nn.Module):
     def dtype(self):
         return self._coef.dtype
 
+    def _apply(self, fn, recurse: bool = True):
+        # Same complex-stripping override as ``Polynomial._apply`` — keep
+        # basis-function buffers real even when the enclosing module is
+        # cast to a complex dtype. See ROADMAP item 2 / the Polynomial
+        # docstring for the rationale.
+        def _real_only(t):
+            out = fn(t)
+            if out.is_complex():
+                real_dtype = (
+                    torch.float32 if out.dtype == torch.complex64 else torch.float64
+                )
+                out = out.real.to(real_dtype)
+            return out
+        return super()._apply(_real_only, recurse=recurse)
+
     def dim(self):
         return len(self.n_polys)
     
@@ -1516,8 +1551,15 @@ class Polynomials(nn.Module):
         coef = self._coef.clone() # [n_poly1, ..., n_terms]
         exp  = self._exp.clone()  # [n_poly1, ..., n_vars, n_terms]
         where_constant = exp[..., var_ind, :] == 0 # [n_poly1, ..., n_terms]
-        exp[..., var_ind, :] = exp[..., var_ind, :] - 1 # [n_poly1, ..., n_vars, n_terms]
-        exp[..., var_ind, :] = torch.clamp_min(exp[..., var_ind, :], 0.0) # [n_poly1, ..., n_vars, n_terms]
+        # ``where`` instead of ``clamp_min`` so this works for complex
+        # dtypes too (complex ``clamp`` is not supported by PyTorch).
+        # Constant terms (exp == 0) are zeroed by ``mask`` below anyway,
+        # so the value picked here only has to be a safe non-negative
+        # exponent — zero is fine.
+        zero  = exp[..., var_ind, :].new_zeros(())
+        exp[..., var_ind, :] = torch.where(
+            where_constant, zero, exp[..., var_ind, :] - 1
+        )
         mask     = torch.ones_like(coef) # [n_poly1, ..., n_terms]
         mask[where_constant] = 0         # [n_poly1, ..., n_terms]
         coef     = coef * (exp[..., var_ind, :] + 1) * mask # [n_poly1, ..., n_terms]
