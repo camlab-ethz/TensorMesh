@@ -1,22 +1,24 @@
 """Drucker-Prager triaxial compression example.
 
-This example is intentionally local/example-only.  It demonstrates how a
-pressure-dependent geomechanics material can be written with the same
-per-quadrature history-variable pattern used by TensorMesh's built-in
-J2Plasticity assembler.
+This example drives a pressure-dependent geomechanics material through a simple
+triaxial-compression strain path using TensorMesh's public Drucker-Prager API:
+the :class:`tensormesh.assemble.DruckerPragerPlasticity` assembler, the
+:class:`tensormesh.material.FrictionalMaterial` container, and the constitutive
+primitive :func:`tensormesh.functional.drucker_prager_yield_value`.
 
 The internal TensorMesh convention is tension-positive stress.  For reporting,
 this script also prints compression-positive axial stress and mean pressure,
-which is the convention many geomechanics readers expect.
+which is the convention many geomechanics readers expect.  The assembler follows
+the same per-quadrature history lifecycle as the built-in J2 plasticity model:
+previous-step state is passed through ``element_data`` and ``update_state(u)`` is
+called after each converged load step.
 """
 
 from __future__ import annotations
 
 import argparse
-import math
 import os
 import sys
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List
 
@@ -26,219 +28,10 @@ import torch
 # Allow running this example directly from the source tree.
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
 
-from tensormesh.assemble import ElementAssembler
+from tensormesh.assemble import DruckerPragerPlasticity
+from tensormesh.material import FrictionalMaterial
+from tensormesh.functional import drucker_prager_yield_value
 from tensormesh.dataset.mesh import gen_cube
-
-
-@dataclass(frozen=True)
-class DruckerPragerParameters:
-    """Small-strain Drucker-Prager material parameters.
-
-    Parameters
-    ----------
-    E:
-        Young's modulus in Pa.
-    nu:
-        Poisson's ratio.
-    cohesion:
-        Cohesion in Pa.
-    friction_angle_deg:
-        Mohr-Coulomb friction angle in degrees.  The Drucker-Prager cone is
-        fitted to the triaxial-compression meridian.
-    H:
-        Linear isotropic hardening modulus in Pa.  The local example keeps a
-        small positive value for a smooth demonstration after first yield.
-    """
-
-    E: float = 50.0e6
-    nu: float = 0.30
-    cohesion: float = 20.0e3
-    friction_angle_deg: float = 30.0
-    H: float = 1.0e6
-
-
-class DruckerPragerPlasticity(ElementAssembler):
-    """Example-only associated Drucker-Prager plasticity assembler.
-
-    This class is deliberately kept inside the example.  It is not a public
-    TensorMesh API.  The implementation follows the same high-level lifecycle
-    as J2Plasticity:
-
-    1. store per-quadrature history in ``self.history[etype]``;
-    2. pass previous-step state through ``element_data`` during energy calls;
-    3. call ``update_state(u)`` after each converged load step.
-
-    Notes
-    -----
-    TensorMesh uses tension-positive stress.  With compression-positive mean
-    pressure ``p = -tr(sigma) / 3``, the yield function is written internally as
-
-        f = q + eta * I1 - (k + H * alpha) <= 0,
-
-    where ``I1 = tr(sigma)`` and ``q = sqrt(3/2 s:s)``.  Because compression
-    gives negative ``I1``, confinement increases the yield stress.
-    """
-
-    def __post_init__(self, params: DruckerPragerParameters | None = None):
-        if params is None:
-            params = DruckerPragerParameters()
-
-        self.params = params
-        self.E = float(params.E)
-        self.nu = float(params.nu)
-        self.cohesion = float(params.cohesion)
-        self.friction_angle_deg = float(params.friction_angle_deg)
-        self.H = float(params.H)
-
-        self.mu = self.E / (2.0 * (1.0 + self.nu))
-        self.bulk = self.E / (3.0 * (1.0 - 2.0 * self.nu))
-
-        phi = math.radians(self.friction_angle_deg)
-        sin_phi = math.sin(phi)
-        cos_phi = math.cos(phi)
-
-        # Triaxial-compression meridian fit to Mohr-Coulomb:
-        # q = M p + k, p compression-positive.
-        # With TensorMesh tension-positive stress, p = -I1 / 3, so
-        # f = q + (M/3) I1 - k.
-        self.M = 6.0 * sin_phi / (3.0 - sin_phi)
-        self.eta = self.M / 3.0
-        self.k = 6.0 * self.cohesion * cos_phi / (3.0 - sin_phi)
-
-        # Associated linear Drucker-Prager return denominator for q-based f.
-        self.return_denominator = 3.0 * self.mu + 9.0 * self.bulk * self.eta**2 + self.H
-
-        self.history: Dict[str, Dict[str, torch.Tensor]] = {}
-        for etype, trans in self.transformation.items():
-            n_elem = trans.n_elements
-            n_quad = trans.n_quadrature
-            eps_p = torch.zeros((n_elem, n_quad, 3, 3), device=self.device, dtype=self.dtype)
-            alpha = torch.zeros((n_elem, n_quad), device=self.device, dtype=self.dtype)
-            self.history[etype] = {"eps_p": eps_p, "alpha": alpha}
-
-    @staticmethod
-    def _small_strain_3d(graddisplacement: torch.Tensor) -> torch.Tensor:
-        """Return the 3D small-strain tensor for 2D or 3D input gradients.
-
-        The 2D (plane-strain) branch embeds the in-plane strain into a 3x3
-        tensor out-of-place with ``pad`` so it is safe both for batched inputs
-        and under the ``vmap`` that ``energy`` applies per quadrature point.  An
-        in-place embed into a freshly allocated tensor is not vmap-safe.
-        """
-        dim = graddisplacement.shape[-1]
-        if dim == 2:
-            eps_2d = 0.5 * (graddisplacement + graddisplacement.transpose(-1, -2))
-            return torch.nn.functional.pad(eps_2d, (0, 1, 0, 1))
-        return 0.5 * (graddisplacement + graddisplacement.transpose(-1, -2))
-
-    def _elastic_stress(self, eps_e: torch.Tensor) -> torch.Tensor:
-        """Tension-positive isotropic elastic stress from elastic strain."""
-        eye = torch.eye(3, device=eps_e.device, dtype=eps_e.dtype)
-        tr_eps = eps_e.diagonal(dim1=-2, dim2=-1).sum(-1)
-        dev_eps = eps_e - (tr_eps[..., None, None] / 3.0) * eye
-        return 2.0 * self.mu * dev_eps + self.bulk * tr_eps[..., None, None] * eye
-
-    @staticmethod
-    def _invariants(sigma: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-        """Return I1, deviatoric stress, and q for a tension-positive stress."""
-        eye = torch.eye(3, device=sigma.device, dtype=sigma.dtype)
-        I1 = sigma.diagonal(dim1=-2, dim2=-1).sum(-1)
-        s = sigma - (I1[..., None, None] / 3.0) * eye
-        s_contract_s = (s * s).sum(dim=(-2, -1))
-        q = torch.sqrt(torch.clamp(1.5 * s_contract_s, min=1.0e-30))
-        return I1, s, q
-
-    def element_energy(
-        self,
-        graddisplacement: torch.Tensor,
-        eps_p_n: torch.Tensor,
-        alpha_n: torch.Tensor,
-    ) -> torch.Tensor:
-        """Algorithmic incremental potential density at one quadrature point."""
-        eps = self._small_strain_3d(graddisplacement)
-        eps_e_trial = eps - eps_p_n
-        sigma_trial = self._elastic_stress(eps_e_trial)
-        I1_trial, _, q_trial = self._invariants(sigma_trial)
-
-        f_trial = q_trial + self.eta * I1_trial - (self.k + self.H * alpha_n)
-        dgamma = torch.clamp(f_trial, min=0.0) / self.return_denominator
-
-        tr_eps_e = eps_e_trial.diagonal(dim1=-2, dim2=-1).sum(-1)
-        eye = torch.eye(3, device=eps.device, dtype=eps.dtype)
-        dev_eps_e = eps_e_trial - (tr_eps_e / 3.0) * eye
-        elastic_energy = 0.5 * self.bulk * tr_eps_e**2 + self.mu * (dev_eps_e * dev_eps_e).sum()
-
-        return elastic_energy - 0.5 * self.return_denominator * dgamma**2
-
-    def update_state(self, u_vec: torch.Tensor) -> None:
-        """Commit per-quadrature state after a converged load step."""
-        with torch.no_grad():
-            for etype, trans in self.transformation.items():
-                cells = trans.elements
-                u_elem = u_vec[cells]
-                grad_u = torch.einsum("bqkx,bku->bqux", trans.shape_grad, u_elem)
-
-                dim = grad_u.shape[-1]
-                if dim == 2:
-                    eps = torch.zeros(grad_u.shape[:2] + (3, 3), device=u_vec.device, dtype=u_vec.dtype)
-                    eps[..., :2, :2] = 0.5 * (grad_u + grad_u.transpose(-1, -2))
-                else:
-                    eps = 0.5 * (grad_u + grad_u.transpose(-1, -2))
-
-                hist = self.history[etype]
-                eps_p_n = hist["eps_p"]
-                alpha_n = hist["alpha"]
-
-                eps_e_trial = eps - eps_p_n
-                sigma_trial = self._elastic_stress(eps_e_trial)
-                I1_trial, s_trial, q_trial = self._invariants(sigma_trial)
-                f_trial = q_trial + self.eta * I1_trial - (self.k + self.H * alpha_n)
-                dgamma = torch.clamp(f_trial, min=0.0) / self.return_denominator
-
-                q_safe = torch.clamp(q_trial, min=1.0e-30)
-                n_dev = 1.5 * s_trial / q_safe[..., None, None]
-                eye = torch.eye(3, device=u_vec.device, dtype=u_vec.dtype)
-                flow_dir = n_dev + self.eta * eye
-
-                active = (f_trial > 0.0).to(dtype=u_vec.dtype)
-                dgamma = dgamma * active
-
-                hist["eps_p"] += dgamma[..., None, None] * flow_dir
-                hist["alpha"] += dgamma
-
-    def element_data_from_history(self) -> Dict[str, Dict[str, torch.Tensor]]:
-        """Return history in the element_data structure expected by energy()."""
-        return {
-            "eps_p_n": {etype: h["eps_p"] for etype, h in self.history.items()},
-            "alpha_n": {etype: h["alpha"] for etype, h in self.history.items()},
-        }
-
-    def mean_alpha(self) -> torch.Tensor:
-        """Return the mean committed plastic multiplier across all quadrature points."""
-        values = [hist["alpha"].reshape(-1) for hist in self.history.values()]
-        return torch.cat(values).mean()
-
-    def max_alpha(self) -> torch.Tensor:
-        """Return the maximum committed plastic multiplier."""
-        values = [hist["alpha"].reshape(-1) for hist in self.history.values()]
-        return torch.cat(values).max()
-
-    def mean_stress(self, u_vec: torch.Tensor) -> torch.Tensor:
-        """Average committed Cauchy stress over elements and quadrature points."""
-        stresses = []
-        with torch.no_grad():
-            for etype, trans in self.transformation.items():
-                u_elem = u_vec[trans.elements]
-                grad_u = torch.einsum("bqkx,bku->bqux", trans.shape_grad, u_elem)
-                dim = grad_u.shape[-1]
-                if dim == 2:
-                    eps = torch.zeros(grad_u.shape[:2] + (3, 3), device=u_vec.device, dtype=u_vec.dtype)
-                    eps[..., :2, :2] = 0.5 * (grad_u + grad_u.transpose(-1, -2))
-                else:
-                    eps = 0.5 * (grad_u + grad_u.transpose(-1, -2))
-                sigma = self._elastic_stress(eps - self.history[etype]["eps_p"])
-                stresses.append(sigma.reshape(-1, 3, 3))
-        return torch.cat(stresses, dim=0).mean(dim=0)
 
 
 def affine_displacement(points: torch.Tensor, eps_diag: torch.Tensor) -> torch.Tensor:
@@ -249,7 +42,7 @@ def affine_displacement(points: torch.Tensor, eps_diag: torch.Tensor) -> torch.T
 def triaxial_strain_path(
     axial_strain: torch.Tensor,
     confinement_pressure: float,
-    params: DruckerPragerParameters,
+    material: FrictionalMaterial,
 ) -> torch.Tensor:
     """Return diagonal strain for a simple triaxial-compression driver.
 
@@ -258,38 +51,36 @@ def triaxial_strain_path(
     the elastic uniaxial-stress lateral strain relation to approximately keep
     lateral stress increments small before yield.
     """
-    K = params.E / (3.0 * (1.0 - 2.0 * params.nu))
+    K = material.E / (3.0 * (1.0 - 2.0 * material.nu))
     eps_iso = -confinement_pressure / (3.0 * K)
-    eps_x = eps_iso - params.nu * axial_strain
-    eps_y = eps_iso - params.nu * axial_strain
+    eps_x = eps_iso - material.nu * axial_strain
+    eps_y = eps_iso - material.nu * axial_strain
     eps_z = eps_iso + axial_strain
     return torch.stack((eps_x, eps_y, eps_z))
 
 
 def elastic_trial_yield_value(
     eps_diag: torch.Tensor,
-    params: DruckerPragerParameters,
+    material: FrictionalMaterial,
 ) -> torch.Tensor:
-    """Closed-form elastic trial yield value for the diagonal strain path."""
-    E = params.E
-    nu = params.nu
-    mu = E / (2.0 * (1.0 + nu))
-    K = E / (3.0 * (1.0 - 2.0 * nu))
+    """Elastic trial Drucker-Prager yield value for a diagonal strain path.
 
-    phi = math.radians(params.friction_angle_deg)
-    M = 6.0 * math.sin(phi) / (3.0 - math.sin(phi))
-    eta = M / 3.0
-    k = 6.0 * params.cohesion * math.cos(phi) / (3.0 - math.sin(phi))
-
-    eye = torch.eye(3, device=eps_diag.device, dtype=eps_diag.dtype)
-    eps = torch.diag(eps_diag)
-    tr_eps = eps.trace()
-    dev_eps = eps - tr_eps / 3.0 * eye
-    sigma = 2.0 * mu * dev_eps + K * tr_eps * eye
-    I1 = sigma.trace()
-    s = sigma - I1 / 3.0 * eye
-    q = torch.sqrt(torch.clamp(1.5 * (s * s).sum(), min=1.0e-30))
-    return q + eta * I1 - k
+    Uses the public constitutive primitive
+    :func:`tensormesh.functional.drucker_prager_yield_value` with zero plastic
+    history, so this reports the same yield value the assembler sees on a trial
+    elastic step.
+    """
+    zeros = torch.zeros((3, 3), device=eps_diag.device, dtype=eps_diag.dtype)
+    return drucker_prager_yield_value(
+        torch.diag(eps_diag),
+        zeros,
+        torch.zeros((), device=eps_diag.device, dtype=eps_diag.dtype),
+        E=material.E,
+        nu=material.nu,
+        cohesion=material.cohesion,
+        friction_angle=material.friction_angle,
+        H=material.H,
+    )
 
 
 def first_positive_index(values: List[float]) -> int | None:
@@ -302,7 +93,7 @@ def first_positive_index(values: List[float]) -> int | None:
 
 def run_case(
     confinement_pressure: float,
-    params: DruckerPragerParameters,
+    material: FrictionalMaterial,
     n_steps: int = 32,
     axial_strain_final: float = -0.025,
     chara_length: float = 0.75,
@@ -322,7 +113,7 @@ def run_case(
     )
     mesh.points = mesh.points.to(device=device, dtype=dtype)
 
-    model = DruckerPragerPlasticity.from_mesh(mesh, params=params)
+    model = DruckerPragerPlasticity.from_mesh(mesh, material=material)
     points = mesh.points
 
     result: Dict[str, List[float]] = {
@@ -334,7 +125,7 @@ def run_case(
     }
 
     for axial_strain_value in torch.linspace(0.0, axial_strain_final, n_steps, device=device, dtype=dtype):
-        eps_diag = triaxial_strain_path(axial_strain_value, confinement_pressure, params)
+        eps_diag = triaxial_strain_path(axial_strain_value, confinement_pressure, material)
         u = affine_displacement(points, eps_diag).detach().clone().requires_grad_(True)
 
         energy = model.energy(
@@ -350,7 +141,7 @@ def run_case(
         sigma = model.mean_stress(u)
         p_comp = -sigma.trace() / 3.0
         sigma_axial_comp = -sigma[2, 2]
-        f_elastic = elastic_trial_yield_value(eps_diag, params)
+        f_elastic = elastic_trial_yield_value(eps_diag, material)
 
         result["axial_strain"].append(float(-axial_strain_value))
         result["axial_stress_compression_kpa"].append(float(sigma_axial_comp / 1.0e3))
@@ -367,10 +158,19 @@ def run_demo(
     output_dir: str | Path | None = None,
 ) -> Dict[str, object]:
     """Run low- and high-confinement cases and perform sanity checks."""
-    params = DruckerPragerParameters()
+    # Associated Drucker-Prager soil (dilatancy_angle defaults to the friction
+    # angle), matching the parameters this example has always used.
+    material = FrictionalMaterial(
+        name="ExampleSoil",
+        E=50.0e6,
+        nu=0.30,
+        cohesion=20.0e3,
+        friction_angle=30.0,
+        H=1.0e6,
+    )
     cases = {
-        "p0 = 0 kPa": run_case(0.0, params, n_steps=n_steps),
-        "p0 = 100 kPa": run_case(100.0e3, params, n_steps=n_steps),
+        "p0 = 0 kPa": run_case(0.0, material, n_steps=n_steps),
+        "p0 = 100 kPa": run_case(100.0e3, material, n_steps=n_steps),
     }
 
     low = cases["p0 = 0 kPa"]
@@ -402,7 +202,7 @@ def run_demo(
         plot_results(cases, plot_path)
         sanity["plot_path"] = str(plot_path)
 
-    return {"cases": cases, "sanity": sanity, "params": params}
+    return {"cases": cases, "sanity": sanity, "material": material}
 
 
 def plot_results(cases: Dict[str, Dict[str, List[float]]], output_file: Path) -> None:

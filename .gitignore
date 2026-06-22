@@ -46,9 +46,11 @@ Thumbs.db
 
 # Data files
 *.csv
+# ...except material preset tables shipped as package data
+!tensormesh/material/*.csv
 *.npz
 *.npy
-*.msh 
+*.msh
 *.json
 *.xdmf
 *.h5
