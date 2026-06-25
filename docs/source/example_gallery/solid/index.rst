@@ -15,8 +15,9 @@ top of the previous one:
    history variables and a variational constitutive update, in 2D
    and 3D.
 #. **Geomechanics (Drucker-Prager)** — adds pressure-dependent
-   yield, reusing the J2 history-variable pattern in an
-   example-local constitutive driver for soils and weak rock.
+   yield, reusing the J2 history-variable pattern through the public
+   :class:`~tensormesh.assemble.DruckerPragerPlasticity` assembler for
+   soils and weak rock.
 #. **Geomechanics (elastic footing)** — solves a small
    boundary-value problem for footing settlement using the direct
    linear-elasticity workflow.
@@ -67,14 +68,26 @@ The order below mirrors solver complexity.
 
       Plane-strain J2 plasticity with isotropic hardening, load / unload cycle, plus a 3D cube.
 
-   .. grid-item-card:: Geomechanics: Drucker-Prager
+
+.. rubric:: Geomechanics (Drucker-Prager)
+
+Three pressure-dependent examples for soils and weak rock, built on the
+public :class:`~tensormesh.assemble.DruckerPragerPlasticity` assembler and
+the table-backed :class:`~tensormesh.material.FrictionalMaterial` presets.
+They progress from a single-element constitutive driver, through a
+linear-elastic boundary-value problem, to the full nonlinear footing.
+
+.. grid:: 1 2 3 3
+   :gutter: 4
+
+   .. grid-item-card:: Drucker-Prager triaxial
       :link: drucker_prager_triaxial
       :link-type: doc
       :img-top: /_static/solid_mechanics/drucker_prager_triaxial.png
 
       Pressure-dependent Drucker-Prager plasticity in a small triaxial-compression driver.
 
-   .. grid-item-card:: Geomechanics: elastic footing
+   .. grid-item-card:: Elastic footing
       :link: elastic_footing
       :link-type: doc
       :img-top: /_static/solid_mechanics/elastic_footing.png
@@ -82,7 +95,7 @@ The order below mirrors solver complexity.
       Linear-elastic soil block under a centered strip footing, with settlement
       contours and a reaction/load-balance sanity check.
 
-   .. grid-item-card:: Geomechanics: Drucker-Prager footing
+   .. grid-item-card:: Drucker-Prager footing
       :link: drucker_prager_footing
       :link-type: doc
       :img-top: /_static/solid_mechanics/drucker_prager_footing.png

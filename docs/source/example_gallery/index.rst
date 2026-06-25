@@ -37,6 +37,13 @@ a concrete TensorMesh script you can run.
 
       Hyperbolic PDE with explicit central-difference time stepping.
 
+   .. grid-item-card:: Complex-Valued FEM
+      :link: complex
+      :link-type: doc
+      :img-top: /_static/wave/helmholtz.png
+
+      Time-harmonic Helmholtz with a complex coefficient, condensation, and solve.
+
    .. grid-item-card:: Solid Mechanics
       :link: solid/index
       :link-type: doc
@@ -95,6 +102,7 @@ a concrete TensorMesh script you can run.
    poisson
    diffusion
    wave
+   complex
    solid/index
    fluid/index
    maxwell

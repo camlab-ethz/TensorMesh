@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-22 23:00+0200\n"
+"POT-Creation-Date: 2026-06-25 21:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_CN <LL@li.org>\n"
@@ -70,70 +70,79 @@ msgstr "波动方程"
 msgid "Hyperbolic PDE with explicit central-difference time stepping."
 msgstr "采用显式中心差分时间步进的双曲型偏微分方程。"
 
-#: ../../source/example_gallery/index.rst:40 a2b46870143443a4b0e3a0b4048a3209
+#: ../../source/example_gallery/index.rst:40 de868ddbdbf84e359fc7106d65ac4d4c
+msgid "Complex-Valued FEM"
+msgstr "复数值有限元方法"
+
+#: ../../source/example_gallery/index.rst:45 2970d7c07d6340f0bcb69a979a73e14f
+msgid ""
+"Time-harmonic Helmholtz with a complex coefficient, condensation, and solve."
+msgstr "带复数系数、静态凝聚与求解的时谐 Helmholtz。"
+
+#: ../../source/example_gallery/index.rst:47 a2b46870143443a4b0e3a0b4048a3209
 msgid "Solid Mechanics"
 msgstr "固体力学"
 
-#: ../../source/example_gallery/index.rst:45 0de9acb3afd044dfb3b988e6cb9c0278
+#: ../../source/example_gallery/index.rst:52 0de9acb3afd044dfb3b988e6cb9c0278
 msgid ""
 "Linear elasticity, hyperelasticity, contact, and plasticity — a progressive "
 "solver ladder."
 msgstr "线弹性、超弹性、接触与塑性——一条循序渐进的求解器进阶之路。"
 
-#: ../../source/example_gallery/index.rst:47 90a4b8c27cdb4dae8141565f4a62df41
+#: ../../source/example_gallery/index.rst:54 90a4b8c27cdb4dae8141565f4a62df41
 msgid "Fluid Mechanics"
 msgstr "流体力学"
 
-#: ../../source/example_gallery/index.rst:52 8bf0eb168bff4fa8871941ed9f0e2143
+#: ../../source/example_gallery/index.rst:59 8bf0eb168bff4fa8871941ed9f0e2143
 msgid ""
 "Incompressible Navier-Stokes: cavity, cylinder flow, Rayleigh-Bénard, and "
 "more."
 msgstr "不可压缩 Navier-Stokes：方腔流、圆柱绕流、Rayleigh-Bénard 对流等。"
 
-#: ../../source/example_gallery/index.rst:54 c812952ff37c49758a50b359017efad9
+#: ../../source/example_gallery/index.rst:61 c812952ff37c49758a50b359017efad9
 msgid "Magnetostatics"
 msgstr "静磁学"
 
-#: ../../source/example_gallery/index.rst:59 9fc3de7f2d0b4ca1a777221b2b3f568c
+#: ../../source/example_gallery/index.rst:66 9fc3de7f2d0b4ca1a777221b2b3f568c
 msgid ""
 "3D Maxwell: magnetic field around a wire via a stabilized nodal curl-curl "
 "formulation."
 msgstr "三维 Maxwell：通过稳定化的节点旋度-旋度（curl-curl）格式求解导线周围的磁场。"
 
-#: ../../source/example_gallery/index.rst:61 e11f62b6c2184afdbfdb59deaf6d56bf
+#: ../../source/example_gallery/index.rst:68 e11f62b6c2184afdbfdb59deaf6d56bf
 msgid "Inverse Design & Identification"
 msgstr "反向设计与参数辨识"
 
-#: ../../source/example_gallery/index.rst:66 47296accc2d245dd850b73a79ed10cbe
+#: ../../source/example_gallery/index.rst:73 47296accc2d245dd850b73a79ed10cbe
 msgid ""
 "Differentiable FEM: coefficient-field identification and density-based "
 "topology optimization."
 msgstr "可微有限元方法：系数场辨识与基于密度的拓扑优化。"
 
-#: ../../source/example_gallery/index.rst:68 a581f3ec0cb340ecb07453ce86456760
+#: ../../source/example_gallery/index.rst:75 a581f3ec0cb340ecb07453ce86456760
 msgid "Physics-Informed Learning"
 msgstr "物理信息学习"
 
-#: ../../source/example_gallery/index.rst:73 c14fa1ed4e554ecca2951b1a76eb69ea
+#: ../../source/example_gallery/index.rst:80 c14fa1ed4e554ecca2951b1a76eb69ea
 msgid ""
 "Train a neural network to minimize the assembled Galerkin residual ``||K u -"
 " F||²``."
 msgstr "训练神经网络以最小化装配得到的 Galerkin 残差 ``||K u - F||²``\\ 。"
 
-#: ../../source/example_gallery/index.rst:75 36765ffef2804afcbfaa82229dd81603
+#: ../../source/example_gallery/index.rst:82 36765ffef2804afcbfaa82229dd81603
 msgid "ML Datasets"
 msgstr "机器学习数据集"
 
-#: ../../source/example_gallery/index.rst:80 6356ecc06a1e4682a9c6c00fc414340c
+#: ../../source/example_gallery/index.rst:87 6356ecc06a1e4682a9c6c00fc414340c
 msgid ""
 "Batch generation of heat and wave snapshots for training neural operators."
 msgstr "批量生成热方程与波动方程的快照，用于训练神经算子。"
 
-#: ../../source/example_gallery/index.rst:82 6166c75093ef4d66a25cdbd9ac82a241
+#: ../../source/example_gallery/index.rst:89 6166c75093ef4d66a25cdbd9ac82a241
 msgid "Distributed FEM"
 msgstr "分布式有限元方法"
 
-#: ../../source/example_gallery/index.rst:87 73883e4942fd44f2b60fa52b51da5dfd
+#: ../../source/example_gallery/index.rst:94 73883e4942fd44f2b60fa52b51da5dfd
 msgid ""
 "Graph coloring, spectral partitioning, and multi-GPU assembly benchmarks."
 msgstr "图着色、谱划分，以及多 GPU 装配性能基准测试。"
