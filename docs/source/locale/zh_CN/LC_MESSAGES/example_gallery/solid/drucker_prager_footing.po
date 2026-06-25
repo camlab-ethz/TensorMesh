@@ -1,0 +1,243 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, TensorMesh Contributors
+# This file is distributed under the same license as the TensorMesh package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: TensorMesh 0.1.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-25 21:07+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:2
+#: e937a9bff61743afb253e901e34edf7c
+msgid "Geomechanics: Drucker-Prager strip footing"
+msgstr "岩土力学:Drucker-Prager 条形基础"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:4
+#: bf49a13e8f14442dba3df4f7f399f250
+msgid ""
+"This example combines two geomechanics building blocks into one nonlinear "
+"boundary-value problem: TensorMesh's public Drucker-Prager material model "
+"and the elastic strip-footing setup.  A rectangular soil block is loaded by "
+"a centered strip footing, the footing pressure is ramped in load steps, and "
+"the per-quadrature Drucker-Prager history is committed after each converged "
+"step."
+msgstr ""
+"本示例把两个岩土力学构件结合成一个非线性边值问题:TensorMesh 的公共 Drucker-Prager "
+"材料模型和弹性条形基础设置。一个矩形土块由中心条形基础加载,基础压力按载荷步逐级增加,每个收敛步后提交逐求积点的 Drucker-Prager 历史。"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:10
+#: 53e11ce523ad410fbc3a28dbcad4477b
+msgid ""
+"The constitutive model is the built-in "
+":class:`~tensormesh.assemble.DruckerPragerPlasticity` assembler, configured "
+"with a :class:`~tensormesh.material.FrictionalMaterial`. TensorMesh keeps "
+"the internal solid-mechanics convention stress tension-positive. For "
+"geomechanics reporting, settlement is shown positive downward,"
+msgstr ""
+"本构模型是内置的 :class:`~tensormesh.assemble.DruckerPragerPlasticity` 装配器,配以 "
+":class:`~tensormesh.material.FrictionalMaterial`\\ 。TensorMesh "
+"内部固体力学约定保持应力拉为正。为岩土力学报告,沉降以向下为正显示,"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:16
+#: bebdcc640985406a94c7d5040b2cb906
+msgid "s = -u_y."
+msgstr "s = -u_y."
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:20
+#: d8d0e267508647878363f69545628c3b
+msgid "This is a compact educational example, not a foundation-design method."
+msgstr "这是一个紧凑的教学示例,而非基础设计方法。"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:23
+#: ce8d7bb8176f4876bb4a1ae88a6607bd
+msgid "Problem"
+msgstr "问题"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:25
+#: 6655c8ea594448a0a54f9a0a68c88e94
+msgid ""
+"The model is a two-dimensional plane-strain-style soil block with unit out-"
+"of-plane thickness.  The constitutive model is small-strain, associated "
+"Drucker-Prager plasticity with linear isotropic hardening, written "
+"internally with the tension-positive yield function"
+msgstr ""
+"该模型是二维平面应变式土块,面外厚度为单位 1。本构模型是带线性各向同性硬化的小应变、关联 Drucker-Prager "
+"塑性,内部以拉为正的屈服函数写成"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:30
+#: a93adecc2ac8406298a72e45c40629f8
+msgid ""
+"f(\\sigma, \\alpha) = q + \\eta I_1 - (k + H\\alpha) \\le 0,\n"
+"\\qquad\n"
+"I_1 = \\mathrm{tr}(\\sigma),\n"
+"\\qquad\n"
+"q = \\sqrt{\\tfrac{3}{2}\\,s:s}."
+msgstr ""
+"f(\\sigma, \\alpha) = q + \\eta I_1 - (k + H\\alpha) \\le 0,\n"
+"\\qquad\n"
+"I_1 = \\mathrm{tr}(\\sigma),\n"
+"\\qquad\n"
+"q = \\sqrt{\\tfrac{3}{2}\\,s:s}."
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:39
+#: 7e89535f38f84ce7a680206eb94a88c0
+msgid "Boundary conditions"
+msgstr "边界条件"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:41
+#: e309b253e7dd47ddbabb009e3252bd27
+msgid "The example reuses the elastic footing roller setup:"
+msgstr "本示例复用弹性基础的滚动支座设置:"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:43
+#: 52de5441ed0747e08bc304c3730edc8a
+msgid "bottom boundary: vertical displacement fixed, ``u_y = 0``;"
+msgstr "底部边界:竖向位移固定,``u_y = 0``;"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:44
+#: d60efb4606e045d59c31fa1c37484b94
+msgid "left and right boundaries: horizontal displacement fixed, ``u_x = 0``;"
+msgstr "左右边界:水平位移固定,``u_x = 0``;"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:45
+#: 4e0d1b372d46405397040c69d3073fe9
+msgid "top boundary: free except for the loaded footing patch."
+msgstr "顶部边界:除受载基础块外自由。"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:47
+#: ad46815e86e94ddcb58af782cbd43ebd
+msgid ""
+"The footing pressure is lumped over the top-surface nodes inside the footing"
+" patch."
+msgstr "基础压力被集总到基础块内的顶面节点上。"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:51
+#: 4f9f9e52d20c4d8181bfc2b881d81c23
+msgid "Solver"
+msgstr "求解器"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:53
+#: af549ea5c00646fba8d99b0a024b6dd0
+msgid ""
+"Because the problem is now path-dependent, it is solved by nonlinear energy "
+"minimization with load stepping.  At each load step the total potential "
+"energy ``internal - external`` is minimized over the free displacement DOFs "
+"with L-BFGS.  The example follows the same per-quadrature history lifecycle "
+"as the ``drucker_prager_triaxial`` example:"
+msgstr ""
+"由于问题现在是路径相关的,它通过带载荷步进的非线性能量最小化来求解。在每个载荷步,用 L-BFGS 在自由位移自由度上最小化总势能 ``internal"
+" - external``\\ 。该示例遵循与 ``drucker_prager_triaxial`` 示例相同的逐求积点历史生命周期:"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:59
+#: 74e46a468ee34af9b3fa5caf0a4805d3
+msgid ""
+"per-quadrature history variables are stored in ``self.history[etype]``;"
+msgstr "逐求积点历史变量存储在 ``self.history[etype]`` 中;"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:60
+#: d5e07b4b2c86468fb0a5755304e8b26f
+msgid ""
+"previous-step ``eps_p`` and ``alpha`` are passed through ``element_data``;"
+msgstr "上一步的 ``eps_p`` 和 ``alpha`` 通过 ``element_data`` 传入;"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:61
+#: c29ebe5447bf420e99e3f7dd28f7062c
+msgid ""
+"``update_state(u)`` is called after each converged load step under "
+"``torch.no_grad()``."
+msgstr "``update_state(u)`` 在 ``torch.no_grad()`` 下、每个收敛载荷步后调用。"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:65
+#: 436ea77d564f4e449f3515dc536b8a05
+msgid "Sanity checks"
+msgstr "合理性检验"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:67
+#: 75d9508e9090423a998c34a4661cd8c5
+msgid ""
+"The script reports the final footing settlement, the maximum settlement, the"
+" maximum and mean committed plastic history, and the plastic centroid."
+msgstr "脚本报告最终基础沉降、最大沉降、提交的塑性历史的最大值与均值,以及塑性质心。"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:70
+#: 7bb9fcb7d5c44bd4a76400ac3ae59061
+msgid ""
+"The associated test checks that the footing settles downward, that the "
+"committed plastic history and settlement grow monotonically with load, that "
+"the plastic zone localizes under the footing, that a low-load / high-"
+"cohesion case stays essentially elastic and matches the elastic footing "
+"settlement, and that a higher-cohesion soil develops less plasticity."
+msgstr ""
+"相应的测试检查:基础向下沉降、提交的塑性历史与沉降随载荷单调增长、塑性区在基础下方局部化、低载荷/高黏聚力情形基本保持弹性并与弹性基础沉降吻合,以及黏聚力更高的土体发展出更少的塑性。"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:76
+#: d8e512b1710043099ca8d66fc53dacf6
+msgid ""
+"Drucker-Prager strip-footing settlement, plastic history, and load-"
+"settlement curve"
+msgstr "Drucker-Prager 条形基础的沉降、塑性历史与载荷-沉降曲线"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:80
+#: 3d26878a301c402d85f5b714ad0950f3
+msgid ""
+"Output of ``drucker_prager_footing.py``. The left panel shows the deformed "
+"soil mesh colored by settlement ``-u_y``. The middle panel shows the "
+"committed Drucker-Prager plastic history variable, which develops beneath "
+"the footing. The right panel shows the load-settlement curve, including "
+"nonlinear growth as plasticity accumulates. Deformations are exaggerated for"
+" visibility."
+msgstr ""
+"``drucker_prager_footing.py`` 的输出。左面板显示按沉降 ``-u_y`` 着色的变形土网格。中面板显示提交的 "
+"Drucker-Prager 塑性历史变量,它在基础下方发展。右面板显示载荷-沉降曲线,包括塑性累积时的非线性增长。为便于观察,变形被放大。"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:88
+#: 99f2ce562d844f42ba5af8629fcf7211
+msgid "Running it"
+msgstr "运行它"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:95
+#: 7eace047f7e549e7868e94beca962eae
+msgid "For a fast numerical-only run without writing the plot:"
+msgstr "若只想快速做纯数值运行而不写出图:"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:102
+#: c1c309640cfe4de48675951ef8b4e1ec
+msgid "Core implementation"
+msgstr "核心实现"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:104
+#: dd044452ae1b476598e10c78ba25df5a
+msgid ""
+"The load-stepped nonlinear solver is the heart of the example.  It uses the "
+"built-in :class:`~tensormesh.assemble.DruckerPragerPlasticity` assembler's "
+"``energy``, ``element_data_from_history`` and ``update_state`` methods."
+msgstr ""
+"载荷步进的非线性求解器是本示例的核心。它使用内置 "
+":class:`~tensormesh.assemble.DruckerPragerPlasticity` 装配器的 ``energy``\\ 、\\ "
+"``element_data_from_history`` 和 ``update_state`` 方法。"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:113
+#: 4fc6fb1c639b454ca9073bbc29f2ef15
+msgid "What's next"
+msgstr "下一步"
+
+#: ../../source/example_gallery/solid/drucker_prager_footing.rst:115
+#: 8407dfc4201e4c42b3e9d34d6a7f03dc
+msgid ""
+"A natural follow-up would be to add non-associated flow and pore-pressure "
+"coupling to the public Drucker-Prager model, or to reuse this footing "
+"geometry with other built-in geomechanics materials as they are added."
+msgstr ""
+"一个自然的后续是为公共 Drucker-Prager 模型加入非关联流动和孔压耦合,或随着更多内置岩土力学材料的加入,用此基础几何复用它们。"

@@ -1,13 +1,18 @@
 Diffusion
 =========
 
-Two transient examples in ``examples/diffusion/``: a linear heat
+Two transient problems in ``examples/diffusion/``: a linear heat
 equation with implicit Euler time stepping (``heat/heat.py``) and a
 nonlinear phase-field problem solved by Newton's method at each
-timestep (``allen-cahn/ac.py``). Together they exercise both the
+timestep (``allen-cahn/``). Together they exercise both the
 linear time-stepping pattern from
 :doc:`../user_guide/time_integration` and the nonlinear / Newton
-pattern from :doc:`../user_guide/linear_solvers`.
+pattern from :doc:`../user_guide/linear_solvers`. The Allen-Cahn
+problem ships in three flavours: the hand-written backward-Euler
+Newton loop (``ac.py``), the same step driven by
+``torch_sla.nonlinear_solve`` (``ac_torch_sla.py``), and an
+unconditionally energy-stable convex–concave splitting
+(``ac_convex_concave.py``).
 
 
 2D heat equation — ``heat/heat.py``
@@ -224,6 +229,97 @@ diffuse interfaces of width set by* :math:`\varepsilon`. *Each frame
 is one resolved Newton solve.*
 
 
+Convex–concave splitting — ``allen-cahn/ac_convex_concave.py``
+--------------------------------------------------------------
+
+``ac.py`` and ``ac_torch_sla.py`` solve the *same* fully-implicit
+backward-Euler step and only differ in how the Newton solve is
+driven. ``ac_convex_concave.py`` solves a **different time
+discretisation**: Eyre's convex splitting. It exploits the fact that
+Allen-Cahn is the :math:`L^2` gradient flow of the double-well energy
+
+.. math::
+
+   E(c) \;=\; \int_\Omega \tfrac12\,|\nabla c|^2
+            \;+\; \varepsilon^2\, W(c)\, d\Omega,
+   \qquad W(c) = \tfrac14\,(c^2 - 1)^2,
+
+whose nonlinear term :math:`W'(c) = c^3 - c` splits into a **convex**
+part :math:`c^3` and a **concave** part :math:`-c`. Taking the convex
+part implicitly and the concave part explicitly gives
+
+.. math::
+
+   \frac{c - c_\text{old}}{\Delta t}
+   \;=\; \Delta c \;-\; \varepsilon^2\, c^3 \;+\; \varepsilon^2\, c_\text{old}.
+
+This scheme is **unconditionally energy-stable** — it decreases
+:math:`E` for *any* time-step size — and the per-step Newton system is
+uniquely solvable independent of :math:`\Delta t`, so the residual and
+its tangent are
+
+.. math::
+
+   R(c)\,v &= \int_\Omega \tfrac{1}{\Delta t}\,(c - c_\text{old})\,v
+            \;+\; \nabla c \cdot \nabla v
+            \;+\; \varepsilon^2\, c^3\, v
+            \;-\; \varepsilon^2\, c_\text{old}\, v \; d\Omega, \\
+   R'(c)[u]\,v &= \int_\Omega \tfrac{1}{\Delta t}\,u\,v
+            \;+\; \nabla u \cdot \nabla v
+            \;+\; 3\,\varepsilon^2\, c^2\, u\,v \; d\Omega.
+
+The tangent is symmetric positive-definite (the reaction term
+:math:`3\varepsilon^2 c^2 \ge 0` only adds to the diagonal), which is
+the algebraic reflection of the unconditional stability — there is no
+step-size limit from the nonlinearity:
+
+.. code-block:: python
+   :caption: examples/diffusion/allen-cahn/ac_convex_concave.py (essence)
+
+   class RAssembler(NodeAssembler):           # residual, convex/concave split
+       def forward(self, v, gradv, c, gradc, cold):
+           c_t = (c - cold) / self.dt
+           return c_t * v + (gradc @ gradv) + self.fi(c) * v - self.fe(cold) * v
+
+   class KAssembler(ElementAssembler):        # SPD tangent R'(c)
+       def forward(self, c, u, v, gradu, gradv):
+           return 1.0 / self.dt * (u * v) + (gradu @ gradv) - self.dfi(c) * (u * v)
+
+   for _ in range(steps):
+       c = cold
+       for newton_step in range(max_iter):
+           pd = {"c": c, "cold": cold}
+           K = K_asm(mesh.points, point_data=pd)
+           R = R_asm(mesh.points, point_data=pd)
+           c = c + K.solve(-R)
+           if torch.linalg.norm(R) < 1e-10:
+               break
+       cold = c
+
+Why this is worth a separate script:
+
+* **Bigger time steps.** The fully-implicit ``ac.py`` is stable but
+  its Newton solve can stall when :math:`\Delta t` is pushed too far;
+  the convex split stays well-behaved, so ``--dt`` can be raised well
+  beyond the fully-implicit limit while the energy still decays
+  monotonically.
+* **Same assembler contract.** Both the residual ``NodeAssembler``
+  and the SPD-tangent ``ElementAssembler`` read the current iterate
+  ``c`` and the previous step ``cold`` from ``point_data`` — the
+  identical argument-dispatch pattern as ``ac.py``; only the
+  *discretisation* changed, not the API.
+
+.. code-block:: bash
+
+   python ac_convex_concave.py                    # default dt
+   python ac_convex_concave.py --steps 200 --dt 1e-4   # larger step, still stable
+
+The output animation is written to
+``Allen-Cahn-convex-concave-dt<dt>.mp4`` (the file name encodes the
+``--dt`` used, so runs at different step sizes do not overwrite each
+other).
+
+
 Running the examples
 --------------------
 
@@ -234,8 +330,9 @@ Running the examples
    python heat_ode.py        # integrator hooks -> heat_ode.mp4
 
    cd ../allen-cahn
-   python ac.py              # hand-written Newton loop -> Allen-Cahn.mp4
-   python ac_torch_sla.py    # via torch_sla.nonlinear_solve -> Allen-Cahn-torch-sla.mp4
+   python ac.py                # hand-written Newton loop -> Allen-Cahn.mp4
+   python ac_torch_sla.py      # via torch_sla.nonlinear_solve -> Allen-Cahn-torch-sla.mp4
+   python ac_convex_concave.py # Eyre convex splitting -> Allen-Cahn-convex-concave-dt<dt>.mp4
 
 
 What's next

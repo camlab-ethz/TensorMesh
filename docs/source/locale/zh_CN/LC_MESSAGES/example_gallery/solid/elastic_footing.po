@@ -1,0 +1,219 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, TensorMesh Contributors
+# This file is distributed under the same license as the TensorMesh package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: TensorMesh 0.1.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-25 21:07+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:2
+#: 0bd32fdf204f49119a920144298a7ab8
+msgid "Geomechanics: elastic strip footing"
+msgstr "岩土力学:弹性条形基础"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:4
+#: 1c07d203d68b4f7f9c1d9cce76d7b044
+msgid ""
+"This example adds a small geomechanics boundary-value problem to the solid "
+"mechanics example family.  A linear-elastic soil block is loaded by a "
+"centered strip footing, then solved with TensorMesh's standard direct "
+"linear-elasticity pipeline."
+msgstr ""
+"本示例为固体力学示例族增加一个小型岩土力学边值问题。一个线弹性土块由中心条形基础加载,然后用 TensorMesh 标准的直接线弹性流水线求解。"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:9
+#: a69a9b02492a485ca4de54089a5a28ea
+msgid ""
+"The example is deliberately modest: it demonstrates geotechnical boundary "
+"conditions, a footing load patch, settlement reporting, and reaction/load "
+"balance without adding a public geomechanics API."
+msgstr "该示例刻意保持适度:它演示岩土边界条件、基础载荷块、沉降报告,以及反力/载荷平衡,而不引入公共岩土力学 API。"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:14
+#: b400f4a910704b94ae0a7b1c9a91fca2
+msgid "Problem"
+msgstr "问题"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:16
+#: 6a6b0c8f1eae421d8a7c2a7db16fb6e1
+msgid ""
+"The model is a two-dimensional plane-strain-style soil block with unit out-"
+"of-plane thickness.  The displacement field satisfies small-strain linear "
+"elasticity,"
+msgstr "该模型是二维平面应变式土块,面外厚度为单位 1。位移场满足小应变线弹性,"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:20
+#: add557a242c14341b2c86dc8e50f75ed
+#, python-brace-format
+msgid ""
+"\\nabla \\cdot \\boldsymbol{\\sigma} = \\mathbf{0},\n"
+"\\qquad\n"
+"\\boldsymbol{\\sigma} = \\mathbb{C} : \\boldsymbol{\\varepsilon},\n"
+"\\qquad\n"
+"\\boldsymbol{\\varepsilon}\n"
+"= \\tfrac12(\\nabla\\mathbf{u} + \\nabla\\mathbf{u}^T)."
+msgstr ""
+"\\nabla \\cdot \\boldsymbol{\\sigma} = \\mathbf{0},\n"
+"\\qquad\n"
+"\\boldsymbol{\\sigma} = \\mathbb{C} : \\boldsymbol{\\varepsilon},\n"
+"\\qquad\n"
+"\\boldsymbol{\\varepsilon}\n"
+"= \\tfrac12(\\nabla\\mathbf{u} + \\nabla\\mathbf{u}^T)."
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:29
+#: 98bec9b2d82e4fa5983f1dca99f59a54
+msgid ""
+"The domain is loaded by a compression-positive footing pressure on a limited"
+" top-surface patch.  Internally, the load is applied in the negative ``y`` "
+"direction.  For geomechanics reporting, settlement is shown as positive "
+"downward,"
+msgstr "该域由限定在顶面块上的压缩为正的基础压力加载。在内部,载荷施加在负 ``y`` 方向。为岩土力学报告,沉降以向下为正显示,"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:34
+#: deb3ef47a145491fa0c026ee951cb7af
+msgid "s = -u_y."
+msgstr "s = -u_y."
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:39
+#: 8c88abc7b6cd48519c32c44f2f1894b8
+msgid "Boundary conditions"
+msgstr "边界条件"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:41
+#: 267232fe15fe4090b8a114e19bbf863d
+msgid "The example uses a simple roller setup:"
+msgstr "本示例使用简单的滚动支座设置:"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:43
+#: c7deefc56b4245e59aecb93be47940a6
+msgid "bottom boundary: vertical displacement fixed, ``u_y = 0``;"
+msgstr "底部边界:竖向位移固定,``u_y = 0``;"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:44
+#: 96304f5f9f8c4a12ac81ff74cfcf1262
+msgid "left and right boundaries: horizontal displacement fixed, ``u_x = 0``;"
+msgstr "左右边界:水平位移固定,``u_x = 0``;"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:45
+#: 93e58ed5d430492cb022818d3d10a70c
+msgid "top boundary: free except for the loaded footing patch."
+msgstr "顶部边界:除受载基础块外自由。"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:47
+#: 6f589867a0334a42b9be8cdf0151fac3
+msgid ""
+"The footing pressure is lumped over the top-surface nodes inside the footing"
+" patch.  This keeps the example close to the existing solid-mechanics direct"
+" solve examples, while the sanity check verifies that the total reaction "
+"balances the total applied load."
+msgstr "基础压力被集总到基础块内的顶面节点上。这使示例贴近既有的固体力学直接求解示例,而合理性检验则验证总反力与总施加载荷平衡。"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:53
+#: f6ddee8ef35d49b38be34a689c6bf42b
+msgid "Sanity checks"
+msgstr "合理性检验"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:55
+#: b6a54303fd0d41b884090f0ba3cbd4c1
+msgid ""
+"The script reports the total applied vertical load, the vertical reaction at"
+" fixed vertical degrees of freedom, the reaction/load relative error, and "
+"the maximum settlement."
+msgstr "脚本报告总施加竖向载荷、固定竖向自由度处的竖向反力、反力/载荷相对误差,以及最大沉降。"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:59
+#: 4b40406ff96e406c9f31a068f1ff7b30
+msgid "The associated test checks that:"
+msgstr "相应的测试检查:"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:61
+#: b7b23ba609e24e358c26a83b2be746d1
+msgid "the soil settles downward under the footing;"
+msgstr "土体在基础下方向下沉降;"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:62
+#: 0d1490781d4c4aa18d09024570fd823c
+msgid "the vertical reaction balances the applied vertical load;"
+msgstr "竖向反力与施加的竖向载荷平衡;"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:63
+#: 15e12c6585654e4693b96de2b6359947
+msgid "doubling the footing pressure approximately doubles the settlement."
+msgstr "基础压力加倍约使沉降加倍。"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:65
+#: 454c434aaab9429abd5a058850725b12
+msgid ""
+"Elastic strip-footing settlement contour and surface settlement profile"
+msgstr "弹性条形基础沉降等值线与地表沉降剖面"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:69
+#: c24cc7c8e43f482d9a5a74fbd506db34
+msgid ""
+"Output of ``elastic_footing.py``.  The left panel shows the deformed soil "
+"mesh colored by settlement ``-u_y``; red arrows mark the footing load, blue "
+"markers show vertical supports on the base, and purple markers show "
+"horizontal roller constraints on the side boundaries.  The right panel shows"
+" the settlement profile along the ground surface.  The largest settlement "
+"occurs beneath the centered footing, and the deformation is exaggerated for "
+"visibility."
+msgstr ""
+"``elastic_footing.py`` 的输出。左面板显示按沉降 ``-u_y`` "
+"着色的变形土网格;红色箭头标出基础载荷,蓝色标记显示基底的竖向支撑,紫色标记显示侧边界上的水平滚动约束。右面板显示沿地表的沉降剖面。最大沉降发生在中心基础下方,变形为便于观察被放大。"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:78
+#: aceb9ceaddc8401b8499bfb10fded2db
+msgid "Running it"
+msgstr "运行它"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:85
+#: e1cd8039afee4b1f8c02ab3c35195d0e
+msgid "For a fast numerical-only run without writing the plot:"
+msgstr "若只想快速做纯数值运行而不写出图:"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:92
+#: 9c7f03413b9c4cc89982a81707766a76
+msgid "Core implementation"
+msgstr "核心实现"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:94
+#: ae550399c87043b8ac88aec0144b08a8
+msgid ""
+"The full driver is in "
+"``examples/solid/geomechanics/elastic_footing/elastic_footing.py``.  It "
+"reuses the same direct-solve components as the existing linear-elastic solid"
+" examples: ``LinearElasticityElementAssembler``, ``Condenser``, and "
+"``SparseMatrix.solve``."
+msgstr ""
+"完整驱动在 ``examples/solid/geomechanics/elastic_footing/elastic_footing.py``\\ "
+"。它复用与既有线弹性固体示例相同的直接求解组件:``LinearElasticityElementAssembler``\\ 、\\ "
+"``Condenser`` 和 ``SparseMatrix.solve``\\ 。"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:105
+#: b5c42b055e114f3690cbab9cc39c520d
+msgid "What's next"
+msgstr "下一步"
+
+#: ../../source/example_gallery/solid/elastic_footing.rst:107
+#: f82d1d05f5334a63abda8e81714bae46
+msgid ""
+"This example is elastic and intentionally small.  A later follow-up could "
+"reuse the same footing geometry with the example-local Drucker-Prager "
+"material model, or promote a stabilized geomechanics assembler into "
+"``tensormesh/assemble/`` if the API direction becomes clear."
+msgstr ""
+"本示例是弹性的,且刻意保持小规模。后续可以用相同的基础几何复用示例局部的 Drucker-Prager 材料模型,或在 API "
+"方向明确后把一个稳定化的岩土力学装配器提升进 ``tensormesh/assemble/``\\ 。"
