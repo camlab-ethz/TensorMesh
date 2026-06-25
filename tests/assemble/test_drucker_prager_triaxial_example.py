@@ -1,4 +1,4 @@
-"""Smoke tests for the example-only Drucker-Prager triaxial driver."""
+"""Smoke tests for the Drucker-Prager triaxial driver (public API)."""
 
 from __future__ import annotations
 
@@ -37,9 +37,8 @@ def test_drucker_prager_triaxial_sanity_checks():
 
 
 def test_small_strain_3d_is_batch_and_vmap_safe():
-    """The 2D plane-strain embedding must work for batched input and under vmap."""
-    module = _load_example_module()
-    embed = module.DruckerPragerPlasticity._small_strain_3d
+    """The public 2D plane-strain embedding must work batched and under vmap."""
+    from tensormesh.functional import small_strain_3d as embed
 
     # Batched 2D gradients embed into 3x3 strain tensors without shape errors.
     grad_u = torch.randn((2, 3, 2, 2), dtype=torch.float64)

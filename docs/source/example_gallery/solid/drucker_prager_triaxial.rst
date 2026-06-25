@@ -2,12 +2,15 @@ Geomechanics: Drucker-Prager triaxial compression
 =================================================
 
 This example introduces a small geomechanics application inside the solid-mechanics
-example family.  It implements an example-only Drucker-Prager plasticity assembler
-for a pressure-dependent soil or weak-rock material and drives it through a simple
-triaxial-compression strain path.
+example family.  It uses TensorMesh's public Drucker-Prager API — the
+:class:`~tensormesh.assemble.DruckerPragerPlasticity` assembler, the
+:class:`~tensormesh.material.FrictionalMaterial` container, and the constitutive
+primitive :func:`~tensormesh.functional.plastic.drucker_prager_yield_value` — to drive a
+pressure-dependent soil or weak-rock material through a simple triaxial-compression
+strain path.
 
 The goal is deliberately modest: demonstrate TensorMesh conventions for
-geomechanics without adding a public API.  The local assembler lives in
+geomechanics on a minimal driver.  The example script lives in
 ``examples/solid/geomechanics/drucker_prager_triaxial/drucker_prager_triaxial.py``.
 
 Problem
@@ -38,15 +41,13 @@ higher confinement lowers ``f`` and delays yielding.
 History variables
 -----------------
 
-The example follows the same pattern as the existing J2 plasticity example:
+The built-in assembler follows the same lifecycle as the J2 plasticity model:
 
-* per-quadrature history variables are stored in ``self.history[etype]``;
-* previous-step ``eps_p`` and ``alpha`` are passed through ``element_data``;
+* per-quadrature history variables are stored in ``model.history[etype]``;
+* previous-step ``eps_p`` and ``alpha`` are passed through ``element_data``
+  (via ``model.element_data_from_history()``);
 * ``update_state(u)`` is called after each converged load step under
   ``torch.no_grad()``.
-
-The example remains local to the script so the public API can be discussed after
-the convention-setting example has been reviewed.
 
 Sanity check
 ------------
@@ -88,8 +89,10 @@ plastic-history curves.
 Core implementation
 -------------------
 
+The driver builds a :class:`~tensormesh.material.FrictionalMaterial`, assembles
+the built-in :class:`~tensormesh.assemble.DruckerPragerPlasticity` model, and
+steps the strain path while committing history with ``update_state``:
+
 .. literalinclude:: ../../../../examples/solid/geomechanics/drucker_prager_triaxial/drucker_prager_triaxial.py
    :language: python
-   :start-after: class DruckerPragerPlasticity
-   :end-before: def affine_displacement
-   :dedent: 0
+   :pyobject: run_case

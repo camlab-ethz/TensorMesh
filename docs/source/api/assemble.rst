@@ -52,6 +52,10 @@ Built-in Assemblers
     :members:
     :show-inheritance:
 
+.. autoclass:: tensormesh.assemble.DruckerPragerPlasticity
+    :members:
+    :show-inheritance:
+
 .. autoclass:: tensormesh.assemble.ContactAssembler
     :members:
     :show-inheritance:

@@ -1,15 +1,15 @@
 Geomechanics: Drucker-Prager strip footing
 ==========================================
 
-This example combines the two existing example-only geomechanics building
-blocks into one nonlinear boundary-value problem: the local Drucker-Prager
-triaxial constitutive driver and the elastic strip-footing setup.  A rectangular
-soil block is loaded by a centered strip footing, the footing pressure is ramped
-in load steps, and the per-quadrature Drucker-Prager history is committed after
-each converged step.
+This example combines two geomechanics building blocks into one nonlinear
+boundary-value problem: TensorMesh's public Drucker-Prager material model and the
+elastic strip-footing setup.  A rectangular soil block is loaded by a centered
+strip footing, the footing pressure is ramped in load steps, and the
+per-quadrature Drucker-Prager history is committed after each converged step.
 
-It is deliberately example-only.  It does not add a public geomechanics API; the
-constitutive code is copied locally (Torch only) so the script is self-contained.
+The constitutive model is the built-in
+:class:`~tensormesh.assemble.DruckerPragerPlasticity` assembler, configured with
+a :class:`~tensormesh.material.FrictionalMaterial`.
 TensorMesh keeps the internal solid-mechanics convention stress tension-positive.
 For geomechanics reporting, settlement is shown positive downward,
 
@@ -101,9 +101,9 @@ For a fast numerical-only run without writing the plot:
 Core implementation
 -------------------
 
-The load-stepped nonlinear solver is the heart of the example.  It reuses the
-local Drucker-Prager assembler's ``energy``, ``element_data_from_history`` and
-``update_state`` methods.
+The load-stepped nonlinear solver is the heart of the example.  It uses the
+built-in :class:`~tensormesh.assemble.DruckerPragerPlasticity` assembler's
+``energy``, ``element_data_from_history`` and ``update_state`` methods.
 
 .. literalinclude:: ../../../../examples/solid/geomechanics/drucker_prager_footing/drucker_prager_footing.py
    :language: python
@@ -112,6 +112,6 @@ local Drucker-Prager assembler's ``energy``, ``element_data_from_history`` and
 What's next
 -----------
 
-This example stays intentionally example-only.  A natural follow-up would be to
-promote a stabilized geomechanics assembler into ``tensormesh/assemble/`` once
-the model surface and public API direction are agreed.
+A natural follow-up would be to add non-associated flow and pore-pressure
+coupling to the public Drucker-Prager model, or to reuse this footing geometry
+with other built-in geomechanics materials as they are added.
