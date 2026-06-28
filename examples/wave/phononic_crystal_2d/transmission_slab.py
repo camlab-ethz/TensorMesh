@@ -28,8 +28,6 @@ from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
 import numpy as np
-import scipy.sparse as sp
-import scipy.sparse.linalg as spla
 import torch
 
 # Allow running this file directly from the source tree.
@@ -38,6 +36,7 @@ if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))
 
 from tensormesh import LaplaceElementAssembler, MassElementAssembler  # noqa: E402
+from tensormesh.sparse import SparseMatrix, spsolve  # noqa: E402  -- complex solve
 
 torch.set_default_dtype(torch.float64)
 
@@ -143,25 +142,23 @@ def build_mesh(problem: TransmissionSlab):
 
 
 # --------------------------------------------------------------------------- #
-# Volume operators K (grad.grad) and M (mass) as scipy CSR
+# Volume operators K (grad.grad) and M (mass) as TensorMesh sparse matrices
 # --------------------------------------------------------------------------- #
-def assemble_volume(mesh) -> Tuple[sp.csr_matrix, sp.csr_matrix]:
+def assemble_volume(mesh) -> Tuple[SparseMatrix, SparseMatrix]:
     K_asm = LaplaceElementAssembler.from_mesh(mesh, quadrature_order=2)
     M_asm = MassElementAssembler.from_assembler(K_asm)
-    K = K_asm(mesh.points).to_scipy_coo().tocsr().astype(np.complex128)
-    M = M_asm(mesh.points).to_scipy_coo().tocsr().astype(np.complex128)
-    return K, M
+    return K_asm(mesh.points), M_asm(mesh.points)
 
 
 # --------------------------------------------------------------------------- #
 # Boundary line operators on x = 0 (input) and x = Lx (output)  [hand-rolled]
 # --------------------------------------------------------------------------- #
 def boundary_operators(mesh, problem: TransmissionSlab, tol: float = 1e-7):
-    """Return (B, e_in, out_idx).
+    """Return (b_row, b_col, b_val, e_in, out_idx) as torch tensors.
 
-    ``B = int_{Gin u Gout} phi_i phi_j ds`` is the first-order radiation term;
-    ``e_in = int_{Gin} phi_i ds`` is the incident-field load on the input edge;
-    ``out_idx`` are the node indices on the output edge (for the transmission).
+    ``B = int_{Gin u Gout} phi_i phi_j ds`` (COO triplets) is the first-order
+    radiation term; ``e_in = int_{Gin} phi_i ds`` is the incident-field load on
+    the input edge; ``out_idx`` are the output-edge node indices.
     """
     pts = mesh.points.cpu().numpy()
     n = pts.shape[0]
@@ -183,8 +180,11 @@ def boundary_operators(mesh, problem: TransmissionSlab, tol: float = 1e-7):
 
     add_edge_line(0.0, is_input=True)
     out_idx = add_edge_line(problem.lx, is_input=False)
-    B = sp.coo_matrix((vals, (rows, cols)), shape=(n, n)).tocsr().astype(np.complex128)
-    return B, e_in, out_idx
+    return (torch.tensor(rows, dtype=torch.long),
+            torch.tensor(cols, dtype=torch.long),
+            torch.tensor(vals, dtype=torch.float64),
+            torch.as_tensor(e_in, dtype=torch.float64),
+            torch.as_tensor(out_idx, dtype=torch.long))
 
 
 # --------------------------------------------------------------------------- #
@@ -193,32 +193,70 @@ def boundary_operators(mesh, problem: TransmissionSlab, tol: float = 1e-7):
 def transmission_spectrum(problem: TransmissionSlab, verbose: bool = True) -> Dict[str, Any]:
     mesh = build_mesh(problem)
     K, M = assemble_volume(mesh)
-    B, e_in, out_idx = boundary_operators(mesh, problem)
+    b_row, b_col, b_val, e_in, out_idx = boundary_operators(mesh, problem)
+    n = int(mesh.points.shape[0])
     freqs = problem.freqs
     if verbose:
-        print(f"mesh: {mesh.points.shape[0]} nodes, {mesh.elements().shape[0]} "
-              f"elements; {len(out_idx)} output-edge nodes", flush=True)
+        print(f"mesh: {n} nodes, {mesh.elements().shape[0]} elements; "
+              f"{len(out_idx)} output-edge nodes", flush=True)
 
+    # Assemble A = K - k^2 M - i k B once per frequency as COO triplets and
+    # hand them to the TensorMesh complex sparse solver (scipy-backed direct LU
+    # via torch-sla); duplicate (row, col) entries are summed on coalesce.
     # time convention e^{-i w t}, outgoing dp/dn = +ik p:
     #   (K - k^2 M - i k B) p = -2 i k p0 e_in
+    row = torch.cat([K.row, M.row, b_row])
+    col = torch.cat([K.col, M.col, b_col])
+    Kv = K.edata.to(torch.complex128)
+    Mv = M.edata.to(torch.complex128)
+    Bv = b_val.to(torch.complex128)
+    e_in_c = e_in.to(torch.complex128)
+
     T = np.zeros(len(freqs))
     for i, f in enumerate(freqs):
         k = 2.0 * math.pi * f / problem.c
-        A = (K - (k * k) * M - 1j * k * B).tocsc()
-        b = -2j * k * problem.p0 * e_in
-        p = spla.spsolve(A, b)
-        T[i] = np.mean(np.abs(p[out_idx]) ** 2) / (problem.p0 ** 2)
+        val = torch.cat([Kv, -(k * k) * Mv, (-1j * k) * Bv])
+        b = (-2j * k * problem.p0) * e_in_c
+        p = spsolve(val, row, col, (n, n), b,
+                    backend="scipy", method="lu", is_spd=False)
+        T[i] = float(torch.mean(torch.abs(p[out_idx]) ** 2)) / (problem.p0 ** 2)
         if verbose and i % max(1, len(freqs) // 6) == 0:
             print(f"  f {i+1}/{len(freqs)}  ({f/1e3:.0f} kHz)  T={T[i]:.3f}", flush=True)
 
-    return dict(freqs=freqs, T=T, n_nodes=int(mesh.points.shape[0]))
+    return dict(freqs=freqs, T=T, n_nodes=n)
+
+
+# --------------------------------------------------------------------------- #
+# COMSOL reference (committed, offline): transmission spectrum T(f)
+# --------------------------------------------------------------------------- #
+def load_comsol_reference(path=None):
+    """Load the committed COMSOL transmission spectrum
+    (``comsol_reference_transmission.npz``: ``freqs_hz``, ``T``, ``c_water``).
+    Returns ``None`` if the file is absent so the example still runs offline."""
+    if path is None:
+        path = Path(__file__).with_name("comsol_reference_transmission.npz")
+    if not Path(path).exists():
+        return None
+    d = np.load(path)
+    return dict(freqs=d["freqs_hz"], T=d["T"], c=float(d["c_water"]))
+
+
+def compare_to_comsol(result: Dict[str, Any], ref: Dict[str, Any]) -> Dict[str, float]:
+    """Mean / max absolute transmission difference on the COMSOL frequency
+    grid (TensorMesh spectrum linearly interpolated onto COMSOL's frequencies,
+    restricted to the overlapping band)."""
+    f = ref["freqs"]
+    inside = (f >= result["freqs"].min()) & (f <= result["freqs"].max())
+    Tt = np.interp(f[inside], result["freqs"], result["T"])
+    dT = np.abs(Tt - ref["T"][inside])
+    return dict(mean=float(dT.mean()), max=float(dT.max()), n=int(dT.size))
 
 
 # --------------------------------------------------------------------------- #
 # Plot: slab geometry | transmission spectrum
 # --------------------------------------------------------------------------- #
 def plot_transmission(result: Dict[str, Any], problem: TransmissionSlab,
-                      save_path) -> None:
+                      save_path, ref: Dict[str, Any] | None = None) -> None:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -244,14 +282,21 @@ def plot_transmission(result: Dict[str, Any], problem: TransmissionSlab,
     ax.set_title(f"Slab: {problem.n_cyl} rigid cylinders in water")
     ax.set_xlabel("x [mm]"); ax.set_ylabel("y [mm]")
 
-    # -- Right panel: transmission spectrum ----------------------------------
+    # -- Right panel: transmission spectrum (+ COMSOL reference if available) --
     ax = fig.add_subplot(gs[0, 1])
-    ax.plot(f, result["T"], "-o", color="tab:blue", lw=1.6, ms=3.2, mec="none")
-    ax.axhspan(0, 0.05, color="0.9", zorder=0)
+    ax.plot(f, result["T"], "-", color="tab:blue", lw=1.6, label="TensorMesh")
+    if ref is not None:
+        ax.plot(ref["freqs"] / 1e3, ref["T"], "o", ms=4.5, mfc="none",
+                mec="#D55E00", mew=1.0, label="COMSOL")
     ax.set_xlabel("frequency [kHz]")
     ax.set_ylabel(r"transmission  $T = \langle|p|^2\rangle / |p_0|^2$")
-    ax.set_title("Transmission through the phononic crystal slab")
+    title = "Transmission through the phononic crystal slab"
+    if "stats" in result:
+        title += f"  (mean |dT| {result['stats']['mean']:.3f} vs COMSOL)"
+    ax.set_title(title)
     ax.set_ylim(-0.03, 1.05); ax.grid(True, alpha=0.3)
+    if ref is not None:
+        ax.legend(loc="upper right", fontsize=8)
 
     save_path = Path(save_path)
     save_path.parent.mkdir(parents=True, exist_ok=True)
@@ -265,13 +310,19 @@ def plot_transmission(result: Dict[str, Any], problem: TransmissionSlab,
 def run_demo(*, make_plot: bool = True, output_path=None,
              chara_per_a: float = 36.0, verbose: bool = True) -> Dict[str, Any]:
     """Run the transmission example and return diagnostics."""
-    problem = TransmissionSlab(chara_per_a=chara_per_a)
+    ref = load_comsol_reference()
+    # Match COMSOL's sound speed when validating so the comparison is geometry,
+    # not a 0.03% speed-of-sound offset.
+    problem = TransmissionSlab(chara_per_a=chara_per_a,
+                               c=ref["c"] if ref is not None else 1481.0)
     result = transmission_spectrum(problem, verbose=verbose)
+    if ref is not None:
+        result["stats"] = compare_to_comsol(result, ref)
 
     if make_plot:
         if output_path is None:
             output_path = Path(__file__).with_name("transmission_slab.png")
-        plot_transmission(result, problem, output_path)
+        plot_transmission(result, problem, output_path, ref=ref)
 
     T, freqs = result["T"], result["freqs"]
     gap = freqs[T < 0.05] / 1e3
@@ -281,6 +332,10 @@ def run_demo(*, make_plot: bool = True, output_path=None,
     if gap.size:
         print(f"  band gap (T < 0.05): [{gap.min():.0f}, {gap.max():.0f}] kHz")
     print(f"  T range: [{T.min():.3f}, {T.max():.3f}]")
+    if "stats" in result:
+        s = result["stats"]
+        print(f"  vs COMSOL ({s['n']} freqs): mean |dT| {s['mean']:.3f}  "
+              f"max |dT| {s['max']:.3f}")
     return result
 
 

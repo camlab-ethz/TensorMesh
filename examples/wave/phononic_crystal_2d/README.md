@@ -24,8 +24,9 @@ as a hole) or a second penetrable acoustic medium.
 
 **Band structure** — at each wavevector along the irreducible Brillouin-zone
 path, `BlochReducer` ties the opposite cell faces with the Floquet phase and
-reduces the operators to the independent (master) DOFs; a dense Hermitian
-generalized eig gives the bands:
+reduces the operators to the independent (master) DOFs; a complex-Hermitian
+generalized eig (shift-inverted ARPACK `scipy.sparse.linalg.eigsh`) gives the
+bands:
 
 ```text
 mesh -> Laplace/Mass assembler -> BlochReducer -> generalized eig
@@ -56,6 +57,22 @@ hand-rolled boundary line integrals (no PML needed — this matches COMSOL's
 first-order "Plane Wave Radiation"). At normal incidence the lateral periodic
 walls are mirror-symmetry planes, equivalent to natural Neumann.
 
+## Validation against COMSOL
+
+Each script overlays a COMSOL Pressure-Acoustics reference and prints the
+relative error. The reference is committed as a small `comsol_reference_*.npz`
+next to the script, so the comparison reproduces **offline** — no COMSOL needed:
+
+| Script | Reference | Agreement |
+| --- | --- | --- |
+| `band_structure_square.py` | square $M\!-\!\Gamma\!-\!X\!-\!M$, 31 k-points | mean **0.08 %**, p95 0.16 % |
+| `band_structure_triangular.py` | triangular $M\!-\!\Gamma\!-\!K\!-\!M$, 31 k-points | mean **0.51 %**, p95 1.45 % |
+| `transmission_slab.py` | 30–120 kHz, 46 frequencies | mean $|\Delta T|$ **0.007** |
+
+Bands are compared k-point by k-point at COMSOL's exact wavevectors (lowest 10
+modes, nearest-frequency match); transmission by interpolating onto COMSOL's
+frequency grid. If the npz is absent the script still runs and skips the overlay.
+
 ## Run
 
 ```bash
@@ -71,8 +88,9 @@ short summary; pass `--no-plot` to skip the figure entirely.
 ## What each script shows
 
 - Band structure: a two-panel figure — the unit cell, and the computed band
-  frequencies plotted as points along the IBZ path. The lowest band → 0 at
-  $\Gamma$; band gaps open between branches.
-- Transmission: a two-panel figure — the slab geometry, and $T(f)$, which drops
-  to ~0 inside the band gap and recovers (with Fabry-Pérot ripples) in the pass
-  bands.
+  frequencies (filled markers) along the IBZ path with the COMSOL reference
+  (open circles) overlaid. The lowest band → 0 at $\Gamma$; band gaps open
+  between branches.
+- Transmission: a two-panel figure — the slab geometry, and $T(f)$ (line) with
+  the COMSOL reference (open circles), dropping to ~0 inside the band gap and
+  recovering (with Fabry-Pérot ripples) in the pass bands.

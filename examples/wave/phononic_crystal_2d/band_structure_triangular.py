@@ -28,6 +28,7 @@ from pathlib import Path
 from typing import Any, Dict, Tuple
 
 import numpy as np
+import scipy.sparse.linalg as sla
 import torch
 
 # Allow running this file directly from the source tree.
@@ -193,7 +194,7 @@ def assemble(mesh, problem: TriangularCrystal):
 def k_path(problem: TriangularCrystal) -> Tuple[np.ndarray, np.ndarray]:
     """M-Gamma-K-M over the hexagonal Brillouin zone, parameter m in [0, 3]."""
     A = np.array([[problem.a1[0], problem.a2[0]], [problem.a1[1], problem.a2[1]]])
-    B = 2 * math.pi * np.linalg.inv(A).T          # rows b1, b2
+    B = 2 * math.pi * np.linalg.inv(A)            # rows b1, b2 (a_i . b_j = 2 pi)
     b1, b2 = B[0], B[1]
     M, K, G = 0.5 * b2, (b1 + b2) / 3.0, np.zeros(2)
     segs = [(M, G), (G, K), (K, M)]
@@ -203,19 +204,43 @@ def k_path(problem: TriangularCrystal) -> Tuple[np.ndarray, np.ndarray]:
     return np.array(ks), ms
 
 
-def generalized_eigh(Kr: torch.Tensor, Mr: torch.Tensor) -> torch.Tensor:
-    """Eigenvalues of the dense Hermitian generalized problem K_r u = mu M_r u."""
-    L = torch.linalg.cholesky(Mr)
-    Linv = torch.linalg.solve_triangular(
-        L, torch.eye(Mr.shape[0], dtype=Mr.dtype), upper=False)
-    A = Linv @ Kr @ Linv.conj().T
-    return torch.linalg.eigvalsh(0.5 * (A + A.conj().T))
+def generalized_eigh(Kr, Mr, n_bands: int) -> np.ndarray:
+    """Lowest ``n_bands`` eigenvalues of the complex-Hermitian generalized
+    problem ``K_r u = omega^2 M_r u``, via shift-inverted ARPACK
+    (:func:`scipy.sparse.linalg.eigsh`) on the sparse reduced operators.
+
+    The reduced ``K_r`` is singular at ``Gamma`` (the lowest band tends to 0),
+    so the shift ``sigma`` is set just below the spectrum
+    (``-1e-4 * trace(K_r)/trace(M_r)``, the ``omega^2`` scale) to regularize the
+    null space while still returning the lowest modes.
+    """
+    Ks = Kr.to_scipy_coo().tocsc()
+    Ms = Mr.to_scipy_coo().tocsc()
+    sigma = -1.0e-4 * float(abs(Ks.diagonal()).sum() / abs(Ms.diagonal()).sum())
+    w2 = sla.eigsh(Ks, k=n_bands, M=Ms, sigma=sigma, which="LM",
+                   return_eigenvectors=False)
+    return np.sort(w2.real)
+
+
+def _sweep_bands(K, M, bloch: BlochReducer, ks: np.ndarray,
+                 n_bands: int) -> np.ndarray:
+    """Reduce ``(K, M)`` with the Bloch phase at every ``k`` and return the
+    lowest ``n_bands`` frequencies ``f = sqrt(omega^2) / (2 pi)`` per k-point
+    (the weighted operators already carry the material, so the eigenvalue is
+    ``omega^2`` directly)."""
+    freqs = np.zeros((len(ks), n_bands))
+    for i, k in enumerate(ks):
+        Kr, Mr = bloch.reduce_system(K, M, k)
+        w2 = np.clip(generalized_eigh(Kr, Mr, n_bands), 0.0, None)
+        freqs[i] = np.sqrt(w2) / (2 * math.pi)
+    return freqs
 
 
 # --------------------------------------------------------------------------- #
 # Band-structure sweep with the native BlochReducer
 # --------------------------------------------------------------------------- #
-def compute_bands(problem: TriangularCrystal, verbose: bool = True) -> Dict[str, Any]:
+def compute_bands(problem: TriangularCrystal, verbose: bool = True,
+                  ref: Dict[str, Any] | None = None) -> Dict[str, Any]:
     mesh = build_mesh(problem)
     K, M, n_steel = assemble(mesh, problem)
     bloch = BlochReducer(mesh.points, [problem.a1.tolist(), problem.a2.tolist()],
@@ -225,24 +250,67 @@ def compute_bands(problem: TriangularCrystal, verbose: bool = True) -> Dict[str,
               f"{bloch.n_masters} Bloch master DOFs", flush=True)
 
     ks, ms = k_path(problem)
-    freqs = np.zeros((len(ks), problem.n_bands))
-    for i, k in enumerate(ks):
-        Kr, Mr = bloch.reduce_system(K, M, k)
-        w2 = generalized_eigh(Kr.to_dense(), Mr.to_dense())
-        w2 = torch.clamp(w2[:problem.n_bands].real, min=0.0)
-        freqs[i] = (torch.sqrt(w2) / (2 * math.pi)).cpu().numpy()
-        if verbose and i % max(1, len(ks) // 6) == 0:
-            print(f"  k {i+1}/{len(ks)}", flush=True)
+    freqs = _sweep_bands(K, M, bloch, ks, problem.n_bands)
+    out = dict(ks=ks, ms=ms, freqs=freqs,
+               n_nodes=int(mesh.points.shape[0]), n_masters=int(bloch.n_masters),
+               n_steel=n_steel)
 
-    return dict(ks=ks, ms=ms, freqs=freqs,
-                n_nodes=int(mesh.points.shape[0]), n_masters=int(bloch.n_masters),
-                n_steel=n_steel)
+    # Re-solve at COMSOL's exact wavevectors for a k-point-by-k-point error.
+    if ref is not None:
+        ref_ks = np.stack([ref["kx"], ref["ky"]], axis=1)
+        out["freqs_at_ref"] = _sweep_bands(K, M, bloch, ref_ks, ref["n_compare"])
+    return out
+
+
+# --------------------------------------------------------------------------- #
+# COMSOL reference (committed, offline): load + relative-error comparison
+# --------------------------------------------------------------------------- #
+def load_comsol_reference(path=None, n_compare: int = 10):
+    """Load the committed COMSOL band table (``comsol_reference_triangle.npz``).
+
+    The penetrable two-medium model returns a variable mode count per k-point;
+    group the flat table by the path parameter ``m`` and keep the lowest
+    ``n_compare`` frequencies per k. Returns ``None`` if the file is absent.
+    """
+    if path is None:
+        path = Path(__file__).with_name("comsol_reference_triangle.npz")
+    if not Path(path).exists():
+        return None
+    d = np.load(path)
+    m, kx, ky, f = d["m"], d["kx"], d["ky"], d["freq_hz"]
+    mvals = np.unique(m)
+    n_compare = min(n_compare, *(int((m == u).sum()) for u in mvals))
+    F = np.zeros((len(mvals), n_compare))
+    KX = np.zeros(len(mvals)); KY = np.zeros(len(mvals))
+    for i, u in enumerate(mvals):
+        sel = m == u
+        F[i] = np.sort(f[sel])[:n_compare]
+        KX[i], KY[i] = kx[sel][0], ky[sel][0]
+    return dict(m=mvals, kx=KX, ky=KY, freq=F, n_compare=n_compare,
+                c=float(d["c_fluid"]))
+
+
+def compare_to_comsol(freqs_at_ref: np.ndarray, ref: Dict[str, Any],
+                      f_floor: float = 1.0e3) -> Dict[str, float]:
+    """Per-mode nearest-frequency relative error of TensorMesh vs COMSOL at the
+    same wavevectors; near-zero acoustic modes (``f < f_floor``) are skipped."""
+    errs = []
+    for i in range(ref["freq"].shape[0]):
+        ft = np.sort(freqs_at_ref[i])
+        for fc in ref["freq"][i]:
+            if fc < f_floor:
+                continue
+            errs.append(abs(ft[np.argmin(np.abs(ft - fc))] - fc) / fc)
+    errs = np.array(errs)
+    return dict(mean=float(errs.mean()), p95=float(np.percentile(errs, 95)),
+                max=float(errs.max()), n=int(errs.size))
 
 
 # --------------------------------------------------------------------------- #
 # Plot: rhombic cell | band structure
 # --------------------------------------------------------------------------- #
-def plot_bands(result: Dict[str, Any], problem: TriangularCrystal, save_path) -> None:
+def plot_bands(result: Dict[str, Any], problem: TriangularCrystal, save_path,
+               ref: Dict[str, Any] | None = None) -> None:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -265,14 +333,25 @@ def plot_bands(result: Dict[str, Any], problem: TriangularCrystal, save_path) ->
     ax.set_aspect("equal"); ax.set_title("Rhombic cell (steel in water)")
     ax.set_xlabel("x [mm]"); ax.set_ylabel("y [mm]")
 
-    # -- Right panel: band points (markers only, single colour) ---------------
+    # -- Right panel: TensorMesh bands (+ COMSOL reference if available) -------
     ax = fig.add_subplot(gs[0, 1])
+    if ref is not None:
+        for b in range(ref["freq"].shape[1]):
+            ax.plot(ref["m"], ref["freq"][:, b] / 1e3, "o", ms=5.5, mfc="none",
+                    mec="#D55E00", mew=1.0,
+                    label="COMSOL" if b == 0 else None)
     for b in range(F.shape[1]):
-        ax.plot(result["ms"], F[:, b], "o", color="#0072B2", ms=3.0, mec="none")
+        ax.plot(result["ms"], F[:, b], ".", color="#0072B2", ms=4.0,
+                label="TensorMesh" if b == 0 else None)
     ax.set_xticks(PATH_TICKS); ax.set_xticklabels(PATH_LABELS)
     ax.set_xlim(result["ms"].min(), result["ms"].max()); ax.set_ylim(0, None)
     ax.set_xlabel("wavevector"); ax.set_ylabel("frequency [kHz]")
-    ax.set_title("Triangular-lattice phononic crystal")
+    title = "Triangular-lattice phononic crystal"
+    if "stats" in result:
+        title += f"  (mean err {100 * result['stats']['mean']:.2f}% vs COMSOL)"
+    ax.set_title(title)
+    if ref is not None:
+        ax.legend(loc="upper right", fontsize=8)
     ax.grid(True, alpha=0.3)
 
     save_path = Path(save_path)
@@ -289,12 +368,15 @@ def run_demo(*, make_plot: bool = True, output_path=None,
              verbose: bool = True) -> Dict[str, Any]:
     """Run the triangular band-structure example and return diagnostics."""
     problem = TriangularCrystal(chara_per_a=chara_per_a, n_bands=n_bands)
-    result = compute_bands(problem, verbose=verbose)
+    ref = load_comsol_reference()
+    result = compute_bands(problem, verbose=verbose, ref=ref)
+    if ref is not None:
+        result["stats"] = compare_to_comsol(result["freqs_at_ref"], ref)
 
     if make_plot:
         if output_path is None:
             output_path = Path(__file__).with_name("band_structure_triangular.png")
-        plot_bands(result, problem, output_path)
+        plot_bands(result, problem, output_path, ref=ref)
 
     F = result["freqs"]
     print("Triangular-lattice phononic-crystal band structure")
@@ -302,6 +384,11 @@ def run_demo(*, make_plot: bool = True, output_path=None,
           f"{result['n_masters']} master DOFs")
     print(f"  bands: {problem.n_bands}  k-points: {len(result['ks'])}")
     print(f"  frequency range: [{F.min()/1e3:.1f}, {F.max()/1e3:.1f}] kHz")
+    if "stats" in result:
+        s = result["stats"]
+        print(f"  vs COMSOL ({ref['n_compare']} bands x {len(ref['m'])} k-pts): "
+              f"mean {100*s['mean']:.2f}%  p95 {100*s['p95']:.2f}%  "
+              f"max {100*s['max']:.2f}%")
     return result
 
 
