@@ -94,8 +94,11 @@ examples/**/*.nc
 examples/**/*.xdmf
 examples/**/*.h5
 !examples/**/*.md
+# committed COMSOL reference arrays for the phononic-crystal examples
+# (small, so the band-structure / transmission comparison reproduces offline)
+!examples/wave/phononic_crystal_2d/comsol_reference_*.npz
 
-# Plan 
+# Plan
 TODO.md
 # Experimental
 experimental/

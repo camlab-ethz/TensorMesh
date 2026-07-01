@@ -1,5 +1,5 @@
 from .mesh import Mesh
-from .operator import Condenser
+from .operator import Condenser, BlochReducer
 # from .element import get_shape_val, get_shape_grad, get_basis
 from .element import Transformation,\
                         Element,\
