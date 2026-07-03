@@ -246,14 +246,16 @@ def test_validation_errors(p2_mesh, p1_mesh):
     with pytest.raises(ValueError):  # grad prefix
         Field(trial="gradient", test="v")
 
-    class BadOrder(MixedElementAssembler):
-        fields = [Field(trial="u", test="v", order=3)]
+    class BadQuadrature(MixedElementAssembler):
+        # order 4 is supported per se (generalized pairs), but its default
+        # quadrature degree 2*4=8 exceeds the tabulated maximum of 7
+        fields = [Field(trial="u", test="v", order=4)]
 
         def forward(self, u, v):
             return u * v
 
-    with pytest.raises(ValueError, match="order 3"):
-        BadOrder.from_mesh(p2_mesh)
+    with pytest.raises(ValueError, match="quadrature"):
+        BadQuadrature.from_mesh(p2_mesh)
 
     class DupNames(MixedElementAssembler):
         fields = [Field(trial="u", test="v"), Field(trial="p", test="u")]
