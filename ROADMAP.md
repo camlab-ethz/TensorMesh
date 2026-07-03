@@ -2,13 +2,17 @@
 
 Planned directions for core source code of TensorMesh, roughly ordered by priority. Solver-side items (backends, complex adjoint, multi-GPU) live in the [torch-sla ROADMAP](https://github.com/sparsexlab/torch-sla).
 
-_Last updated: 2026-06._
+_Last updated: 2026-07._
 
 ## 1. Mixed (multi-field / block) assembly for Lagrange spaces — ✅ shipped
 
-Shipped as `MixedElementAssembler` + `Field` (`tensormesh/assemble/mixed_assembler.py`): the fields are declared once (e.g. `Field(trial="u", test="v", order=2, components=2)` + `Field(trial="p", test="q", order=1)` for Taylor–Hood P2–P1) and the weak form is written as a single scalar integrand with tensor-valued trial/test arguments; the assembler extracts every coupling block by one-hot evaluation and scatters into one block `SparseMatrix`, while `assembler.layout` provides the block-DOF helpers (offsets, `dof_mask`/`dof_index`, `split`/`cat`, `restrict`/`prolong`) that the hand-rolled fluids assemblers used to reimplement — see the rewritten `examples/fluid/cavity/cavity.py` (true Taylor–Hood, stabilization-free). Remaining gap: per-field order is restricted to {1, mesh order} (corner-extraction subspaces), so generalized pairs (P3–P2 etc., which need geometric node matching) stay future work. The block machinery is the foundation that the complex (item 2) and mixed-element (item 3) work both reuse.
+Shipped as `MixedElementAssembler` + `Field` (`tensormesh/assemble/mixed_assembler.py`): the fields are declared once (e.g. `Field(trial="u", test="v", order=2, components=2)` + `Field(trial="p", test="q", order=1)` for Taylor–Hood P2–P1) and the weak form is written as a single scalar integrand with tensor-valued trial/test arguments; the assembler extracts every coupling block by one-hot evaluation and scatters into one block `SparseMatrix`, while `assembler.layout` provides the block-DOF helpers (offsets, `dof_mask`/`dof_index`, `split`/`cat`, `restrict`/`prolong`) that the hand-rolled fluids assemblers used to reimplement — see the rewritten `examples/fluid/cavity/cavity.py` (true Taylor–Hood, stabilization-free). Field orders beyond {1, mesh order} are handled by item 2. The block machinery is the foundation that the complex (item 3) and mixed-element (item 4) work both reuse.
 
-## 2. Complex-valued FEM → Helmholtz, PML, metamaterial topology optimization
+## 2. Generalized order pairs via topological Lagrange DOF maps — ✅ shipped (2D any order; 3D vertex+edge)
+
+Decouple the **field order from the mesh order**: the mesh order (fixed at import, e.g. by gmsh) is a *geometry* property, while each field's DOF carriers are generated from mesh **topology** by `lagrange_dofmap` (`tensormesh/assemble/topology.py`) — one DOF per vertex, `order−1` per unique **oriented** edge (element-local slots flip when an element traverses the edge backwards, which is what keeps `order ≥ 3` spaces C⁰-conforming), plus per-cell interiors. Slots are classified by coordinate-matching each family's reference nodes, so no internal-ordering assumptions; the geometry map stays isoparametric at mesh order, making sub- *and* super-parametric fields correct on curved elements. This unlocks: Taylor–Hood P2–P1 **directly on linear gmsh imports** (no re-meshing at order 2), generalized pairs like P3–P2, and 3D P2-on-P1 tetrahedra — all verified to machine precision against exactly-representable manufactured solutions (`tests/assemble/test_generalized_pairs.py`). Supporting API: `layout.boundary_mask(f)` (topological facet-incidence boundary detection — no `is_boundary` point data or geometric tolerance needed), `layout.dof_mask(f, where=...)` coordinate predicates, generalized `points`/`restrict`/`prolong`, and the `field_data={"w": ("u", w)}` channel that interpolates Picard iterates with the owning field's own basis. Remaining: **3D face-DOF orientation** (P3+ tetra, P2+ hex) — deliberately deferred because it shares the facet-orientation layer with item 4; quadrature tables cap at degree 7, so pairs are practical up to P3 until the tables grow; load vectors on generalized fields use the interim recipe `b = M @ f(layout.points(f))` (mass matrix against the interpolant) until a space-aware `NodeAssembler` lands.
+
+## 3. Complex-valued FEM → Helmholtz, PML, metamaterial topology optimization
 
 **Status**: scalar complex Helmholtz is **unblocked end-to-end**. See [`examples/wave/helmholtz/`](examples/wave/helmholtz/) for a manufactured-solution validation; the PML and TopOpt follow-ups are now the remaining work.
 
@@ -26,9 +30,9 @@ Remaining work for item 2:
 
 Topology-optimization scaffolding mostly exists: the density → SIMP → filter → OC pipeline is already proven on real problems (`tensormesh/optimizer/oc.py`, `examples/inverse_design/`). The wave objective is real (e.g. `|u|²` at a target point), so autograd's real-loss convention holds — but classic OC assumes monotone, compliance-like sensitivities, so a wave objective may want MMA instead.
 
-Scope note: scalar complex Helmholtz (complex Lagrange) covers acoustics and 2D / scalar (TE/TM) electromagnetics. **Full-vector 3D electromagnetics** needs H(curl) Nédélec elements — gated on item 3.
+Scope note: scalar complex Helmholtz (complex Lagrange) covers acoustics and 2D / scalar (TE/TM) electromagnetics. **Full-vector 3D electromagnetics** needs H(curl) Nédélec elements — gated on item 4.
 
-## 3. P0, then Raviart–Thomas (H(div)) and Nédélec (H(curl)) elements
+## 4. P0, then Raviart–Thomas (H(div)) and Nédélec (H(curl)) elements
 
 TensorMesh today ships **continuous Lagrange nodal elements only** (`Line`, `Triangle`, `Quadrilateral`, `Tetrahedron`, `Hexahedron`, `Pyramid`, `Prism`, plus higher-order nodal variants), and the element abstraction is **nodal-Lagrange to the core**: scalar basis with the nodal interpolation property (`φᵢ(xⱼ) = δᵢⱼ`, see `element.py`), the standard covariant (gradient) map `∇ₓφ = J⁻ᵀ∇_ξφ`, and node-based global DOFs.
 
@@ -41,4 +45,4 @@ To enable structure-preserving discretization of problems that are naturally pos
 This entails extension in the following three aspects:
 - **Vector-valued** — `shape_val` gains a component dimension `[n_q, n_basis, dim]` and are defined by facet-flux moments `∫_facet v·n = δ`.
 - **Piola transform** — The pullbacks of these vector-valued elements are different from the one for the nodal element.
-- **Facet DOFs + orientation/sign** — global DOFs extends to facets of all dimensions, not just nodes. This requires a unique-facet enumeration as DOF carriers and a per-element ±1 sign convention so shared-facet normals agree. The geometric facet machinery (`get_facet`, `get_edge`, facet quadrature, `Transformation.facets`) already exists; the missing piece is the facet-DOF / orientation layer (the projector currently scatters to node indices, and `reorder` handles node permutations only).
+- **Facet DOFs + orientation/sign** — global DOFs extends to facets of all dimensions, not just nodes. This requires a unique-facet enumeration as DOF carriers and a per-element ±1 sign convention so shared-facet normals agree. The geometric facet machinery (`get_facet`, `get_edge`, facet quadrature, `Transformation.facets`) already exists, and item 2 shipped the *unsigned Lagrange half* of the DOF layer (unique-edge enumeration + per-element orientation flip in `lagrange_dofmap`, facet-incidence boundary detection); what remains here is face enumeration/orientation and the ±1 sign convention (the projector currently scatters to node indices, and `reorder` handles node permutations only).
