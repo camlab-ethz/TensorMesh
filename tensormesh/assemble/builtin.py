@@ -61,7 +61,41 @@ class LaplaceElementAssembler(ElementAssembler):
     """
     def forward(self, gradu, gradv):
         return gradu @ gradv
-    
+
+
+class AnisotropicLaplaceElementAssembler(ElementAssembler):
+    r"""Tensor-coefficient (anisotropic) diffusion / stiffness assembler.
+
+    Generalizes :class:`LaplaceElementAssembler` to a full material tensor
+    :math:`\mathbf{A}`:
+
+    .. math::
+
+        K_{ij}^e = \int_{\Omega^e} (\mathbf{A}\, \nabla N_i) \cdot \nabla N_j \, \mathrm{d}\Omega
+                 = \int_{\Omega^e} \nabla N_i^\top \mathbf{A}\, \nabla N_j \, \mathrm{d}\Omega .
+
+    The coefficient ``A`` is a nodal :math:`[|\mathcal V|, D, D]` field passed
+    through ``point_data`` (interpolated to each quadrature point), so it may be
+    spatially varying, anisotropic, and **complex** — e.g. the diagonal
+    coordinate-stretch tensor :math:`\mathrm{diag}(s_y/s_x,\, s_x/s_y)` of a
+    stretched-coordinate PML, or an anisotropic conductivity/permittivity.  With
+    ``A`` the identity this reduces exactly to :class:`LaplaceElementAssembler`.
+
+    Examples
+    --------
+    .. code-block:: python
+
+        mesh = Mesh.gen_rectangle(chara_length=0.1)
+        A = torch.eye(2).expand(mesh.n_points, 2, 2).clone()   # [N, D, D]
+        K = AnisotropicLaplaceElementAssembler.from_mesh(mesh)(
+                mesh.points, point_data={"A": A})
+    """
+    def forward(self, gradu, gradv, A):
+        # promote the (real) shape gradients to A's dtype so a complex tensor
+        # coefficient (e.g. a PML stretch) works without a manual cast
+        return gradu.to(A.dtype) @ A @ gradv.to(A.dtype)
+
+
 class MassElementAssembler(ElementAssembler):
     r"""Mass Element Assembler.
     
@@ -99,7 +133,28 @@ class MassElementAssembler(ElementAssembler):
     """
     def forward(self, u, v):
         return u * v
-    
+
+
+class ScaledMassElementAssembler(ElementAssembler):
+    r"""Coefficient-weighted mass assembler :math:`\int_\Omega c\, N_i N_j\, d\Omega`.
+
+    Like :class:`MassElementAssembler` but with a scalar nodal coefficient ``c``
+    (from ``point_data``, possibly spatially varying and **complex**).  Handy for
+    the reaction / potential term of a Helmholtz problem — e.g. the PML mass
+    scaling :math:`k_0^2\,\varepsilon\, s_{\mathrm{prod}}` (see
+    :func:`tensormesh.pml.cartesian_pml`), or a variable wave speed.
+
+    Examples
+    --------
+    .. code-block:: python
+
+        c = k0**2 * eps_r * s_prod                    # complex nodal field [N]
+        M = ScaledMassElementAssembler.from_mesh(mesh)(mesh.points, point_data={"c": c})
+    """
+    def forward(self, u, v, c):
+        return c * u * v
+
+
 class LinearElasticityElementAssembler(ElementAssembler):
     r"""Linear Elasticity Element Assembler.
     
