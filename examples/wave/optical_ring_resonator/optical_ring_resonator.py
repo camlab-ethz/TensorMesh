@@ -247,12 +247,86 @@ def plot_field(res: Dict, problem: Coupler, save_path: str) -> None:
 
 
 # --------------------------------------------------------------------------- #
+# 3b. Plot the setup: materials, PML frame, source, boundary conditions
+# --------------------------------------------------------------------------- #
+def plot_setup(problem: Coupler, save_path: str) -> None:
+    """Draw the physical setup: materials (Si / SiO2), the PML frame, the
+    line-current launch, and the applied boundary conditions."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import Circle, Rectangle
+    from matplotlib.lines import Line2D
+
+    # Wong colorblind-safe qualitative palette.
+    c_clad = "#56B4E9"      # SiO2 cladding (sky blue)
+    c_core = "#E69F00"      # Si core (orange)
+    c_pml = "#999999"       # PML frame (grey)
+    c_src = "#D55E00"       # source (vermillion)
+
+    L, d = problem.domain * 1e6, problem.pml * 1e6
+    fig, ax = plt.subplots(figsize=(6.4, 6.4))
+
+    # SiO2 cladding fills the whole domain.
+    ax.add_patch(Rectangle((0, 0), L, L, facecolor=c_clad, edgecolor="none",
+                           alpha=0.35, zorder=0))
+    # PML frame: solid grey border of thickness `pml` on all four sides.
+    for xy, w, h in [((0, 0), L, d), ((0, L - d), L, d),
+                     ((0, d), d, L - 2 * d), ((L - d, d), d, L - 2 * d)]:
+        ax.add_patch(Rectangle(xy, w, h, facecolor=c_pml, edgecolor="none",
+                               alpha=0.30, zorder=1))
+
+    # Si core: bus waveguide (full-height strip) + microdisk, with a thin edge.
+    core_edge = "#8a6100"
+    wg_x0 = (problem.wg_x - problem.wg_width / 2) * 1e6
+    ax.add_patch(Rectangle((wg_x0, 0), problem.wg_width * 1e6, L,
+                           facecolor=c_core, edgecolor=core_edge, linewidth=0.8,
+                           alpha=0.95, zorder=2))
+    ax.add_patch(Circle((problem.disk_x * 1e6, problem.disk_y * 1e6),
+                        problem.disk_r * 1e6, facecolor=c_core, edgecolor=core_edge,
+                        linewidth=0.8, alpha=0.95, zorder=2))
+
+    # Line-current launch (source disk on the waveguide).
+    ax.add_patch(Circle((problem.wg_x * 1e6, problem.src_y * 1e6),
+                        problem.src_r * 1e6, facecolor=c_src, edgecolor="k",
+                        linewidth=0.6, zorder=4))
+
+    # Labels.
+    ax.annotate("line\ncurrent", (problem.wg_x * 1e6 + 0.3, problem.src_y * 1e6),
+                ha="left", va="center", fontsize=8, color=c_src, zorder=5)
+
+    ax.set_xlim(0, L); ax.set_ylim(0, L)
+    ax.set_aspect("equal")
+    ax.set_xlabel("x (µm)"); ax.set_ylabel("y (µm)")
+    ax.set_title("Simulation setup: materials & PML")
+
+    legend = [Line2D([0], [0], marker="s", color="none", markerfacecolor=c_core,
+                     markersize=11, label="Si core ($n=%.2f$)" % problem.n_core),
+              Line2D([0], [0], marker="s", color="none", markerfacecolor=c_clad,
+                     markersize=11, alpha=0.5, label="SiO$_2$ ($n=%.2f$)" % problem.n_clad),
+              Line2D([0], [0], marker="s", color="none", markerfacecolor=c_pml,
+                     markersize=11, alpha=0.5, label="PML (radiating BC)"),
+              Line2D([0], [0], marker="o", color="none", markerfacecolor=c_src,
+                     markeredgecolor="k", markersize=10, label="line-current source")]
+    ax.legend(handles=legend, loc="upper right", fontsize=8, framealpha=0.9,
+              labelspacing=1.0, handletextpad=0.9, borderpad=0.9)
+
+    fig.tight_layout()
+    fig.savefig(save_path, dpi=140, bbox_inches="tight")
+    plt.close(fig)
+    print(f"saved {save_path}", flush=True)
+
+
+# --------------------------------------------------------------------------- #
 # 4. run_demo / main
 # --------------------------------------------------------------------------- #
 def run_demo(*, make_plot: bool = True, field_path: Optional[str] = None,
+             setup_path: Optional[str] = None,
              problem: Optional[Coupler] = None) -> Dict:
-    """Solve the coupler, save the field figure, return diagnostics."""
+    """Solve the coupler, save the setup + field figures, return diagnostics."""
     problem = problem or Coupler()
+    if make_plot:
+        plot_setup(problem, setup_path or str(HERE / "optical_ring_resonator_setup.png"))
     res = solve(problem)
     ez = res["Ez"]
     disk = (((res["points"][:, 0] - problem.disk_x) ** 2
@@ -273,14 +347,17 @@ def main() -> None:
     parser.add_argument("--order", type=int, default=1, choices=(1, 2))
     parser.add_argument("--pml-strength", type=float, default=10.0)
     parser.add_argument("--no-plot", action="store_true")
-    parser.add_argument("--output", type=str, default=None)
+    parser.add_argument("--output", type=str, default=None, help="field figure path")
+    parser.add_argument("--setup-output", type=str, default=None,
+                        help="setup (materials/BC) figure path")
     args = parser.parse_args()
 
     torch.set_default_dtype(torch.float64)
     problem = Coupler(lam0=args.lam0_nm * 1e-9,
                       mesh_h=(args.mesh_h_nm * 1e-9) if args.mesh_h_nm else None,
                       mesh_order=args.order, pml_strength=args.pml_strength)
-    run_demo(make_plot=not args.no_plot, field_path=args.output, problem=problem)
+    run_demo(make_plot=not args.no_plot, field_path=args.output,
+             setup_path=args.setup_output, problem=problem)
 
 
 if __name__ == "__main__":
