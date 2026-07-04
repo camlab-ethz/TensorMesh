@@ -17,7 +17,7 @@ In TM polarization the out-of-plane field $E_z$ obeys a scalar Helmholtz
 equation with the PML's complex coordinate stretch $s_x, s_y$:
 
 $$\nabla\cdot(\mathbf\Lambda\,\nabla E_z) + k_0^2\,\varepsilon_r\, s_x s_y\, E_z = \text{source},
-\qquad \mathbf\Lambda = \operatorname{diag}(s_y/s_x,\ s_x/s_y).$$
+\qquad \mathbf\Lambda = \mathrm{diag}(s_y/s_x,\ s_x/s_y).$$
 
 Outside the PML $s_x=s_y=1$ and this is the ordinary Helmholtz equation;
 $\varepsilon_r$ is $n_\text{core}^2$ in the waveguide and disk, $n_\text{clad}^2$
