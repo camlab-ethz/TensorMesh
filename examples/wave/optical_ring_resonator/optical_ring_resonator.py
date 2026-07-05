@@ -12,9 +12,12 @@ and mass scaling ``sx sy`` (both 1 outside the PML).  This is a plain scalar
 Helmholtz with a spatially-varying complex coefficient, assembled natively by a
 custom :class:`~tensormesh.ElementAssembler` whose ``forward`` reads the
 quadrature coordinate and evaluates ``eps_r`` (Si in the waveguide + disk, SiO2
-elsewhere) and the PML stretch on the fly.  A line-current source in the
-waveguide launches the guided mode; on resonance it feeds a whispering-gallery
-mode (WGM) of the disk — a bright ring of azimuthal lobes on the rim.
+elsewhere) and the PML stretch on the fly.  The waveguide is fed by a **modal
+soft source**: the analytic fundamental transverse profile of the bus slab is
+imprinted on a thin launch plane and phased as a two-plane directional launch,
+so it injects the guided mode travelling toward the disk (not an isotropic
+current blob).  On resonance it feeds a whispering-gallery mode (WGM) of the
+disk — a bright ring of azimuthal lobes on the rim.
 
 TensorMesh now ships a native PML (``tensormesh.cartesian_pml`` +
 ``AnisotropicLaplaceElementAssembler`` + ``ScaledMassElementAssembler``); this
@@ -67,7 +70,13 @@ class Coupler:
     domain, pml : full domain size and PML-frame thickness (m).
     wg_width, wg_x : bus-waveguide width and center x (m).
     disk_r, disk_x, disk_y : microdisk radius and center (m).
-    src_r, src_y : source-disk radius and y-position on the waveguide (m).
+    src_y : y of the modal launch plane on the waveguide (m).
+    launch_sigma : longitudinal 1/e half-width of the soft-source window (m);
+        defaults to ``1.5 * h``.
+    directional : if True, use a two-plane launch (a second plane a quarter
+        guided-wavelength ahead, phased by +i) so the mode radiates toward the
+        disk (+y) and the backward wave cancels; if False, a single symmetric
+        plane launches both ways.
     n_core, n_clad : Si and SiO2 refractive indices.
     lam0 : drive wavelength (m).  Default 1.512 um — the disk's whispering-gallery
         resonance for the default mesh.  The ~1.55 um physical resonance
@@ -85,8 +94,9 @@ class Coupler:
     disk_r: float = 1.0e-6
     disk_x: float = 2.75e-6
     disk_y: float = 3.0e-6
-    src_r: float = 0.06e-6
-    src_y: float = 1.2e-6
+    src_y: float = 0.6e-6           # launch at the PML/cladding interface (= pml)
+    launch_sigma: Optional[float] = None
+    directional: bool = True
     n_core: float = 3.48
     n_clad: float = 1.44
     lam0: float = 1.512e-6          # disk WGM resonance for the default P1 mesh
@@ -108,6 +118,11 @@ class Coupler:
     def h(self) -> float:
         """Resolved mesh edge length (m)."""
         return self.mesh_h or self.lam0 / self.n_core / 12.0
+
+    @property
+    def sigma(self) -> float:
+        """Resolved longitudinal 1/e half-width of the launch window (m)."""
+        return self.launch_sigma or 1.5 * self.h
 
 
 # --------------------------------------------------------------------------- #
@@ -163,8 +178,7 @@ def build_mesh(problem: Coupler, msh_path: Optional[str] = None) -> Mesh:
         sq = occ.addRectangle(0, 0, 0, L, L)
         wg = occ.addRectangle(problem.wg_x - problem.wg_width / 2, 0, 0, problem.wg_width, L)
         dk = occ.addDisk(problem.disk_x, problem.disk_y, 0, problem.disk_r, problem.disk_r)
-        sc = occ.addDisk(problem.wg_x, problem.src_y, 0, problem.src_r, problem.src_r)
-        occ.fragment([(2, sq)], [(2, wg), (2, dk), (2, sc)])
+        occ.fragment([(2, sq)], [(2, wg), (2, dk)])
         occ.synchronize()
         gmsh.option.setNumber("Mesh.MeshSizeMin", h)
         gmsh.option.setNumber("Mesh.MeshSizeMax", h)
@@ -175,6 +189,88 @@ def build_mesh(problem: Coupler, msh_path: Optional[str] = None) -> Mesh:
     finally:
         gmsh.finalize()
     return Mesh.from_file(msh_path, reorder=False)
+
+
+# --------------------------------------------------------------------------- #
+# 1b. Modal soft source: fundamental transverse mode of the bus waveguide
+# --------------------------------------------------------------------------- #
+def slab_mode(problem: Coupler) -> Tuple[float, float, float]:
+    r"""Fundamental even :math:`E_z` mode of the bus waveguide (symmetric slab).
+
+    Solves the even-mode dispersion :math:`k_x \tan(k_x w/2) = \gamma` for the
+    guided effective index :math:`n_\mathrm{eff}\in(n_\mathrm{clad},n_\mathrm{core})`,
+    with transverse core wavenumber :math:`k_x = k_0\sqrt{n_\mathrm{core}^2-n_\mathrm{eff}^2}`
+    and cladding decay :math:`\gamma = k_0\sqrt{n_\mathrm{eff}^2-n_\mathrm{clad}^2}`.
+    Returns ``(n_eff, kx, gamma)`` (``kx, gamma`` in rad/m).
+    """
+    import math
+
+    k0, w = problem.k0, problem.wg_width
+    n1, n2 = problem.n_core, problem.n_clad
+
+    def f(neff: float) -> float:
+        kx = k0 * math.sqrt(max(n1 * n1 - neff * neff, 0.0))
+        ga = k0 * math.sqrt(max(neff * neff - n2 * n2, 0.0))
+        # even-mode condition times cos(kx w/2): avoids the tan asymptote.
+        return kx * math.sin(kx * w / 2) - ga * math.cos(kx * w / 2)
+
+    # Scan from just below n_core downward for the first (fundamental) root.
+    lo, hi, steps = n2 + 1e-9, n1 - 1e-9, 4000
+    prev_n, prev_f, root = hi, f(hi), None
+    for i in range(1, steps + 1):
+        n = hi - (hi - lo) * i / steps
+        fn = f(n)
+        if prev_f * fn <= 0.0:
+            a, fa, b = n, fn, prev_n
+            for _ in range(100):                      # bisection
+                m = 0.5 * (a + b)
+                if fa * f(m) <= 0.0:
+                    b = m
+                else:
+                    a, fa = m, f(m)
+            root = 0.5 * (a + b)
+            break
+        prev_n, prev_f = n, fn
+    if root is None:
+        raise RuntimeError("no guided even mode found for the bus waveguide")
+
+    kx = k0 * math.sqrt(n1 * n1 - root * root)
+    ga = k0 * math.sqrt(root * root - n2 * n2)
+    return root, kx, ga
+
+
+def launch_field(problem: Coupler, pts: torch.Tensor,
+                 neff: float, kx: float, ga: float) -> torch.Tensor:
+    r"""Complex nodal soft source imprinting the fundamental bus mode.
+
+    The transverse profile :math:`\psi(x)` (cosine in the core, evanescent tails
+    in the cladding) is imprinted on a thin Gaussian window in ``y`` at the
+    launch plane ``src_y``.  When ``directional`` is set, a second window a
+    quarter guided-wavelength ahead and phased by ``+i`` makes the ``+y``
+    (toward-disk) wave add and the backward wave cancel.  The consistent FEM
+    load is then ``rhs = M @ launch_field``.
+    """
+    import math
+
+    x = pts[:, 0] - problem.wg_x
+    y = pts[:, 1]
+    w, sig = problem.wg_width, problem.sigma
+    ax = torch.abs(x)
+    psi = torch.where(ax <= w / 2,
+                      torch.cos(kx * x),
+                      math.cos(kx * w / 2) * torch.exp(-ga * (ax - w / 2)))
+
+    def band(yc: float) -> torch.Tensor:
+        return torch.exp(-((y - yc) / sig) ** 2)
+
+    lam_g = 2.0 * math.pi / (problem.k0 * neff)        # guided wavelength
+    win = band(problem.src_y).to(torch.complex128)
+    if problem.directional:
+        # second plane a quarter guided-wavelength ahead, phased by -i so the
+        # outgoing wave (e^{-i beta y} for this solver's convention) adds in +y
+        # (toward the disk) and cancels in -y.
+        win = win - 1j * band(problem.src_y + lam_g / 4.0)
+    return psi.to(torch.complex128) * win
 
 
 # --------------------------------------------------------------------------- #
@@ -194,18 +290,18 @@ def solve(problem: Coupler, verbose: bool = True) -> Dict:
     asm.type(torch.float64)
     H = asm(points=pts)
 
-    # source = uniform current over the source disk, applied as the consistent
-    # FEM load  rhs_i = int_srcdisk phi_i  (= M @ indicator).
+    # Modal soft source: imprint the fundamental bus-waveguide mode on a thin
+    # launch plane and apply it as the consistent FEM load  rhs = M @ psi.
+    neff, kx, ga = slab_mode(problem)
     Masm = MassElementAssembler.from_mesh(mesh, quadrature_order=4)
     Msp = Masm(pts)
-    src = (((pts[:, 0] - problem.wg_x) ** 2 + (pts[:, 1] - problem.src_y) ** 2)
-           < problem.src_r ** 2).to(torch.complex128)
+    src = launch_field(problem, pts, neff, kx, ga)
     rhs = Msp @ src
 
     if verbose:
         print(f"mesh: {mesh.n_points} nodes, {mesh.n_elements} triangles; "
-              f"{int(src.real.sum())} source nodes; lam0 = {problem.lam0*1e9:.0f} nm",
-              flush=True)
+              f"bus mode n_eff = {neff:.4f} ({'directional' if problem.directional else 'symmetric'} "
+              f"launch); lam0 = {problem.lam0*1e9:.0f} nm", flush=True)
 
     ez = SparseMatrix(H.values, H.row, H.col, H.shape).solve(rhs)
     return dict(mesh=mesh, points=pts.cpu().numpy(), Ez=ez.cpu().numpy())
@@ -286,14 +382,18 @@ def plot_setup(problem: Coupler, save_path: str) -> None:
                         problem.disk_r * 1e6, facecolor=c_core, edgecolor=core_edge,
                         linewidth=0.8, alpha=0.95, zorder=2))
 
-    # Line-current launch (source disk on the waveguide).
-    ax.add_patch(Circle((problem.wg_x * 1e6, problem.src_y * 1e6),
-                        problem.src_r * 1e6, facecolor=c_src, edgecolor="k",
-                        linewidth=0.6, zorder=4))
+    # Modal launch plane (thin line across the waveguide) + toward-disk arrow.
+    xc, ys = problem.wg_x * 1e6, problem.src_y * 1e6
+    hw = problem.wg_width * 1e6 / 2       # span exactly the waveguide width
+    ax.plot([xc - hw, xc + hw], [ys, ys], color=c_src, linewidth=2.4, zorder=4)
+    if problem.directional:
+        ax.annotate("", xy=(xc, ys + 0.55), xytext=(xc, ys),
+                    arrowprops=dict(arrowstyle="-|>", color=c_src, linewidth=2.0),
+                    zorder=5)
 
     # Labels.
-    ax.annotate("line\ncurrent", (problem.wg_x * 1e6 + 0.3, problem.src_y * 1e6),
-                ha="left", va="center", fontsize=8, color=c_src, zorder=5)
+    ax.annotate("mode\nlaunch", (xc + hw + 0.15, ys), ha="left", va="center",
+                fontsize=8, color=c_src, zorder=5)
 
     ax.set_xlim(0, L); ax.set_ylim(0, L)
     ax.set_aspect("equal")
@@ -306,8 +406,7 @@ def plot_setup(problem: Coupler, save_path: str) -> None:
                      markersize=11, alpha=0.5, label="SiO$_2$ ($n=%.2f$)" % problem.n_clad),
               Line2D([0], [0], marker="s", color="none", markerfacecolor=c_pml,
                      markersize=11, alpha=0.5, label="PML (radiating BC)"),
-              Line2D([0], [0], marker="o", color="none", markerfacecolor=c_src,
-                     markeredgecolor="k", markersize=10, label="line-current source")]
+              Line2D([0], [0], color=c_src, linewidth=2.4, label="modal soft source")]
     ax.legend(handles=legend, loc="upper right", fontsize=8, framealpha=0.9,
               labelspacing=1.0, handletextpad=0.9, borderpad=0.9)
 

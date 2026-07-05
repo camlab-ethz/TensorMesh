@@ -21,7 +21,11 @@ $$\nabla\cdot(\mathbf\Lambda\,\nabla E_z) + k_0^2\,\varepsilon_r\, s_x s_y\, E_z
 
 Outside the PML $s_x=s_y=1$ and this is the ordinary Helmholtz equation;
 $\varepsilon_r$ is $n_\text{core}^2$ in the waveguide and disk, $n_\text{clad}^2$
-elsewhere. A line-current source in the waveguide launches the guided mode.
+elsewhere. A **modal soft source** launches the guided mode: the analytic
+fundamental transverse profile of the bus slab (effective index $n_\text{eff}$
+from the even-mode dispersion $k_x\tan(k_x w/2)=\gamma$) is imprinted on a thin
+launch plane and phased as a two-plane directional launch, so power travels
+toward the disk instead of radiating both ways from a current blob.
 
 ```text
 mesh (gmsh, conforming) -> assemble (K_PML - k0^2 M) -> complex solve -> E_z
