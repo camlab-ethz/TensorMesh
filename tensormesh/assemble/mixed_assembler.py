@@ -477,9 +477,9 @@ class MixedElementAssembler(nn.Module):
     * Only the ``ReduceProjector`` scatter backend is supported (the
       ``SparseProjector`` is float32-only, see the complex-FEM ROADMAP item).
     * ``energy`` / ``from_assembler`` are not provided for mixed forms.
-    * Load vectors are assembled per field with
-      :class:`~tensormesh.assemble.NodeAssembler` and combined with
-      :meth:`BlockLayout.cat`.
+    * Load vectors are assembled space-aware by :meth:`assemble_vector`
+      (override :meth:`forward_vector` or pass ``func=``): same argument
+      dispatch, linear in the test functions, same block DOF layout.
     """
 
     fields: List[Field] = []
@@ -581,6 +581,21 @@ class MixedElementAssembler(nn.Module):
         ``element_data`` / ``scalar_data`` key. Must return a 0-d tensor.
         """
         raise NotImplementedError("forward is not implemented")
+
+    def forward_vector(self, *args):
+        r"""Scalar integrand of the **linear** form assembled by :meth:`assemble_vector`.
+
+        Override in subclasses (or pass ``func=`` to
+        :meth:`assemble_vector`). Same argument dispatch as
+        :meth:`forward`, but only **test** arguments (and data) may
+        appear — e.g. a Stokes body force::
+
+            def forward_vector(self, v, x):
+                return x[1] * v[0]      # f = (y, 0)
+
+        Must return a 0-d tensor, linear in the test functions.
+        """
+        raise NotImplementedError("forward_vector is not implemented")
 
     def __post_init__(self):
         r"""Override this function to store parameters after the initialization."""
@@ -823,8 +838,9 @@ class MixedElementAssembler(nn.Module):
             if alpha.trial in has_trial and beta.trial in has_test
         ]
 
-    def _check_bilinear(self, fn: Callable, params, data_args, dtype, device):
-        """Evaluate ``fn`` with every field argument zero; nonzero ⇒ not bilinear."""
+    def _check_bilinear(self, fn: Callable, params, data_args, dtype, device,
+                        form: str = "bilinear"):
+        """Evaluate ``fn`` with every field argument zero; nonzero ⇒ not (bi)linear."""
         D = self.dimension
         args = []
         for key, kind, f in params:
@@ -848,14 +864,15 @@ class MixedElementAssembler(nn.Module):
             )
         if not (out == 0).all():
             raise ValueError(
-                "the mixed integrand is not bilinear: it is nonzero when every "
-                "field argument is zero (constant term detected)"
+                f"the mixed integrand is not {form}: it is nonzero when every "
+                f"field argument is zero (constant term detected)"
             )
 
     # ------------------------------------------------------------------ #
-    # one pass = one (trial field, test field) block on one element type
+    # one pass = one (trial field, test field) block on one element type;
+    # with alpha=None it evaluates a LINEAR form (test side only)
     # ------------------------------------------------------------------ #
-    def _run_pass(self, fn: Callable, params, alpha: Field, beta: Field,
+    def _run_pass(self, fn: Callable, params, alpha: Optional[Field], beta: Field,
                   tables_val, tables_grad, data_args, zeros, eyes):
         AX_E, AX_Q, AX_I, AX_J, AX_B, AX_A = range(6)
         raw: List[torch.Tensor] = []
@@ -915,12 +932,13 @@ class MixedElementAssembler(nn.Module):
             return fn(*[b(r) for b in builders])
 
         has_e = any(d[AX_E] is not None for d in dims)
-        layers = [ax for ax, active in (
-            (AX_E, has_e), (AX_Q, True), (AX_I, True), (AX_J, True),
-            (AX_B, beta.components > 1), (AX_A, alpha.components > 1),
-        ) if active]
+        # a vmap layer exists iff some raw input carries that axis: q/i are
+        # always carried by the test tables, j/a only in bilinear passes
+        # (alpha is not None), b only for vector-valued test fields
+        layers = [ax for ax in (AX_E, AX_Q, AX_I, AX_J, AX_B, AX_A)
+                  if any(d[ax] is not None for d in dims)]
         parallel = inner
-        for ax in reversed(layers):  # wrap innermost (AX_A) first
+        for ax in reversed(layers):  # wrap innermost first
             parallel = vmap(parallel, in_dims=tuple(d[ax] for d in dims))
 
         out = parallel(*raw)
@@ -929,51 +947,27 @@ class MixedElementAssembler(nn.Module):
                 "the mixed forward must return a 0-d scalar integrand, got a "
                 f"tensor with {out.dim() - len(layers)} extra dimension(s)"
             )
-        if alpha.components == 1:
+        if alpha is not None:  # bilinear block: [..., i, j, b, a]
+            if alpha.components == 1:
+                out = out.unsqueeze(-1)
+            if beta.components == 1:
+                out = out.unsqueeze(-2)
+        elif beta.components == 1:  # linear pass: [..., i, b]
             out = out.unsqueeze(-1)
-        if beta.components == 1:
-            out = out.unsqueeze(-2)
-        return out, has_e  # [E, Q, i, j, b, a] or [Q, i, j, b, a]
+        return out, has_e
 
     @staticmethod
     def _integrate_pair(batch_integral, jxw, use_element_parallel):
+        # [E?, Q, i, j, b, a] (bilinear) or [E?, Q, i, b] (linear) -> drop Q
         if use_element_parallel:
-            return torch.einsum("eqijba,eq->eijba", batch_integral, jxw)
-        return torch.einsum("qijba,eq->eijba", batch_integral, jxw)
+            return torch.einsum("eqi...,eq->ei...", batch_integral, jxw)
+        return torch.einsum("qi...,eq->ei...", batch_integral, jxw)
 
     # ------------------------------------------------------------------ #
-    # assembly
+    # shared assembly plumbing
     # ------------------------------------------------------------------ #
-    def __call__(self, points: Optional[torch.Tensor] = None,
-                 func: Optional[Callable] = None,
-                 point_data: Optional[Mapping[str, torch.Tensor]] = None,
-                 element_data: Optional[Union[Mapping[str, Mapping[str, torch.Tensor]],
-                                              Mapping[str, torch.Tensor]]] = None,
-                 scalar_data: Optional[Mapping[str, torch.Tensor]] = None,
-                 batch_size: int = -1,
-                 field_data: Optional[Mapping[str, Tuple[str, torch.Tensor]]] = None
-                 ) -> SparseMatrix:
-        r"""Assemble the mixed bilinear form into the global block sparse matrix.
-
-        The signature mirrors :meth:`ElementAssembler.__call__`; see the
-        class docstring for the mixed-form conventions.
-
-        Parameters
-        ----------
-        field_data : Mapping[str, Tuple[str, torch.Tensor]], optional
-            Data living on a *field's* DOFs rather than on mesh points:
-            ``{"w": ("u", values)}`` with ``values`` of shape
-            ``[n_f, c_f]`` (or ``[n_f]`` for scalar fields). The key (and
-            its ``grad``-prefixed form) becomes a ``forward`` argument,
-            interpolated with that field's own basis — e.g. a previous
-            Picard iterate of a generalized-order velocity field.
-
-        Returns
-        -------
-        SparseMatrix
-            Square sparse matrix of shape :math:`[N, N]` with
-            :math:`N = \sum_f n_f c_f` (see :class:`BlockLayout`).
-        """
+    def _normalize_inputs(self, points, point_data, element_data, scalar_data, field_data):
+        """Validate/normalize the ``__call__``/``assemble_vector`` inputs."""
         assert isinstance(point_data, dict) or point_data is None, (
             f"point_data should be a dict, but got {type(point_data)}. "
             f"Please pass in extra parameters using key-value pairs"
@@ -1031,18 +1025,16 @@ class MixedElementAssembler(nn.Module):
 
         point_data["x"] = points  # type: ignore
 
-        self = self.type(points.dtype).to(points.device)  # type: ignore
+        self.type(points.dtype).to(points.device)
 
         for key, value in point_data.items():
             assert value.shape[0] == points.shape[0], (
                 f"the shape of {key} should be [n_point, ...], but got {value.shape}"
             )
+        return points, point_data, element_data, scalar_data, field_data
 
-        fn = self.forward if func is None else func
-        params = self._classify_params(fn, point_data, element_data, scalar_data, field_data)
-        executed = self._executed_pairs(self.fields, params)
-
-        dtype, device = points.dtype, points.device
+    def _pass_context(self, params, field_data, dtype, device):
+        """Zero constants, one-hot eyes and the basis-table requirements of ``params``."""
         D = self.dimension
         zeros = {}
         for _, kind, f in params:
@@ -1057,20 +1049,24 @@ class MixedElementAssembler(nn.Module):
             f.trial: torch.eye(f.components, dtype=dtype, device=device)
             for f in self.fields if f.components > 1
         }
-
         needs_val = {f.trial for _, kind, f in params if kind in ("trial_val", "test_val")}
         needs_grad = {f.trial for _, kind, f in params if kind in ("trial_grad", "test_grad")}
+        needs_val.update(field_data[key][0] for key, kind, _ in params if kind == "fielddata")
+        needs_grad.update(field_data[key[4:]][0] for key, kind, _ in params if kind == "gradfielddata")
+        return zeros, eyes_by_field, needs_val, needs_grad
+
+    def _batches(self, params, point_data, element_data, scalar_data, field_data,
+                 needs_val, needs_grad, batch_size):
+        """Yield ``(element_type, jxw, tables_val, tables_grad, data_args)`` per quadrature batch.
+
+        One yield per (element type, quadrature batch): the isoparametric
+        geometry, the per-field physical basis tables and every data
+        argument of ``params`` interpolated at the batch's quadrature points.
+        """
         point_keys = [key for key, kind, _ in params if kind == "point"]
         gradpoint_keys = [key for key, kind, _ in params if kind == "gradpoint"]
         fielddata_keys = [key for key, kind, _ in params if kind == "fielddata"]
         gradfielddata_keys = [key for key, kind, _ in params if kind == "gradfielddata"]
-        needs_val.update(field_data[key][0] for key in fielddata_keys)
-        needs_grad.update(field_data[key[4:]][0] for key in gradfielddata_keys)
-
-        pass_vals: Dict[Tuple[str, str], Optional[torch.Tensor]] = {
-            (alpha.trial, beta.trial): None for alpha, beta in executed
-        }
-        checked_bilinear = False
 
         for element_type in self.element_types:
             trans: Transformation = self.transformation[element_type]  # type: ignore
@@ -1089,9 +1085,6 @@ class MixedElementAssembler(nn.Module):
             }  # {key: [E, nb_f, ...]}
             element_coords = trans.element_coords  # [E, nb_mesh, D]
 
-            acc: Dict[Tuple[str, str], Optional[torch.Tensor]] = {
-                key: None for key in pass_vals
-            }
             for i in range(n_batch):
                 qs = i * n_batch_size
                 w, _ = trans.batch_quadrature(qs, n_batch_size)  # [Qb], [Qb, D]
@@ -1140,41 +1133,197 @@ class MixedElementAssembler(nn.Module):
                     elif kind == "scalar":
                         data_args[key] = scalar_data[key]  # type: ignore
 
-                if not checked_bilinear:
-                    self._check_bilinear(fn, params, data_args, dtype, device)
-                    checked_bilinear = True
+                yield element_type, jxw, tables_val, tables_grad, data_args
 
-                for alpha, beta in executed:
-                    eyes = {"trial": eyes_by_field.get(alpha.trial),
-                            "test": eyes_by_field.get(beta.trial)}
-                    out, has_e = self._run_pass(
-                        fn, params, alpha, beta,
-                        tables_val, tables_grad, data_args, zeros, eyes,
-                    )
-                    batch_integral = self._integrate_pair(out, jxw, has_e)  # [E, i, j, b, a]
-                    key = (alpha.trial, beta.trial)
-                    acc[key] = batch_integral if acc[key] is None else acc[key] + batch_integral
+    # ------------------------------------------------------------------ #
+    # assembly
+    # ------------------------------------------------------------------ #
+    def __call__(self, points: Optional[torch.Tensor] = None,
+                 func: Optional[Callable] = None,
+                 point_data: Optional[Mapping[str, torch.Tensor]] = None,
+                 element_data: Optional[Union[Mapping[str, Mapping[str, torch.Tensor]],
+                                              Mapping[str, torch.Tensor]]] = None,
+                 scalar_data: Optional[Mapping[str, torch.Tensor]] = None,
+                 batch_size: int = -1,
+                 field_data: Optional[Mapping[str, Tuple[str, torch.Tensor]]] = None
+                 ) -> SparseMatrix:
+        r"""Assemble the mixed bilinear form into the global block sparse matrix.
 
+        The signature mirrors :meth:`ElementAssembler.__call__`; see the
+        class docstring for the mixed-form conventions.
+
+        Parameters
+        ----------
+        field_data : Mapping[str, Tuple[str, torch.Tensor]], optional
+            Data living on a *field's* DOFs rather than on mesh points:
+            ``{"w": ("u", values)}`` with ``values`` of shape
+            ``[n_f, c_f]`` (or ``[n_f]`` for scalar fields). The key (and
+            its ``grad``-prefixed form) becomes a ``forward`` argument,
+            interpolated with that field's own basis — e.g. a previous
+            Picard iterate of a generalized-order velocity field.
+
+        Returns
+        -------
+        SparseMatrix
+            Square sparse matrix of shape :math:`[N, N]` with
+            :math:`N = \sum_f n_f c_f` (see :class:`BlockLayout`).
+        """
+        points, point_data, element_data, scalar_data, field_data = \
+            self._normalize_inputs(points, point_data, element_data, scalar_data, field_data)
+        dtype, device = points.dtype, points.device
+
+        fn = self.forward if func is None else func
+        params = self._classify_params(fn, point_data, element_data, scalar_data, field_data)
+        executed = self._executed_pairs(self.fields, params)
+        zeros, eyes_by_field, needs_val, needs_grad = \
+            self._pass_context(params, field_data, dtype, device)
+
+        acc: Dict[Tuple[str, str, str], Optional[torch.Tensor]] = {}
+        checked_bilinear = False
+        for element_type, jxw, tables_val, tables_grad, data_args in self._batches(
+                params, point_data, element_data, scalar_data, field_data,
+                needs_val, needs_grad, batch_size):
+            if not checked_bilinear:
+                self._check_bilinear(fn, params, data_args, dtype, device)
+                checked_bilinear = True
             for alpha, beta in executed:
-                key = (alpha.trial, beta.trial)
-                proj = self.pair_projector[f"{beta.trial}__{alpha.trial}__{element_type}"]
-                projected = proj(acc[key])  # [n_pair_edges, c_b, c_a]
-                pass_vals[key] = projected if pass_vals[key] is None else pass_vals[key] + projected
+                eyes = {"trial": eyes_by_field.get(alpha.trial),
+                        "test": eyes_by_field.get(beta.trial)}
+                out, has_e = self._run_pass(
+                    fn, params, alpha, beta,
+                    tables_val, tables_grad, data_args, zeros, eyes,
+                )
+                batch_integral = self._integrate_pair(out, jxw, has_e)  # [E, i, j, b, a]
+                key = (alpha.trial, beta.trial, element_type)
+                acc[key] = batch_integral if acc.get(key) is None else acc[key] + batch_integral
 
-        vals, rows, cols = [], [], []
+        pass_vals: Dict[Tuple[str, str], torch.Tensor] = {}
+        for alpha, beta in executed:
+            total = None
+            for element_type in self.element_types:
+                proj = self.pair_projector[f"{beta.trial}__{alpha.trial}__{element_type}"]
+                projected = proj(acc[(alpha.trial, beta.trial, element_type)])  # [n_pair_edges, c_b, c_a]
+                total = projected if total is None else total + projected
+            pass_vals[(alpha.trial, beta.trial)] = total
+
+        vals = []
+        pattern = []
         for beta in self.fields:
             for alpha in self.fields:
                 key = (alpha.trial, beta.trial)
                 if key not in pass_vals:
                     continue
-                pair_key = f"{beta.trial}__{alpha.trial}"
                 vals.append(pass_vals[key].reshape(-1))
-                rows.append(self.pair_rows[pair_key])
-                cols.append(self.pair_cols[pair_key])
+                pattern.append(f"{beta.trial}__{alpha.trial}")
+        rows, cols = self._coo_pattern(tuple(pattern), device)
         return SparseMatrix(
-            torch.cat(vals), torch.cat(rows), torch.cat(cols),
+            torch.cat(vals), rows, cols,
             shape=(self.n_dofs, self.n_dofs),
         )
+
+    def _coo_pattern(self, pattern: Tuple[str, ...], device) -> Tuple[torch.Tensor, torch.Tensor]:
+        """Concatenated global (rows, cols) of the executed blocks — cached.
+
+        ``SparseMatrix.layout_signature`` is sequence-identity
+        (``data_ptr`` + version), so downstream pattern caches like
+        :class:`~tensormesh.operator.Condenser` only hit when repeated
+        assemblies hand over the *same* index tensors. Re-concatenating
+        per call would allocate fresh tensors and defeat that, so the
+        concatenation is cached per executed-block pattern (and rebuilt
+        on a device change).
+        """
+        if not hasattr(self, "_coo_cache"):
+            self._coo_cache: Dict[Tuple[str, ...], Tuple[torch.Tensor, torch.Tensor]] = {}
+        cached = self._coo_cache.get(pattern)
+        if cached is None or cached[0].device != device:
+            rows = torch.cat([self.pair_rows[pair_key] for pair_key in pattern])
+            cols = torch.cat([self.pair_cols[pair_key] for pair_key in pattern])
+            self._coo_cache[pattern] = (rows, cols)
+        return self._coo_cache[pattern]
+
+    def assemble_vector(self, points: Optional[torch.Tensor] = None,
+                        func: Optional[Callable] = None,
+                        point_data: Optional[Mapping[str, torch.Tensor]] = None,
+                        element_data: Optional[Union[Mapping[str, Mapping[str, torch.Tensor]],
+                                                     Mapping[str, torch.Tensor]]] = None,
+                        scalar_data: Optional[Mapping[str, torch.Tensor]] = None,
+                        batch_size: int = -1,
+                        field_data: Optional[Mapping[str, Tuple[str, torch.Tensor]]] = None
+                        ) -> torch.Tensor:
+        r"""Assemble a **linear** form into the global block load vector.
+
+        The space-aware counterpart of a load-vector assembler: the
+        integrand (:meth:`forward_vector`, or ``func=``) is written like
+        :meth:`forward` but may reference only **test** arguments plus
+        data — e.g. :math:`\int f \cdot v` for the Stokes momentum
+        equation. It is evaluated with one-hot test basis functions per
+        field and scattered into the same block DOF layout as
+        :meth:`__call__`, so the result pairs directly with the assembled
+        matrix and the :class:`~tensormesh.operator.Condenser`. Fields
+        whose test arguments do not appear contribute a zero segment.
+
+        Works for every field kind, including generalized-order fields
+        (this supersedes the interim ``b = M @ f(points)`` interpolation
+        recipe). ``field_data`` is supported — e.g. the previous time
+        step of a velocity living on its own field DOFs.
+
+        Returns
+        -------
+        torch.Tensor
+            Dense load vector of shape :math:`[N]` with
+            :math:`N = \sum_f n_f c_f` (see :class:`BlockLayout`).
+        """
+        points, point_data, element_data, scalar_data, field_data = \
+            self._normalize_inputs(points, point_data, element_data, scalar_data, field_data)
+        dtype, device = points.dtype, points.device
+
+        fn = self.forward_vector if func is None else func
+        params = self._classify_params(fn, point_data, element_data, scalar_data, field_data)
+        trial_used = [key for key, kind, _ in params if kind in ("trial_val", "trial_grad")]
+        if trial_used:
+            raise ValueError(
+                f"assemble_vector assembles a form linear in the test functions; "
+                f"trial argument(s) {trial_used} are not allowed — use __call__ "
+                f"for bilinear forms"
+            )
+        has_test = {f.trial for _, kind, f in params if kind in ("test_val", "test_grad")}
+        executed = [f for f in self.fields if f.trial in has_test]
+        if not executed:
+            raise ValueError(
+                "the linear form references no test argument — nothing to assemble"
+            )
+        zeros, eyes_by_field, needs_val, needs_grad = \
+            self._pass_context(params, field_data, dtype, device)
+
+        acc: Dict[Tuple[str, str], Optional[torch.Tensor]] = {}
+        checked_linear = False
+        for element_type, jxw, tables_val, tables_grad, data_args in self._batches(
+                params, point_data, element_data, scalar_data, field_data,
+                needs_val, needs_grad, batch_size):
+            if not checked_linear:
+                self._check_bilinear(fn, params, data_args, dtype, device, form="linear")
+                checked_linear = True
+            for beta in executed:
+                eyes = {"trial": None, "test": eyes_by_field.get(beta.trial)}
+                out, has_e = self._run_pass(
+                    fn, params, None, beta,
+                    tables_val, tables_grad, data_args, zeros, eyes,
+                )
+                batch_integral = self._integrate_pair(out, jxw, has_e)  # [E, i, b]
+                key = (beta.trial, element_type)
+                acc[key] = batch_integral if acc.get(key) is None else acc[key] + batch_integral
+
+        out_vec = torch.zeros(self.n_dofs, dtype=dtype, device=device)
+        for beta in executed:
+            n_f, c = self.field_n_nodes[beta.trial], beta.components
+            seg = torch.zeros(n_f, c, dtype=dtype, device=device)
+            for element_type in self.element_types:
+                conn = self.field_conn[f"{beta.trial}__{element_type}"]  # [E, nb_f]
+                seg.index_add_(0, conn.reshape(-1),
+                               acc[(beta.trial, element_type)].reshape(-1, c))
+            off = self._offsets[beta.trial]
+            out_vec[off:off + n_f * c] = seg.reshape(-1)
+        return out_vec
 
     def __str__(self):
         fields = ", ".join(repr(f) for f in self.fields)
