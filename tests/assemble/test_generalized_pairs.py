@@ -255,3 +255,69 @@ def test_field_data_on_generalized_field(p1_mesh):
 
     K_c = asm(func=const_adv).to_dense()
     assert float((K_w - K_c).abs().max()) < 1e-12
+
+
+# --------------------------------------------------------------------- #
+# 6. assemble_vector on generalized fields: source terms to machine precision
+# --------------------------------------------------------------------- #
+def test_p3_poisson_with_source_exact(p1_mesh):
+    # -Δ(x³) = -6x: cubic solution, linear source — both exact in P3 with
+    # the default quadrature, so the solve must reproduce u = x³ exactly.
+    class P3Poisson(MixedElementAssembler):
+        fields = [Field(trial="u", test="v", order=3)]
+
+        def forward(self, gradu, gradv):
+            return (gradu * gradv).sum()
+
+        def forward_vector(self, v, x):
+            return -6.0 * x[0] * v
+
+    asm = P3Poisson.from_mesh(p1_mesh)
+    lay = asm.layout
+    K, b = asm(), asm.assemble_vector()
+    exact = lay.points("u")[:, 0] ** 3
+    bnd = lay.boundary_mask("u")
+    bc_val = torch.zeros(lay.n_dofs, dtype=torch.float64)
+    bc_val[lay.dof_mask("u")] = exact
+    condenser = Condenser(bnd, bc_val[bnd])
+    K_, b_ = condenser(K, b)
+    sol = condenser.recover(K_.solve(b_))
+    assert float((lay.split(sol)["u"] - exact).abs().max()) < 1e-9
+
+
+def test_stokes_body_force_exact(p1_mesh):
+    # u = (y², x²) (div-free), p = x + y ⇒ f = -μΔu + ∇p = (1-2μ, 1-2μ)
+    mu = 0.7
+
+    class Stokes(MixedElementAssembler):
+        fields = [Field(trial="u", test="v", order=2, components=2),
+                  Field(trial="p", test="q", order=1)]
+
+        def __post_init__(self, mu=1.0):
+            self.mu = mu
+
+        def forward(self, gradu, p, gradv, q):
+            return self.mu * (gradu * gradv).sum() \
+                 - p * gradv.diagonal().sum() - q * gradu.diagonal().sum()
+
+        def forward_vector(self, v):
+            return (1.0 - 2.0 * self.mu) * v.sum()
+
+    asm = Stokes.from_mesh(p1_mesh, mu=mu)
+    lay = asm.layout
+    K, b = asm(), asm.assemble_vector()
+    xu, xp = lay.points("u"), lay.points("p")
+    u_exact = torch.stack([xu[:, 1] ** 2, xu[:, 0] ** 2], dim=-1)
+    p_exact = xp[:, 0] + xp[:, 1]
+    bc_mask = lay.boundary_mask("u")
+    pin = int(torch.nonzero(lay.dof_mask("p"))[0])
+    bc_mask[pin] = True
+    bc_val = torch.zeros(lay.n_dofs, dtype=torch.float64)
+    bc_val[lay.dof_mask("u")] = u_exact.reshape(-1)
+    bc_val[pin] = p_exact[0]
+    condenser = Condenser(bc_mask, bc_val[bc_mask])
+    K_, b_ = condenser(K, b)
+    sol = condenser.recover(K_.solve(b_))
+    parts = lay.split(sol)
+    assert float((parts["u"] - u_exact).abs().max()) < 1e-10
+    assert float((parts["p"] - p_exact).abs().max()) < 1e-9

@@ -333,3 +333,79 @@ def test_batch_size_parity(p2_mesh):
     K_full = _dense(asm(batch_size=-1))
     K_batched = _dense(asm(batch_size=1))
     np.testing.assert_allclose(K_batched, K_full, rtol=0, atol=1e-13)
+
+
+# --------------------------------------------------------------------- #
+# 10. assemble_vector: space-aware load vectors
+# --------------------------------------------------------------------- #
+def test_assemble_vector_matches_node_assembler(p1_mesh, p2_mesh):
+    from tensormesh import NodeAssembler
+
+    class ScalarMixed(MixedElementAssembler):
+        fields = [Field(trial="u", test="v", order=1)]
+
+        def forward_vector(self, v, x):
+            return (x[0] + 2.0 * x[1] ** 2) * v
+
+    class ScalarRef(NodeAssembler):
+        def forward(self, v, x):
+            return (x[0] + 2.0 * x[1] ** 2) * v
+
+    b_mixed = ScalarMixed.from_mesh(p1_mesh).assemble_vector()
+    b_ref = ScalarRef.from_mesh(p1_mesh)(p1_mesh.points)
+    np.testing.assert_allclose(b_mixed, b_ref, rtol=0, atol=1e-14)
+
+    class VectorMixed(MixedElementAssembler):
+        fields = [Field(trial="u", test="v", order=2, components=2)]
+
+        def forward_vector(self, v, x):
+            return torch.stack([x[1], -x[0]]).dot(v)
+
+    class VectorRef(NodeAssembler):
+        def forward(self, v, x):
+            return torch.stack([x[1], -x[0]]) * v
+
+    # same quadrature rule on both sides (the integrand is cubic)
+    b_mixed = VectorMixed.from_mesh(p2_mesh, quadrature_order=4).assemble_vector()
+    b_ref = VectorRef.from_mesh(p2_mesh, quadrature_order=4)(p2_mesh.points)
+    # exact agreement also certifies the node-major block layout
+    np.testing.assert_allclose(b_mixed, b_ref.flatten(), rtol=0, atol=1e-14)
+
+
+def test_assemble_vector_multi_field_blocks(p2_mesh):
+    asm = StokesAssembler.from_mesh(p2_mesh)
+    lay = asm.layout
+    b = asm.assemble_vector(func=lambda v: v.sum())  # f = (1, 1), no q term
+    # fields without test arguments contribute a zero segment
+    assert b[lay.dof_mask("p")].abs().max() == 0.0
+    # sum of ∫ v_i over each component is the domain area
+    assert abs(b.sum().item() - 2.0) < 1e-12  # unit square, two components
+
+
+def test_assemble_vector_validation(p1_mesh):
+    asm = ScalarMassMixed.from_mesh(p1_mesh)
+    with pytest.raises(ValueError, match="trial argument"):
+        asm.assemble_vector(func=lambda gradu, v: (gradu * gradu).sum() * v)
+    with pytest.raises(ValueError, match="no test argument"):
+        asm.assemble_vector(func=lambda x: x[0])
+    with pytest.raises(ValueError, match="linear"):
+        asm.assemble_vector(func=lambda v: v + 1.0)  # constant term
+
+
+# --------------------------------------------------------------------- #
+# 11. sparsity signature is stable across calls (Condenser cache reuse)
+# --------------------------------------------------------------------- #
+def test_layout_signature_stable_across_calls(p2_mesh):
+    # SparseMatrix.layout_signature is sequence-identity (data_ptr +
+    # version): repeated assemblies must hand the SAME index tensors to
+    # keep Condenser's pattern cache valid across Picard / time steps.
+    asm = StokesAssembler.from_mesh(p2_mesh)
+    K1, K2 = asm(), asm()
+    assert K1.has_same_layout(K2)
+
+    lay = asm.layout
+    condenser = Condenser(lay.dof_mask("u", p2_mesh.boundary_mask),
+                          torch.zeros(int(lay.dof_mask("u", p2_mesh.boundary_mask).sum()),
+                                      dtype=torch.float64))
+    condenser(K1, torch.zeros(lay.n_dofs, dtype=torch.float64))
+    condenser(K2, torch.zeros(lay.n_dofs, dtype=torch.float64))  # must not raise
