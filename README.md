@@ -202,7 +202,7 @@ A small selection from the
 | **Inverse design** | [`examples/inverse_design/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/inverse_design) | Coefficient-field identification and density-based topology optimization, all via autograd |
 | **Physics-informed** | [`examples/physics_informed/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/physics_informed) | Train a neural network to minimize the assembled Galerkin residual |
 | **Dataset** | [`examples/dataset/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/dataset) | Batch dataset generation for ML (heat, wave, Poisson) |
-| **Distributed** | [`examples/distributed/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/distributed) | Graph coloring, mesh partitioning, multi-GPU assembly |
+| **Distributed** | [`examples/distributed/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/distributed) | Multi-GPU Poisson via `torchrun` (partitioned assembly + distributed solve), graph coloring, partitioning, benchmarks |
 
 ## Feature comparison
 
@@ -253,7 +253,7 @@ reference, and performance benchmarks, lives at
 Key entry points:
 
 - [Getting started](https://docs.tensor-mesh.com/getting_started/index.html) — installation, quickstart, and an install smoke-test.
-- [User guide](https://docs.tensor-mesh.com/user_guide/index.html) — meshes, weak forms, boundary conditions, linear solvers, time integration, differentiability.
+- [User guide](https://docs.tensor-mesh.com/user_guide/index.html) — meshes, weak forms, mixed assembly, boundary conditions, linear solvers, time integration, differentiability, distributed FEM.
 - [Example gallery](https://docs.tensor-mesh.com/example_gallery/index.html) — runnable examples from Poisson to Navier–Stokes and topology optimization.
 - [API reference](https://docs.tensor-mesh.com/api/index.html) — module-by-module signatures and docstrings.
 - [Performance](https://docs.tensor-mesh.com/performance/index.html) — benchmarks against FEniCS / Firedrake / MFEM / scikit-fem / JAX-FEM / torch-fem.

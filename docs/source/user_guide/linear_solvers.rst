@@ -195,8 +195,7 @@ benchmarks, tested to 400M DOF multi-GPU):
 Rules of thumb: direct solvers give machine precision but their
 memory fill-in caps them around 2M DOF; the iterative paths converge
 to ~1e-6 but scale near-linearly. Use ``float64`` for iterative
-convergence. For the distributed row, see the multi-GPU assembly
-example in :doc:`/example_gallery/distributed`.
+convergence. For the distributed row, see :doc:`distributed`.
 
 
 Batched right-hand sides

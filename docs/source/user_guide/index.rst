@@ -67,6 +67,12 @@ design choices, and how to wield each component.
 
       End-to-end gradients through assemble → solve, for inverse problems and topology opt.
 
+   .. grid-item-card:: Distributed FEM
+      :link: distributed
+      :link-type: doc
+
+      Partition the mesh, assemble per GPU, and solve one system across devices via torch-sla.
+
 
 .. toctree::
    :maxdepth: 2
@@ -82,3 +88,4 @@ design choices, and how to wield each component.
    time_integration
    batched_workflows
    differentiability
+   distributed

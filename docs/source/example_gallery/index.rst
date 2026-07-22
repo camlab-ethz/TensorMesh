@@ -93,13 +93,6 @@ a concrete TensorMesh script you can run.
 
       Batch generation of heat and wave snapshots for training neural operators.
 
-   .. grid-item-card:: Distributed FEM
-      :link: distributed
-      :link-type: doc
-      :img-top: /_static/distributed/graph_partition_exploded.png
-
-      Graph coloring, spectral partitioning, and multi-GPU assembly benchmarks.
-
 
 .. toctree::
    :hidden:
@@ -117,4 +110,3 @@ a concrete TensorMesh script you can run.
    inverse_design
    physics_informed
    dataset
-   distributed

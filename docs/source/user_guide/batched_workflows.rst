@@ -101,12 +101,9 @@ result is one matrix, not a batch of matrices.
 
    ``batch_size`` chunks one assembly on a single device. When the
    stiffness matrix is too large for one GPU even chunked, TensorMesh
-   also has a **multi-GPU distributed assembly** path -- currently a
-   beta / research-grade feature; see
-   :doc:`../example_gallery/distributed` for the building blocks. A
-   future release will align distributed assembly with the distributed
-   linear solver in ``torch-sla``, closing the loop on truly
-   large-scale DOF counts end-to-end.
+   has a **multi-GPU distributed** path — partitioned assembly wired
+   into ``torch-sla``'s distributed solver, end-to-end. See
+   :doc:`distributed`.
 
 
 Axis 2 -- Batched right-hand sides
