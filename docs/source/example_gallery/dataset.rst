@@ -252,6 +252,6 @@ What's next
 
 * :doc:`../user_guide/batched_workflows` — the three axes of
   batching and when each one applies.
-* :doc:`../user_guide/linear_solvers` — backend choice (cudss /
-  cupy / scipy / pytorch / eigen) and how the direct solver is
-  selected for batched RHS.
+* :doc:`../user_guide/linear_solvers` — backend choice (scipy /
+  pytorch / cudss / strumpack / pyamg / amgx) and how the direct
+  solver is selected for batched RHS.

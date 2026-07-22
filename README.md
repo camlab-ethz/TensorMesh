@@ -46,20 +46,25 @@ conditions, and time integration.
 **Requirements:** Python ≥ 3.10, PyTorch ≥ 2.0.
 
 ```bash
-pip install tensormesh-fem             # CPU only
-pip install "tensormesh-fem[gpu]"      # + CUDA sparse solvers (CuPy + cuDSS)
+pip install tensormesh-fem             # CPU stack (SciPy + PyTorch Krylov)
+pip install "tensormesh-fem[gpu]"      # + all PyPI solver backends (cuDSS + PyAMG)
 ```
 
-The base install ships only the CPU sparse stack (SciPy / native PyTorch via
-[torch-sla](https://www.torchsla.com/)). The `[gpu]` extra pulls in both
-CUDA backends; if you only want one, use `[cupy]` or `[cudss]` instead:
+The base install ships the CPU sparse stack via
+[torch-sla](https://www.torchsla.com/) — SciPy direct/iterative plus a
+device-agnostic native-PyTorch Krylov backend that already runs on
+CUDA/ROCm. If you only want one extra backend, use `[cudss]` or `[pyamg]`
+instead:
 
 ```bash
-pip install "tensormesh-fem[cupy]"     # CuPy CUDA backend (iterative + SuperLU)
-pip install "tensormesh-fem[cudss]"    # cuDSS CUDA backend (fastest GPU direct)
+pip install "tensormesh-fem[cudss]"    # NVIDIA cuDSS (fastest GPU direct)
+pip install "tensormesh-fem[pyamg]"    # PyAMG algebraic multigrid
 ```
 
-The quotes are needed because `[...]` is a shell glob character.
+Two more backends — STRUMPACK (portable direct, CPU/CUDA/ROCm) and NVIDIA
+AmgX — ship as prebuilt wheels on
+[torch-sla's GitHub Releases](https://github.com/sparsexlab/torch-sla),
+not PyPI. The quotes are needed because `[...]` is a shell glob character.
 
 <details>
 <summary>Install from source (for development)</summary>
@@ -230,7 +235,7 @@ The core workflow: **Mesh → Assembler → SparseMatrix → Condenser → Solve
 | `tensormesh.mesh`            | Mesh data structure; built-in generators (`gen_rectangle`, `gen_circle`, `gen_cube`, `gen_L`, …); Gmsh / VTK-HDF5 I/O |
 | `tensormesh.element`         | Shape functions, quadrature rules, element transformations (geometric order 1–4) |
 | `tensormesh.assemble`        | `ElementAssembler`, `NodeAssembler`, `FacetAssembler` for matrix and vector assembly; `MixedElementAssembler` for multi-field block systems (Taylor-Hood, generalized order pairs) |
-| `tensormesh.sparse`          | `SparseMatrix` (subclass of `torch_sla.SparseTensor`); linear & nonlinear sparse solves via torch-sla backends (SciPy / Eigen / native PyTorch / CuPy / cuDSS) |
+| `tensormesh.sparse`          | `SparseMatrix` (subclass of `torch_sla.SparseTensor`); linear & nonlinear sparse solves via torch-sla backends (SciPy / native PyTorch Krylov / cuDSS / STRUMPACK / PyAMG / AmgX) |
 | `tensormesh.operator`        | `Condenser` for Dirichlet boundary conditions via static condensation; `BlochReducer` for Bloch-Floquet periodic BCs |
 | `tensormesh.ode`             | Time integrators: explicit / implicit Euler, midpoint, Runge–Kutta |
 | `tensormesh.dataset`         | Parametric PDE dataset generation (Poisson, Heat, Wave, linear elasticity) |
