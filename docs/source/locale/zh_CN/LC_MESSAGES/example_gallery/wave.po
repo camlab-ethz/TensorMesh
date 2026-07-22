@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-07 15:56+0200\n"
+"POT-Creation-Date: 2026-07-22 15:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_CN <LL@li.org>\n"
@@ -227,24 +227,30 @@ msgstr "运行示例"
 msgid "What's next"
 msgstr "接下来"
 
-#: ../../source/example_gallery/wave.rst:170 202f47a0d66846e29617e1b6f4a292df
+#: ../../source/example_gallery/wave.rst:170 9078ef804b2f4c7ca3a0736d9da86863
+msgid ""
+":doc:`phononic_crystal` — the frequency-domain cousin: Bloch-Floquet band "
+"structures and slab transmission for periodic acoustic media."
+msgstr ":doc:`phononic_crystal` — 频域近亲：周期性声学介质中的布洛赫-弗洛凯能带结构与平板透射。"
+
+#: ../../source/example_gallery/wave.rst:172 202f47a0d66846e29617e1b6f4a292df
 msgid ""
 ":doc:`../user_guide/time_integration` — explicit and implicit-linear "
 "integrator classes."
 msgstr ":doc:`../user_guide/time_integration`——显式与隐式线性积分器类。"
 
-#: ../../source/example_gallery/wave.rst:172 836ce4f3c7984e169bb05c0ec098dd91
+#: ../../source/example_gallery/wave.rst:174 836ce4f3c7984e169bb05c0ec098dd91
 msgid ""
 ":doc:`../user_guide/linear_solvers` — backend choice and the factorize-once "
 "/ batched-solve recipes."
 msgstr ":doc:`../user_guide/linear_solvers`——后端选择，以及“分解一次 / 批量求解”的实用方法。"
 
-#: ../../source/example_gallery/wave.rst:174 64f571f6fdf745dbb01381dc99fcb37e
+#: ../../source/example_gallery/wave.rst:176 64f571f6fdf745dbb01381dc99fcb37e
 msgid ""
 ":doc:`dataset` — the same wave equation, batched over 100 random initial "
 "conditions."
 msgstr ":doc:`dataset`——同一个波动方程，在 100 个随机初始条件上批量求解。"
 
-#: ../../source/example_gallery/wave.rst:176 93b7dff617b84593a28b967809d2e2c2
+#: ../../source/example_gallery/wave.rst:178 93b7dff617b84593a28b967809d2e2c2
 msgid ":doc:`diffusion` — the parabolic counterpart with implicit Euler."
 msgstr ":doc:`diffusion`——采用隐式 Euler 的抛物型对应。"

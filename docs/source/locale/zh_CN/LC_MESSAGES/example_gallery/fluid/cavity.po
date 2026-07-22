@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-22 23:00+0200\n"
+"POT-Creation-Date: 2026-07-22 15:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_CN <LL@li.org>\n"
@@ -34,49 +34,48 @@ msgid ""
 "Reynolds numbers it already exhibits a primary vortex plus secondary corner "
 "eddies that any reasonable solver must reproduce. Two scripts in "
 "``examples/fluid/cavity/`` run the steady-state problem at "
-":math:`\\mathrm{Re} = 100`: ``cavity.py`` on a triangulated unit square and "
-"``cavity_3d.py`` on a tetrahedral unit cube. They share a single "
-"**dimension-generic** ``NavierStokesAssembler``, so the 3D case is "
-"essentially a mesh swap."
+":math:`\\mathrm{Re} = 100` with **Taylor-Hood P2-P1 mixed elements**: "
+"``cavity.py`` on a triangulated unit square and ``cavity_3d.py`` on a "
+"tetrahedral unit cube. They share the same scalar weak-form integrand — it "
+"is dimension-generic, so the 3D case is essentially a mesh swap plus "
+"``components=3``."
 msgstr ""
-"顶盖驱动方腔是不可压缩纳维-"
-"斯托克斯求解器的教科书级基准。其物理过程很简单——一个盛有流体的方腔，顶壁以单位速度滑动，其余壁面满足无滑移条件，无体积力——但在中等雷诺数下，它已经表现出一个主涡以及若干次级角涡，任何合格的求解器都必须能复现这些结构。\\"
-" ``examples/fluid/cavity/`` 中的两个脚本在 :math:`\\mathrm{Re} = 100` 下求解稳态问题：\\ "
-"``cavity.py`` 在三角化的单位正方形上运行，\\ ``cavity_3d.py`` 在四面体离散的单位立方体上运行。它们共享同一个\\ "
-"**维度通用**\\ 的 ``NavierStokesAssembler``\\ ，因此 3D 算例本质上只是换了网格。"
+"顶盖驱动方腔流是不可压缩 Navier-Stokes "
+"求解器的经典基准问题。其物理机制十分简单——一个充满流体的方腔，顶壁以单位速度滑动，其余壁面为无滑移边界，无体积力——但在中等雷诺数下，流场已呈现主涡及次级角涡结构，任何合理的求解器都必须能够复现这些特征。\\"
+" ``examples/fluid/cavity/`` 目录下的两个脚本采用 **Taylor-Hood P2-P1 混合单元**\\ "
+"求解定常问题，其中 ``cavity.py`` 在三角形剖分的单位方域上运行，\\ ``cavity_3d.py`` "
+"则在四面体剖分的单位立方体上运行。二者共享相同的标量弱形式被积函数——该被积函数与空间维度无关，因此三维情形本质上只需替换网格并设置 "
+"``components=3``\\ 。"
 
-#: ../../source/example_gallery/fluid/cavity.rst:17
-#: 6db226cd171d4edf8979f6b29718b3a7
+#: ../../source/example_gallery/fluid/cavity.rst:16
+#: 3bcbe830dac94460bbf59ab90c117b4b
 msgid ""
-"TensorMesh does not yet natively support **mixed-element function spaces** "
-"for coupled multi-physics — there is no built-in Taylor-Hood (e.g. P2 "
-"velocity / P1 pressure) velocity-pressure pairing that would satisfy the "
-"inf-sup (LBB) condition out of the box. These examples therefore use "
-"**equal-order P1-P1** for every field and recover stability with **SUPG/PSPG"
-" stabilization**, which is why the weak form below carries the extra "
-"residual-based ``tau`` terms. Native support for mixed elements and tighter "
-"coupled-multiphysics workflows is on the roadmap and will be added "
-"incrementally; until then, treat the ``NavierStokesAssembler`` here as an "
-"example-grade pattern rather than a stable library API."
+"Because the P2-P1 pair satisfies the discrete inf-sup (LBB) condition, the "
+"plain Galerkin form is stable as-is: there are **no SUPG/PSPG stabilization "
+"terms and no** ``tau`` **parameter** anywhere in these scripts. The block "
+"bookkeeping (two fields, different orders, different node sets) is owned by "
+":class:`~tensormesh.MixedElementAssembler` — see "
+":doc:`../../user_guide/mixed_assembly` for the machinery and "
+":doc:`stokes_taylor_hood` for the linear (Stokes) warm-up."
 msgstr ""
-"TensorMesh 尚未原生支持面向耦合多物理场的\\ **混合单元函数空间**——目前没有内置的 Taylor-Hood（例如 P2 速度 / P1"
-" 压力）速度-压力配对来开箱即用地满足 inf-sup（LBB）条件。因此这些算例对每个场都采用\\ **等阶 P1-P1**\\ ，并借助 "
-"**SUPG/PSPG 稳定化**\\ 来恢复稳定性，这也是下面弱形式中带有额外的基于残差的 ``tau`` "
-"项的原因。对混合单元以及更紧密的耦合多物理场工作流的原生支持已列入路线图，并将逐步加入；在此之前，请把这里的 "
-"``NavierStokesAssembler`` 视为示例级范式，而非稳定的库 API。"
+"由于 P2-P1 单元对满足离散 inf-sup（LBB）条件，标准 Galerkin 形式本身即稳定：\\ **这些脚本中不存在任何 "
+"SUPG/PSPG 稳定化项，也不含** ``tau`` **参数**\\ 。块 bookkeeping（两个场、不同阶次、不同节点集）由 "
+":class:`~tensormesh.MixedElementAssembler` 负责管理——有关机制详见 "
+":doc:`../../user_guide/mixed_assembly`\\ ，线性（Stokes）预热算例参见 "
+":doc:`stokes_taylor_hood`\\ 。"
 
-#: ../../source/example_gallery/fluid/cavity.rst:31
+#: ../../source/example_gallery/fluid/cavity.rst:27
 #: 1c8504cfe14247bf8337b32d0bc5454a
 msgid "Problem"
 msgstr "问题"
 
-#: ../../source/example_gallery/fluid/cavity.rst:33
+#: ../../source/example_gallery/fluid/cavity.rst:29
 #: 80a958e4f0514cc6a957187b20b03ff3
 msgid ""
 "The strong form of the steady incompressible Navier-Stokes equations is"
 msgstr "稳态不可压缩纳维-斯托克斯方程的强形式为"
 
-#: ../../source/example_gallery/fluid/cavity.rst:35
+#: ../../source/example_gallery/fluid/cavity.rst:31
 #: 925720bebaad4bc2916db65394265674
 #, python-brace-format
 msgid ""
@@ -92,7 +91,7 @@ msgstr ""
 "\\qquad\n"
 "\\nabla \\cdot \\mathbf{u} \\;=\\; 0,"
 
-#: ../../source/example_gallery/fluid/cavity.rst:43
+#: ../../source/example_gallery/fluid/cavity.rst:39
 #: 7efbaeea866744eea551422a7974805e
 #, python-brace-format
 msgid ""
@@ -102,444 +101,280 @@ msgstr ""
 "其中 :math:`\\Omega = (0, 1)^d`\\ 、\\ :math:`\\mu = 1/\\mathrm{Re}`\\ 、\\ "
 ":math:`\\rho = 1`\\ ，边界条件为"
 
-#: ../../source/example_gallery/fluid/cavity.rst:46
+#: ../../source/example_gallery/fluid/cavity.rst:42
 #: 95156e7148704410bd883e9cab2ad127
 #, python-brace-format
 msgid ""
 "top lid (:math:`y = 1`): :math:`\\mathbf{u} = (1, 0, \\dots)` (moving wall)"
 msgstr "顶盖（\\ :math:`y = 1`\\ ）：\\ :math:`\\mathbf{u} = (1, 0, \\dots)`\\ （运动壁面）"
 
-#: ../../source/example_gallery/fluid/cavity.rst:47
+#: ../../source/example_gallery/fluid/cavity.rst:43
 #: bd33d13e306944f6a4b0823b4a8a38df
 #, python-brace-format
 msgid "other walls: :math:`\\mathbf{u} = \\mathbf{0}` (no-slip)"
 msgstr "其余壁面：\\ :math:`\\mathbf{u} = \\mathbf{0}`\\ （无滑移）"
 
-#: ../../source/example_gallery/fluid/cavity.rst:48
-#: f6d33d839d684dc0b9bee607b8cd52a2
-msgid "one node: :math:`p = 0` (pressure pin to fix the null space)."
-msgstr "某一节点：\\ :math:`p = 0`\\ （钉定压力以消除零空间）。"
-
-#: ../../source/example_gallery/fluid/cavity.rst:52
-#: ebd5f7607e734471a5619b031be5b080
-msgid "Weak form and stabilization"
-msgstr "弱形式与稳定化"
-
-#: ../../source/example_gallery/fluid/cavity.rst:54
-#: 70247aa9d1de492e8007211efd4d5ce6
+#: ../../source/example_gallery/fluid/cavity.rst:44
+#: de5d951b9d614c298a5ece9a8f487e7b
 msgid ""
-"The standard mixed weak form treats velocity and pressure together. Because "
-"the scripts use **equal-order** P1-P1 elements for both, the discrete LBB "
-"condition is violated and the naive Galerkin formulation has spurious "
-"pressure modes. The fix is **SUPG/PSPG stabilization**: add a residual-based"
-" perturbation to both the momentum and the continuity equations, scaled by a"
-" mesh-size-dependent parameter :math:`\\tau`."
-msgstr ""
-"标准的混合弱形式将速度与压力一并处理。由于这些脚本对两者都采用\\ **等阶** P1-P1 单元，离散 LBB "
-"条件被违反，朴素的伽辽金格式会出现伪压力模态。解决办法是 **SUPG/PSPG 稳定化**\\ "
-"：向动量方程和连续性方程都加入一个基于残差的扰动项，并以依赖网格尺寸的参数 :math:`\\tau` 进行缩放。"
+"one pressure DOF pinned to zero (the cavity is enclosed, so the pressure is "
+"only determined up to a constant)."
+msgstr "一个压力自由度被固定为零（方腔为封闭区域，压力仅确定到相差一个常数）。"
 
-#: ../../source/example_gallery/fluid/cavity.rst:61
-#: 2fe71123f8654297ad2288c412d12086
+#: ../../source/example_gallery/fluid/cavity.rst:49
+#: ebd5f7607e734471a5619b031be5b080
+msgid "Weak form and Picard linearization"
+msgstr "弱形式与 Picard 线性化"
+
+#: ../../source/example_gallery/fluid/cavity.rst:51
+#: b22c7b2b253f4ed98f346400eec3aaad
 #, python-brace-format
 msgid ""
-"Denote by :math:`\\mathbf{w} = \\mathbf{w}^{n}` the  velocity at the "
-"previous Picard iterate. The SUPG/PSPG-stabilized weak form seeks "
-":math:`\\mathbf{u} \\in (H^1_0(\\Omega))^d + \\mathbf{u}_b` and :math:`p "
-"\\in L^2(\\Omega)/\\mathbb{R}` such that for all :math:`\\mathbf{v} \\in "
-"(H^1_0(\\Omega))^d, q \\in L^2(\\Omega)/\\mathbb{R}`,"
+"Multiplying by test functions :math:`(\\mathbf{v}, q)` and lagging the "
+"advecting velocity to the previous Picard iterate :math:`\\mathbf{w} = "
+"\\mathbf{u}^{n}` gives the linearized mixed form: find :math:`(\\mathbf{u}, "
+"p)` such that"
 msgstr ""
-"记 :math:`\\mathbf{w} = \\mathbf{w}^{n}` 为上一个 Picard 迭代步的速度。SUPG/PSPG "
-"稳定化弱形式寻求 :math:`\\mathbf{u} \\in (H^1_0(\\Omega))^d + \\mathbf{u}_b` 和 "
-":math:`p \\in L^2(\\Omega)/\\mathbb{R}`\\ ，使得对所有 :math:`\\mathbf{v} \\in "
-"(H^1_0(\\Omega))^d, q \\in L^2(\\Omega)/\\mathbb{R}`\\ ，"
+"以试函数 :math:`(\\mathbf{v}, q)` 相乘，并将对流速度滞后至前一次 Picard 迭代 :math:`\\mathbf{w} ="
+" \\mathbf{u}^{n}`\\ ，得到线性化混合形式：求 :math:`(\\mathbf{u}, p)` 使得"
 
-#: ../../source/example_gallery/fluid/cavity.rst:65
+#: ../../source/example_gallery/fluid/cavity.rst:56
 #: c1e89f879f4f491ba8511d9101e94dc0
 #, python-brace-format
 msgid ""
 "\\int_\\Omega \\rho\\,(\\mathbf{w}\\cdot\\nabla)\\mathbf{u}\\cdot\\mathbf{v}\\,\\mathrm{d}x\n"
 "+ \\int_\\Omega \\mu\\,\\nabla\\mathbf{u} : \\nabla\\mathbf{v}\\,\\mathrm{d}x\n"
-"- \\int_\\Omega p\\,(\\nabla\\cdot\\mathbf{v})\\,\\mathrm{d}x \\;+\n"
-"\\int_\\Omega q\\,(\\nabla\\cdot\\mathbf{u})\\,\\mathrm{d}x \\;=\\; 0 ."
+"- \\int_\\Omega p\\,(\\nabla\\cdot\\mathbf{v})\\,\\mathrm{d}x\n"
+"- \\int_\\Omega q\\,(\\nabla\\cdot\\mathbf{u})\\,\\mathrm{d}x \\;=\\; 0"
 msgstr ""
 "\\int_\\Omega \\rho\\,(\\mathbf{w}\\cdot\\nabla)\\mathbf{u}\\cdot\\mathbf{v}\\,\\mathrm{d}x\n"
 "+ \\int_\\Omega \\mu\\,\\nabla\\mathbf{u} : \\nabla\\mathbf{v}\\,\\mathrm{d}x\n"
-"- \\int_\\Omega p\\,(\\nabla\\cdot\\mathbf{v})\\,\\mathrm{d}x \\;+\n"
-"\\int_\\Omega q\\,(\\nabla\\cdot\\mathbf{u})\\,\\mathrm{d}x \\;=\\; 0 ."
+"- \\int_\\Omega p\\,(\\nabla\\cdot\\mathbf{v})\\,\\mathrm{d}x\n"
+"- \\int_\\Omega q\\,(\\nabla\\cdot\\mathbf{u})\\,\\mathrm{d}x \\;=\\; 0"
 
-#: ../../source/example_gallery/fluid/cavity.rst:72
-#: 3b8356a1c6714e798a4850d06870942a
+#: ../../source/example_gallery/fluid/cavity.rst:63
+#: a3a5aca5addc4b6d90f2438e38b4eedc
 #, python-brace-format
 msgid ""
-"Here, :math:`\\mathbf{u}_b` incorporates the non-homogeneous velocity "
-"boundary conditions; :math:`L^2(\\Omega)/\\mathbb{R}` is the space modulo "
-"constants (since pressure is only determined up to an additive constant)."
+"for all :math:`(\\mathbf{v}, q)`. With Taylor-Hood spaces this needs no "
+"further ingredients, and the TensorMesh implementation is a direct "
+"transcription — two field declarations and the scalar integrand:"
 msgstr ""
-"这里 :math:`\\mathbf{u}_b` 计入了非齐次的速度边界条件；\\ :math:`L^2(\\Omega)/\\mathbb{R}` "
-"是模去常数后的空间（因为压力只能确定到一个相加常数）。"
+"对所有 :math:`(\\mathbf{v}, q)` 成立。采用 Taylor-Hood 空间无需额外处理，TensorMesh "
+"的实现是直接转录——两个场声明及标量被积函数如下："
 
-#: ../../source/example_gallery/fluid/cavity.rst:74
-#: da678a3f8bc94ceca6f40008b54df9f4
-msgid ""
-"For equal-order P1-P1 this Galerkin form is unstable, so we append element-"
-"wise **SUPG/PSPG** terms built from the strong momentum residual"
-msgstr "对于等阶 P1-P1，这一伽辽金形式是不稳定的，因此我们逐单元附加由强动量残差构造的 **SUPG/PSPG** 项"
-
-#: ../../source/example_gallery/fluid/cavity.rst:76
-#: 2d2241cfacbf41f1ab6b495dd56311ed
-#, python-brace-format
-msgid ""
-"\\mathbf{R}(\\mathbf{u}, p) \\;=\\;\n"
-"\\rho\\,(\\mathbf{w}\\cdot\\nabla)\\mathbf{u} + \\nabla p - \\mu\\,\\Delta\\mathbf{u}."
-msgstr ""
-"\\mathbf{R}(\\mathbf{u}, p) \\;=\\;\n"
-"\\rho\\,(\\mathbf{w}\\cdot\\nabla)\\mathbf{u} + \\nabla p - \\mu\\,\\Delta\\mathbf{u}."
-
-#: ../../source/example_gallery/fluid/cavity.rst:81
-#: 7745946759e0445f85473ebf7a2ea905
-#, python-brace-format
-msgid ""
-"Note that the viscous term :math:`\\mu\\,\\Delta\\mathbf{u}` vanishes on P1 "
-"elements. The stabilized discretization uses P1-P1 elements for "
-":math:`\\mathbf{u}` and :math:`p`, and adds"
-msgstr ""
-"注意黏性项 :math:`\\mu\\,\\Delta\\mathbf{u}` 在 P1 单元上为零。该稳定化离散对 "
-":math:`\\mathbf{u}` 和 :math:`p` 都使用 P1-P1 单元，并加入"
-
-#: ../../source/example_gallery/fluid/cavity.rst:83
-#: a80aed8449dc457d9e934bcfd4127a46
-msgid ""
-"\\underbrace{\\sum_e \\int_{\\Omega_e}\n"
-"    \\tau\\,(\\mathbf{w}\\cdot\\nabla)\\mathbf{v}\\cdot\\mathbf{R}\\,\\mathrm{d}x}_{\\text{SUPG}}\n"
-"\\;+\\;\n"
-"\\underbrace{\\sum_e \\int_{\\Omega_e}\n"
-"    \\tau\\,\\nabla q\\cdot\\mathbf{R}\\,\\mathrm{d}x}_{\\text{PSPG}}"
-msgstr ""
-"\\underbrace{\\sum_e \\int_{\\Omega_e}\n"
-"    \\tau\\,(\\mathbf{w}\\cdot\\nabla)\\mathbf{v}\\cdot\\mathbf{R}\\,\\mathrm{d}x}_{\\text{SUPG}}\n"
-"\\;+\\;\n"
-"\\underbrace{\\sum_e \\int_{\\Omega_e}\n"
-"    \\tau\\,\\nabla q\\cdot\\mathbf{R}\\,\\mathrm{d}x}_{\\text{PSPG}}"
-
-#: ../../source/example_gallery/fluid/cavity.rst:91
-#: 3a594e41f2d54494b08d1ebf7f41da29
-msgid ""
-"to the aforementioned weak form, with :math:`\\tau` being a stabilization "
-"parameter."
-msgstr "到上述弱形式中，其中 :math:`\\tau` 为稳定化参数。"
-
-#: ../../source/example_gallery/fluid/cavity.rst:93
-#: cd089d0e4e734327a7520c249b6891b6
-#, python-brace-format
-msgid ""
-"The implementation is a custom :class:`~tensormesh.ElementAssembler` defined"
-" locally in the example. Its ``forward`` returns the :math:`(d{+}1) \\times "
-"(d{+}1)` block coupling one test node to one trial node — :math:`d` velocity"
-" components plus pressure — which the assembler stamps into a block-COO "
-"sparse matrix exactly as the built-in vector-valued assemblers do. The block"
-" is built from four named sub-blocks rather than entry-by-entry, so each "
-"physical term is visible:"
-msgstr ""
-"其实现是一个在算例中本地定义的自定义 :class:`~tensormesh.ElementAssembler`\\ 。它的 ``forward`` "
-"返回耦合一个测试节点与一个试探节点的 :math:`(d{+}1) \\times (d{+}1)` 块——即 :math:`d` "
-"个速度分量加上压力——装配器会像内置的向量值装配器那样，将该块印入一个块状 COO "
-"稀疏矩阵。这个块是由四个具名子块而非逐项构造的，因此每个物理项都清晰可见："
-
-#: ../../source/example_gallery/fluid/cavity.rst:102
+#: ../../source/example_gallery/fluid/cavity.rst:67
 #: 906ddada6db04bf8ac3d24445a0b9036
 msgid "examples/fluid/cavity/cavity.py (essence)"
 msgstr "examples/fluid/cavity/cavity.py（核心部分）"
 
-#: ../../source/example_gallery/fluid/cavity.rst:128
-#: 46c5cfb158604f659d7f5d065ce71ce2
-msgid ""
-"The four named sub-blocks map one-to-one onto the terms of the stabilized "
-"weak form above:"
-msgstr "这四个具名子块与上面稳定化弱形式中的各项一一对应："
-
-#: ../../source/example_gallery/fluid/cavity.rst:131
-#: 618e7780cb394fe4b7267f7b78dae7f6
+#: ../../source/example_gallery/fluid/cavity.rst:87
+#: 29c528a7b5cb4da1adcb66b92e2726bb
 #, python-brace-format
 msgid ""
-"``A_uu`` — convection "
-":math:`\\rho\\,(\\mathbf{w}\\cdot\\nabla)\\mathbf{u}\\cdot\\mathbf{v}`, "
-"diffusion :math:`\\mu\\,\\nabla\\mathbf{u}:\\nabla\\mathbf{v}`, and the SUPG"
-" convection term "
-":math:`\\tau\\,(\\mathbf{w}\\cdot\\nabla\\mathbf{v})\\,\\rho\\,(\\mathbf{w}\\cdot\\nabla)\\mathbf{u}`"
-" (diagonal in the components, hence ``* eye``);"
+"``gradu`` is the velocity Jacobian (``[2, 2]`` in 2D, ``[3, 3]`` in 3D), so "
+"``(gradu @ w).dot(v)`` is the convection term "
+":math:`(\\mathbf{w}\\cdot\\nabla)\\mathbf{u}\\cdot\\mathbf{v}` and "
+"``gradu.diagonal().sum()`` is the divergence. The lagged velocity ``w`` is "
+"*data* (not a trial/test field), so the integrand stays bilinear — the mixed"
+" assembler's contract. Because the expression never hard-codes the "
+"dimension, the same class serves 2D and 3D."
 msgstr ""
-"``A_uu``——对流项 "
-":math:`\\rho\\,(\\mathbf{w}\\cdot\\nabla)\\mathbf{u}\\cdot\\mathbf{v}`\\ "
-"、扩散项 :math:`\\mu\\,\\nabla\\mathbf{u}:\\nabla\\mathbf{v}`\\ ，以及 SUPG 对流项 "
-":math:`\\tau\\,(\\mathbf{w}\\cdot\\nabla\\mathbf{v})\\,\\rho\\,(\\mathbf{w}\\cdot\\nabla)\\mathbf{u}`\\"
-" （在各分量上是对角的，故乘以 ``* eye``\\ ）；"
+"``gradu`` 为速度雅可比矩阵（二维时为 ``[2, 2]``\\ ，三维时为 ``[3, 3]``\\ ），因此 ``(gradu @ "
+"w).dot(v)`` 对应 convection 项 "
+":math:`(\\mathbf{w}\\cdot\\nabla)\\mathbf{u}\\cdot\\mathbf{v}`\\ ，而 "
+"``gradu.diagonal().sum()`` 为散度。滞后速度 ``w`` 为 *数据*\\ "
+"（非试/检验场），故被积函数保持双线性——这正是混合装配器的约定。由于表达式未硬编码维度，同一类即可服务于二维与三维。"
 
-#: ../../source/example_gallery/fluid/cavity.rst:135
-#: ec0eefbbf2a74cbfb313a03a97aabe40
-#, python-brace-format
-msgid ""
-"``B_up`` — pressure gradient :math:`-p\\,\\nabla\\cdot\\mathbf{v}` and its "
-"SUPG counterpart "
-":math:`\\tau\\,(\\mathbf{w}\\cdot\\nabla\\mathbf{v})\\cdot\\nabla p`;"
-msgstr ""
-"``B_up``——压力梯度项 :math:`-p\\,\\nabla\\cdot\\mathbf{v}` 及其 SUPG 对应项 "
-":math:`\\tau\\,(\\mathbf{w}\\cdot\\nabla\\mathbf{v})\\cdot\\nabla p`\\ ；"
-
-#: ../../source/example_gallery/fluid/cavity.rst:137
-#: 90c358b97ee94db0812d28efc007a8df
-#, python-brace-format
-msgid ""
-"``B_pu`` — divergence :math:`q\\,\\nabla\\cdot\\mathbf{u}` and the PSPG "
-"convection term :math:`\\tau\\,\\nabla "
-"q\\cdot\\rho\\,(\\mathbf{w}\\cdot\\nabla)\\mathbf{u}`;"
-msgstr ""
-"``B_pu``——散度项 :math:`q\\,\\nabla\\cdot\\mathbf{u}` 及 PSPG 对流项 "
-":math:`\\tau\\,\\nabla "
-"q\\cdot\\rho\\,(\\mathbf{w}\\cdot\\nabla)\\mathbf{u}`\\ ；"
-
-#: ../../source/example_gallery/fluid/cavity.rst:139
-#: 61beb7ec485f41cd8ba27598b27f8fa6
-msgid "``C_pp`` — the PSPG pressure-Laplacian :math:`\\tau\\,\\nabla p\\cdot\\nabla q`."
-msgstr "``C_pp``——PSPG 压力拉普拉斯项 :math:`\\tau\\,\\nabla p\\cdot\\nabla q`\\ 。"
-
-#: ../../source/example_gallery/fluid/cavity.rst:141
-#: 06e1f1e38c9948518548f697d8ad9d3b
-#, python-brace-format
-msgid ""
-"Because ``dim`` is read from ``gradu.shape[0]``, the same ``forward`` "
-"produces a :math:`3{\\times}3` block in 2D and a :math:`4{\\times}4` block "
-"in 3D with no changes."
-msgstr ""
-"由于 ``dim`` 是从 ``gradu.shape[0]`` 读取的，同一个 ``forward`` 在 2D 中产生 "
-":math:`3{\\times}3` 块、在 3D 中产生 :math:`4{\\times}4` 块，无需任何改动。"
-
-#: ../../source/example_gallery/fluid/cavity.rst:147
+#: ../../source/example_gallery/fluid/cavity.rst:97
 #: 3bc4ffe1a6c14a359c9dc70c2d28768a
 msgid "Picard iteration"
 msgstr "Picard 迭代"
 
-#: ../../source/example_gallery/fluid/cavity.rst:149
-#: 86c25ada4b7d4529b1cb98163850a41c
-#, python-brace-format
+#: ../../source/example_gallery/fluid/cavity.rst:99
+#: 3408acae9c3c4e5a94c2a17909220cbf
 msgid ""
-"The convection term :math:`(\\mathbf{u}\\cdot\\nabla)\\mathbf{u}` is "
-"linearized by passing the previous-iterate velocity :math:`\\mathbf{w}^{n}` "
-"as ``w_prev`` to the assembler:"
-msgstr ""
-"对流项 :math:`(\\mathbf{u}\\cdot\\nabla)\\mathbf{u}` 通过将上一迭代步的速度 "
-":math:`\\mathbf{w}^{n}` 作为 ``w_prev`` 传给装配器来线性化："
+"Each iteration reassembles the matrix with the current velocity iterate and "
+"solves the linear saddle-point system:"
+msgstr "每次迭代以当前速度迭代值重新装配矩阵，并求解线性鞍点系统："
 
-#: ../../source/example_gallery/fluid/cavity.rst:153
-#: bc2c7a08e22748a1b6d1eccb499b6e15
-#, python-brace-format
-msgid ""
-"\\rho\\, (\\mathbf{w}^{n} \\cdot \\nabla)\\mathbf{u}^{n+1}\n"
-"\\;=\\; -\\nabla p^{n+1} + \\mu\\, \\Delta \\mathbf{u}^{n+1}."
-msgstr ""
-"\\rho\\, (\\mathbf{w}^{n} \\cdot \\nabla)\\mathbf{u}^{n+1}\n"
-"\\;=\\; -\\nabla p^{n+1} + \\mu\\, \\Delta \\mathbf{u}^{n+1}."
-
-#: ../../source/example_gallery/fluid/cavity.rst:158
-#: 4780c86931fa461fafe7c3e3b55c8c5e
-msgid ""
-"This converges geometrically for moderate Reynolds numbers; the script "
-"iterates until ``||u_new - u_full|| / ||u_new|| < 1e-4``, typically ~8 "
-"iterations at Re=100."
-msgstr ""
-"对于中等雷诺数，该过程以几何速率收敛；脚本迭代直到 ``||u_new - u_full|| / ||u_new|| < 1e-4``\\ ，在 "
-"Re=100 时通常约需 8 次迭代。"
-
-#: ../../source/example_gallery/fluid/cavity.rst:179
+#: ../../source/example_gallery/fluid/cavity.rst:127
 #: 1ba1524481114f36b314104fc7c419f6
 msgid "A few details that matter:"
 msgstr "几个需要注意的细节："
 
-#: ../../source/example_gallery/fluid/cavity.rst:181
-#: 70e18321f3f74ed88ad9d6a7c2c2dd20
+#: ../../source/example_gallery/fluid/cavity.rst:129
+#: 80f868591cba45b1a45f8f5a203ba00f
+#, python-brace-format
 msgid ""
-"**DOF layout.** The unknowns are interleaved node-major: ``[u_0, v_0, p_0, "
-"u_1, v_1, p_1, …]`` in 2D (``[u, v, w, p]`` per node in 3D). The script's "
-"small ``component_dofs(n_points, n_dof, comp)`` helper turns \"component "
-"``comp`` at every node\" into the flat global indices the "
-":class:`~tensormesh.Condenser` mask expects."
+"**Block DOF layout.** The solution vector stacks all velocity DOFs first, "
+"then the pressure DOFs. ``layout.dof_mask`` / ``layout.dof_index`` build "
+"boundary masks in that numbering, and ``layout.split(sol)`` returns "
+"``{\"u\": [n_u, 2], \"p\": [n_p]}`` — no hand-rolled index arithmetic "
+"anywhere."
 msgstr ""
-"**自由度排布。**\\ 未知量以节点为主序交错排列：2D 中为 ``[u_0, v_0, p_0, u_1, v_1, p_1, …]``\\ （3D"
-" 中每个节点为 ``[u, v, w, p]``\\ ）。脚本中小巧的 ``component_dofs(n_points, n_dof, "
-"comp)`` 辅助函数将“每个节点上的分量 ``comp``”转换为 :class:`~tensormesh.Condenser` "
-"掩码所需的扁平全局索引。"
+"**块自由度布局。** 解向量先将所有速度自由度堆叠在前，随后是压力自由度。\\ ``layout.dof_mask`` / "
+"``layout.dof_index`` 按该编号构建边界掩码，\\ ``layout.split(sol)`` 返回 ``{\"u\": [n_u, "
+"2], \"p\": [n_p]}``——无需任何手写的索引运算。"
 
-#: ../../source/example_gallery/fluid/cavity.rst:186
-#: de5d951b9d614c298a5ece9a8f487e7b
+#: ../../source/example_gallery/fluid/cavity.rst:134
+#: f16b11fbb7894ff8b76df13b0013b81c
+#, python-brace-format
 msgid ""
-"**Pressure pin.** ``bc_mask[n_dof - 1] = True`` clamps pressure to zero at "
-"node 0 — required because pressure is only determined up to an additive "
-"constant in incompressible flow."
+"**The lid mask.** On the order-2 mesh the P2 velocity nodes are exactly the "
+"mesh points, so ``point_data={\"w\": w}`` and node masks like ``is_top = "
+"mesh.points[:, 1] > 1 - 1e-6`` apply directly."
 msgstr ""
-"**压力钉定。**\\ ``bc_mask[n_dof - 1] = True`` 将节点 0 "
-"处的压力钉定为零——这是必要的，因为不可压缩流动中压力只能确定到一个相加常数。"
+"**顶盖掩码。** 在二阶网格上，P2 速度节点恰好与网格点重合，因此 ``point_data={\"w\": w}`` 及节点掩码如 "
+"``is_top = mesh.points[:, 1] > 1 - 1e-6`` 可直接应用。"
 
-#: ../../source/example_gallery/fluid/cavity.rst:189
-#: 5f034c8edcae4c1094a92165bf48a2cd
+#: ../../source/example_gallery/fluid/cavity.rst:137
+#: cef73d26976043a98938f558ec7f4514
 msgid ""
-"``w_prev`` is passed by name in ``point_data`` and arrives in ``forward`` as"
-" the matching keyword argument; see :doc:`../../user_guide/forms` for the "
-"dispatch contract."
+"**Quadrature.** The default degree (``2 * max(order) = 4``) is one shy of "
+"exact for the convection term — the standard, harmless choice; pass "
+"``quadrature_order=`` to integrate it exactly."
 msgstr ""
-"``w_prev`` 通过 ``point_data`` 按名称传入，并作为同名关键字参数到达 ``forward``\\ ；分发约定参见 "
-":doc:`../../user_guide/forms`\\ 。"
+"**求积。** 默认阶次（\\ ``2 * max(order) = 4``\\ ）对 convection "
+"项的积分精度差一阶——这是标准且无害的选择；如需精确积分，可传入 ``quadrature_order=``\\ 。"
 
-#: ../../source/example_gallery/fluid/cavity.rst:193
+#: ../../source/example_gallery/fluid/cavity.rst:141
+#: b4406874c87f43669f83c80b7cedc4cc
+#, python-brace-format
+msgid ""
+"Picard converges geometrically at moderate Reynolds numbers — the relative "
+"update shrinks below :math:`10^{-4}` in 8 iterations at Re = 100 on the "
+"default :math:`30 \\times 30` grid."
+msgstr ""
+"Picard 迭代在中等雷诺数下呈几何收敛——在默认 :math:`30 \\times 30` 网格上，Re = 100 时相对更新量在 8 "
+"次迭代内降至 :math:`10^{-4}` 以下。"
+
+#: ../../source/example_gallery/fluid/cavity.rst:145
 #: ce5f9e8f47f04a41928794fc173ad056
 msgid "Lid-driven cavity speed magnitude and pressure at Re=100"
 msgstr "Re=100 时顶盖驱动方腔的速度大小与压力"
 
-#: ../../source/example_gallery/fluid/cavity.rst:197
+#: ../../source/example_gallery/fluid/cavity.rst:149
 #: 0970c80c6eb74e32b929d0293617d1f4
 msgid ""
-"Output of ``cavity.py`` at Re = 100. Left: speed magnitude :math:`\\|u\\|` —"
-" the moving lid drags fluid into the upper right, sweeping it down the right"
-" wall and forming the primary vortex. Right: pressure field, with the "
+"Output of ``cavity.py`` at Re = 100 (Taylor-Hood P2-P1). Left: speed "
+"magnitude :math:`\\|u\\|` — the moving lid drags fluid into the upper right,"
+" sweeping it down the right wall and forming the primary vortex. Right: P1 "
+"pressure (prolonged to the P2 mesh points for plotting), with the "
 "characteristic high-pressure spot in the upper-right corner where the lid "
 "stagnates against the wall."
 msgstr ""
-"``cavity.py`` 在 Re = 100 时的输出。左：速度大小 "
-":math:`\\|u\\|`——运动顶盖将流体拖向右上方，再沿右壁向下扫掠，形成主涡。右：压力场，在顶盖与壁面相撞滞止的右上角出现特征性的高压区。"
+"``cavity.py`` 在 Re = 100（Taylor-Hood P2-P1）下的输出。左：速度模长 "
+":math:`\\|u\\|`——运动顶盖将流体拖向右上方，沿右壁下行并形成主涡。右：P1 压力（延拓至 P2 "
+"网格点以绘制），右上角存在特征性高压区，该处顶盖与壁面滞止。"
 
-#: ../../source/example_gallery/fluid/cavity.rst:205
+#: ../../source/example_gallery/fluid/cavity.rst:158
 #: 0505a4f940e64fa683bcf2bcc8926e4c
 msgid "Going to 3D — ``cavity_3d.py``"
 msgstr "扩展到 3D——``cavity_3d.py``"
 
-#: ../../source/example_gallery/fluid/cavity.rst:207
-#: 1f330319045f48998b046fcd0a417d3d
+#: ../../source/example_gallery/fluid/cavity.rst:160
+#: c1a5345bf7434aa7bf7cfe32a6a87575
 msgid ""
-"``cavity_3d.py`` solves the same physics on a unit cube. Because the "
-"``NavierStokesAssembler`` is dimension-generic, the differences are "
-"mechanical:"
+"``cavity_3d.py`` solves the same physics on a unit cube, and shows the "
+"second way to obtain a Taylor-Hood pair: the tetrahedral mesh from "
+"``Mesh.gen_cube`` is **linear**, and the quadratic velocity space is "
+"generated *topologically* by the mixed assembler (one extra DOF per unique "
+"edge of the tet mesh) — no order-2 re-meshing. The field declarations become"
 msgstr ""
-"``cavity_3d.py`` 在单位立方体上求解相同的物理问题。由于 ``NavierStokesAssembler`` "
-"是维度通用的，二者的差异都很机械："
+"``cavity_3d.py`` 在单位立方体上求解相同物理问题，展示了获取 Taylor-Hood 单元对的第二种方式：\\ "
+"``Mesh.gen_cube`` 生成的四面体网格为 **线性** 的，二次速度空间由混合装配器 *拓扑地* "
+"生成（四面体网格每条唯一边附加一个额外自由度）——无需二阶重网格。场声明变为"
 
-#: ../../source/example_gallery/fluid/cavity.rst:211
-#: 22518d0200a249c3bb156e63d566f5b9
+#: ../../source/example_gallery/fluid/cavity.rst:174
+#: 527b93595adb49398fb05fa5844cb9a7
 msgid ""
-"``Mesh.gen_cube(chara_length=…)`` (tetrahedral) replaces "
-"``Mesh.gen_rectangle``."
-msgstr "``Mesh.gen_cube(chara_length=…)``\\ （四面体）取代了 ``Mesh.gen_rectangle``\\ 。"
+"and the ``forward`` integrand is byte-for-byte the one from 2D. Because the "
+"velocity DOFs are no longer mesh points, the script uses the layout's "
+"*topological* helpers for boundary conditions and post-processing:"
+msgstr "``forward`` 被积函数与二维情形逐字节相同。由于速度自由度不再是网格点，脚本使用布局的 *拓扑* 辅助函数处理边界条件与后处理："
 
-#: ../../source/example_gallery/fluid/cavity.rst:213
-#: 8dbba0d3a6c143118d29775221731cd0
-msgid ""
-"The DOF layout is per-node ``[u, v, w, p]`` (``n_dof = 4``) instead of ``[u,"
-" v, p]``; ``w_prev`` now slices the first three components."
-msgstr ""
-"自由度排布变为每个节点 ``[u, v, w, p]``\\ （\\ ``n_dof = 4``\\ ），而不再是 ``[u, v, p]``\\ "
-"；\\ ``w_prev`` 现在切取前三个分量。"
-
-#: ../../source/example_gallery/fluid/cavity.rst:215
-#: dcb4ca9aaedc4ce3b5b0a9eb549c2d7f
-msgid ""
-"The output is volumetric: ``cavity_3d.vtu`` for ParaView, plus a cross-"
-"section slice at :math:`z = 0.5` rendered via PyVista as ``cavity_3d.png``."
-msgstr ""
-"输出为体数据：供 ParaView 使用的 ``cavity_3d.vtu``\\ ，外加一张在 :math:`z = 0.5` 处的横截面切片，由 "
-"PyVista 渲染为 ``cavity_3d.png``\\ 。"
-
-#: ../../source/example_gallery/fluid/cavity.rst:219
-#: 9c32f7642c8b4e438868bd4ea952d893
-msgid ""
-"Everything else — the Picard loop, the SUPG/PSPG stamp, the pressure pin, "
-"the use of :class:`~tensormesh.Condenser` — is unchanged:"
-msgstr ""
-"其余一切——Picard 循环、SUPG/PSPG 印块、压力钉定、\\ :class:`~tensormesh.Condenser` "
-"的使用——都保持不变："
-
-#: ../../source/example_gallery/fluid/cavity.rst:222
+#: ../../source/example_gallery/fluid/cavity.rst:179
 #: 6a9c926a19424665bd59104a2079384d
 msgid "examples/fluid/cavity/cavity_3d.py (essence)"
 msgstr "examples/fluid/cavity/cavity_3d.py（核心部分）"
 
-#: ../../source/example_gallery/fluid/cavity.rst:237
-#: 88e039a164824b3da258f897db008277
+#: ../../source/example_gallery/fluid/cavity.rst:195
+#: 504f06667ca34b22afe2bd40ebfa0b73
 msgid ""
-"The 4-DOFs-per-node layout makes the linear system large quickly — at "
-"``chara_length=0.05`` it is on the order of a million unknowns — so a GPU "
-"backend (``backend=\"cudss\"`` or ``\"pytorch\"``, see "
-":doc:`../../user_guide/linear_solvers`) is recommended once you go beyond a "
-"few thousand nodes."
+"Note the two changes from 2D: ``boundary_mask`` finds the walls "
+"topologically (facet incidence — no ``is_boundary`` point data needed for "
+"the edge-generated nodes), and the lagged velocity enters through "
+"``field_data`` because it has no mesh-point representation. At "
+"``chara_length=0.1`` the system has 24k DOFs (7.6k P2 velocity nodes on 1.1k"
+" mesh points) and converges in 13 Picard iterations. The output is "
+"volumetric: ``cavity_3d.vtu`` for ParaView plus a :math:`z = 0.5` mid-plane "
+"slice rendered via PyVista."
 msgstr ""
-"每个节点 4 个自由度的排布会让线性系统迅速增大——在 ``chara_length=0.05`` "
-"时约有百万级未知量——因此一旦节点数超过几千，建议使用 GPU 后端（\\ ``backend=\"cudss\"`` 或 "
-"``\"pytorch\"``\\ ，参见 :doc:`../../user_guide/linear_solvers`\\ ）。"
+"注意与二维的两处差异：\\ ``boundary_mask`` 以拓扑方式寻找壁面（面关联——边生成节点无需 ``is_boundary`` "
+"点数据），且滞后速度通过 ``field_data`` 传入，因其无网格点表示。在 ``chara_length=0.1`` 时，系统含 24k "
+"自由度（1.1k 网格点上的 7.6k P2 速度节点），13 次 Picard 迭代收敛。输出为体数据：\\ ``cavity_3d.vtu`` 供 "
+"ParaView 使用，另含通过 PyVista 渲染的 :math:`z = 0.5` 中截面切片。"
 
-#: ../../source/example_gallery/fluid/cavity.rst:243
+#: ../../source/example_gallery/fluid/cavity.rst:204
 #: 59551cd1eecf46f7bf68e19af459abcb
 msgid "3D lid-driven cavity speed and pressure on the z=0.5 mid-plane"
 msgstr "3D 顶盖驱动方腔在 z=0.5 中平面上的速度与压力"
 
-#: ../../source/example_gallery/fluid/cavity.rst:247
+#: ../../source/example_gallery/fluid/cavity.rst:208
 #: db7898041df644b189ea6f99c32793b9
 msgid ""
 "Output of ``cavity_3d.py``: speed magnitude (left) and pressure (right) on "
 "the :math:`z=0.5` mid-plane slice through the cube. The flow pattern matches"
 " the 2D solution near the lid but decays toward the front and back walls, so"
-" the mid-plane shows weaker recirculation than the strict-2D case. Full 3D "
-"fields are written to ``cavity_3d.vtu`` for ParaView."
+" the mid-plane shows weaker recirculation than the 2D benchmark."
 msgstr ""
-"``cavity_3d.py`` 的输出：穿过立方体的 :math:`z=0.5` 中平面切片上的速度大小（左）与压力（右）。流动形态在顶盖附近与 2D"
-" 解吻合，但向前后壁面方向衰减，因此中平面表现出比严格 2D 情形更弱的回流。完整的 3D 场被写入供 ParaView 使用的 "
-"``cavity_3d.vtu``\\ 。"
+"``cavity_3d.py`` 输出：立方体 :math:`z=0.5` "
+"中截面切片上的速度模长（左）与压力（右）。流型在顶盖附近与二维解吻合，但向前、后壁衰减，故中截面显示较二维基准更弱的回流。"
 
-#: ../../source/example_gallery/fluid/cavity.rst:256
+#: ../../source/example_gallery/fluid/cavity.rst:216
 #: e8ca57e1746c4a8a8e974eb766757a06
 msgid "Running it"
 msgstr "运行方式"
 
-#: ../../source/example_gallery/fluid/cavity.rst:264
-#: c3a57a8c0ada408faf930b48a1a723a8
+#: ../../source/example_gallery/fluid/cavity.rst:224
+#: 73c35707f7414f93aba64b905f1c4987
 msgid ""
-"The console reports the relative residual at each Picard step plus the final"
-" convergence message. For 2D, compare the stream-function contours "
-"qualitatively against the Ghia / Ghia / Shin reference (1982) for Re=100 — "
-"the primary vortex center should match to within a few percent. For 3D, open"
-" ``cavity_3d.vtu`` in ParaView for full volumetric inspection (streamlines, "
-"iso-surfaces); the PNG is a quick sanity check."
-msgstr ""
-"控制台会报告每个 Picard 步的相对残差以及最终的收敛信息。对于 2D，可将流函数等值线与 Ghia / Ghia / Shin（1982）在 "
-"Re=100 下的参考结果作定性比较——主涡中心应在百分之几的误差内吻合。对于 3D，可在 ParaView 中打开 ``cavity_3d.vtu``"
-" 进行完整的体数据检查（流线、等值面）；PNG 仅作快速合理性检查之用。"
+"Both converge in :math:`\\lesssim 15` Picard iterations at Re = 100 with the"
+" default resolutions."
+msgstr "在默认分辨率下，二者于 Re = 100 时均在 :math:`\\lesssim 15` 次 Picard 迭代内收敛。"
 
-#: ../../source/example_gallery/fluid/cavity.rst:273
+#: ../../source/example_gallery/fluid/cavity.rst:229
 #: a5eaf1c85a0f4f43a0807d4b6911128b
 msgid "What's next"
 msgstr "下一步"
 
-#: ../../source/example_gallery/fluid/cavity.rst:275
-#: 0211ad5825424372971c2772776df88e
-msgid ":doc:`cylinder_flow` — adds transient time stepping."
-msgstr ":doc:`cylinder_flow`——加入瞬态时间推进。"
-
-#: ../../source/example_gallery/fluid/cavity.rst:276
-#: b5412475e31f4dee9eb622fd98b39d2c
+#: ../../source/example_gallery/fluid/cavity.rst:231
+#: 1a71102f79624ecfa804bc30bfe83d01
 msgid ""
-":doc:`taylor_green` — the same family of assemblers, now used for a "
-"quantitative convergence study against an exact solution."
-msgstr ":doc:`taylor_green`——同一系列的装配器，此处用于与精确解作定量收敛性研究。"
+":doc:`stokes_taylor_hood` — the linear warm-up with a convergence study."
+msgstr ":doc:`stokes_taylor_hood` — 含收敛性研究的线性预热算例。"
 
-#: ../../source/example_gallery/fluid/cavity.rst:278
-#: f1ef73aae22c43e0a2ae093ff6a91d8a
+#: ../../source/example_gallery/fluid/cavity.rst:233
+#: d8c39812723d423da541d79d9698b51f
 msgid ""
-":doc:`../../user_guide/forms` — argument-dispatch contract for vector-valued"
-" ``forward`` returns."
-msgstr ":doc:`../../user_guide/forms`——向量值 ``forward`` 返回值的参数分发约定。"
+":doc:`cylinder_flow` — the transient version: backward Euler, "
+"``forward_vector`` load, vortex shedding."
+msgstr ":doc:`cylinder_flow` — 瞬态版本：向后 Euler、\\ ``forward_vector`` 载荷、涡脱落。"
 
-#: ../../source/example_gallery/fluid/cavity.rst:280
+#: ../../source/example_gallery/fluid/cavity.rst:235
+#: dabcff46507c434483a1c00b94b57fb9
+msgid ""
+":doc:`rayleigh_benard` — add a third field (temperature) to the same block "
+"system."
+msgstr ":doc:`rayleigh_benard` — 向同一块系统添加第三个场（温度）。"
+
+#: ../../source/example_gallery/fluid/cavity.rst:237
 #: 54a23b3281c44c03ba805c9988f6e4f4
 msgid ""
-":doc:`../../user_guide/linear_solvers` — backend choice for the larger 3D "
-"systems."
-msgstr ":doc:`../../user_guide/linear_solvers`——针对更大的 3D 系统的后端选择。"
+":doc:`../../user_guide/mixed_assembly` — the mixed-assembly contract in "
+"full."
+msgstr ":doc:`../../user_guide/mixed_assembly` — 混合装配约定的完整说明。"
 
 #~ msgid "2D Lid-Driven Cavity"
 #~ msgstr ""
@@ -606,3 +441,281 @@ msgstr ":doc:`../../user_guide/linear_solvers`——针对更大的 3D 系统的
 
 #~ msgid ":doc:`cavity_3d` — same physics on a tetrahedral cube."
 #~ msgstr ""
+
+#~ msgid ""
+#~ "TensorMesh does not yet natively support **mixed-element function spaces** "
+#~ "for coupled multi-physics — there is no built-in Taylor-Hood (e.g. P2 "
+#~ "velocity / P1 pressure) velocity-pressure pairing that would satisfy the "
+#~ "inf-sup (LBB) condition out of the box. These examples therefore use "
+#~ "**equal-order P1-P1** for every field and recover stability with **SUPG/PSPG"
+#~ " stabilization**, which is why the weak form below carries the extra "
+#~ "residual-based ``tau`` terms. Native support for mixed elements and tighter "
+#~ "coupled-multiphysics workflows is on the roadmap and will be added "
+#~ "incrementally; until then, treat the ``NavierStokesAssembler`` here as an "
+#~ "example-grade pattern rather than a stable library API."
+#~ msgstr ""
+#~ "TensorMesh 尚未原生支持面向耦合多物理场的\\ **混合单元函数空间**——目前没有内置的 Taylor-Hood（例如 P2 速度 / P1"
+#~ " 压力）速度-压力配对来开箱即用地满足 inf-sup（LBB）条件。因此这些算例对每个场都采用\\ **等阶 P1-P1**\\ ，并借助 "
+#~ "**SUPG/PSPG 稳定化**\\ 来恢复稳定性，这也是下面弱形式中带有额外的基于残差的 ``tau`` "
+#~ "项的原因。对混合单元以及更紧密的耦合多物理场工作流的原生支持已列入路线图，并将逐步加入；在此之前，请把这里的 "
+#~ "``NavierStokesAssembler`` 视为示例级范式，而非稳定的库 API。"
+
+#~ msgid "one node: :math:`p = 0` (pressure pin to fix the null space)."
+#~ msgstr "某一节点：\\ :math:`p = 0`\\ （钉定压力以消除零空间）。"
+
+#~ msgid ""
+#~ "The standard mixed weak form treats velocity and pressure together. Because "
+#~ "the scripts use **equal-order** P1-P1 elements for both, the discrete LBB "
+#~ "condition is violated and the naive Galerkin formulation has spurious "
+#~ "pressure modes. The fix is **SUPG/PSPG stabilization**: add a residual-based"
+#~ " perturbation to both the momentum and the continuity equations, scaled by a"
+#~ " mesh-size-dependent parameter :math:`\\tau`."
+#~ msgstr ""
+#~ "标准的混合弱形式将速度与压力一并处理。由于这些脚本对两者都采用\\ **等阶** P1-P1 单元，离散 LBB "
+#~ "条件被违反，朴素的伽辽金格式会出现伪压力模态。解决办法是 **SUPG/PSPG 稳定化**\\ "
+#~ "：向动量方程和连续性方程都加入一个基于残差的扰动项，并以依赖网格尺寸的参数 :math:`\\tau` 进行缩放。"
+
+#~ msgid ""
+#~ "Denote by :math:`\\mathbf{w} = \\mathbf{w}^{n}` the  velocity at the "
+#~ "previous Picard iterate. The SUPG/PSPG-stabilized weak form seeks "
+#~ ":math:`\\mathbf{u} \\in (H^1_0(\\Omega))^d + \\mathbf{u}_b` and :math:`p "
+#~ "\\in L^2(\\Omega)/\\mathbb{R}` such that for all :math:`\\mathbf{v} \\in "
+#~ "(H^1_0(\\Omega))^d, q \\in L^2(\\Omega)/\\mathbb{R}`,"
+#~ msgstr ""
+#~ "记 :math:`\\mathbf{w} = \\mathbf{w}^{n}` 为上一个 Picard 迭代步的速度。SUPG/PSPG "
+#~ "稳定化弱形式寻求 :math:`\\mathbf{u} \\in (H^1_0(\\Omega))^d + \\mathbf{u}_b` 和 "
+#~ ":math:`p \\in L^2(\\Omega)/\\mathbb{R}`\\ ，使得对所有 :math:`\\mathbf{v} \\in "
+#~ "(H^1_0(\\Omega))^d, q \\in L^2(\\Omega)/\\mathbb{R}`\\ ，"
+
+#~ msgid ""
+#~ "Here, :math:`\\mathbf{u}_b` incorporates the non-homogeneous velocity "
+#~ "boundary conditions; :math:`L^2(\\Omega)/\\mathbb{R}` is the space modulo "
+#~ "constants (since pressure is only determined up to an additive constant)."
+#~ msgstr ""
+#~ "这里 :math:`\\mathbf{u}_b` 计入了非齐次的速度边界条件；\\ :math:`L^2(\\Omega)/\\mathbb{R}` "
+#~ "是模去常数后的空间（因为压力只能确定到一个相加常数）。"
+
+#~ msgid ""
+#~ "For equal-order P1-P1 this Galerkin form is unstable, so we append element-"
+#~ "wise **SUPG/PSPG** terms built from the strong momentum residual"
+#~ msgstr "对于等阶 P1-P1，这一伽辽金形式是不稳定的，因此我们逐单元附加由强动量残差构造的 **SUPG/PSPG** 项"
+
+#~ msgid ""
+#~ "\\mathbf{R}(\\mathbf{u}, p) \\;=\\;\n"
+#~ "\\rho\\,(\\mathbf{w}\\cdot\\nabla)\\mathbf{u} + \\nabla p - \\mu\\,\\Delta\\mathbf{u}."
+#~ msgstr ""
+#~ "\\mathbf{R}(\\mathbf{u}, p) \\;=\\;\n"
+#~ "\\rho\\,(\\mathbf{w}\\cdot\\nabla)\\mathbf{u} + \\nabla p - \\mu\\,\\Delta\\mathbf{u}."
+
+#~ msgid ""
+#~ "Note that the viscous term :math:`\\mu\\,\\Delta\\mathbf{u}` vanishes on P1 "
+#~ "elements. The stabilized discretization uses P1-P1 elements for "
+#~ ":math:`\\mathbf{u}` and :math:`p`, and adds"
+#~ msgstr ""
+#~ "注意黏性项 :math:`\\mu\\,\\Delta\\mathbf{u}` 在 P1 单元上为零。该稳定化离散对 "
+#~ ":math:`\\mathbf{u}` 和 :math:`p` 都使用 P1-P1 单元，并加入"
+
+#~ msgid ""
+#~ "\\underbrace{\\sum_e \\int_{\\Omega_e}\n"
+#~ "    \\tau\\,(\\mathbf{w}\\cdot\\nabla)\\mathbf{v}\\cdot\\mathbf{R}\\,\\mathrm{d}x}_{\\text{SUPG}}\n"
+#~ "\\;+\\;\n"
+#~ "\\underbrace{\\sum_e \\int_{\\Omega_e}\n"
+#~ "    \\tau\\,\\nabla q\\cdot\\mathbf{R}\\,\\mathrm{d}x}_{\\text{PSPG}}"
+#~ msgstr ""
+#~ "\\underbrace{\\sum_e \\int_{\\Omega_e}\n"
+#~ "    \\tau\\,(\\mathbf{w}\\cdot\\nabla)\\mathbf{v}\\cdot\\mathbf{R}\\,\\mathrm{d}x}_{\\text{SUPG}}\n"
+#~ "\\;+\\;\n"
+#~ "\\underbrace{\\sum_e \\int_{\\Omega_e}\n"
+#~ "    \\tau\\,\\nabla q\\cdot\\mathbf{R}\\,\\mathrm{d}x}_{\\text{PSPG}}"
+
+#~ msgid ""
+#~ "to the aforementioned weak form, with :math:`\\tau` being a stabilization "
+#~ "parameter."
+#~ msgstr "到上述弱形式中，其中 :math:`\\tau` 为稳定化参数。"
+
+#~ msgid ""
+#~ "The implementation is a custom :class:`~tensormesh.ElementAssembler` defined"
+#~ " locally in the example. Its ``forward`` returns the :math:`(d{+}1) \\times "
+#~ "(d{+}1)` block coupling one test node to one trial node — :math:`d` velocity"
+#~ " components plus pressure — which the assembler stamps into a block-COO "
+#~ "sparse matrix exactly as the built-in vector-valued assemblers do. The block"
+#~ " is built from four named sub-blocks rather than entry-by-entry, so each "
+#~ "physical term is visible:"
+#~ msgstr ""
+#~ "其实现是一个在算例中本地定义的自定义 :class:`~tensormesh.ElementAssembler`\\ 。它的 ``forward`` "
+#~ "返回耦合一个测试节点与一个试探节点的 :math:`(d{+}1) \\times (d{+}1)` 块——即 :math:`d` "
+#~ "个速度分量加上压力——装配器会像内置的向量值装配器那样，将该块印入一个块状 COO "
+#~ "稀疏矩阵。这个块是由四个具名子块而非逐项构造的，因此每个物理项都清晰可见："
+
+#~ msgid ""
+#~ "The four named sub-blocks map one-to-one onto the terms of the stabilized "
+#~ "weak form above:"
+#~ msgstr "这四个具名子块与上面稳定化弱形式中的各项一一对应："
+
+#~ msgid ""
+#~ "``A_uu`` — convection "
+#~ ":math:`\\rho\\,(\\mathbf{w}\\cdot\\nabla)\\mathbf{u}\\cdot\\mathbf{v}`, "
+#~ "diffusion :math:`\\mu\\,\\nabla\\mathbf{u}:\\nabla\\mathbf{v}`, and the SUPG"
+#~ " convection term "
+#~ ":math:`\\tau\\,(\\mathbf{w}\\cdot\\nabla\\mathbf{v})\\,\\rho\\,(\\mathbf{w}\\cdot\\nabla)\\mathbf{u}`"
+#~ " (diagonal in the components, hence ``* eye``);"
+#~ msgstr ""
+#~ "``A_uu``——对流项 "
+#~ ":math:`\\rho\\,(\\mathbf{w}\\cdot\\nabla)\\mathbf{u}\\cdot\\mathbf{v}`\\ "
+#~ "、扩散项 :math:`\\mu\\,\\nabla\\mathbf{u}:\\nabla\\mathbf{v}`\\ ，以及 SUPG 对流项 "
+#~ ":math:`\\tau\\,(\\mathbf{w}\\cdot\\nabla\\mathbf{v})\\,\\rho\\,(\\mathbf{w}\\cdot\\nabla)\\mathbf{u}`\\"
+#~ " （在各分量上是对角的，故乘以 ``* eye``\\ ）；"
+
+#~ msgid ""
+#~ "``B_up`` — pressure gradient :math:`-p\\,\\nabla\\cdot\\mathbf{v}` and its "
+#~ "SUPG counterpart "
+#~ ":math:`\\tau\\,(\\mathbf{w}\\cdot\\nabla\\mathbf{v})\\cdot\\nabla p`;"
+#~ msgstr ""
+#~ "``B_up``——压力梯度项 :math:`-p\\,\\nabla\\cdot\\mathbf{v}` 及其 SUPG 对应项 "
+#~ ":math:`\\tau\\,(\\mathbf{w}\\cdot\\nabla\\mathbf{v})\\cdot\\nabla p`\\ ；"
+
+#~ msgid ""
+#~ "``B_pu`` — divergence :math:`q\\,\\nabla\\cdot\\mathbf{u}` and the PSPG "
+#~ "convection term :math:`\\tau\\,\\nabla "
+#~ "q\\cdot\\rho\\,(\\mathbf{w}\\cdot\\nabla)\\mathbf{u}`;"
+#~ msgstr ""
+#~ "``B_pu``——散度项 :math:`q\\,\\nabla\\cdot\\mathbf{u}` 及 PSPG 对流项 "
+#~ ":math:`\\tau\\,\\nabla "
+#~ "q\\cdot\\rho\\,(\\mathbf{w}\\cdot\\nabla)\\mathbf{u}`\\ ；"
+
+#~ msgid "``C_pp`` — the PSPG pressure-Laplacian :math:`\\tau\\,\\nabla p\\cdot\\nabla q`."
+#~ msgstr "``C_pp``——PSPG 压力拉普拉斯项 :math:`\\tau\\,\\nabla p\\cdot\\nabla q`\\ 。"
+
+#~ msgid ""
+#~ "Because ``dim`` is read from ``gradu.shape[0]``, the same ``forward`` "
+#~ "produces a :math:`3{\\times}3` block in 2D and a :math:`4{\\times}4` block "
+#~ "in 3D with no changes."
+#~ msgstr ""
+#~ "由于 ``dim`` 是从 ``gradu.shape[0]`` 读取的，同一个 ``forward`` 在 2D 中产生 "
+#~ ":math:`3{\\times}3` 块、在 3D 中产生 :math:`4{\\times}4` 块，无需任何改动。"
+
+#~ msgid ""
+#~ "The convection term :math:`(\\mathbf{u}\\cdot\\nabla)\\mathbf{u}` is "
+#~ "linearized by passing the previous-iterate velocity :math:`\\mathbf{w}^{n}` "
+#~ "as ``w_prev`` to the assembler:"
+#~ msgstr ""
+#~ "对流项 :math:`(\\mathbf{u}\\cdot\\nabla)\\mathbf{u}` 通过将上一迭代步的速度 "
+#~ ":math:`\\mathbf{w}^{n}` 作为 ``w_prev`` 传给装配器来线性化："
+
+#~ msgid ""
+#~ "\\rho\\, (\\mathbf{w}^{n} \\cdot \\nabla)\\mathbf{u}^{n+1}\n"
+#~ "\\;=\\; -\\nabla p^{n+1} + \\mu\\, \\Delta \\mathbf{u}^{n+1}."
+#~ msgstr ""
+#~ "\\rho\\, (\\mathbf{w}^{n} \\cdot \\nabla)\\mathbf{u}^{n+1}\n"
+#~ "\\;=\\; -\\nabla p^{n+1} + \\mu\\, \\Delta \\mathbf{u}^{n+1}."
+
+#~ msgid ""
+#~ "This converges geometrically for moderate Reynolds numbers; the script "
+#~ "iterates until ``||u_new - u_full|| / ||u_new|| < 1e-4``, typically ~8 "
+#~ "iterations at Re=100."
+#~ msgstr ""
+#~ "对于中等雷诺数，该过程以几何速率收敛；脚本迭代直到 ``||u_new - u_full|| / ||u_new|| < 1e-4``\\ ，在 "
+#~ "Re=100 时通常约需 8 次迭代。"
+
+#~ msgid ""
+#~ "**DOF layout.** The unknowns are interleaved node-major: ``[u_0, v_0, p_0, "
+#~ "u_1, v_1, p_1, …]`` in 2D (``[u, v, w, p]`` per node in 3D). The script's "
+#~ "small ``component_dofs(n_points, n_dof, comp)`` helper turns \"component "
+#~ "``comp`` at every node\" into the flat global indices the "
+#~ ":class:`~tensormesh.Condenser` mask expects."
+#~ msgstr ""
+#~ "**自由度排布。**\\ 未知量以节点为主序交错排列：2D 中为 ``[u_0, v_0, p_0, u_1, v_1, p_1, …]``\\ （3D"
+#~ " 中每个节点为 ``[u, v, w, p]``\\ ）。脚本中小巧的 ``component_dofs(n_points, n_dof, "
+#~ "comp)`` 辅助函数将“每个节点上的分量 ``comp``”转换为 :class:`~tensormesh.Condenser` "
+#~ "掩码所需的扁平全局索引。"
+
+#~ msgid ""
+#~ "**Pressure pin.** ``bc_mask[n_dof - 1] = True`` clamps pressure to zero at "
+#~ "node 0 — required because pressure is only determined up to an additive "
+#~ "constant in incompressible flow."
+#~ msgstr ""
+#~ "**压力钉定。**\\ ``bc_mask[n_dof - 1] = True`` 将节点 0 "
+#~ "处的压力钉定为零——这是必要的，因为不可压缩流动中压力只能确定到一个相加常数。"
+
+#~ msgid ""
+#~ "``w_prev`` is passed by name in ``point_data`` and arrives in ``forward`` as"
+#~ " the matching keyword argument; see :doc:`../../user_guide/forms` for the "
+#~ "dispatch contract."
+#~ msgstr ""
+#~ "``w_prev`` 通过 ``point_data`` 按名称传入，并作为同名关键字参数到达 ``forward``\\ ；分发约定参见 "
+#~ ":doc:`../../user_guide/forms`\\ 。"
+
+#~ msgid ""
+#~ "``cavity_3d.py`` solves the same physics on a unit cube. Because the "
+#~ "``NavierStokesAssembler`` is dimension-generic, the differences are "
+#~ "mechanical:"
+#~ msgstr ""
+#~ "``cavity_3d.py`` 在单位立方体上求解相同的物理问题。由于 ``NavierStokesAssembler`` "
+#~ "是维度通用的，二者的差异都很机械："
+
+#~ msgid ""
+#~ "``Mesh.gen_cube(chara_length=…)`` (tetrahedral) replaces "
+#~ "``Mesh.gen_rectangle``."
+#~ msgstr "``Mesh.gen_cube(chara_length=…)``\\ （四面体）取代了 ``Mesh.gen_rectangle``\\ 。"
+
+#~ msgid ""
+#~ "The DOF layout is per-node ``[u, v, w, p]`` (``n_dof = 4``) instead of ``[u,"
+#~ " v, p]``; ``w_prev`` now slices the first three components."
+#~ msgstr ""
+#~ "自由度排布变为每个节点 ``[u, v, w, p]``\\ （\\ ``n_dof = 4``\\ ），而不再是 ``[u, v, p]``\\ "
+#~ "；\\ ``w_prev`` 现在切取前三个分量。"
+
+#~ msgid ""
+#~ "The output is volumetric: ``cavity_3d.vtu`` for ParaView, plus a cross-"
+#~ "section slice at :math:`z = 0.5` rendered via PyVista as ``cavity_3d.png``."
+#~ msgstr ""
+#~ "输出为体数据：供 ParaView 使用的 ``cavity_3d.vtu``\\ ，外加一张在 :math:`z = 0.5` 处的横截面切片，由 "
+#~ "PyVista 渲染为 ``cavity_3d.png``\\ 。"
+
+#~ msgid ""
+#~ "Everything else — the Picard loop, the SUPG/PSPG stamp, the pressure pin, "
+#~ "the use of :class:`~tensormesh.Condenser` — is unchanged:"
+#~ msgstr ""
+#~ "其余一切——Picard 循环、SUPG/PSPG 印块、压力钉定、\\ :class:`~tensormesh.Condenser` "
+#~ "的使用——都保持不变："
+
+#~ msgid ""
+#~ "The 4-DOFs-per-node layout makes the linear system large quickly — at "
+#~ "``chara_length=0.05`` it is on the order of a million unknowns — so a GPU "
+#~ "backend (``backend=\"cudss\"`` or ``\"pytorch\"``, see "
+#~ ":doc:`../../user_guide/linear_solvers`) is recommended once you go beyond a "
+#~ "few thousand nodes."
+#~ msgstr ""
+#~ "每个节点 4 个自由度的排布会让线性系统迅速增大——在 ``chara_length=0.05`` "
+#~ "时约有百万级未知量——因此一旦节点数超过几千，建议使用 GPU 后端（\\ ``backend=\"cudss\"`` 或 "
+#~ "``\"pytorch\"``\\ ，参见 :doc:`../../user_guide/linear_solvers`\\ ）。"
+
+#~ msgid ""
+#~ "The console reports the relative residual at each Picard step plus the final"
+#~ " convergence message. For 2D, compare the stream-function contours "
+#~ "qualitatively against the Ghia / Ghia / Shin reference (1982) for Re=100 — "
+#~ "the primary vortex center should match to within a few percent. For 3D, open"
+#~ " ``cavity_3d.vtu`` in ParaView for full volumetric inspection (streamlines, "
+#~ "iso-surfaces); the PNG is a quick sanity check."
+#~ msgstr ""
+#~ "控制台会报告每个 Picard 步的相对残差以及最终的收敛信息。对于 2D，可将流函数等值线与 Ghia / Ghia / Shin（1982）在 "
+#~ "Re=100 下的参考结果作定性比较——主涡中心应在百分之几的误差内吻合。对于 3D，可在 ParaView 中打开 ``cavity_3d.vtu``"
+#~ " 进行完整的体数据检查（流线、等值面）；PNG 仅作快速合理性检查之用。"
+
+#~ msgid ":doc:`cylinder_flow` — adds transient time stepping."
+#~ msgstr ":doc:`cylinder_flow`——加入瞬态时间推进。"
+
+#~ msgid ""
+#~ ":doc:`taylor_green` — the same family of assemblers, now used for a "
+#~ "quantitative convergence study against an exact solution."
+#~ msgstr ":doc:`taylor_green`——同一系列的装配器，此处用于与精确解作定量收敛性研究。"
+
+#~ msgid ""
+#~ ":doc:`../../user_guide/forms` — argument-dispatch contract for vector-valued"
+#~ " ``forward`` returns."
+#~ msgstr ":doc:`../../user_guide/forms`——向量值 ``forward`` 返回值的参数分发约定。"
+
+#~ msgid ""
+#~ ":doc:`../../user_guide/linear_solvers` — backend choice for the larger 3D "
+#~ "systems."
+#~ msgstr ":doc:`../../user_guide/linear_solvers`——针对更大的 3D 系统的后端选择。"

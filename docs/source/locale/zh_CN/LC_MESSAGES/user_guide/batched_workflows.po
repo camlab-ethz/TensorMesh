@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-22 23:00+0200\n"
+"POT-Creation-Date: 2026-07-22 15:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_CN <LL@li.org>\n"
@@ -228,24 +228,20 @@ msgstr "这个维度与跨\\ *问题*\\ 的批量化毫无关系。其结果是�
 #: d2d9dea1e99f4c3fbdb0d4b4c83c406e
 msgid ""
 "``batch_size`` chunks one assembly on a single device. When the stiffness "
-"matrix is too large for one GPU even chunked, TensorMesh also has a **multi-"
-"GPU distributed assembly** path -- currently a beta / research-grade "
-"feature; see :doc:`../example_gallery/distributed` for the building blocks. "
-"A future release will align distributed assembly with the distributed linear"
-" solver in ``torch-sla``, closing the loop on truly large-scale DOF counts "
-"end-to-end."
+"matrix is too large for one GPU even chunked, TensorMesh has a **multi-GPU "
+"distributed** path — partitioned assembly wired into ``torch-sla``'s "
+"distributed solver, end-to-end. See :doc:`distributed`."
 msgstr ""
-"``batch_size`` 在单个设备上对一次装配进行分块。当刚度矩阵即便分块后仍大到无法在单个 GPU 上容纳时，TensorMesh "
-"还提供了一条\\ **多 GPU 分布式装配**\\ 路径——目前是 beta / 研究级特性；其构件参见 "
-":doc:`../example_gallery/distributed`\\ 。未来的某个版本会让分布式装配与 ``torch-sla`` "
-"中的分布式线性求解器对齐，从而在真正大规模自由度数上实现端到端闭环。"
+"``batch_size`` 将单次装配拆分为多个块，在单个设备上执行。当刚度矩阵过大、即使分块也无法在单个 GPU 上容纳时，TensorMesh "
+"提供了 **多 GPU 分布式** 路径——将分区装配接入 ``torch-sla`` 的分布式求解器，实现端到端求解。详见 "
+":doc:`distributed`\\ 。"
 
-#: ../../source/user_guide/batched_workflows.rst:113
+#: ../../source/user_guide/batched_workflows.rst:110
 #: a0c5110696d74dbdadc63f914a6cf4fb
 msgid "Axis 2 -- Batched right-hand sides"
 msgstr "维度 2 —— 批量右端项"
 
-#: ../../source/user_guide/batched_workflows.rst:115
+#: ../../source/user_guide/batched_workflows.rst:112
 #: 7440d7b63bfe4d1b81b6447a74820cd6
 msgid ""
 "When you have one stiffness matrix ``K`` and many load vectors ``b_i``, "
@@ -255,7 +251,7 @@ msgstr ""
 "当你拥有一个刚度矩阵 ``K`` 和许多载荷向量 ``b_i`` 时，把这些载荷堆叠成单个 ``[n_dof, n_batch]`` "
 "张量，一次性把整块交给 ``K.solve``\\ ："
 
-#: ../../source/user_guide/batched_workflows.rst:124
+#: ../../source/user_guide/batched_workflows.rst:121
 #: 3f8d02aac53a4eb0ad287ecdb7bb1b18
 msgid ""
 "``SparseMatrix.solve`` delegates to ``torch-sla``, which selects the backend"
@@ -277,7 +273,7 @@ msgstr ""
 "**只分解一次 ``K``、然后对每一列回代**——这正是你在此处想要的收益。相比用 Python 循环逐个独立求解，无论在 CPU 还是 GPU "
 "上加速都十分显著，并随 ``n_batch`` 增长，直到回代开始占主导："
 
-#: ../../source/user_guide/batched_workflows.rst:140
+#: ../../source/user_guide/batched_workflows.rst:137
 #: 055045fdd66b49b6bb2d998fbbc5d7be
 msgid ""
 "Per-problem cost on a 3014-node Poisson mesh: a Python loop that calls "
@@ -289,7 +285,7 @@ msgstr ""
 "``n_batch`` 次的 Python 循环（虚线）对比单次二维右端项调用（实线）。在 GPU 上，当 ``n_batch = 256`` "
 "时加速达到 ``225x``\\ 。"
 
-#: ../../source/user_guide/batched_workflows.rst:145
+#: ../../source/user_guide/batched_workflows.rst:142
 #: 7970bdeff07245e9986c030ecee12a5c
 msgid ""
 "The lesson reads cleanly off the figure. The loop is exactly ``n_batch`` "
@@ -302,7 +298,7 @@ msgstr ""
 " ，并将这一开销摊销到每一列上；在 GPU 上，直到 ``n_batch = 256``\\ ，其耗时都保持在单右端项耗时的 :math:`\\sim "
 "15\\%` 以内。"
 
-#: ../../source/user_guide/batched_workflows.rst:154
+#: ../../source/user_guide/batched_workflows.rst:151
 #: 6277861d7dfb4bfa950dcb40234cd03e
 msgid ""
 "The factor-once amortisation is a property of the **direct** backends. If an"
@@ -322,14 +318,14 @@ msgstr ""
 " 目前尚不缓存迭代求解器状态（即跨右端项复用的预条件子或 Krylov 基）；带缓存的迭代求解器已列入未来版本的计划。后端与方法的选择方式参见 "
 ":doc:`linear_solvers`\\ 。"
 
-#: ../../source/user_guide/batched_workflows.rst:165
+#: ../../source/user_guide/batched_workflows.rst:162
 #: d6886bd20b7a4bb5a081a3037327455c
 msgid ""
 "Throughput is the same data the other way around -- problems solved per "
 "second:"
 msgstr "吞吐量是同一组数据的另一种呈现——每秒求解的问题数："
 
-#: ../../source/user_guide/batched_workflows.rst:172
+#: ../../source/user_guide/batched_workflows.rst:169
 #: 9eb846e0d1544ff188c567bfa5c75f16
 #, python-brace-format
 msgid ""
@@ -341,7 +337,7 @@ msgstr ""
 "以每秒问题数表示的吞吐量。CPU 路径在大约 :math:`5 \\times 10^{3}` 个问题每秒处使 SuperLU 回代达到饱和；GPU "
 "则持续攀升，在 ``n_batch = 1024`` 时接近 :math:`3 \\times 10^{4}` 个问题每秒。"
 
-#: ../../source/user_guide/batched_workflows.rst:178
+#: ../../source/user_guide/batched_workflows.rst:175
 #: f42c8ac1158747b1bcb309f346ff1450
 msgid ""
 "Condensation works the same way. :meth:`~tensormesh.Condenser.condense_rhs` "
@@ -351,19 +347,19 @@ msgstr ""
 "凝聚的工作方式相同。\\ :meth:`~tensormesh.Condenser.condense_rhs` 接受 ``[n_dof, ...]`` "
 "形状——前导的自由度轴会被切片，而后续各轴原样透传："
 
-#: ../../source/user_guide/batched_workflows.rst:190
+#: ../../source/user_guide/batched_workflows.rst:187
 #: 1bfd0e3dd24c417f89b9f558b710f851
 msgid ""
 "This is the workhorse pattern for ML training-data generation and for "
 "parametric studies where every problem shares the geometry."
 msgstr "这是机器学习训练数据生成的主力模式，也适用于每个问题都共享同一几何的参数化研究。"
 
-#: ../../source/user_guide/batched_workflows.rst:195
+#: ../../source/user_guide/batched_workflows.rst:192
 #: e821c5d192854d1b9a0c57b8fa03f77a
 msgid "Axis 3 -- Multi-problem datasets"
 msgstr "维度 3 —— 多问题数据集"
 
-#: ../../source/user_guide/batched_workflows.rst:197
+#: ../../source/user_guide/batched_workflows.rst:194
 #: e69ff73f1e104270b43b81edf281bb78
 msgid ""
 "For ML workloads where you want many ``(input, output)`` pairs, "
@@ -371,7 +367,7 @@ msgid ""
 msgstr ""
 "对于需要大量 ``(input, output)`` 对的机器学习工作负载，\\ :mod:`tensormesh.dataset` 打包了两样东西："
 
-#: ../../source/user_guide/batched_workflows.rst:200
+#: ../../source/user_guide/batched_workflows.rst:197
 #: bd8f5762bc22497387c322ce39be8692
 msgid ""
 ":class:`~tensormesh.MeshGen` -- programmatic Gmsh-backed mesh generation "
@@ -379,34 +375,34 @@ msgid ""
 msgstr ""
 ":class:`~tensormesh.MeshGen` —— 由 CSG 基元（矩形、圆、孔洞等）程序化生成、以 Gmsh 为后端的网格。"
 
-#: ../../source/user_guide/batched_workflows.rst:202
+#: ../../source/user_guide/batched_workflows.rst:199
 #: 8c44b8f2050343dfac42985764846b22
 msgid ""
 "Multi-frequency equation classes that emit batched source terms with known "
 "analytical solutions, for supervised training:"
 msgstr "多频方程类，可生成带有已知解析解的批量源项，用于监督训练："
 
-#: ../../source/user_guide/batched_workflows.rst:205
+#: ../../source/user_guide/batched_workflows.rst:202
 #: 4f335227ecf04ad8a85daf5f98a462e0
 msgid ":class:`~tensormesh.dataset.PoissonMultiFrequency` (and ``…3D``)"
 msgstr ":class:`~tensormesh.dataset.PoissonMultiFrequency`\\ （以及 ``…3D``\\ ）"
 
-#: ../../source/user_guide/batched_workflows.rst:206
+#: ../../source/user_guide/batched_workflows.rst:203
 #: 7fb786a393cb4811b754f6a3f639861c
 msgid ":class:`~tensormesh.dataset.HeatMultiFrequency`"
 msgstr ":class:`~tensormesh.dataset.HeatMultiFrequency`"
 
-#: ../../source/user_guide/batched_workflows.rst:207
+#: ../../source/user_guide/batched_workflows.rst:204
 #: f0b3af75e6494df6b40321b8040a0bf2
 msgid ":class:`~tensormesh.dataset.WaveMultiFrequency`"
 msgstr ":class:`~tensormesh.dataset.WaveMultiFrequency`"
 
-#: ../../source/user_guide/batched_workflows.rst:208
+#: ../../source/user_guide/batched_workflows.rst:205
 #: 1c42a50269c4414083ad0b20fed15ea5
 msgid "``LinearElasticityMultiFrequency`` (and ``…3D``)"
 msgstr "``LinearElasticityMultiFrequency``\\ （以及 ``…3D``\\ ）"
 
-#: ../../source/user_guide/batched_workflows.rst:210
+#: ../../source/user_guide/batched_workflows.rst:207
 #: 575fa01e6a914e49a973972e3bf7cf3c
 msgid ""
 "Each ``…MultiFrequency`` class samples random Fourier coefficients for the "
@@ -414,14 +410,14 @@ msgid ""
 "the same nodes, which is convenient for both training and validation."
 msgstr "每个 ``…MultiFrequency`` 类都会为源项采样随机傅里叶系数，并在适用时返回相同节点上的解析解，这对训练和验证都很方便。"
 
-#: ../../source/user_guide/batched_workflows.rst:215
+#: ../../source/user_guide/batched_workflows.rst:212
 #: 29ada88b250c40ccb54696e5a9163267
 msgid ""
 "The standard \"same mesh, varying source\" recipe combines this generator "
 "with the batched-RHS pattern from Axis 2:"
 msgstr "标准的“同一网格、变化源项”方案，将这个生成器与维度 2 的批量右端项模式结合起来："
 
-#: ../../source/user_guide/batched_workflows.rst:240
+#: ../../source/user_guide/batched_workflows.rst:237
 #: 55da14ad545344a7a9f7f27808e1da6a
 #, python-brace-format
 msgid ""
@@ -436,19 +432,19 @@ msgstr ""
 ":math:`30\\,\\mu\\mathrm{s}`\\ ，主要耗时在 cuDSS 的三角回代上。完整基准测试的驱动脚本（含跨多个 "
 "``n_batch`` 取值的计时）位于 ``examples/dataset/poisson/poisson_dataset.py``\\ 。"
 
-#: ../../source/user_guide/batched_workflows.rst:247
+#: ../../source/user_guide/batched_workflows.rst:244
 #: 4fa59ee789f0403b91d084d5db9feb1b
 msgid ""
 "For *varying mesh* workflows, regenerate ``Mesh`` per problem and pay the "
 "assembly cost each time -- there is no shortcut for that case today."
 msgstr "对于\\ *网格变化*\\ 的工作流，需要为每个问题重新生成 ``Mesh`` 并每次都付出装配开销——目前这种情况没有捷径。"
 
-#: ../../source/user_guide/batched_workflows.rst:255
+#: ../../source/user_guide/batched_workflows.rst:252
 #: 539b2413043049f4b478685a3a648548
 msgid "What's not built in"
 msgstr "尚未内置的功能"
 
-#: ../../source/user_guide/batched_workflows.rst:257
+#: ../../source/user_guide/batched_workflows.rst:254
 #: c2a7232defc047c58f277708649f7b73
 msgid ""
 "There is **no** built-in vmap-style assembler that vectorises ``K`` "
@@ -458,13 +454,13 @@ msgstr ""
 "目前\\ **没有**\\ 内置的 vmap 式装配器来跨多个参数取值对 ``K`` 的构造进行向量化（例如为随机系数场的每一次实现生成一个 "
 "``K``\\ ）。当下，用户代码中有两种可行模式："
 
-#: ../../source/user_guide/batched_workflows.rst:262
+#: ../../source/user_guide/batched_workflows.rst:259
 #: a0d0b4eb163942be927fd80d9ed4c183
 msgid ""
 "**Python loop** -- simplest, fine when assembly is cheap relative to solve."
 msgstr "**Python 循环**——最简单，当装配相对于求解开销较小时完全够用。"
 
-#: ../../source/user_guide/batched_workflows.rst:264
+#: ../../source/user_guide/batched_workflows.rst:261
 #: 7d02d88a0be843a281dc4a5981e2c9e1
 msgid ""
 "**``torch.vmap`` around the assembler call** -- works when the varying "
@@ -475,7 +471,7 @@ msgstr ""
 "**用 ``torch.vmap`` 包住装配器调用**——当变化的参数通过 ``point_data`` 或 ``element_data`` "
 "传入、且结果形状一致时可用。请注意 ``vmap`` 与稀疏输出的配合较为脆弱；请先在小问题上测试。"
 
-#: ../../source/user_guide/batched_workflows.rst:270
+#: ../../source/user_guide/batched_workflows.rst:267
 #: b09063bdb0b2494a9ea0869afe3f88fd
 msgid ""
 "A first-class batched-assembly API may show up in a future release; the "
@@ -483,17 +479,17 @@ msgid ""
 " without it."
 msgstr "未来的某个版本可能会出现一等公民级别的批量装配 API；即便没有它，上文的数据集工作流也已涵盖了最常见的情形（同一网格、多个源项）。"
 
-#: ../../source/user_guide/batched_workflows.rst:276
+#: ../../source/user_guide/batched_workflows.rst:273
 #: 994e9b584f8c4a78b774cdd5695975fd
 msgid "Reproducing the numbers"
 msgstr "复现这些数据"
 
-#: ../../source/user_guide/batched_workflows.rst:278
+#: ../../source/user_guide/batched_workflows.rst:275
 #: f39c9a90c0c9413fa3be4b32700d8253
 msgid "All three figures on this page come from a single script:"
 msgstr "本页的三幅图均来自同一个脚本："
 
-#: ../../source/user_guide/batched_workflows.rst:284
+#: ../../source/user_guide/batched_workflows.rst:281
 #: af844fa397aa4e848e05be13ac69c3b4
 msgid ""
 "It uses only the public API and runs on CPU alone (the GPU panels are "
@@ -506,24 +502,24 @@ msgstr ""
 "``memory_chunking.png`` 写入 "
 "``docs/source/_static/user_guide/batched_workflows/``\\ 。"
 
-#: ../../source/user_guide/batched_workflows.rst:292
+#: ../../source/user_guide/batched_workflows.rst:289
 #: 996254a5ca194ebd9e22f7a7eed7bcb8
 msgid "What's next"
 msgstr "下一步"
 
-#: ../../source/user_guide/batched_workflows.rst:294
+#: ../../source/user_guide/batched_workflows.rst:291
 #: c89bb90bf5e44adab8b28fbf6e66d1e0
 msgid ""
 ":doc:`linear_solvers` -- the backend / method auto-selection and the "
 "``backend`` knobs that affect batched solves."
 msgstr ":doc:`linear_solvers` —— 后端 / 方法的自动选择，以及影响批量求解的 ``backend`` 旋钮。"
 
-#: ../../source/user_guide/batched_workflows.rst:296
+#: ../../source/user_guide/batched_workflows.rst:293
 #: 8d50a3b3b246457ebd1ead7e78b4324f
 msgid ":doc:`differentiability` -- backprop through a batched pipeline."
 msgstr ":doc:`differentiability` —— 在批量流水线中进行反向传播。"
 
-#: ../../source/user_guide/batched_workflows.rst:297
+#: ../../source/user_guide/batched_workflows.rst:294
 #: be4a462afe59466fb7ea522e40a30a77
 msgid ""
 ":doc:`time_integration` -- transient problems where the inner solve at every"

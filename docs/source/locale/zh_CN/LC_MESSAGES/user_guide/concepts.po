@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-19 14:04+0200\n"
+"POT-Creation-Date: 2026-07-22 15:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_CN <LL@li.org>\n"
@@ -19,11 +19,11 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: ../../source/user_guide/concepts.rst:2 5b38ad7aab8842559db887601bec4de2
+#: ../../source/user_guide/concepts.rst:2 1c67ad4bae894a59b80d9df1562beeb0
 msgid "Concepts"
 msgstr "核心概念"
 
-#: ../../source/user_guide/concepts.rst:4 4f85b83c791845e8924fedd01397a930
+#: ../../source/user_guide/concepts.rst:4 69c1648fcca64fe2be99d32d7fc3001f
 msgid ""
 "TensorMesh is a finite-element library written from the ground up for "
 "PyTorch. A :class:`~tensormesh.Mesh` is an :class:`torch.nn.Module`, weak "
@@ -37,25 +37,25 @@ msgstr ""
 "方法，而每一次线性求解都是可微的算子。同一份求解笔记本 CPU 上泊松问题的代码，也能在 GPU "
 "上运行，并将梯度反向传播到可学习参数——无需改动任何有限元逻辑。"
 
-#: ../../source/user_guide/concepts.rst:12 8166a7f4cb704b9caad25aa9f2456440
+#: ../../source/user_guide/concepts.rst:12 0d8a6f12ebfc4d9ba4a5cc639e6635e7
 msgid ""
 "This page is the mental model: how the modules fit together and the design "
 "principles behind those choices."
 msgstr "本页给出一套心智模型：各模块如何协同工作，以及这些选择背后的设计原则。"
 
-#: ../../source/user_guide/concepts.rst:17 ddb2c87e6c0d4f5287d574f9d80f0cd9
+#: ../../source/user_guide/concepts.rst:17 5bc7a2528fa44a84979420481c54a9d9
 msgid "The FEM workflow"
 msgstr "有限元方法工作流"
 
-#: ../../source/user_guide/concepts.rst:19 47ec64cc5eb6460fba3b961c454fa388
+#: ../../source/user_guide/concepts.rst:19 061c56ed39ec479c95ef15a2205d8442
 msgid "Solving a PDE in TensorMesh follows one canonical pipeline:"
 msgstr "在 TensorMesh 中求解偏微分方程遵循一条标准流水线："
 
-#: ../../source/user_guide/concepts.rst:25 222f30de54074c578e2ddaa1ab1fffa1
+#: ../../source/user_guide/concepts.rst:25 d51ad3fc32e44c169fe39be9f846ec80
 msgid "**Mesh** discretizes the domain into points and cells."
 msgstr "**Mesh** 将求解域离散为点和网格单元。"
 
-#: ../../source/user_guide/concepts.rst:26 7ea961fd427146d0adf22c56d1dd03fb
+#: ../../source/user_guide/concepts.rst:26 9ca10ac6d65342fa95c2268880264557
 msgid ""
 "**Assembler** turns a weak form (``a(u, v)`` or ``l(v)``) into a "
 ":class:`~tensormesh.sparse.SparseMatrix` or load vector."
@@ -63,19 +63,19 @@ msgstr ""
 "**Assembler** 将弱形式（\\ ``a(u, v)`` 或 ``l(v)``\\ ）转化为 "
 ":class:`~tensormesh.sparse.SparseMatrix` 或载荷向量。"
 
-#: ../../source/user_guide/concepts.rst:28 e1c1f30845af4f60b8997dfa38714ce6
+#: ../../source/user_guide/concepts.rst:28 353608d099f1486d88e62fa0e869d72f
 msgid ""
 "**Condenser** applies Dirichlet boundary conditions by static condensation, "
 "producing a reduced system on the interior DOFs."
 msgstr "**Condenser** 通过静态凝聚施加狄利克雷边界条件，得到一个仅含内部自由度的缩减系统。"
 
-#: ../../source/user_guide/concepts.rst:30 52275ce56bf843eda4207c787a688a80
+#: ../../source/user_guide/concepts.rst:30 82e9616d536244ba8f60dae64aa73bd7
 msgid ""
 "**Solve** dispatches the reduced system to a sparse-linear-algebra backend "
 "(via the :doc:`torch-sla <linear_solvers>` package)."
 msgstr "**Solve** 将缩减系统分派给某个稀疏线性代数后端（通过 :doc:`torch-sla <linear_solvers>` 包）。"
 
-#: ../../source/user_guide/concepts.rst:33 fb026b6e6d1545e382992f2db841c2e8
+#: ../../source/user_guide/concepts.rst:33 f6b1bcb22e7d424a864913d084e34cf5
 msgid ""
 "The :doc:`../getting_started/quickstart` walks through this pipeline end-to-"
 "end in about 30 lines of Python. Each subsequent chapter of this guide zooms"
@@ -84,21 +84,21 @@ msgstr ""
 ":doc:`../getting_started/quickstart` 用大约 30 行 Python "
 "端到端地走完这条流水线。本指南后续的每一章都会聚焦于其中一个阶段。"
 
-#: ../../source/user_guide/concepts.rst:39 e3390105b320488ba8d1893ee5dcc127
+#: ../../source/user_guide/concepts.rst:39 7b93f6d91ddc4613a8e3cbc289e76129
 msgid "Module map"
 msgstr "模块全景"
 
-#: ../../source/user_guide/concepts.rst:41 22a6a6bd1a1b44c4b09938c786eac5ec
+#: ../../source/user_guide/concepts.rst:41 9e552e490c244f2f86770e1850a6ce6c
 msgid ""
 "The library splits cleanly along the pipeline. The arrows show data flow, "
 "not import direction:"
 msgstr "整个库沿流水线清晰划分。箭头表示数据流向，而非导入方向："
 
-#: ../../source/user_guide/concepts.rst:60 c61767d11b8a488981e34358b0fb74d8
+#: ../../source/user_guide/concepts.rst:60 0fd1894692044da69ec6ae55afceb055
 msgid "What lives in each module:"
 msgstr "每个模块包含的内容："
 
-#: ../../source/user_guide/concepts.rst:62 785b16c8b36a463cb0decd170f7e977f
+#: ../../source/user_guide/concepts.rst:62 f2bc8f10eadb4d8da7f912c90d895c30
 msgid ""
 ":mod:`tensormesh.mesh` — :class:`~tensormesh.Mesh` and its built-in "
 "generators (``gen_rectangle``, ``gen_circle``, ``gen_cube``, …); meshio I/O;"
@@ -108,7 +108,7 @@ msgstr ""
 "``gen_rectangle``\\ 、\\ ``gen_circle``\\ 、\\ ``gen_cube`` 等）；meshio "
 "输入/输出；邻接、分区与图着色辅助工具。"
 
-#: ../../source/user_guide/concepts.rst:65 8bb93dc9308844fd9271be6aa46fbef4
+#: ../../source/user_guide/concepts.rst:65 42a9f70d42794f8d83132744f62af5c3
 msgid ""
 ":mod:`tensormesh.element` — reference shapes (:class:`~tensormesh.Triangle`,"
 " :class:`~tensormesh.Quadrilateral`, :class:`~tensormesh.Tetrahedron`, "
@@ -122,19 +122,22 @@ msgstr ""
 ":class:`~tensormesh.Pyramid`\\ 、\\ :class:`~tensormesh.Line`\\ "
 "）、基函数求值、求积规则，以及 Gmsh/VTK ↔ TensorMesh 排序约定。"
 
-#: ../../source/user_guide/concepts.rst:71 a050fe478b2f416bb382ab30f4d5f033
+#: ../../source/user_guide/concepts.rst:71 452c6b60df9744b8b238ae93c04dbc53
 msgid ""
-":mod:`tensormesh.assemble` — the three weak-form base classes "
+":mod:`tensormesh.assemble` — the weak-form base classes "
 ":class:`~tensormesh.ElementAssembler`, :class:`~tensormesh.NodeAssembler`, "
-":class:`~tensormesh.FacetAssembler`, plus built-ins for the most common "
-"forms (Laplace, mass, linear elasticity, Neo-Hookean, …)."
+":class:`~tensormesh.FacetAssembler` and the multi-field "
+":class:`~tensormesh.MixedElementAssembler` (Taylor-Hood and friends, see "
+":doc:`mixed_assembly`), plus built-ins for the most common forms (Laplace, "
+"mass, linear elasticity, Neo-Hookean, …)."
 msgstr ""
-":mod:`tensormesh.assemble` —— 三个弱形式基类 "
-":class:`~tensormesh.ElementAssembler`\\ 、\\ "
-":class:`~tensormesh.NodeAssembler`\\ 、\\ "
-":class:`~tensormesh.FacetAssembler`\\ ，以及针对最常见弱形式（Laplace、质量、线弹性、新胡克等）的内置实现。"
+":mod:`tensormesh.assemble` — 弱形式的基类 :class:`~tensormesh.ElementAssembler`\\ "
+"、\\ :class:`~tensormesh.NodeAssembler`\\ 、\\ "
+":class:`~tensormesh.FacetAssembler` 以及多物理场 "
+":class:`~tensormesh.MixedElementAssembler`\\ （Taylor-Hood 等，参见 "
+":doc:`mixed_assembly`\\ ），另包含最常见形式的内置实现（Laplace、质量矩阵、线弹性、新胡克、…）。"
 
-#: ../../source/user_guide/concepts.rst:76 f3f2b4031a404e80968e106033f3f497
+#: ../../source/user_guide/concepts.rst:78 b60d0ac3c55a4839aadc696fbcb7f5cb
 msgid ""
 ":mod:`tensormesh.sparse` — :class:`~tensormesh.sparse.SparseMatrix` "
 "(subclass of ``torch_sla.SparseTensor``), so linear systems are solved by "
@@ -148,21 +151,23 @@ msgstr ""
 "``K.nonlinear_solve(residual, u0, *params)`` 求解，二者均由 ``torch-sla`` 分派。库内自带的 "
 "``spsolve`` / :func:`~tensormesh.sparse.nonlinear_solve` 自由函数是遗留入口点，已计划移除。"
 
-#: ../../source/user_guide/concepts.rst:83 c4fe5e0dd57c4c2aa9394c8687cecb92
+#: ../../source/user_guide/concepts.rst:85 9372b80ecbc046f4bda3d8adb90bcee5
 msgid ""
 ":mod:`tensormesh.operator` — :class:`~tensormesh.Condenser` for Dirichlet "
-"BCs via static condensation."
+"BCs via static condensation, and :class:`~tensormesh.BlochReducer` for "
+"Bloch-Floquet periodic BCs (band-structure computations)."
 msgstr ""
-":mod:`tensormesh.operator` —— :class:`~tensormesh.Condenser`\\ "
-"，用于通过静态凝聚施加狄利克雷边界条件。"
+":mod:`tensormesh.operator` — 用于通过静态凝聚处理狄利克雷边界条件的 "
+":class:`~tensormesh.Condenser`\\ ，以及用于 Bloch-Floquet 周期边界条件（能带结构计算）的 "
+":class:`~tensormesh.BlochReducer`\\ 。"
 
-#: ../../source/user_guide/concepts.rst:85 f671df151f054db185be5b7db4bee781
+#: ../../source/user_guide/concepts.rst:89 0bd171ee500240ec94bae37d7d2286a5
 msgid ""
 ":mod:`tensormesh.ode` — explicit and implicit-linear time integrators "
 "(Euler, midpoint, Runge-Kutta) for transient problems."
 msgstr ":mod:`tensormesh.ode` —— 用于瞬态问题的显式与隐式线性时间积分器（Euler、中点法、龙格-库塔）。"
 
-#: ../../source/user_guide/concepts.rst:87 2343aa9afd7f49f3b2fe84e908e83347
+#: ../../source/user_guide/concepts.rst:91 5ba0efaeec9948a6ad7fd5ebf4f1d484
 msgid ""
 ":mod:`tensormesh.functional` — Voigt elasticity helpers, strain / stress, "
 "and other tensor utilities used inside ``forward`` methods."
@@ -170,7 +175,7 @@ msgstr ""
 ":mod:`tensormesh.functional` —— Voigt 弹性辅助函数、应变 / 应力，以及其他在 ``forward`` "
 "方法内部使用的张量工具。"
 
-#: ../../source/user_guide/concepts.rst:89 33f80b2f5a004229b68db42ed8f973e7
+#: ../../source/user_guide/concepts.rst:93 6440402562c740e888b3fe0268f41af9
 msgid ""
 ":mod:`tensormesh.dataset` — :class:`~tensormesh.MeshGen` and pre-built "
 "multi-frequency equation classes for generating training datasets."
@@ -178,7 +183,7 @@ msgstr ""
 ":mod:`tensormesh.dataset` —— :class:`~tensormesh.MeshGen` "
 "以及用于生成训练数据集的预置多频方程类。"
 
-#: ../../source/user_guide/concepts.rst:91 54142c381658487c92086369c9c37508
+#: ../../source/user_guide/concepts.rst:95 341d2fcb830e44a7b6788a3a7e44ab48
 msgid ""
 ":mod:`tensormesh.material` — :class:`~tensormesh.material.IsotropicMaterial`"
 " and library presets (Steel, Aluminum, Rubber, Glass)."
@@ -187,7 +192,7 @@ msgstr ""
 ":class:`~tensormesh.material.IsotropicMaterial` "
 "以及材料库预设（Steel、Aluminum、Rubber、Glass）。"
 
-#: ../../source/user_guide/concepts.rst:94 fd7d9cd9ca9947e08ccd731aa279b8f6
+#: ../../source/user_guide/concepts.rst:98 7ca75544c77444119a9ec58b2d143fbb
 msgid ""
 ":mod:`tensormesh.optimizer` — :class:`~tensormesh.optimizer.OCOptimizer` "
 "(Optimality Criteria) for compliance-based topology optimization."
@@ -195,7 +200,7 @@ msgstr ""
 ":mod:`tensormesh.optimizer` —— :class:`~tensormesh.optimizer.OCOptimizer`\\ "
 "（最优性准则法），用于基于柔度的拓扑优化。"
 
-#: ../../source/user_guide/concepts.rst:96 667e0facb6fe4b48a44c2c838d38ad92
+#: ../../source/user_guide/concepts.rst:100 58bce3ba75b74090bbb6bbee03baec5d
 msgid ""
 ":mod:`tensormesh.visualization` — matplotlib (2D) and PyVista (3D) backends;"
 " lazily imported by :meth:`~tensormesh.Mesh.plot`."
@@ -203,13 +208,15 @@ msgstr ""
 ":mod:`tensormesh.visualization` —— matplotlib（2D）与 PyVista（3D）后端；由 "
 ":meth:`~tensormesh.Mesh.plot` 延迟导入。"
 
-#: ../../source/user_guide/concepts.rst:98 67a623e0c6b44ba49682f330ad1ce5c2
+#: ../../source/user_guide/concepts.rst:102 e3c04de7ea224036b14679d3034ec5eb
 msgid ""
-":mod:`tensormesh.distributed` — graph-partitioned distributed assembly "
-"across multiple ranks (advanced; see the example gallery)."
-msgstr ":mod:`tensormesh.distributed` —— 跨多个进程（rank）的图分区分布式装配（高级特性；参见示例库）。"
+":mod:`tensormesh.distributed` — partitioned multi-GPU assembly wired into "
+"``torch-sla``'s distributed solver (see :doc:`distributed`)."
+msgstr ""
+":mod:`tensormesh.distributed` — 分区多 GPU 装配，接入 ``torch-sla`` 的分布式求解器（参见 "
+":doc:`distributed`\\ ）。"
 
-#: ../../source/user_guide/concepts.rst:101 46bf9f878d4c4574aa18270d01fdcebc
+#: ../../source/user_guide/concepts.rst:106 1fc46c1e06244c5986d11ac0747185a0
 msgid ""
 "The sparse-linear-algebra stack (``SparseMatrix``, ``.solve`` / "
 "``.nonlinear_solve``, gradient-aware adjoint backward) is delegated to a "
@@ -220,11 +227,11 @@ msgstr ""
 "、感知梯度的伴随反向传播）被委托给一个独立的包 `torch-sla <https://www.torchsla.com/>`_\\ "
 "，并与同一生态系统中的其他项目共享。"
 
-#: ../../source/user_guide/concepts.rst:109 13c89091a81944e7b3af96bf88124978
+#: ../../source/user_guide/concepts.rst:114 268d1aedbeaf43c39910cd8d5467c88b
 msgid "Design principles"
 msgstr "设计原则"
 
-#: ../../source/user_guide/concepts.rst:111 2d9793507f9f4fe6ab8d029a33352f86
+#: ../../source/user_guide/concepts.rst:116 eaf39daf9d124f2c93146335f994e0de
 msgid ""
 "**PyTorch-native.** :class:`~tensormesh.Mesh` extends "
 ":class:`torch.nn.Module`. Its ``points`` and per-element connectivity are "
@@ -238,14 +245,14 @@ msgstr ""
 "。这里没有单独的“有限元内核”抽象层——一切都是张量，流经我们熟悉的 PyTorch 机制（\\ ``.to(device)``\\ 、\\ "
 "``.double()``\\ 、\\ ``state_dict``\\ 、autograd、JIT 追踪）。"
 
-#: ../../source/user_guide/concepts.rst:119 b16126243e85407f943280a9ba96e2f1
+#: ../../source/user_guide/concepts.rst:124 d219a3efafc148198a472f2286244453
 msgid ""
 "**Weak forms in pure Python.** The only PDE-specific code a user writes is a"
 " ``forward`` method that returns the integrand at the quadrature points:"
 msgstr ""
 "**纯 Python 弱形式。** 用户唯一需要编写的、与具体偏微分方程相关的代码，就是一个返回求积点处被积函数的 ``forward`` 方法："
 
-#: ../../source/user_guide/concepts.rst:129 7e4d3f5634044d79af5b8a375dd603a1
+#: ../../source/user_guide/concepts.rst:134 2dcae3f653274b968734694b088bec3b
 msgid ""
 "The library handles reference-element evaluation, geometry, quadrature "
 "weights, and the global assemble-into-sparse step. The same pattern works "
@@ -256,7 +263,7 @@ msgstr ""
 ":class:`~tensormesh.NodeAssembler`\\ ）和边界积分（\\ "
 ":class:`~tensormesh.FacetAssembler`\\ ）。"
 
-#: ../../source/user_guide/concepts.rst:134 a83c615ff79043b3baeb5fc7936c82c9
+#: ../../source/user_guide/concepts.rst:139 877171c7600c439cbfed35b9d689fe4e
 msgid ""
 "**Tensorized assembly.** There is no Python-level loop over elements. Inside"
 " ``__call__``, basis functions and quadrature points are evaluated once for "
@@ -267,7 +274,7 @@ msgstr ""
 "**张量化装配。** 不存在 Python 层面对单元的循环。在 ``__call__`` 内部，基函数和求积点针对整个网格只求值一次；用户的 "
 "``forward`` 在一个已经具备单元与求积维度、可直接广播的张量上运行；全局装配则是一次稀疏散射。其结果是：装配就是单个 GPU 内核。"
 
-#: ../../source/user_guide/concepts.rst:141 b8b7710035ec43b7a64dbf250f61b10b
+#: ../../source/user_guide/concepts.rst:146 2869e8eff50941ff98a143d38aea907a
 msgid ""
 "**Differentiable by construction.** ``SparseMatrix.solve`` is a "
 ":class:`torch.autograd.Function` with a custom backward (an adjoint sparse "
@@ -281,37 +288,37 @@ msgstr ""
 "。因此梯度可以端到端地从损失出发，反向穿过线性求解、装配，以及任何参与其中的参数——无论是材料系数、狄利克雷取值，还是神经网络的预测。参见 "
 ":doc:`differentiability`\\ 。"
 
-#: ../../source/user_guide/concepts.rst:148 f1fda19affec4cceb0bf837e0b0d7a11
+#: ../../source/user_guide/concepts.rst:153 2c9d6eb839074548b8bd0b72726dfc55
 msgid ""
 "**Modular linear algebra.** The solver layer is a separate package, ``torch-"
-"sla``. The same FEM code retargets between SciPy (CPU), Eigen (CPU), native "
-"PyTorch (CPU/GPU), cuDSS (GPU), and CuPy (GPU) by changing one keyword "
-"argument. PETSc and Hypre are on the ``torch-sla`` roadmap; until they ship,"
-" fallback paths in :mod:`tensormesh.sparse` provide best-effort support if "
-"those libraries are already installed locally."
+"sla``. The same FEM code retargets between SciPy (CPU), native PyTorch "
+"Krylov (CPU/CUDA/ROCm), NVIDIA cuDSS (CUDA direct), STRUMPACK (portable "
+"direct, incl. AMD ROCm), PyAMG and NVIDIA AmgX (algebraic multigrid) by "
+"changing one keyword argument — six verified backends in total; see "
+":doc:`linear_solvers`."
 msgstr ""
-"**模块化线性代数。** 求解器层是一个独立的包 ``torch-sla``\\ 。同一份有限元代码只需改动一个关键字参数，即可在 "
-"SciPy（CPU）、Eigen（CPU）、原生 PyTorch（CPU/GPU）、cuDSS（GPU）和 CuPy（GPU）之间切换。PETSc 与 "
-"Hypre 已列入 ``torch-sla`` 的路线图；在它们正式发布之前，若本地已安装这些库，\\ :mod:`tensormesh.sparse`"
-" 中的回退路径会尽力提供支持。"
+"**模块化线性代数。** 求解器层是一个独立的包 ``torch-sla``\\ 。同一套有限元代码只需修改一个关键字参数，即可在 "
+"SciPy（CPU）、原生 PyTorch Krylov（CPU/CUDA/ROCm）、NVIDIA cuDSS（CUDA "
+"直接法）、STRUMPACK（可移植直接法，含 AMD ROCm）、PyAMG 和 NVIDIA "
+"AmgX（代数多重网格）之间切换——共六种经过验证的后端；参见 :doc:`linear_solvers`\\ 。"
 
-#: ../../source/user_guide/concepts.rst:158 b8c5a5e6cc2745d897a2deb088e26cdb
+#: ../../source/user_guide/concepts.rst:162 3722792f4c8640b0b2bcb92aa1319d78
 msgid "What's next"
 msgstr "下一步"
 
-#: ../../source/user_guide/concepts.rst:160 bb8c4cbfe1af48cc9c5aadb6086307f3
+#: ../../source/user_guide/concepts.rst:164 4312818339dd408195d005051f71ff29
 msgid ""
 ":doc:`meshes` — build, inspect, and load meshes; per-node and per-cell data;"
 " meshio round-tripping."
 msgstr ":doc:`meshes` —— 构建、检查与加载网格；逐节点与逐单元数据；meshio 往返读写。"
 
-#: ../../source/user_guide/concepts.rst:162 83195ff81e6d4ab99e6eca8f4194862c
+#: ../../source/user_guide/concepts.rst:166 abf54ab9f01746bfa1813966d6a80521
 msgid ""
 ":doc:`elements_and_quadrature` — the element zoo and the basis / quadrature "
 "interface."
 msgstr ":doc:`elements_and_quadrature` —— 单元家族以及基函数 / 求积接口。"
 
-#: ../../source/user_guide/concepts.rst:164 088494f1a3784d0eb2dfc197b943a357
+#: ../../source/user_guide/concepts.rst:168 df0b49a1f762461981ccc0bf7f5d2534
 msgid ""
 ":doc:`forms` — write your own weak form against the "
 ":class:`~tensormesh.ElementAssembler` / :class:`~tensormesh.NodeAssembler` /"
@@ -321,8 +328,34 @@ msgstr ""
 ":class:`~tensormesh.NodeAssembler` / :class:`~tensormesh.FacetAssembler` "
 "的约定编写你自己的弱形式。"
 
-#: ../../source/user_guide/concepts.rst:168 d32c1205ba9a481eb8d70e51294b53b2
+#: ../../source/user_guide/concepts.rst:172 d8c2ea01d8f64a658b68677179758275
+msgid ""
+":doc:`mixed_assembly` — couple several fields in one block system with "
+":class:`~tensormesh.MixedElementAssembler`."
+msgstr ""
+":doc:`mixed_assembly` — 使用 :class:`~tensormesh.MixedElementAssembler` "
+"将多个物理场耦合到一个块系统中。"
+
+#: ../../source/user_guide/concepts.rst:174 a976daa5bf0f435ab70fdde48621e3ba
 msgid ""
 ":doc:`../getting_started/quickstart` — the same pipeline as a complete "
 "worked example."
 msgstr ":doc:`../getting_started/quickstart` —— 同一条流水线，作为完整的实战示例。"
+
+#~ msgid ""
+#~ ":mod:`tensormesh.distributed` — graph-partitioned distributed assembly "
+#~ "across multiple ranks (advanced; see the example gallery)."
+#~ msgstr ":mod:`tensormesh.distributed` —— 跨多个进程（rank）的图分区分布式装配（高级特性；参见示例库）。"
+
+#~ msgid ""
+#~ "**Modular linear algebra.** The solver layer is a separate package, ``torch-"
+#~ "sla``. The same FEM code retargets between SciPy (CPU), Eigen (CPU), native "
+#~ "PyTorch (CPU/GPU), cuDSS (GPU), and CuPy (GPU) by changing one keyword "
+#~ "argument. PETSc and Hypre are on the ``torch-sla`` roadmap; until they ship,"
+#~ " fallback paths in :mod:`tensormesh.sparse` provide best-effort support if "
+#~ "those libraries are already installed locally."
+#~ msgstr ""
+#~ "**模块化线性代数。** 求解器层是一个独立的包 ``torch-sla``\\ 。同一份有限元代码只需改动一个关键字参数，即可在 "
+#~ "SciPy（CPU）、Eigen（CPU）、原生 PyTorch（CPU/GPU）、cuDSS（GPU）和 CuPy（GPU）之间切换。PETSc 与 "
+#~ "Hypre 已列入 ``torch-sla`` 的路线图；在它们正式发布之前，若本地已安装这些库，\\ :mod:`tensormesh.sparse`"
+#~ " 中的回退路径会尽力提供支持。"

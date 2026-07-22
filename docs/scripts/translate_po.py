@@ -277,8 +277,15 @@ def make_kimi_translator(model: str):
                 {"role": "system", "content": SYSTEM_KIMI},
                 {"role": "user", "content": _payload(batch)},
             ],
+            # k2.6 defaults to thinking mode: the reasoning tokens share
+            # MAX_TOKENS with the answer, so a 40-entry batch truncates its
+            # JSON mid-stream and *every* batch fails to parse (observed
+            # 2026-07-22, 0/344 translated). Disable thinking explicitly —
+            # translation needs no chain-of-thought.
+            extra_body={"thinking": {"type": "disabled"}},
         )
-        # k2.6/k2.5 tie temperature to think/non-think mode; let the user opt in.
+        # k2.6 locks temperature to 1 (API rejects anything else); keep the
+        # env override for older/newer models that allow it.
         temp = os.environ.get("KIMI_TEMPERATURE")
         if temp:
             kwargs["temperature"] = float(temp)

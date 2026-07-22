@@ -434,9 +434,10 @@ msgstr ""
 msgid ""
 "**Adjacency graphs** — node-to-node and element-to-element connectivity "
 "drawn over the mesh, in 2D and 3D. Useful for debugging coloring and "
-"partitioning algorithms (see :doc:`distributed`)."
+"partitioning algorithms (see :doc:`../user_guide/distributed`)."
 msgstr ""
-"**邻接图**——在二维和三维网格上绘制的节点到节点、单元到单元的连接性。可用于调试着色和划分算法（参见 :doc:`distributed`\\ ）。"
+"**邻接图**——在二维和三维网格上绘制的节点到节点、单元到单元的连接性。可用于调试着色和划分算法（参见 "
+":doc:`../user_guide/distributed`\\ ）。"
 
 #: ../../source/example_gallery/basics.rst:269
 #: 220cd86ccc6647548b6d1854e7cb4770
