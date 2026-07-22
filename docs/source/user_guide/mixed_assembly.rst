@@ -164,6 +164,15 @@ steps) reuse the same cached index tensors, so a
 :class:`~tensormesh.Condenser` built once keeps its condensation layout
 across calls.
 
+.. note::
+
+   Mixed assembly is currently **single-device**: the
+   :func:`~tensormesh.distributed.distributed` decorator
+   (:doc:`distributed`) covers the single-field assemblers only.
+   Distributing the block layout across ranks needs a global DOF
+   numbering layer that does not exist yet — it is a planned ROADMAP
+   item.
+
 
 .. _mixed-layout:
 
