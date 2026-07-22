@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-22 23:00+0200\n"
+"POT-Creation-Date: 2026-07-22 15:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_CN <LL@li.org>\n"
@@ -55,25 +55,24 @@ msgstr "报告你的机器上可用的 ``torch-sla`` 稀疏求解器后端。"
 #: ../../source/getting_started/verify_install.rst:13
 #: 58bb1650c0b2405c9f6bf48aaae00c3f
 msgid ""
-"The checker ships with the package, so after installing just run ``python"
-" -m tensormesh.verify_install`` — there is no file to save. Total runtime"
-" is a couple of seconds; the full source is reproduced below for "
-"reference."
+"The checker ships with the package, so after installing just run ``python -m"
+" tensormesh.verify_install`` — there is no file to save. Total runtime is a "
+"couple of seconds; the full source is reproduced below for reference."
 msgstr ""
 "该检查器随包一起分发，因此安装后只需运行\\ ``python -m tensormesh.verify_install``\\ "
 "即可——无需保存任何文件。总运行时间为几秒钟；完整源码在下方列出，供参考。"
 
-#: ../../source/getting_started/verify_install.rst:18
+#: ../../source/getting_started/verify_install.rst:20
 #: 957f93523db94a1a95dfbec16a1518bb
 msgid "The script"
 msgstr "脚本"
 
-#: ../../source/getting_started/verify_install.rst:94
+#: ../../source/getting_started/verify_install.rst:96
 #: 697ed40a6c964b9cafaa7614c9936483
 msgid "Expected output"
 msgstr "预期输出"
 
-#: ../../source/getting_started/verify_install.rst:96
+#: ../../source/getting_started/verify_install.rst:98
 #: 722a4fbd23df4a3e9753a56aae4d7b57
 msgid ""
 "On a CUDA machine (a Linux box with an NVIDIA GPU and a CUDA-enabled PyTorch"
@@ -81,19 +80,19 @@ msgid ""
 msgstr ""
 "在一台 CUDA 机器上（一台带有 NVIDIA GPU 且 PyTorch 启用了 CUDA 的 Linux 机器），你应当看到与下面相近的输出："
 
-#: ../../source/getting_started/verify_install.rst:120
+#: ../../source/getting_started/verify_install.rst:123
 #: c434b3adf7de43df9ecbf3c2063533b3
 msgid ""
 "On a CPU-only machine (e.g. a macOS / Linux laptop) the ``cuda`` line reads "
 "``not available``, the ``[CUDA]`` solve is skipped, and the backend-table "
-"header reads ``(CUDA: not available)`` with ``cupy`` / ``cudss`` listed as "
-"optional extras to install."
+"header reads ``(CUDA: not available)`` with the CUDA-only backends listed as"
+" optional extras to install."
 msgstr ""
-"在仅有 CPU 的机器上（例如 macOS / Linux 笔记本），\\ ``cuda`` 这一行会显示 ``not available``\\ "
-"，\\ ``[CUDA]`` 求解会被跳过，后端表格的标题会显示 ``(CUDA: not available)``\\ ，并将 ``cupy`` / "
-"``cudss`` 列为可供安装的可选 extras。"
+"在仅 CPU 的机器上（例如 macOS / Linux 笔记本电脑），\\ ``cuda`` 行显示 ``not available``\\ ，\\ "
+"``[CUDA]`` 求解被跳过，后端表头显示 ``(CUDA: not available)``\\ ，且仅支持 CUDA "
+"的后端被列为可选的额外安装项。"
 
-#: ../../source/getting_started/verify_install.rst:125
+#: ../../source/getting_started/verify_install.rst:128
 #: 3fb44bcb3d6b4579832ff7e4b7396804
 #, python-brace-format
 msgid ""
@@ -102,7 +101,7 @@ msgid ""
 "problem."
 msgstr "确切的 L2 误差取决于网格，但应当在 :math:`10^{-2}` 量级——若超过百分之几，则表明存在数值问题。"
 
-#: ../../source/getting_started/verify_install.rst:131
+#: ../../source/getting_started/verify_install.rst:134
 #: 49d4423ab8d34dc9b91ab5acba39de96
 msgid ""
 "**Why is the GPU run sometimes *slower* than the CPU run?** The smoke-test "
@@ -120,7 +119,7 @@ msgstr ""
 "驱动初始化的开销。请运行一个真实规模的问题（\\ :math:`\\geq 10^4`–:math:`10^5` 个自由度）才能看到 GPU "
 "反超；基准测试请参阅 :doc:`../performance/index`\\ 。"
 
-#: ../../source/getting_started/verify_install.rst:143
+#: ../../source/getting_started/verify_install.rst:146
 #: c0f337f58f834ae3b7749c81703e06ec
 msgid ""
 "**Which solver does ``A.solve(b)`` actually use by default?** "
@@ -132,7 +131,7 @@ msgstr ""
 "``torch_sla.SparseTensor``\\ ，调用时使用 ``backend=\"auto\"``\\ 、\\ "
 "``method=\"auto\"``\\ 。随后 torch-sla 的自动选择器会根据设备和问题规模进行选择："
 
-#: ../../source/getting_started/verify_install.rst:148
+#: ../../source/getting_started/verify_install.rst:151
 #: 3252c3316d864dca98bf0d169b93e518
 msgid ""
 "**CPU** → SciPy / **SuperLU** (``backend=\"scipy\"``, ``method=\"lu\"``) — a"
@@ -142,18 +141,17 @@ msgstr ""
 "**CPU** → SciPy / **SuperLU**\\ （\\ ``backend=\"scipy\"``\\ 、\\ "
 "``method=\"lu\"``\\ ）——一种直接分解法，对于 CPU 所能处理的规模而言既快速又能达到机器精度。"
 
-#: ../../source/getting_started/verify_install.rst:151
+#: ../../source/getting_started/verify_install.rst:154
 #: 5ccfccb7d21f4c0ca9a7beb849b93e6b
 msgid ""
 "**CUDA, DOF < 2M** → **cuDSS** if available (``method=\"cholesky\"`` when "
-"SPD, else ``ldlt`` / ``lu``); falls back to CuPy, and finally to the "
-"PyTorch-native iterative CG."
+"SPD, else ``ldlt`` / ``lu``); falls back to the PyTorch-native iterative CG "
+"otherwise."
 msgstr ""
-"**CUDA，自由度 < 2M** → 若 cuDSS 可用则使用 **cuDSS**\\ （对称正定时用 "
-"``method=\"cholesky\"``\\ ，否则用 ``ldlt`` / ``lu``\\ ）；否则回退到 CuPy，最终回退到 "
-"PyTorch 原生的迭代式 CG。"
+"**CUDA, 自由度 < 2M** → 若可用则使用 **cuDSS**\\ （SPD 时 ``method=\"cholesky\"``\\ ，否则"
+" ``ldlt`` / ``lu``\\ ）；否则回退到 PyTorch 原生迭代 CG。"
 
-#: ../../source/getting_started/verify_install.rst:154
+#: ../../source/getting_started/verify_install.rst:157
 #: 44c14e6933514b3594f9e9596f384516
 msgid ""
 "**CUDA, DOF ≥ 2M** → PyTorch-native iterative solver "
@@ -164,7 +162,7 @@ msgstr ""
 "``backend=\"pytorch\"``\\ ，对称正定时用 ``method=\"cg\"``\\ ，否则用 ``bicgstab``\\ "
 "），以控制在 GPU 显存范围之内。"
 
-#: ../../source/getting_started/verify_install.rst:159
+#: ../../source/getting_started/verify_install.rst:162
 #: 70fb03297d9543788964d581bd7d1a47
 msgid ""
 "So the smoke test above runs **SuperLU on CPU** and **cuDSS Cholesky on "
@@ -176,7 +174,7 @@ msgstr ""
 "（泊松问题是对称正定的），而非迭代求解器。若要显式选择不同的求解器，请向 ``solve`` 传入 ``backend=...`` / "
 "``method=...``——参见 :doc:`../user_guide/linear_solvers`\\ 。"
 
-#: ../../source/getting_started/verify_install.rst:164
+#: ../../source/getting_started/verify_install.rst:167
 #: 635d56b4db914d8e9352b3b2b0d5a98e
 msgid ""
 "Every sparse-solver backend is provided by ``torch-sla`` — TensorMesh adds "
@@ -186,39 +184,52 @@ msgstr ""
 "每一个稀疏求解器后端都由 ``torch-sla`` 提供——TensorMesh 自身不添加任何后端。被报告为 ``not available`` "
 "的后端并不代表出错；它们是可选的 ``torch-sla`` extras，你可以在需要时安装："
 
-#: ../../source/getting_started/verify_install.rst:169
+#: ../../source/getting_started/verify_install.rst:172
 #: eabf7a0d946b4a8a93f5275a310f086e
 msgid ""
 "**scipy** ``[CPU]`` — SciPy / SuperLU direct and iterative solvers; the "
 "default CPU path, always available."
 msgstr "**scipy** ``[CPU]``——SciPy / SuperLU 的直接与迭代求解器；默认的 CPU 路径，始终可用。"
 
-#: ../../source/getting_started/verify_install.rst:171
+#: ../../source/getting_started/verify_install.rst:174
 #: 1af25b97601b4adea4142bfdf6483e48
 msgid ""
-"**pytorch** ``[CPU/CUDA]`` — torch-native iterative solvers (CG / BiCGSTAB),"
-" always available and fully autograd-friendly."
+"**pytorch** ``[CPU/CUDA]`` — torch-native Krylov solvers (CG, BiCGStab, "
+"GMRES, MINRES, LSQR, LSMR), always available, device-agnostic (incl. AMD "
+"ROCm) and fully autograd-friendly."
 msgstr ""
-"**pytorch** ``[CPU/CUDA]``——torch 原生的迭代求解器（CG / BiCGSTAB），始终可用且完全兼容 "
+"**pytorch** ``[CPU/CUDA]`` — PyTorch 原生 Krylov "
+"求解器（CG、BiCGStab、GMRES、MINRES、LSQR、LSMR），始终可用，与设备无关（包括 AMD ROCm），且完全支持 "
 "autograd。"
 
-#: ../../source/getting_started/verify_install.rst:173
-#: 29572a26571c4d69ae9abc19eabb08fc
-msgid ""
-"**eigen** ``[CPU]`` — a JIT-compiled C++ direct solver; needs a C++ compiler"
-" on the machine."
-msgstr "**eigen** ``[CPU]``——一个 JIT 编译的 C++ 直接求解器；需要机器上安装有 C++ 编译器。"
-
-#: ../../source/getting_started/verify_install.rst:175
+#: ../../source/getting_started/verify_install.rst:177
 #: 0002cfa671b644c9975a0ca42dfc96c1
 msgid ""
-"**cupy** ``[CUDA]`` / **cudss** ``[CUDA]`` — GPU sparse-direct solvers "
-"(``pip install torch-sla[cupy]`` / ``pip install torch-sla[cudss]``)."
+"**cudss** ``[CUDA]`` — NVIDIA cuDSS, the fastest GPU direct solver (``pip "
+"install torch-sla[cudss]``)."
 msgstr ""
-"**cupy** ``[CUDA]`` / **cudss** ``[CUDA]``——GPU 稀疏直接求解器（\\ ``pip install "
-"torch-sla[cupy]`` / ``pip install torch-sla[cudss]``\\ ）。"
+"**cudss** ``[CUDA]`` — NVIDIA cuDSS，最快的 GPU 直接求解器（\\ ``pip install torch-"
+"sla[cudss]``\\ ）。"
 
-#: ../../source/getting_started/verify_install.rst:178
+#: ../../source/getting_started/verify_install.rst:179
+#: 0002cfa671b644c9975a0ca42dfc96c1
+msgid ""
+"**pyamg** ``[CPU]`` — algebraic multigrid (``pip install torch-"
+"sla[pyamg]``)."
+msgstr "**pyamg** ``[CPU]`` — 代数多重网格（\\ ``pip install torch-sla[pyamg]``\\ ）。"
+
+#: ../../source/getting_started/verify_install.rst:181
+#: 1144ca4b102c4db4b51158c907024f76
+msgid ""
+"**strumpack** ``[CPU/CUDA/ROCm]`` / **amgx** ``[CUDA]`` — compiled native "
+"backends (portable multifrontal direct / NVIDIA AmgX); prebuilt wheels on "
+"torch-sla's GitHub Releases, not PyPI."
+msgstr ""
+"**strumpack** ``[CPU/CUDA/ROCm]`` / **amgx** ``[CUDA]`` — "
+"编译型原生后端（可移植多波前直接求解器 / NVIDIA AmgX）；预编译 wheel 位于 torch-sla 的 GitHub "
+"Releases，而非 PyPI。"
+
+#: ../../source/getting_started/verify_install.rst:185
 #: f8cf9ab4087344ea9a799346a5ec7cf2
 msgid ""
 "Run ``torch_sla.show_backends()`` at any time to re-check status. See "
@@ -227,12 +238,12 @@ msgstr ""
 "随时可运行 ``torch_sla.show_backends()`` 重新检查状态。关于如何在它们之间进行选择，请参阅 "
 ":doc:`../user_guide/linear_solvers`\\ 。"
 
-#: ../../source/getting_started/verify_install.rst:183
+#: ../../source/getting_started/verify_install.rst:190
 #: f9cbfcb90f364d038cc85f8702bfe3c3
 msgid "Troubleshooting"
 msgstr "故障排查"
 
-#: ../../source/getting_started/verify_install.rst:185
+#: ../../source/getting_started/verify_install.rst:192
 #: e58a732cb16249c7972b9293aeef5dc3
 msgid ""
 "**``ModuleNotFoundError: No module named 'tensormesh'``** — the package "
@@ -242,7 +253,7 @@ msgstr ""
 "**``ModuleNotFoundError: No module named 'tensormesh'``**——该包尚未安装在当前激活的 "
 "Python 环境中。请重新检查 :doc:`installation`\\ 。"
 
-#: ../../source/getting_started/verify_install.rst:189
+#: ../../source/getting_started/verify_install.rst:196
 #: 755f1354bb5a4e1a8e92eec50fda14a1
 msgid ""
 "**``ModuleNotFoundError: No module named 'torch_sla'``** — install it with "
@@ -254,7 +265,7 @@ msgstr ""
 "\"torch-sla>=0.2.1\"`` 安装它。torch-sla 是一个硬性的、导入时即需满足的依赖：缺少它 "
 ":mod:`tensormesh.sparse` 将拒绝导入，并且每一个稀疏求解器后端都是通过它来提供的。"
 
-#: ../../source/getting_started/verify_install.rst:194
+#: ../../source/getting_started/verify_install.rst:201
 #: d6bdd0c1f2ba4537b72a88ea4fd8c177
 msgid ""
 "**Stuck on ``[CPU ] Poisson 2D``** — your PyTorch build may be downloading "
@@ -263,7 +274,7 @@ msgstr ""
 "**卡在 ``[CPU ] Poisson 2D``**——你的 PyTorch 版本可能正在首次使用时下载 ``gmsh`` "
 "缓存文件；后续运行会瞬间完成。"
 
-#: ../../source/getting_started/verify_install.rst:197
+#: ../../source/getting_started/verify_install.rst:204
 #: 5b1f2e8e3bcf4fc4918e36c922e9f058
 msgid ""
 "**``L2 error`` ≫ ``1e-2``** — likely an issue with the mesh or PyTorch "
@@ -285,8 +296,8 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid ""
-#~ "On a CPU-only macOS / Linux laptop with a fresh ``pip install tensormesh-fem``,"
-#~ " you should see something close to:"
+#~ "On a CPU-only macOS / Linux laptop with a fresh ``pip install tensormesh-"
+#~ "fem``, you should see something close to:"
 #~ msgstr ""
 
 #~ msgid ""
@@ -318,3 +329,8 @@ msgstr ""
 #~ "import without it, so every solver-touching code path fails until it is "
 #~ "installed."
 #~ msgstr ""
+
+#~ msgid ""
+#~ "**eigen** ``[CPU]`` — a JIT-compiled C++ direct solver; needs a C++ compiler"
+#~ " on the machine."
+#~ msgstr "**eigen** ``[CPU]``——一个 JIT 编译的 C++ 直接求解器；需要机器上安装有 C++ 编译器。"

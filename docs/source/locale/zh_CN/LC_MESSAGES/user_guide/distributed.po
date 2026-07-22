@@ -1,0 +1,370 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, TensorMesh Contributors
+# This file is distributed under the same license as the TensorMesh package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: TensorMesh 0.1.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-22 15:34+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../source/user_guide/distributed.rst:2 04455a996b83493ea3cb1780e303dd4d
+msgid "Distributed FEM"
+msgstr "分布式有限元方法"
+
+#: ../../source/user_guide/distributed.rst:4 77f55d2a5b984e3bb66c6a8a8dbb552d
+msgid ""
+"When a problem no longer fits on one device — memory-wise or time-wise — "
+"TensorMesh can partition the mesh, assemble each subdomain on its own GPU "
+"(or CPU rank), and hand the result to ``torch-sla``'s distributed sparse "
+"solver as one logical system. The whole pipeline stays in the familiar "
+"shape:"
+msgstr ""
+"当问题在单设备上无法容纳——无论是内存还是时间方面——TensorMesh 可以对网格进行分区，在每个子域上分别于各自的 GPU（或 CPU "
+"进程）进行装配，然后将结果作为单一逻辑系统交给 ``torch-sla`` 的分布式稀疏求解器。整个流程保持熟悉的形态："
+
+#: ../../source/user_guide/distributed.rst:14 6d440b64f93c4157b6c2eeaa0c64853e
+msgid ""
+"Everything lives in :mod:`tensormesh.distributed` (see the :doc:`API "
+"reference </api/distributed>`), and the solver side is ``torch-sla``'s "
+"``DSparseTensor`` machinery — domain decomposition with owned-rows-plus-halo"
+" partitions, which upstream benchmarks have scaled past 400M DOF on multi-"
+"GPU nodes."
+msgstr ""
+"所有功能均位于 :mod:`tensormesh.distributed`\\ （参见 :doc:`API 参考 "
+"</api/distributed>`\\ ），求解器端则是 ``torch-sla`` 的 ``DSparseTensor`` 机制——基于「拥有行 "
+"+ halo」分区的域分解，上游基准测试已将其扩展至超过 4 亿自由度（DOF）的多 GPU 节点。"
+
+#: ../../source/user_guide/distributed.rst:22 289b4c10de504e388b348f787a300b20
+msgid ""
+"The distributed layer is functional end-to-end (assembly → boundary "
+"conditions → multi-GPU CG → verified against analytical solutions), but some"
+" contracts are **interim** and may change: the "
+":class:`~tensormesh.Condenser` bridge currently round-trips through a "
+"gathered single-device matrix, and the distributed RHS assembly still "
+"returns the full-length vector on every rank. The decorator covers the "
+"**single-field** assemblers only — "
+":class:`~tensormesh.MixedElementAssembler` is not yet supported (its block "
+"DOF layout needs a global numbering layer across partitions; see the ROADMAP"
+" for the plan). Worked examples with multi-GPU benchmark numbers will be "
+"added to the example gallery once they are validated on a multi-card "
+"cluster."
+msgstr ""
+"分布式层已完成功能性端到端验证（装配 → 边界条件 → 多 GPU 共轭梯度法 → 与解析解对比验证），但部分接口为\\ **临时性**\\ "
+"的，可能发生变化：\\ :class:`~tensormesh.Condenser` "
+"桥接目前需通过汇聚到单设备矩阵再返回，且分布式右端项（RHS）装配仍在每个进程上返回完整长度的向量。该装饰器仅覆盖\\ **单场**\\ "
+"装配器——:class:`~tensormesh.MixedElementAssembler` 尚未支持（其块自由度布局需要跨分区的全局编号层；详见 "
+"ROADMAP 中的计划）。多 GPU 基准测试的完整示例将在多卡集群上验证后添加至示例库。"
+
+#: ../../source/user_guide/distributed.rst:37 93f4411a882b460cb34943431be9757e
+msgid "Partitioning the mesh"
+msgstr "网格分区"
+
+#: ../../source/user_guide/distributed.rst:39 3af38237d4084f22842642f3f83945ca
+msgid ""
+":class:`~tensormesh.distributed.DistributedMesh` wraps the mesh partitioner:"
+" it splits a global :class:`~tensormesh.Mesh` into submeshes and assigns "
+"each to a device. Every submesh keeps an ``orig_nid`` entry in its "
+"``point_data`` — the local-to-global node map that the assembly layer uses "
+"to scatter into global coordinates."
+msgstr ""
+":class:`~tensormesh.distributed.DistributedMesh` 封装了网格分区器：它将全局 "
+":class:`~tensormesh.Mesh` 分割为子网格，并将每个子网格分配到一个设备。每个子网格在其 ``point_data`` 中保留 "
+"``orig_nid`` 条目——即装配层用于散射到全局坐标的局部到全局节点映射。"
+
+#: ../../source/user_guide/distributed.rst:55 b6aa49bbb0064ad092d1d8ffbc4d0417
+msgid ""
+"Three partitioning methods are available via ``method=``: ``\"coordinate\"``"
+" (recursive coordinate bisection — fast, the default), ``\"spectral\"`` "
+"(Fiedler-vector bisection), and ``\"metis\"`` (graph partitioning, needs "
+"``pymetis``). Build and partition on **CPU** first and let the submeshes "
+"carry the device assignment — the partitioners index on CPU."
+msgstr ""
+"可通过 ``method=`` 选择三种分区方法：\\ ``\"coordinate\"``\\ （递归坐标二分法——快速，默认）、\\ "
+"``\"spectral\"``\\ （Fiedler 向量二分法）和 ``\"metis\"``\\ （图分区，需要 ``pymetis``\\ "
+"）。先在 **CPU** 上构建并分区，然后让子网格携带设备分配——分区器在 CPU 上建立索引。"
+
+#: ../../source/user_guide/distributed.rst:64 db64430a062045de8da85313e87bf8d1
+msgid "Making any assembler distributed"
+msgstr "使任意装配器支持分布式"
+
+#: ../../source/user_guide/distributed.rst:66 768748b0e75d4fca828146ee6416e850
+msgid ""
+"You do not write a second assembler for the distributed path. The "
+":func:`~tensormesh.distributed.distributed` class decorator turns any "
+"existing :class:`~tensormesh.ElementAssembler` or "
+":class:`~tensormesh.NodeAssembler` subclass — built-in or your own — into "
+"its distributed counterpart by swapping the two entry points: ``from_mesh`` "
+"accepts a ``DistributedMesh``, and ``__call__`` runs the distributed "
+"assembly:"
+msgstr ""
+"无需为分布式路径编写第二个装配器。\\ :func:`~tensormesh.distributed.distributed` 类装饰器可将任何现有的 "
+":class:`~tensormesh.ElementAssembler` 或 :class:`~tensormesh.NodeAssembler` "
+"子类——内置或自定义——转换为其分布式对应版本，通过交换两个入口点实现：\\ ``from_mesh`` 接受 "
+"``DistributedMesh``\\ ，\\ ``__call__`` 执行分布式装配："
+
+#: ../../source/user_guide/distributed.rst:82 1bb58627873a49ba9cd0d95099bac29a
+msgid ""
+"The weak form, quadrature setup, and element kernels are inherited unchanged"
+" — the decorator only reroutes *where* the element loops run and *how* the "
+"results are stitched together. Constructor arguments still go through "
+"``from_mesh(dmesh, **kwargs)`` and call-time data (``point_data`` etc.) "
+"through the call, exactly like the single-device contract."
+msgstr ""
+"弱形式、求积设置和单元核函数均原样继承——装饰器仅重新路由\\ *单元循环在何处运行*\\ 以及\\ *结果如何拼接*\\ 。构造参数仍通过 "
+"``from_mesh(dmesh, **kwargs)`` 传递，调用时数据（\\ ``point_data`` "
+"等）通过调用传递，与单设备约定完全一致。"
+
+#: ../../source/user_guide/distributed.rst:89 60ce760cc3704ba7b438092d9ac259e5
+msgid "Underneath, two execution modes cover the common deployments:"
+msgstr "底层有两种执行模式覆盖常见部署场景："
+
+#: ../../source/user_guide/distributed.rst:91 1912546feca5451bac066815901d8c9d
+msgid ""
+"**Single process, multiple devices.** Without an initialized "
+"``torch.distributed`` process group, submeshes are assembled in parallel "
+"*threads*, one per device, and merged. This is the low-friction mode: no "
+"launcher, works in a notebook, and on a CPU-only machine it simply simulates"
+" the partition — useful for testing partition-dependent code before renting "
+"the GPUs."
+msgstr ""
+"**单进程，多设备。** 在未初始化 ``torch.distributed`` 进程组的情况下，子网格以\\ *线程*\\ "
+"方式并行装配，每个设备一个线程，然后合并。这是低门槛模式：无需启动器，可在 notebook 中运行，且在仅 CPU 机器上它仅模拟分区——适用于在租用"
+" GPU 之前测试依赖分区的代码。"
+
+#: ../../source/user_guide/distributed.rst:97 70f35a077c6444fbaf22aec99c349db7
+msgid ""
+"**One process per rank (SPMD).** Under ``torchrun``, each rank assembles "
+"**only its own submesh**; the resulting COO triples are routed to the rank "
+"that owns their row via a single ``all_to_all`` exchange (NCCL on CUDA, gloo"
+" on CPU), halo columns are discovered automatically, and each rank ends up "
+"with exactly its owned-rows-plus-halo slice. This is the mode that scales."
+msgstr ""
+"**每 rank 一个进程（SPMD）。** 在 ``torchrun`` 下，每个 rank 仅装配\\ **自己的子网格**\\ ；生成的 COO "
+"三元组通过单次 ``all_to_all`` 交换路由到拥有其行的 rank（CUDA 上使用 NCCL，CPU 上使用 gloo），halo "
+"列自动发现，每个 rank 最终获得精确的拥有行加 halo 的切片。这是可扩展的模式。"
+
+#: ../../source/user_guide/distributed.rst:104
+#: 02a95aa1d24f4f8d84d2d77360d12cd7
+msgid ""
+"The free functions behind the decorator — "
+":func:`~tensormesh.distributed.distributed_element_assemble`, "
+":func:`~tensormesh.distributed.distributed_element_assemble_per_rank`, "
+":func:`~tensormesh.distributed.distributed_node_assemble` — are public too, "
+"plus ``distributed_element_assemble_to_sparse`` which merges everything back"
+" into a plain global :class:`~tensormesh.sparse.SparseMatrix` (handy for "
+"verifying the distributed result against the single-device one)."
+msgstr ""
+"装饰器背后的自由函数——:func:`~tensormesh.distributed.distributed_element_assemble`\\ "
+"、\\ :func:`~tensormesh.distributed.distributed_element_assemble_per_rank`\\ "
+"、\\ :func:`~tensormesh.distributed.distributed_node_assemble`——也是公开的，外加 "
+"``distributed_element_assemble_to_sparse``\\ ，它将所有内容合并回普通的全局 "
+":class:`~tensormesh.sparse.SparseMatrix`\\ （便于将分布式结果与单设备结果对比验证）。"
+
+#: ../../source/user_guide/distributed.rst:115
+#: 3ce240d6ad3341eca61e4d27f925cabb
+msgid "The distributed matrix"
+msgstr "分布式矩阵"
+
+#: ../../source/user_guide/distributed.rst:117
+#: bcc8ca026b794c9abe32de2fb9aced3c
+msgid ""
+"Distributed assembly returns a "
+":class:`~tensormesh.distributed.DSparseMatrix` — a subclass of "
+"``torch_sla.distributed.DSparseTensor``, the same way "
+":class:`~tensormesh.sparse.SparseMatrix` subclasses "
+"``torch_sla.SparseTensor``. Because it *is* a ``DSparseTensor``, every "
+"torch-sla API accepts it directly: ``@`` matvecs, arithmetic, I/O, and — "
+"most importantly — the distributed solver. Two FEM-specific additions:"
+msgstr ""
+"分布式装配返回 :class:`~tensormesh.distributed.DSparseMatrix`——它是 "
+"``torch_sla.distributed.DSparseTensor`` 的子类，正如 "
+":class:`~tensormesh.sparse.SparseMatrix` 是 ``torch_sla.SparseTensor`` "
+"的子类。因为它\\ *就是* ``DSparseTensor``\\ ，所有 torch-sla API 均可直接接受：\\ ``@`` "
+"矩阵向量乘法、算术运算、I/O，以及——最重要的——分布式求解器。两个 FEM 特定的扩展："
+
+#: ../../source/user_guide/distributed.rst:126
+#: d207fa302db748e796136116c3ca4d5a
+msgid ""
+"a **partition UUID** folded into ``layout_signature`` — generated on rank 0 "
+"and broadcast, so repeated assemblies on the same partition share "
+"condensation caches, while two independently partitioned matrices never do "
+"(even if their local layouts happen to coincide);"
+msgstr ""
+"一个\\ **分区 UUID** 嵌入 ``layout_signature``——在 rank 0 "
+"上生成并广播，因此同一分区上的重复装配共享凝聚缓存，而两个独立分区的矩阵永远不会共享（即使它们的局部布局恰好重合）；"
+
+#: ../../source/user_guide/distributed.rst:131
+#: 95fe82acd4844f5a9b2196136d6654fe
+msgid ""
+"``to_single()`` — allgather the distributed matrix back into one "
+":class:`~tensormesh.sparse.SparseMatrix`, for verification and small-scale "
+"debugging."
+msgstr ""
+"``to_single()``——将分布式矩阵全收集（allgather）回单个 "
+":class:`~tensormesh.sparse.SparseMatrix`\\ ，用于验证和小规模调试。"
+
+#: ../../source/user_guide/distributed.rst:137
+#: 1ebfe3bda109482f980d33b8788830c1
+msgid "Boundary conditions and the distributed solve"
+msgstr "边界条件与分布式求解"
+
+#: ../../source/user_guide/distributed.rst:139
+#: 75a10a3e7f3744c99e6bb97f80b7f441
+msgid ""
+"The unchanged :class:`~tensormesh.Condenser` dispatches on the matrix type: "
+"handing it a ``DSparseMatrix`` routes through the distributed bridge. Two "
+"practical rules in the current (interim) contract:"
+msgstr ""
+"未作改动的 :class:`~tensormesh.Condenser` 根据矩阵类型进行分发：传给它 ``DSparseMatrix`` "
+"即通过分布式桥接路由。当前（临时）约定中的两条实用规则："
+
+#: ../../source/user_guide/distributed.rst:143
+#: 4fb6b32357a143479b2e56ab658a76f3
+msgid ""
+"build the Dirichlet mask on **CPU** (``mesh.boundary_mask.cpu()``) — the "
+"condensation buffers then stay on CPU and the bridge moves the condensed "
+"output back to the GPU itself;"
+msgstr ""
+"在 **CPU** 上构建狄利克雷掩码（\\ ``mesh.boundary_mask.cpu()``\\ ）——凝聚缓冲区随后保留在 CPU "
+"上，桥接将凝聚输出移回 GPU；"
+
+#: ../../source/user_guide/distributed.rst:146
+#: 0f85fd4a62754be0a998aa76b6511acf
+msgid ""
+"the solver consumes each rank's **owned slice** of the RHS and returns the "
+"owned slice of the solution — slice before, gather after."
+msgstr "求解器消耗每个 rank 的 RHS **拥有切片**\\ ，并返回解的拥有切片——先切片，后收集。"
+
+#: ../../source/user_guide/distributed.rst:167
+#: b0b31714c1c2491bbbde5f24e416ab97
+msgid ""
+"Note that the solve goes through the ``torch_sla.solve`` **free function** —"
+" ``DSparseTensor`` deliberately has no instance ``.solve()`` — and works on "
+"``DSparseMatrix`` precisely because of the subclass relationship. "
+"Distributed solves are iterative (preconditioned CG for the SPD systems FEM "
+"produces); see :doc:`linear_solvers` for where that sits in the backend "
+"matrix."
+msgstr ""
+"注意求解通过 ``torch_sla.solve`` **自由函数**\\ 进行——``DSparseTensor`` 故意不设实例 "
+"``.solve()``——正因为子类关系，它才能在 ``DSparseMatrix`` 上工作。分布式求解为迭代式（FEM 产生的 SPD "
+"系统采用预处理 CG）；参见 :doc:`linear_solvers` 了解其在后端矩阵中的位置。"
+
+#: ../../source/user_guide/distributed.rst:176
+#: 87751f7fe5cf4301b4899b31b4958a49
+msgid "Keeping ranks consistent"
+msgstr "保持各 rank 一致"
+
+#: ../../source/user_guide/distributed.rst:178
+#: 5b0b97e916eb4af18d737ed5c0984c6d
+msgid ""
+"Under SPMD every rank executes the whole script, so anything random — a "
+"sampled coefficient field, a randomized load — would silently diverge across"
+" ranks and the solver would converge to a rank-dependent answer. "
+":func:`~tensormesh.distributed.broadcast_from_rank0` wraps the draw:"
+msgstr ""
+"在 SPMD 下每个 rank 执行整个脚本，因此任何随机性——采样系数场、随机化载荷——都会在各 rank 间静默发散，求解器将收敛到随 rank "
+"而异的答案。\\ :func:`~tensormesh.distributed.broadcast_from_rank0` 封装了该抽取："
+
+#: ../../source/user_guide/distributed.rst:190
+#: 2f038654dc4344269fe3ab35e9cd8ab4
+msgid ""
+"Rank 0 evaluates the closure; every other rank receives the broadcast "
+"tensor. In single-process runs it short-circuits to a plain call, so the "
+"same script stays valid both ways."
+msgstr "rank 0 求值闭包；其他每个 rank 接收广播的张量。在单进程运行中它短路为普通调用，因此同一脚本在两种方式下均有效。"
+
+#: ../../source/user_guide/distributed.rst:196
+#: 5f4993afe1264a50941e81d2b2e6de2d
+msgid "A complete ``torchrun`` skeleton"
+msgstr "完整的 ``torchrun`` 骨架"
+
+#: ../../source/user_guide/distributed.rst:198
+#: 27508550a1ea46b1b0b16beab2b7d2b4
+msgid ""
+"``examples/distributed/poisson_distributed_cuda.py`` is the reference end-"
+"to-end script (it doubles as the integration test). The skeleton:"
+msgstr ""
+"``examples/distributed/poisson_distributed_cuda.py`` 是参考端到端脚本（兼作集成测试）。骨架如下："
+
+#: ../../source/user_guide/distributed.rst:228
+#: a1f43f8fece045e298e8a5bbed96861e
+msgid "launched with:"
+msgstr "启动方式："
+
+#: ../../source/user_guide/distributed.rst:234
+#: f53fb4a5e8bc4fa49b72fd43a9831e0e
+msgid ""
+"Use ``backend=\"gloo\"`` instead of ``\"nccl\"`` to run the same SPMD "
+"pipeline on CPU ranks (e.g. for CI or laptops)."
+msgstr ""
+"使用 ``backend=\"gloo\"`` 替代 ``\"nccl\"`` 可在 CPU rank 上运行相同的 SPMD 流程（例如用于 CI "
+"或笔记本电脑）。"
+
+#: ../../source/user_guide/distributed.rst:239
+#: 252dbb29f65a4c8b8497151b37ac0204
+msgid "Related building blocks"
+msgstr "相关构建模块"
+
+#: ../../source/user_guide/distributed.rst:241
+#: a903ddffd8564d948d6941cf20c6902e
+msgid ""
+"``mesh.color()`` — greedy coloring of the element-adjacency graph, the "
+"classic prerequisite for race-free scatter on a single GPU."
+msgstr "``mesh.color()``——单元邻接图的贪心着色，单 GPU 上无竞争散射的经典前置条件。"
+
+#: ../../source/user_guide/distributed.rst:243
+#: 58ed8af76cdd4a8e9168fb5689b124dc
+msgid ""
+"``tensormesh.mesh.partition.partition_mesh`` — the partitioner behind "
+"``DistributedMesh``, usable standalone."
+msgstr ""
+"``tensormesh.mesh.partition.partition_mesh``——``DistributedMesh`` "
+"背后的分区器，可独立使用。"
+
+#: ../../source/user_guide/distributed.rst:245
+#: ced542ba31c84cc591e6c88344dba17e
+msgid ""
+"``examples/distributed/`` — runnable scripts: the ``torchrun`` Poisson "
+"above, partitioning / coloring visualizations, and assembly benchmarks."
+msgstr ""
+"``examples/distributed/``——可运行脚本：上述 ``torchrun`` 泊松示例、分区/着色可视化，以及装配基准测试。"
+
+#: ../../source/user_guide/distributed.rst:251
+#: 49def436c0ec4a1bac3c445bf173379a
+msgid "What's next"
+msgstr "后续内容"
+
+#: ../../source/user_guide/distributed.rst:253
+#: 86ac40bbe5ce4666a2972823e7fbd254
+msgid ""
+":doc:`linear_solvers` — the full solver-backend matrix, including where the "
+"distributed path takes over from single-device solves."
+msgstr ":doc:`linear_solvers`——完整的求解器后端矩阵，包括分布式路径从单设备求解接管的位置。"
+
+#: ../../source/user_guide/distributed.rst:255
+#: f065680b44534c249de1c9175456b47e
+msgid ""
+":doc:`batched_workflows` — ``batch_size`` chunking for assemblies that fit "
+"on one device."
+msgstr ":doc:`batched_workflows`——适用于单设备装配的 ``batch_size`` 分块。"
+
+#: ../../source/user_guide/distributed.rst:257
+#: 9453ea6274764acea4d13fe069558502
+msgid ""
+"The `torch-sla documentation <https://www.torchsla.com/>`_ — "
+"``DSparseTensor``, ``Partition``, and the distributed solver internals."
+msgstr ""
+"`torch-sla 文档 <https://www.torchsla.com/>`_——``DSparseTensor``\\ 、\\ "
+"``Partition`` 以及分布式求解器内部机制。"

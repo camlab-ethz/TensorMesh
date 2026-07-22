@@ -1,0 +1,368 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, TensorMesh Contributors
+# This file is distributed under the same license as the TensorMesh package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: TensorMesh 0.1.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-22 15:34+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../source/example_gallery/phononic_crystal.rst:2
+#: f5dba0e929b5412183ee421e4d78faca
+msgid "Phononic Crystals (Bloch-Floquet)"
+msgstr "声子晶体（布洛赫-弗洛凯）"
+
+#: ../../source/example_gallery/phononic_crystal.rst:4
+#: 67acaecf2de2465ebf01cea1e3d9ce90
+msgid ""
+"Two-dimensional acoustic **phononic-crystal** examples in "
+"``examples/wave/phononic_crystal_2d/``: Bloch-Floquet band structures and a "
+"finite-slab transmission spectrum, each validated against a committed COMSOL"
+" reference. They showcase :class:`~tensormesh.BlochReducer` — the Bloch-"
+"Floquet periodic boundary-condition operator, the periodic counterpart of "
+":class:`~tensormesh.Condenser` — combined with the scalar Helmholtz assembly"
+" from :doc:`complex` and the complex sparse eigensolve."
+msgstr ""
+"二维声学\\ **声子晶体**\\ 算例位于 ``examples/wave/phononic_crystal_2d/``\\ ：布洛赫-"
+"弗洛凯能带结构与有限平板透射谱，均与提交的 COMSOL 参考解进行了验证。这些算例展示了 "
+":class:`~tensormesh.BlochReducer` —— 布洛赫-弗洛凯周期性边界条件算子，即 "
+":class:`~tensormesh.Condenser` 的周期版本 —— 结合 :doc:`complex` "
+"中的标量亥姆霍兹装配与复稀疏特征值求解。"
+
+#: ../../source/example_gallery/phononic_crystal.rst:17
+#: ../../source/example_gallery/phononic_crystal.rst:141
+#: 0b4bd05d655045018dd2ec1717d85498 449ac1a264214f7fb8527ee962bf9348
+msgid "Script"
+msgstr "脚本"
+
+#: ../../source/example_gallery/phononic_crystal.rst:18
+#: 50a6b90e065140c994b30cc4ef72a8e5
+msgid "Problem"
+msgstr "问题"
+
+#: ../../source/example_gallery/phononic_crystal.rst:19
+#: 4d6db06a6510450db117cf34f2a0f8fd
+msgid "What it exercises"
+msgstr "所涉及的要点"
+
+#: ../../source/example_gallery/phononic_crystal.rst:20
+#: ../../source/example_gallery/phononic_crystal.rst:144
+#: 8bc6364ad85449368a5226965da2e4bf efea8d6b98be457d95576333c4d46cdc
+msgid "``band_structure_square.py``"
+msgstr "``band_structure_square.py``"
+
+#: ../../source/example_gallery/phononic_crystal.rst:21
+#: ecae153748e647c2b3bfb69ddcb6927d
+msgid "square lattice, **rigid** cylinders in water"
+msgstr "正方晶格，水中\\ **刚性**\\ 圆柱"
+
+#: ../../source/example_gallery/phononic_crystal.rst:22
+#: 743833e13aa34a37893e0c76f0e3d651
+msgid "scalar Helmholtz, orthogonal lattice"
+msgstr "标量亥姆霍兹方程，正交晶格"
+
+#: ../../source/example_gallery/phononic_crystal.rst:23
+#: ../../source/example_gallery/phononic_crystal.rst:147
+#: 591e9566a8be490c8ba95f4e9e9b2131 d4dd9c970fd74326ab4a18b32301922c
+msgid "``band_structure_triangular.py``"
+msgstr "``band_structure_triangular.py``"
+
+#: ../../source/example_gallery/phononic_crystal.rst:24
+#: 2b972a56328d4a419181b281773bac20
+msgid "triangular lattice, **penetrable steel** in water"
+msgstr "三角晶格，水中\\ **可穿透钢**\\ 圆柱"
+
+#: ../../source/example_gallery/phononic_crystal.rst:25
+#: 040e11ffaee6410799462455cf514a4c
+msgid "two-medium weighted assembly, non-orthogonal lattice"
+msgstr "双介质加权装配，非正交晶格"
+
+#: ../../source/example_gallery/phononic_crystal.rst:26
+#: ../../source/example_gallery/phononic_crystal.rst:150
+#: 3f27f82e277245a79eed2b0f669885af f0b4105b09034356873a924b89c44b8f
+msgid "``transmission_slab.py``"
+msgstr "``transmission_slab.py``"
+
+#: ../../source/example_gallery/phononic_crystal.rst:27
+#: fdb36e12d82c49d3a6f832f00d62734a
+msgid "finite slab of rigid cylinders, plane-wave drive"
+msgstr "刚性圆柱有限平板，平面波驱动"
+
+#: ../../source/example_gallery/phononic_crystal.rst:28
+#: 01dcdeb045844f939aaaf87ee906a64c
+msgid "frequency-domain Helmholtz + first-order radiation BC"
+msgstr "频域亥姆霍兹方程 + 一阶辐射边界条件"
+
+#: ../../source/example_gallery/phononic_crystal.rst:32
+#: c53837f931d246edb1b7b775e0f68e77
+msgid "Band structures via ``BlochReducer``"
+msgstr "通过 ``BlochReducer`` 计算能带结构"
+
+#: ../../source/example_gallery/phononic_crystal.rst:34
+#: 54c3a34866b646d3b965056a0cb21c38
+msgid ""
+"Scalar pressure acoustics on one unit cell. By the Bloch theorem the "
+"eigenmodes at wavevector :math:`\\mathbf{k}` satisfy :math:`p(\\mathbf{x} + "
+"\\mathbf{a}) = p(\\mathbf{x})\\, e^{i\\mathbf{k}\\cdot\\mathbf{a}}` — "
+"opposite cell faces are tied with a complex phase. "
+":class:`~tensormesh.BlochReducer` detects the matched face nodes from the "
+"lattice vectors, ties them with the Floquet phase, and reduces any assembled"
+" operator to the independent (master) DOFs. At each wavevector along the "
+"irreducible-Brillouin-zone path a shift-inverted Hermitian generalized "
+"eigensolve (:func:`scipy.sparse.linalg.eigsh`) yields the lowest bands:"
+msgstr ""
+"单个元胞上的标量压力声学。根据布洛赫定理，波矢 :math:`\\mathbf{k}` 处的本征模满足 :math:`p(\\mathbf{x} + "
+"\\mathbf{a}) = p(\\mathbf{x})\\, e^{i\\mathbf{k}\\cdot\\mathbf{a}}` —— "
+"相对的两个面通过复相位耦合。\\ :class:`~tensormesh.BlochReducer` "
+"从晶格矢量检测匹配的面节点，以弗洛凯相位将其耦合，并将任何装配后的算子约化到独立（主）自由度上。在不可约布里渊区路径上的每个波矢处，位移反转的厄米广义特征值求解（\\"
+" :func:`scipy.sparse.linalg.eigsh`\\ ）给出最低能带："
+
+#: ../../source/example_gallery/phononic_crystal.rst:49
+#: 0e31caefcce84fa7a2d38fbbbda84bf9
+msgid "examples/wave/phononic_crystal_2d/band_structure_square.py (essence)"
+msgstr "examples/wave/phononic_crystal_2d/band_structure_square.py（核心部分）"
+
+#: ../../source/example_gallery/phononic_crystal.rst:61
+#: ecb194ad623844e1879c6a8a32fa9fe2
+msgid ""
+"The two band-structure scripts differ in the physics, not the pipeline:"
+msgstr "两个能带结构脚本的区别在于物理模型，而非流程："
+
+#: ../../source/example_gallery/phononic_crystal.rst:64
+#: eb7a83d8e55340f0a72357cef26e3a0d
+msgid ""
+"**Square lattice, rigid cylinders** — sound-hard inclusions are meshed as "
+"holes (natural Neumann boundary), so the operators are the plain "
+"Laplace/mass pair :math:`K p = (\\omega/c)^2 M p`; path "
+":math:`M\\!-\\!\\Gamma\\!-\\!X\\!-\\!M`."
+msgstr ""
+"**正方晶格，刚性圆柱** —— 声硬夹杂被网格化为孔洞（自然诺伊曼边界），因此算子为普通的拉普拉斯/质量矩阵对 :math:`K p = "
+"(\\omega/c)^2 M p`\\ ；路径 :math:`M\\!-\\!\\Gamma\\!-\\!X\\!-\\!M`\\ 。"
+
+#: ../../source/example_gallery/phononic_crystal.rst:68
+#: c6cd15f568424945bcd3f96bdb2b7a1f
+#, python-brace-format
+msgid ""
+"**Triangular lattice, penetrable steel** — the material varies in space, so "
+"the operators are **weighted**: "
+":math:`K_{ij}=\\int\\frac1\\rho\\nabla\\phi_i\\!\\cdot\\!\\nabla\\phi_j`, "
+":math:`M_{ij}=\\int\\frac1{\\rho c^2}\\phi_i\\phi_j`, assembled with a "
+"custom :class:`~tensormesh.ElementAssembler` carrying per-element "
+":math:`1/\\rho` and :math:`1/(\\rho c^2)` over a conformal steel/water mesh;"
+" non-orthogonal lattice vectors, path "
+":math:`M\\!-\\!\\Gamma\\!-\\!K\\!-\\!M`."
+msgstr ""
+"**三角晶格，可穿透钢** —— 材料随空间变化，因此算子为\\ **加权**\\ 形式：\\ "
+":math:`K_{ij}=\\int\\frac1\\rho\\nabla\\phi_i\\!\\cdot\\!\\nabla\\phi_j`\\ "
+"，\\ :math:`M_{ij}=\\int\\frac1{\\rho c^2}\\phi_i\\phi_j`\\ ，通过自定义的 "
+":class:`~tensormesh.ElementAssembler` 装配，该装配器在每个单元上携带 :math:`1/\\rho` 和 "
+":math:`1/(\\rho c^2)`\\ ，基于共形的钢/水网格；非正交晶格矢量，路径 "
+":math:`M\\!-\\!\\Gamma\\!-\\!K\\!-\\!M`\\ 。"
+
+#: ../../source/example_gallery/phononic_crystal.rst:77
+#: b4af9b2e74d9416aa25151e4236a316c
+msgid ""
+"The unit-cell meshes use gmsh ``setPeriodic`` (and ``fragment`` for the two-"
+"domain case) so opposite edges carry matching nodes — the precondition "
+"``BlochReducer`` needs."
+msgstr ""
+"元胞网格使用 gmsh 的 ``setPeriodic``\\ （双域情况使用 ``fragment``\\ ），使得相对的边具有匹配的节点 —— 这是"
+" ``BlochReducer`` 所需的前提条件。"
+
+#: ../../source/example_gallery/phononic_crystal.rst:81
+#: 22c7a404946e48b2bdd01c601fadaa29
+msgid "Square-lattice phononic band structure vs COMSOL"
+msgstr "正方晶格声子能带结构与 COMSOL 对比"
+
+#: ../../source/example_gallery/phononic_crystal.rst:85
+#: 9f691f0f2b5744c68fe561c44d430083
+msgid ""
+"Output of ``band_structure_square.py``: the unit cell (left) and the band "
+"structure along :math:`M\\!-\\!\\Gamma\\!-\\!X\\!-\\!M` (right), TensorMesh "
+"bands as filled markers with the COMSOL reference as open circles. The "
+"lowest band goes to zero at :math:`\\Gamma`; band gaps open between "
+"branches."
+msgstr ""
+"``band_structure_square.py`` 的输出：元胞（左）与沿 "
+":math:`M\\!-\\!\\Gamma\\!-\\!X\\!-\\!M` 的能带结构（右），TensorMesh 能带以实心标记表示，COMSOL"
+" 参考解以空心圆表示。最低能带在 :math:`\\Gamma` 处趋于零；带隙在各支能带之间打开。"
+
+#: ../../source/example_gallery/phononic_crystal.rst:91
+#: 25bae4d7e035425886e00f53734878a3
+msgid "Triangular-lattice phononic band structure vs COMSOL"
+msgstr "三角晶格声子能带结构与 COMSOL 对比"
+
+#: ../../source/example_gallery/phononic_crystal.rst:95
+#: 879b10a822764b9384d01eb908f3eabe
+msgid ""
+"Output of ``band_structure_triangular.py``: penetrable steel cylinders in "
+"water on a triangular lattice — a two-medium weighted assembly on a non-"
+"orthogonal cell."
+msgstr ""
+"``band_structure_triangular.py`` 的输出：三角晶格上水中的可穿透钢圆柱 —— 非正交元胞上的双介质加权装配。"
+
+#: ../../source/example_gallery/phononic_crystal.rst:101
+#: cf61673feb08431ebd41c5b66bc5251c
+msgid "Transmission through a finite slab"
+msgstr "有限平板的透射"
+
+#: ../../source/example_gallery/phononic_crystal.rst:103
+#: ecb132d41203410bb7bea4621b7c496b
+msgid ""
+"``transmission_slab.py`` leaves the infinite-crystal setting: a normally-"
+"incident plane wave (:math:`p_0 = 1` Pa) crosses a finite slab of rigid "
+"cylinders, and the power transmission "
+":math:`T(f)=\\langle|p|^2\\rangle_{\\mathrm{out}}/|p_0|^2` is swept over "
+"frequency:"
+msgstr ""
+"``transmission_slab.py`` 离开了无限晶体设定：正入射平面波（\\ :math:`p_0 = 1` "
+"Pa）穿过刚性圆柱的有限平板，功率透射系数 "
+":math:`T(f)=\\langle|p|^2\\rangle_{\\mathrm{out}}/|p_0|^2` 在频域上扫描："
+
+#: ../../source/example_gallery/phononic_crystal.rst:113
+#: 3274090123964b8894710358cbeef3b2
+msgid ""
+"The first-order radiation term :math:`B` and the incident load "
+":math:`e_{\\mathrm{in}}` are hand-rolled boundary line integrals (no PML — "
+"this matches COMSOL's first-order \"Plane Wave Radiation\" condition), and "
+"each frequency is one complex sparse solve. Inside the band gap the "
+"transmission drops to :math:`\\sim 0`; in the pass bands it recovers with "
+"Fabry-Pérot ripples."
+msgstr ""
+"一阶辐射项 :math:`B` 与入射载荷 :math:`e_{\\mathrm{in}}` 为手工编写的边界线积分（无 PML —— 这与 "
+"COMSOL 的一阶\"平面波辐射\"条件一致），每个频率对应一次复稀疏求解。在带隙内透射降至 :math:`\\sim 0`\\ "
+"；在通带内则随法布里-珀罗振荡恢复。"
+
+#: ../../source/example_gallery/phononic_crystal.rst:120
+#: d2ef1e5c58a34916a2bfc6c551860c72
+msgid "Transmission spectrum of a finite phononic slab vs COMSOL"
+msgstr "有限声子平板的透射谱与 COMSOL 对比"
+
+#: ../../source/example_gallery/phononic_crystal.rst:124
+#: e017dd2340384c1e89730855479f998a
+msgid ""
+"Output of ``transmission_slab.py``: the slab geometry (left) and the "
+"transmission spectrum :math:`T(f)` (right) with the COMSOL reference "
+"overlaid — the band gap appears as the deep notch."
+msgstr ""
+"``transmission_slab.py`` 的输出：平板几何（左）与透射谱 :math:`T(f)`\\ （右），叠加了 COMSOL 参考解 "
+"—— 带隙表现为深谷。"
+
+#: ../../source/example_gallery/phononic_crystal.rst:130
+#: 3f8d568b97164373a5c19941c8262992
+msgid "Validation against COMSOL"
+msgstr "与 COMSOL 的验证"
+
+#: ../../source/example_gallery/phononic_crystal.rst:132
+#: 3793a8dbd0784941b2fef8fa895e05bc
+msgid ""
+"Each script overlays a COMSOL Pressure-Acoustics reference and prints the "
+"relative error. The references are committed as small "
+"``comsol_reference_*.npz`` files next to the scripts, so the comparison "
+"reproduces **offline** — no COMSOL needed:"
+msgstr ""
+"每个脚本均叠加了 COMSOL 压力声学参考解并输出相对误差。参考解以小型 ``comsol_reference_*.npz`` "
+"文件形式提交在脚本旁边，因此该对比可在\\ **离线**\\ 状态下复现 —— 无需 COMSOL："
+
+#: ../../source/example_gallery/phononic_crystal.rst:142
+#: 874aa190a65e4170b6eacf16778bbe94
+msgid "Reference"
+msgstr "参考解"
+
+#: ../../source/example_gallery/phononic_crystal.rst:143
+#: b59c7705b83243b084d7e443ae6cda36
+msgid "Agreement"
+msgstr "吻合度"
+
+#: ../../source/example_gallery/phononic_crystal.rst:145
+#: 9b554a6d45d14003ac54ee12ce6f0d91
+msgid "square :math:`M\\!-\\!\\Gamma\\!-\\!X\\!-\\!M`, 31 k-points"
+msgstr "正方 :math:`M\\!-\\!\\Gamma\\!-\\!X\\!-\\!M`\\ ，31 个 k 点"
+
+#: ../../source/example_gallery/phononic_crystal.rst:146
+#: 83df936083d54b13888c9e9c6614fca4
+msgid "mean **0.08 %**, p95 0.16 %"
+msgstr "均值 **0.08 %**\\ ，p95 0.16 %"
+
+#: ../../source/example_gallery/phononic_crystal.rst:148
+#: 27cf36ed4066409b9773d10b1aa9cb5d
+msgid "triangular :math:`M\\!-\\!\\Gamma\\!-\\!K\\!-\\!M`, 31 k-points"
+msgstr "三角 :math:`M\\!-\\!\\Gamma\\!-\\!K\\!-\\!M`\\ ，31 个 k 点"
+
+#: ../../source/example_gallery/phononic_crystal.rst:149
+#: 6f036ba1b8554ed1a6156d1c31cd27af
+msgid "mean **0.51 %**, p95 1.45 %"
+msgstr "均值 **0.51 %**\\ ，p95 1.45 %"
+
+#: ../../source/example_gallery/phononic_crystal.rst:151
+#: 99f33a2298c64dee8fefb90dc1eed3a1
+msgid "30-120 kHz, 46 frequencies"
+msgstr "30-120 kHz，46 个频率点"
+
+#: ../../source/example_gallery/phononic_crystal.rst:152
+#: 245ac5a7500e4d949bb754d64b5acb49
+msgid "mean :math:`|\\Delta T|` **0.007**"
+msgstr "均值 :math:`|\\Delta T|` **0.007**"
+
+#: ../../source/example_gallery/phononic_crystal.rst:154
+#: de1190d203bc46e8b743625226e23405
+msgid ""
+"Bands are compared k-point by k-point at COMSOL's exact wavevectors (lowest "
+"10 modes, nearest-frequency match); transmission by interpolating onto "
+"COMSOL's frequency grid. If an npz is absent the script still runs and skips"
+" the overlay."
+msgstr ""
+"能带在 COMSOL 的精确波矢处逐 k 点比较（最低 10 个模式，最近频率匹配）；透射率通过插值到 COMSOL 的频率网格上计算。若缺少 npz "
+"文件，脚本仍会运行并跳过叠加显示。"
+
+#: ../../source/example_gallery/phononic_crystal.rst:161
+#: ea0437e2db434cdfb440cd49a07b5460
+msgid "Running it"
+msgstr "运行脚本"
+
+#: ../../source/example_gallery/phononic_crystal.rst:170
+#: 6b0cd1b69e874d13b0bdcde730c691fb
+msgid ""
+"Each script exposes a ``run_demo(...)`` returning diagnostics and a "
+"``main()`` with ``--no-plot``, ``--output``, and mesh-density / band-count "
+"flags."
+msgstr ""
+"每个脚本均提供 ``run_demo(...)`` 函数返回诊断信息，以及 ``main()`` 函数支持 ``--no-plot``\\ 、\\ "
+"``--output`` 和网格密度/能带数目标志。"
+
+#: ../../source/example_gallery/phononic_crystal.rst:176
+#: 450f2725a3404ff6b5db062f8333cf45
+msgid "What's next"
+msgstr "下一步"
+
+#: ../../source/example_gallery/phononic_crystal.rst:178
+#: 06339116b89d4800bef83db3cb356d38
+msgid ""
+":doc:`complex` — the complex-valued Helmholtz machinery these examples build"
+" on."
+msgstr ":doc:`complex` —— 这些示例所依赖的复值亥姆霍兹机制。"
+
+#: ../../source/example_gallery/phononic_crystal.rst:180
+#: 6e423a838d7e41d597522236dcdd86b5
+msgid ":doc:`wave` — the time-domain wave equation."
+msgstr ":doc:`wave` —— 时域波动方程。"
+
+#: ../../source/example_gallery/phononic_crystal.rst:181
+#: 8cac0936ba7246a697807763ebee84c3
+msgid ""
+":class:`~tensormesh.BlochReducer` in the :doc:`API reference "
+"<../api/operator>`."
+msgstr ""
+":class:`~tensormesh.BlochReducer`\\ ，见 :doc:`API 参考 <../api/operator>`\\ 。"

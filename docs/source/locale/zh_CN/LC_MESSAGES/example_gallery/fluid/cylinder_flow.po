@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-22 23:00+0200\n"
+"POT-Creation-Date: 2026-07-22 15:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_CN <LL@li.org>\n"
@@ -34,26 +34,55 @@ msgid ""
 "small cylinder near the inlet. At :math:`\\mathrm{Re} = 100` the wake "
 "becomes unstable, vortices shed alternately from the top and bottom of the "
 "cylinder, and a **von Kármán vortex street** propagates downstream. The "
-"geometry and parameters follow the DFG 2D-1 benchmark (Schäfer & Turek, "
-"1996), which gives reference values for drag/lift coefficients and the "
-"Strouhal number."
+"geometry and parameters follow the DFG 2D benchmark (Schäfer & Turek, 1996)."
 msgstr ""
-"稳态方腔算例的瞬态对应版本。脚本 ``examples/fluid/cylinder_flow/cylinder_flow.py`` 运行经典的\\ "
-"*圆柱绕流*\\ 基准——一个细长的矩形通道，入口附近放置一个小圆柱。在 :math:`\\mathrm{Re} = 100` "
-"时尾迹变得不稳定，涡从圆柱的上下两侧交替脱落，一条\\ **冯·卡门涡街**\\ 向下游传播。其几何与参数遵循 DFG 2D-1 基准（Schäfer "
-"& Turek，1996），该基准给出了阻力/升力系数与斯特劳哈尔数的参考值。"
+"稳态空腔算例的瞬态对应版本。脚本 ``examples/fluid/cylinder_flow/cylinder_flow.py`` 运行经典的\\ "
+"*圆柱绕流*\\ 基准算例——一个长矩形通道，在入口附近放置一个小圆柱。当 :math:`\\mathrm{Re} = 100` "
+"时，尾流失稳，涡旋交替从圆柱上下表面脱落，\\ **卡门涡街**\\ 向下游传播。几何与参数遵循 DFG 二维基准（Schäfer & Turek, "
+"1996）。"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:17
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:14
+#: 43e70136c7e0430cb156f18678757398
+msgid ""
+"Discretization: **Taylor-Hood P2-P1** via "
+":class:`~tensormesh.MixedElementAssembler`, backward Euler in time with "
+"Picard sub-iterations. Two things make this script the \"advanced\" mixed "
+"example:"
+msgstr ""
+"离散化：通过 :class:`~tensormesh.MixedElementAssembler` 采用 **Taylor-Hood P2-P1** "
+"元，时间方向用向后欧拉格式，配合 Picard 子迭代。以下两点使该脚本成为\"进阶\"混合元示例："
+
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:19
+#: 5ad6c0564f774df4a14b2b73d34decd5
+msgid ""
+"the gmsh/:class:`~tensormesh.MeshGen` channel mesh is **linear** — the "
+"quadratic velocity space is generated *topologically* on top of it (one DOF "
+"per unique edge), no order-2 re-meshing;"
+msgstr ""
+"gmsh/:class:`~tensormesh.MeshGen` 生成的通道网格是\\ **线性**\\ 的——二次速度空间在其上\\ *拓扑地*\\"
+" 构造（每条唯一边对应一个自由度），无需二阶重新剖分；"
+
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:22
+#: e4cc8bad35f94dc9905eb83a717c04fe
+msgid ""
+"the load vector and the vorticity post-processing both go through "
+":meth:`~tensormesh.MixedElementAssembler.assemble_vector`, with the lagged "
+"velocities riding on the P2 field's own DOFs via ``field_data``."
+msgstr ""
+"载荷向量与涡量后处理均通过 :meth:`~tensormesh.MixedElementAssembler.assemble_vector` "
+"完成，滞后速度借助 ``field_data`` 搭载在 P2 场自身的自由度上。"
+
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:29
 #: b37b537d946a472bb9b3910c1e405fca
 msgid "Problem"
 msgstr "问题"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:19
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:31
 #: 0b78f6e6874c432ebf0ad1b115c5d25a
 msgid "The transient incompressible Navier-Stokes system,"
 msgstr "瞬态不可压缩纳维-斯托克斯方程组，"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:21
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:33
 #: 202c2d9960cd48c1b52464d0aa8d846d
 msgid ""
 "\\rho\\, \\frac{\\partial \\mathbf{u}}{\\partial t}\n"
@@ -66,7 +95,7 @@ msgstr ""
 "\\;=\\; -\\nabla p + \\mu\\, \\Delta \\mathbf{u},\n"
 "\\qquad \\nabla \\cdot \\mathbf{u} = 0,"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:28
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:40
 #: d11e4414ee9b42ed9787c6208a0d14ec
 msgid ""
 "on the channel :math:`\\Omega = [0, 2.2] \\times [0, 0.41]` with a circular "
@@ -76,7 +105,7 @@ msgstr ""
 "定义在通道 :math:`\\Omega = [0, 2.2] \\times [0, 0.41]` 上，其中含有一个半径 :math:`r = "
 "0.05`\\ 、圆心位于 :math:`(0.2, 0.2)` 的圆柱。边界条件："
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:32
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:44
 #: fe34e28dcbf745109b61ff0c8854eaa8
 #, python-brace-format
 msgid ""
@@ -86,17 +115,19 @@ msgstr ""
 "入口（\\ :math:`x = 0`\\ ）：抛物型分布 :math:`u_x(y) = 4\\,U_\\text{max}\\, y\\, (H -"
 " y) / H^2`\\ ，\\ :math:`u_y = 0`\\ ，"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:35
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:47
 #: 787e6ce47a564b04a77d5065b47fc602
 msgid "walls and cylinder surface: no-slip,"
 msgstr "壁面与圆柱表面：无滑移，"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:36
-#: cfb4f8ff44d7453fb43822193da22e48
-msgid "outlet (:math:`x = 2.2`): \"do-nothing\" + pressure pin,"
-msgstr "出口（\\ :math:`x = 2.2`\\ ）：“自由出流”（do-nothing）＋压力钉定，"
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:48
+#: 01917946e48340dea2108a4858004576
+msgid ""
+"outlet (:math:`x = 2.2`): \"do-nothing\" (natural), which also fixes the "
+"pressure gauge — **no pressure pin is needed**,"
+msgstr "出口（\\ :math:`x = 2.2`\\ ）：\"do-nothing\"（自然边界条件），同时固定了压力基准——**无需压力点约束**\\ ，"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:38
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:51
 #: 89202e4334a74193800ba7c1f4eb533a
 #, python-brace-format
 msgid ""
@@ -108,154 +139,120 @@ msgstr ""
 "0.1`\\ ，\\ :math:`\\rho = 1`\\ ，\\ :math:`\\mu = 10^{-3}`\\ ，由此 "
 ":math:`\\mathrm{Re} = \\rho \\bar{U} D / \\mu = 100`\\ 。"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:44
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:57
 #: a2c0ef9c29ca4c538474a61fae2e71eb
-msgid "Time integration: implicit Euler"
-msgstr "时间积分：隐式欧拉法"
+msgid "Time integration: backward Euler + Picard"
+msgstr "时间积分：向后欧拉 + Picard"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:46
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:59
 #: 424d99e8973e4d5f849329c5bd2e5521
 #, python-brace-format
 msgid ""
-"The transient term :math:`\\rho\\, \\partial_t \\mathbf{u}` is discretized "
-"with backward Euler — implicit, unconditionally stable. Each timestep solves"
-msgstr "瞬态项 :math:`\\rho\\, \\partial_t \\mathbf{u}` 采用后向欧拉法离散——隐式且无条件稳定。每个时间步求解"
+"The transient term is discretized with backward Euler — implicit, "
+"unconditionally stable. Each timestep solves"
+msgstr "瞬态项采用向后欧拉离散——隐式、无条件稳定。每个时间步求解"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:50
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:62
 #: 20eb09d4045243769a6b9c453c7f7887
 msgid ""
 "\\rho\\, \\frac{\\mathbf{u}^{n+1} - \\mathbf{u}^{n}}{\\Delta t}\n"
-"+ \\rho\\, (\\mathbf{u}^{n} \\cdot \\nabla)\\mathbf{u}^{n+1}\n"
+"+ \\rho\\, (\\mathbf{w} \\cdot \\nabla)\\mathbf{u}^{n+1}\n"
 "\\;=\\; -\\nabla p^{n+1} + \\mu\\, \\Delta \\mathbf{u}^{n+1},"
 msgstr ""
 "\\rho\\, \\frac{\\mathbf{u}^{n+1} - \\mathbf{u}^{n}}{\\Delta t}\n"
-"+ \\rho\\, (\\mathbf{u}^{n} \\cdot \\nabla)\\mathbf{u}^{n+1}\n"
+"+ \\rho\\, (\\mathbf{w} \\cdot \\nabla)\\mathbf{u}^{n+1}\n"
 "\\;=\\; -\\nabla p^{n+1} + \\mu\\, \\Delta \\mathbf{u}^{n+1},"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:56
-#: f038481ea82e4d978725bfc9ee80476a
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:68
+#: 90f6847f59ae479f8a8d74f0f31dce10
 #, python-brace-format
 msgid ""
-"(convection linearized by lagging the advecting velocity to "
-":math:`\\mathbf{u}^n`). The script implements this as a transient variant of"
-" the cavity assembler, with the mass term :math:`\\rho/\\Delta t \\cdot u\\,"
-" v` added to the diagonal block along with a corresponding SUPG residual:"
-msgstr ""
-"（对流项通过将输运速度滞后取为 :math:`\\mathbf{u}^n` 来线性化）。脚本将其实现为方腔装配器的瞬态变体，在对角块上加入质量项 "
-":math:`\\rho/\\Delta t \\cdot u\\, v` 以及相应的 SUPG 残差："
+"with the advecting velocity :math:`\\mathbf{w}` updated by one or two Picard"
+" sub-iterations per step. Matrix side and load side are the two halves of "
+"one assembler:"
+msgstr "其中对流速度 :math:`\\mathbf{w}` 每步通过一到两次 Picard 子迭代更新。矩阵端与载荷端由同一个装配器的两部分构成："
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:62
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:72
 #: 7abfddae66e64891b5fc7708565f279b
 msgid "examples/fluid/cylinder_flow/cylinder_flow.py (essence)"
 msgstr "examples/fluid/cylinder_flow/cylinder_flow.py（核心部分）"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:80
-#: 945f59e3b156449dbc969eb5398c3a8d
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:95
+#: 3c40d7a9462e47eebea3c4250c158982
+msgid ""
+"The time loop is then three lines of assembly per Picard pass — note the "
+"``field_data`` channel carrying the lagged P2 velocities:"
+msgstr "时间循环中每次 Picard 迭代仅需三行装配代码——注意 ``field_data`` 通道承载滞后的 P2 速度："
+
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:112
+#: 6ef54af9b6384ffe804c4a83d0b477c6
+msgid "Boundary conditions on the topological P2 space"
+msgstr "拓扑 P2 空间上的边界条件"
+
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:114
+#: 031f3e4cf289446a908ae3a206d7568c
+msgid ""
+"MeshGen meshes carry no ``is_boundary`` point data, and half the velocity "
+"nodes are edge midpoints that are not mesh points at all. Both problems "
+"disappear with the layout's topological helpers — ``boundary_mask`` "
+"classifies DOFs by facet incidence, and ``points(\"u\")`` gives every "
+"velocity node a coordinate:"
+msgstr ""
+"MeshGen 网格不携带 ``is_boundary`` "
+"点数据，且半数速度节点是根本不是网格点的边中点。两个问题均可通过布局的拓扑辅助函数解决——``boundary_mask`` "
+"按面关联关系对自由度分类，\\ ``points(\"u\")`` 为每个速度节点赋予坐标："
+
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:133
+#: e32dd1531ead4875841020525ef240bb
+msgid ""
+"The outlet is left free (do-nothing), which anchors the pressure — the "
+"saddle-point system is non-singular without a pin."
+msgstr "出口保持自由（do-nothing），从而锚定压力——鞍点系统无需点约束即可非奇异。"
+
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:138
+#: 544972ecf251411bbec093226579fd54
+msgid "Post-processing: vorticity as a mixed load vector"
+msgstr "后处理：以混合载荷向量形式提取涡量"
+
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:140
+#: ed22b7da2b6649fe86d01932da1b0c10
 #, python-brace-format
 msgid ""
-"The previous-timestep solution :math:`\\mathbf{u}^n` enters the RHS through "
-"a separate ``NodeAssembler`` (``MomentumRHSAssembler``) that contributes "
-":math:`\\rho/\\Delta t\\, \\mathbf{u}^n \\cdot v`. Both assemblers share the"
-" same ``tau`` field, updated each step to reflect the local cell Reynolds "
-"number."
+"At every saved frame the script recovers the vorticity :math:`\\omega = "
+"\\partial_x u_y - \\partial_y u_x` by :math:`L^2` projection onto the P1 "
+"pressure space. The projection RHS :math:`\\int \\omega_h\\, "
+"q\\,\\mathrm{d}x` uses the **exact P2 gradient** of the velocity — a one-"
+"line ``func=`` linear form, with the velocity passed via ``field_data``:"
 msgstr ""
-"上一时间步的解 :math:`\\mathbf{u}^n` 通过一个独立的 ``NodeAssembler``\\ （\\ "
-"``MomentumRHSAssembler``\\ ）进入右端项，贡献 :math:`\\rho/\\Delta t\\, \\mathbf{u}^n"
-" \\cdot v`\\ 。两个装配器共享同一个 ``tau`` 场，每一步都会更新以反映局部网格单元的雷诺数。"
+"每个保存帧时刻，脚本通过 :math:`L^2` 投影将涡量 :math:`\\omega = \\partial_x u_y - "
+"\\partial_y u_x` 恢复到 P1 压力空间。投影右端项 :math:`\\int \\omega_h\\, "
+"q\\,\\mathrm{d}x` 采用速度的\\ **精确 P2 梯度**——一行 ``func=`` 线性形式即可，速度通过 "
+"``field_data`` 传入："
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:88
-#: c0ce35a25f084f72a6c64ad8197798a7
-msgid "Stabilization"
-msgstr "稳定化"
-
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:90
-#: a67f49e46ee4432abc52e197f4631aa7
-msgid ""
-"The cylinder problem is more demanding than the cavity: upstream cells see "
-"nearly-uniform flow, the wake region needs fine-grained convection-dominated"
-" stabilization. The script uses an **adaptive** :math:`\\tau`:"
-msgstr ""
-"圆柱问题比方腔更为苛刻：上游网格单元看到的几乎是均匀流，而尾迹区域则需要精细的对流主导型稳定化。脚本采用一个\\ **自适应**\\ 的 "
-":math:`\\tau`\\ ："
-
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:95
-#: 6d1ed09ea7e24c548fe9b227a2808e9f
-msgid ""
-"\\tau \\;=\\;\n"
-"\\left[\n"
-"  \\left(\\frac{2}{\\Delta t}\\right)^2\n"
-"  + \\left(\\frac{2|\\mathbf{u}|}{h}\\right)^2\n"
-"  + \\left(\\frac{4\\nu}{h^2}\\right)^2\n"
-"\\right]^{-1/2},"
-msgstr ""
-"\\tau \\;=\\;\n"
-"\\left[\n"
-"  \\left(\\frac{2}{\\Delta t}\\right)^2\n"
-"  + \\left(\\frac{2|\\mathbf{u}|}{h}\\right)^2\n"
-"  + \\left(\\frac{4\\nu}{h^2}\\right)^2\n"
-"\\right]^{-1/2},"
-
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:104
-#: 812dfb97a49a4fce9f36216e151d0bcf
-msgid ""
-"evaluated per element from the local mesh size :math:`h` and velocity "
-"magnitude. This makes the diffusive part of SUPG dominate where the flow is "
-"slow and the convective part dominate in the wake."
-msgstr ""
-"它在每个单元上由局部网格尺寸 :math:`h` 与速度大小计算得到。这使得 SUPG 的扩散部分在流速较慢处占主导，而对流部分在尾迹中占主导。"
-
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:111
-#: 1c381cb2aa3a4a63b9318f16522198ca
-msgid "Post-processing"
-msgstr "后处理"
-
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:113
-#: ed22b7da2b6649fe86d01932da1b0c10
-msgid ""
-"At every saved frame the script derives a **vorticity** field :math:`\\omega"
-" = \\partial_x v - \\partial_y u` by :math:`L^2` projection: assemble a mass"
-" matrix :class:`~tensormesh.MassElementAssembler`, build the projection "
-"right-hand side :math:`\\tilde\\omega` from :math:`\\partial_x v - "
-"\\partial_y u` (itself assembled with a :class:`~tensormesh.NodeAssembler`),"
-" and solve :math:`M\\,\\omega = \\tilde\\omega`. This is the standard recipe"
-" for recovering a smooth nodal field from element-wise gradients on "
-"piecewise-linear FEM."
-msgstr ""
-"在每个保存的帧上，脚本通过 :math:`L^2` 投影导出一个\\ **涡量**\\ 场 :math:`\\omega = \\partial_x v"
-" - \\partial_y u`\\ ：装配一个质量矩阵 :class:`~tensormesh.MassElementAssembler`\\ ，由"
-" :math:`\\partial_x v - \\partial_y u`\\ （其本身用 "
-":class:`~tensormesh.NodeAssembler` 装配）构造投影右端项 :math:`\\tilde\\omega`\\ ，再求解 "
-":math:`M\\,\\omega = \\tilde\\omega`\\ 。这是在分片线性有限元上从逐单元梯度恢复光滑节点场的标准做法。"
-
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:124
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:155
 #: b9d10e4c643948f2a6a50be9f4182d64
 #, python-brace-format
 msgid ""
 "The von Kármán street is the qualitative signature to look for: once the "
-"wake destabilizes (typically after :math:`t \\gtrsim 5`) vortices shed "
-"alternately from the top and bottom of the cylinder at a Strouhal number "
-":math:`\\mathrm{St} = f D / \\bar{U} \\approx 0.3`, visible directly in the "
-"vorticity animation."
-msgstr ""
-"冯·卡门涡街是需要关注的定性特征：一旦尾迹失稳（通常在 :math:`t \\gtrsim 5` 之后），涡便以斯特劳哈尔数 "
-":math:`\\mathrm{St} = f D / \\bar{U} \\approx 0.3` "
-"从圆柱的上下两侧交替脱落，可在涡量动画中直接观察到。"
+"wake destabilizes, vortices shed alternately from the top and bottom of the "
+"cylinder and convect downstream at roughly the mean inlet velocity."
+msgstr "卡门涡街是应关注的定性特征：一旦尾流失稳，涡旋即交替从圆柱上下表面脱落，并以近似平均入口速度向下游对流。"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:132
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:162
 #: 7361293c54fd48a189ef5089efc35f30
 msgid "Output and rendering"
 msgstr "输出与渲染"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:134
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:164
 #: cc21726c5f664221af1099cf2a7b3603
 msgid ""
-"**Frame sequence.** Every ``N`` steps the script renders a three-panel PNG "
-"(vorticity, speed, pressure) into ``frames/`` via ``mesh.plot``."
+"**Frame sequence.** Every ``save_every`` steps the script renders a three-"
+"panel PNG (vorticity, speed, pressure) into ``frames/`` via ``mesh.plot``."
 msgstr ""
-"**帧序列。**\\ 每隔 ``N`` 步，脚本通过 ``mesh.plot`` 渲染一张三联面板 PNG（涡量、速度、压力）到 ``frames/``"
-" 中。"
+"**帧序列。** 每隔 ``save_every`` 步，脚本通过 ``mesh.plot`` 将三幅 PNG（涡量、速度、压力）渲染到 "
+"``frames/`` 目录。"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:137
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:167
 #: 4390dbc6ec5844409249b2412272edff
 msgid ""
 "**MP4 rendering.** The companion script "
@@ -266,14 +263,14 @@ msgstr ""
 "**MP4 渲染。**\\ 配套脚本 ``examples/fluid/cylinder_flow/render_video.py`` 通过一次 "
 "``ffmpeg`` 拼接将 ``frames/*.png`` 序列合成为 ``vortex_street.mp4``\\ 。"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:141
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:171
 #: 415c3c50d9b2485d8340f73e20a3bb1f
 msgid ""
 "**Final snapshot.** ``cylinder_flow_final.png`` is the same three-panel "
-"figure for the last step, for inclusion in talks and reports."
-msgstr "**最终快照。**\\ ``cylinder_flow_final.png`` 是最后一步的同款三联面板图，便于用于演讲与报告。"
+"figure for the last step."
+msgstr "**最终快照。** ``cylinder_flow_final.png`` 为最后一步的同款三幅组图。"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:153
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:182
 #: b3c502103a2c49daa02fcdc3c41c7480
 msgid ""
 "*Output of* ``cylinder_flow.py`` *(rendered to MP4 by* ``render_video.py``\\"
@@ -285,12 +282,12 @@ msgstr ""
 "*``cylinder_flow.py`` 的输出（由* ``render_video.py`` *渲染为 "
 "MP4）：圆柱后方发展完整的冯·卡门涡街。在初始的对称阶段之后，一个微小的非对称扰动触发周期性脱落；涡的符号交替变化，并以大致等于入口速度的速度向下游输运。*"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:161
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:190
 #: f744e4aeba0c48558da98fae82473ad3
 msgid "Running it"
 msgstr "运行方式"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:169
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:198
 #: 1a2f30dccf1d4efd9c8dd94cc9c1c439
 msgid ""
 "The transient run is the longest in the gallery — the default configuration "
@@ -298,35 +295,39 @@ msgid ""
 "quick smoke test."
 msgstr "这一瞬态运行是整个示例库中耗时最长的——默认配置为数千个时间步。若想快速冒烟测试，可减小 ``n_steps`` 或粗化网格。"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:175
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:204
 #: 787ce770ab6d4578862e417fecfa2304
 msgid "What's next"
 msgstr "下一步"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:177
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:206
 #: 21c2161c2b1841e49dfe27d680a7d177
-msgid ":doc:`cavity` — the steady cousin with the same SUPG/PSPG recipe."
-msgstr ":doc:`cavity`——采用相同 SUPG/PSPG 方案的稳态版本。"
+msgid ""
+":doc:`cavity` — the steady cousin with the same weak form minus the time "
+"terms."
+msgstr ":doc:`cavity` —— 去掉时间项后具有相同弱形式的稳态对应算例。"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:179
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:208
 #: da5fc923b31a4c60abbab43535c19183
 msgid ""
 ":doc:`taylor_green` — a transient problem with an exact solution, for "
-"verifying the time integrator's order."
-msgstr ":doc:`taylor_green`——一个具有精确解的瞬态问题，用于验证时间积分器的阶数。"
+"verifying accuracy."
+msgstr ":doc:`taylor_green` —— 具有精确解的瞬态问题，用于验证精度。"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:181
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:210
 #: 6cecc0189af34a99935fb5d86d4a1200
 msgid ""
 ":doc:`flow_obstacles` — steady flow through a more complex channel geometry."
 msgstr ":doc:`flow_obstacles`——通过更复杂通道几何的稳态流动。"
 
-#: ../../source/example_gallery/fluid/cylinder_flow.rst:183
-#: 0a1284de470b43c78872d74836a4ecf0
+#: ../../source/example_gallery/fluid/cylinder_flow.rst:212
+#: 0f48a35992cd4e8da045ad6432c33182
 msgid ""
-":doc:`../../user_guide/time_integration` — implicit-linear integrators that "
-"subsume the manual backward-Euler loop."
-msgstr ":doc:`../../user_guide/time_integration`——可替代手写后向欧拉循环的隐式线性积分器。"
+":doc:`../../user_guide/mixed_assembly` — ``forward_vector``, ``field_data``,"
+" and generalized order pairs in detail."
+msgstr ""
+":doc:`../../user_guide/mixed_assembly` —— ``forward_vector``\\ 、\\ "
+"``field_data`` 及广义阶次对的详细说明。"
 
 #~ msgid "Two derived fields are computed at every saved frame:"
 #~ msgstr ""
@@ -371,3 +372,80 @@ msgstr ":doc:`../../user_guide/time_integration`——可替代手写后向欧�
 #~ "figure (vorticity, speed, pressure) of the last step, for inclusion in talks"
 #~ " and reports."
 #~ msgstr ""
+
+#~ msgid ""
+#~ "(convection linearized by lagging the advecting velocity to "
+#~ ":math:`\\mathbf{u}^n`). The script implements this as a transient variant of"
+#~ " the cavity assembler, with the mass term :math:`\\rho/\\Delta t \\cdot u\\,"
+#~ " v` added to the diagonal block along with a corresponding SUPG residual:"
+#~ msgstr ""
+#~ "（对流项通过将输运速度滞后取为 :math:`\\mathbf{u}^n` 来线性化）。脚本将其实现为方腔装配器的瞬态变体，在对角块上加入质量项 "
+#~ ":math:`\\rho/\\Delta t \\cdot u\\, v` 以及相应的 SUPG 残差："
+
+#~ msgid ""
+#~ "The previous-timestep solution :math:`\\mathbf{u}^n` enters the RHS through "
+#~ "a separate ``NodeAssembler`` (``MomentumRHSAssembler``) that contributes "
+#~ ":math:`\\rho/\\Delta t\\, \\mathbf{u}^n \\cdot v`. Both assemblers share the"
+#~ " same ``tau`` field, updated each step to reflect the local cell Reynolds "
+#~ "number."
+#~ msgstr ""
+#~ "上一时间步的解 :math:`\\mathbf{u}^n` 通过一个独立的 ``NodeAssembler``\\ （\\ "
+#~ "``MomentumRHSAssembler``\\ ）进入右端项，贡献 :math:`\\rho/\\Delta t\\, \\mathbf{u}^n"
+#~ " \\cdot v`\\ 。两个装配器共享同一个 ``tau`` 场，每一步都会更新以反映局部网格单元的雷诺数。"
+
+#~ msgid "Stabilization"
+#~ msgstr "稳定化"
+
+#~ msgid ""
+#~ "The cylinder problem is more demanding than the cavity: upstream cells see "
+#~ "nearly-uniform flow, the wake region needs fine-grained convection-dominated"
+#~ " stabilization. The script uses an **adaptive** :math:`\\tau`:"
+#~ msgstr ""
+#~ "圆柱问题比方腔更为苛刻：上游网格单元看到的几乎是均匀流，而尾迹区域则需要精细的对流主导型稳定化。脚本采用一个\\ **自适应**\\ 的 "
+#~ ":math:`\\tau`\\ ："
+
+#~ msgid ""
+#~ "\\tau \\;=\\;\n"
+#~ "\\left[\n"
+#~ "  \\left(\\frac{2}{\\Delta t}\\right)^2\n"
+#~ "  + \\left(\\frac{2|\\mathbf{u}|}{h}\\right)^2\n"
+#~ "  + \\left(\\frac{4\\nu}{h^2}\\right)^2\n"
+#~ "\\right]^{-1/2},"
+#~ msgstr ""
+#~ "\\tau \\;=\\;\n"
+#~ "\\left[\n"
+#~ "  \\left(\\frac{2}{\\Delta t}\\right)^2\n"
+#~ "  + \\left(\\frac{2|\\mathbf{u}|}{h}\\right)^2\n"
+#~ "  + \\left(\\frac{4\\nu}{h^2}\\right)^2\n"
+#~ "\\right]^{-1/2},"
+
+#~ msgid ""
+#~ "evaluated per element from the local mesh size :math:`h` and velocity "
+#~ "magnitude. This makes the diffusive part of SUPG dominate where the flow is "
+#~ "slow and the convective part dominate in the wake."
+#~ msgstr ""
+#~ "它在每个单元上由局部网格尺寸 :math:`h` 与速度大小计算得到。这使得 SUPG 的扩散部分在流速较慢处占主导，而对流部分在尾迹中占主导。"
+
+#~ msgid "Post-processing"
+#~ msgstr "后处理"
+
+#~ msgid ""
+#~ "At every saved frame the script derives a **vorticity** field :math:`\\omega"
+#~ " = \\partial_x v - \\partial_y u` by :math:`L^2` projection: assemble a mass"
+#~ " matrix :class:`~tensormesh.MassElementAssembler`, build the projection "
+#~ "right-hand side :math:`\\tilde\\omega` from :math:`\\partial_x v - "
+#~ "\\partial_y u` (itself assembled with a :class:`~tensormesh.NodeAssembler`),"
+#~ " and solve :math:`M\\,\\omega = \\tilde\\omega`. This is the standard recipe"
+#~ " for recovering a smooth nodal field from element-wise gradients on "
+#~ "piecewise-linear FEM."
+#~ msgstr ""
+#~ "在每个保存的帧上，脚本通过 :math:`L^2` 投影导出一个\\ **涡量**\\ 场 :math:`\\omega = \\partial_x v"
+#~ " - \\partial_y u`\\ ：装配一个质量矩阵 :class:`~tensormesh.MassElementAssembler`\\ ，由"
+#~ " :math:`\\partial_x v - \\partial_y u`\\ （其本身用 "
+#~ ":class:`~tensormesh.NodeAssembler` 装配）构造投影右端项 :math:`\\tilde\\omega`\\ ，再求解 "
+#~ ":math:`M\\,\\omega = \\tilde\\omega`\\ 。这是在分片线性有限元上从逐单元梯度恢复光滑节点场的标准做法。"
+
+#~ msgid ""
+#~ ":doc:`../../user_guide/time_integration` — implicit-linear integrators that "
+#~ "subsume the manual backward-Euler loop."
+#~ msgstr ":doc:`../../user_guide/time_integration`——可替代手写后向欧拉循环的隐式线性积分器。"

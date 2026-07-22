@@ -265,7 +265,7 @@ helpers from :mod:`tensormesh.visualization`:
 * **Adjacency graphs** — node-to-node and element-to-element
   connectivity drawn over the mesh, in 2D and 3D. Useful for
   debugging coloring and partitioning algorithms (see
-  :doc:`distributed`).
+  :doc:`../user_guide/distributed`).
 * **Field visualization** — scalar fields painted as nodal values
   (interpolated to the mesh) or as per-element constants.
 

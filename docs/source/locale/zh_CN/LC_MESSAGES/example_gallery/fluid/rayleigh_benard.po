@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-19 14:04+0200\n"
+"POT-Creation-Date: 2026-07-22 15:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_CN <LL@li.org>\n"
@@ -20,89 +20,104 @@ msgstr ""
 "Generated-By: Babel 2.18.0\n"
 
 #: ../../source/example_gallery/fluid/rayleigh_benard.rst:2
-#: 7674a5b52d9c4b028e212f8d58dd7694
+#: ff16db9289de417db68fd80da3634d48
 msgid "Rayleigh-Bénard Convection"
 msgstr "瑞利-贝纳德对流"
 
 #: ../../source/example_gallery/fluid/rayleigh_benard.rst:4
-#: 0fcf0d5792bf40e0905e4ecbe19c3551
+#: 54d6e89b82c54ab28550508156572a0e
 msgid ""
 "The Rayleigh-Bénard problem couples incompressible fluid flow with heat "
 "transport: a horizontal cavity heated from below, cooled from above, "
 "develops convective rolls once the buoyancy force exceeds the dissipative "
 "effects of viscosity and thermal diffusion. The script "
-"``examples/fluid/rayleigh_benard/rayleigh_benard.py`` solves the steady-"
-"state Boussinesq approximation in a 2:1 aspect-ratio rectangular cavity at a"
-" configurable Rayleigh number."
+"``examples/fluid/rayleigh_benard/rayleigh_benard.py`` solves the Boussinesq "
+"approximation in a 2:1 aspect-ratio rectangular cavity at a configurable "
+"Rayleigh number."
 msgstr ""
-"瑞利-贝纳德问题将不可压缩流体流动与热输运耦合在一起：一个底部加热、顶部冷却的水平腔体，一旦浮力超过黏性与热扩散的耗散效应，便会发展出对流卷。脚本 "
-"``examples/fluid/rayleigh_benard/rayleigh_benard.py`` 在长宽比为 2:1 "
-"的矩形腔体中、以可配置的瑞利数求解稳态布西内斯克近似。"
+"瑞利-贝纳德问题将不可压缩流体流动与热输运耦合：一个水平空腔从底部加热、顶部冷却，当浮力超过粘性和热扩散的耗散效应时，会形成对流卷。脚本 "
+"``examples/fluid/rayleigh_benard/rayleigh_benard.py`` 在宽高比为 2:1 "
+"的矩形空腔中求解布辛涅斯克近似，瑞利数可配置。"
 
 #: ../../source/example_gallery/fluid/rayleigh_benard.rst:12
-#: 5b3377eeb48b4d1a8a7ea941e55fca40
+#: 1d7eef43a7264ccb80211e01b5777ed8
 msgid ""
-"This is the only example in :doc:`index` that involves a **multi-physics "
-"coupling** — momentum, continuity, and energy in one monolithic system."
-msgstr "这是 :doc:`index` 中唯一涉及\\ **多物理场耦合**\\ 的算例——将动量、连续性与能量纳入一个整体系统。"
+"This is the gallery's **three-field mixed** example: Taylor-Hood P2-P1 "
+"velocity/pressure *plus* a P2 temperature, all declared on one "
+":class:`~tensormesh.MixedElementAssembler`. The buoyancy coupling and the "
+"energy equation are just more terms of the same scalar integrand — no per-"
+"node block stamping, no stabilization."
+msgstr ""
+"这是图库中的 **三场混合** 示例：泰勒-胡德 P2-P1 速度/压力 *外加* P2 温度，全部声明在一个 "
+":class:`~tensormesh.MixedElementAssembler` "
+"上。浮力耦合和能量方程只是同一标量被积函数的更多项——无需逐节点块填充，无需稳定化。"
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:18
-#: d4bf534c40e74d9ea65e78f422642f6f
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:20
+#: 746fe528b6fd42208d96d83f4a792e6f
 msgid "Problem"
 msgstr "问题"
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:20
-#: ae6b5b006e6845a7b322c7883daf3b2e
-msgid "The Boussinesq equations,"
-msgstr "布西内斯克方程组，"
-
 #: ../../source/example_gallery/fluid/rayleigh_benard.rst:22
-#: ed634075ecf84451a3c913d35ab17cb9
+#: c20cd2d7589146a9be6fbb1f67e04066
+msgid "The transient Boussinesq equations,"
+msgstr "瞬态布辛涅斯克方程："
+
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:24
+#: db97495dc0e641b3af46586f8545bd26
 msgid ""
-"\\rho\\, (\\mathbf{u} \\cdot \\nabla)\\mathbf{u}\n"
+"\\rho\\,\\frac{\\partial\\mathbf{u}}{\\partial t}\n"
+"+ \\rho\\, (\\mathbf{u} \\cdot \\nabla)\\mathbf{u}\n"
 "\\;=\\; -\\nabla p + \\mu\\, \\Delta \\mathbf{u}\n"
-"- \\rho\\, g\\, \\beta\\, T\\, \\hat{\\mathbf{e}}_y,\n"
+"+ \\rho\\, g\\, \\beta\\, T\\, \\hat{\\mathbf{e}}_y,\n"
 "\\qquad\n"
 "\\nabla \\cdot \\mathbf{u} = 0,\n"
 "\n"
-"\\rho\\, c_p\\, (\\mathbf{u} \\cdot \\nabla T)\n"
+"\\frac{\\partial T}{\\partial t}\n"
+"+ \\mathbf{u} \\cdot \\nabla T\n"
 "\\;=\\; \\kappa\\, \\Delta T,"
 msgstr ""
-"\\rho\\, (\\mathbf{u} \\cdot \\nabla)\\mathbf{u}\n"
+"\\rho\\,\\frac{\\partial\\mathbf{u}}{\\partial t}\n"
+"+ \\rho\\, (\\mathbf{u} \\cdot \\nabla)\\mathbf{u}\n"
 "\\;=\\; -\\nabla p + \\mu\\, \\Delta \\mathbf{u}\n"
-"- \\rho\\, g\\, \\beta\\, T\\, \\hat{\\mathbf{e}}_y,\n"
+"+ \\rho\\, g\\, \\beta\\, T\\, \\hat{\\mathbf{e}}_y,\n"
 "\\qquad\n"
 "\\nabla \\cdot \\mathbf{u} = 0,\n"
 "\n"
-"\\rho\\, c_p\\, (\\mathbf{u} \\cdot \\nabla T)\n"
+"\\frac{\\partial T}{\\partial t}\n"
+"+ \\mathbf{u} \\cdot \\nabla T\n"
 "\\;=\\; \\kappa\\, \\Delta T,"
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:33
-#: 994f237d1b6a4501977b7288b1eade93
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:37
+#: e551d3556b5d498a98cb3d572a8c10b6
 msgid "on :math:`\\Omega = [0, 2] \\times [0, 1]`, with"
 msgstr "定义在 :math:`\\Omega = [0, 2] \\times [0, 1]` 上，其中"
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:35
-#: 5bfc2113d43f4eca9cb8df57a6cab767
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:39
+#: f221db3560384939a7dedbbceeadfff0
 msgid "velocity: no-slip on all walls,"
 msgstr "速度：所有壁面均为无滑移，"
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:36
-#: e3e4fa605dab4224a263478b7d22081d
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:40
+#: 11f4e1d29a474d3b88691e28354cfd97
 msgid ""
 "temperature: :math:`T = 1` on the bottom (:math:`y = 0`), :math:`T = 0` on "
-"the top (:math:`y = 1`), no-flux on the side walls."
+"the top (:math:`y = 1`), no-flux on the side walls,"
 msgstr ""
-"温度：底部（\\ :math:`y = 0`\\ ）为 :math:`T = 1`\\ ，顶部（\\ :math:`y = 1`\\ ）为 "
-":math:`T = 0`\\ ，侧壁为无通量。"
+"温度：底部 (:math:`y = 0`) :math:`T = 1`\\ ，顶部 (:math:`y = 1`) :math:`T = 0`\\ "
+"，侧壁无热通量，"
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:40
-#: 0a5587907a484a65ad5385d7e2748ac0
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:43
+#: 02cb86169a3042fa86f9095fe34ebf64
+msgid "one pressure DOF pinned (enclosed cavity)."
+msgstr "一个压力自由度固定（封闭空腔）。"
+
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:45
+#: 02b99eb271c842d89127f360789972aa
 msgid "The Rayleigh number"
 msgstr "瑞利数"
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:42
-#: fc5653bc084d475f985abc889e629226
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:47
+#: 18be3cf9605144ed9f54009bf9abe8e4
 #, python-brace-format
 msgid ""
 "\\mathrm{Ra} \\;=\\;\n"
@@ -111,207 +126,252 @@ msgstr ""
 "\\mathrm{Ra} \\;=\\;\n"
 "\\frac{g\\, \\beta\\, \\Delta T\\, L^3}{\\nu\\, \\alpha}"
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:47
-#: 5f8212886fa04a788bc9d5c5f97f658c
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:52
+#: c303ed9516074a36bb107766ae8649c3
 #, python-brace-format
 msgid ""
 "controls the regime: below :math:`\\mathrm{Ra}_c \\approx 1708` heat "
-"transfer is purely conductive; above it convective rolls appear; at higher "
-":math:`\\mathrm{Ra}` the rolls become unsteady and eventually chaotic. The "
-"script defaults to :math:`\\mathrm{Ra} = 10^4`, comfortably in the steady-"
-"convective regime."
+"transfer is purely conductive; above it convective rolls appear. The script "
+"defaults to :math:`\\mathrm{Ra} = 2 \\times 10^4` (:math:`\\mathrm{Pr} = "
+"1`), comfortably in the steady-convective regime."
 msgstr ""
-"决定了流动所处的区间：低于 :math:`\\mathrm{Ra}_c \\approx 1708` 时传热纯粹靠传导；高于此值则出现对流卷；在更高的 "
-":math:`\\mathrm{Ra}` 下，卷会变得非定常并最终走向混沌。脚本默认取 :math:`\\mathrm{Ra} = 10^4`\\ "
-"，稳稳地处于稳态对流区间。"
-
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:56
-#: 60d99d733b5f4c42942db545e72d87d2
-msgid "Coupled assembler"
-msgstr "耦合装配器"
+"控制流动状态：当瑞利数低于 :math:`\\mathrm{Ra}_c \\approx 1708` "
+"时，传热为纯导热；超过该值则出现对流卷。脚本默认使用 :math:`\\mathrm{Ra} = 2 \\times 10^4`\\ （\\ "
+":math:`\\mathrm{Pr} = 1`\\ ），处于稳定的对流状态。"
 
 #: ../../source/example_gallery/fluid/rayleigh_benard.rst:58
-#: c9b090fed4354a4e90ac60866ffdc9b7
+#: f53f99d34c954d0ab6c017f574dfd4aa
+#, python-brace-format
 msgid ""
-"The unknowns at each node are :math:`(u, v, p, T)` — four DOFs per node — "
-"and the assembler returns a :math:`4 \\times 4` block per quadrature point:"
+"**Why march in time?** The conductive state (linear temperature, zero "
+"velocity) is a steady solution at *every* Rayleigh number — a steady solver "
+"started from rest simply converges to it. Above :math:`\\mathrm{Ra}_c` that "
+"state is unstable, so the script perturbs the conductive profile slightly "
+"and integrates backward Euler in time: the instability grows physically into"
+" convection rolls, and the run stops when the solution stops changing."
 msgstr ""
-"每个节点上的未知量为 :math:`(u, v, p, T)`——每个节点 4 个自由度——装配器在每个求积点返回一个 :math:`4 \\times"
-" 4` 的块："
+"**为何进行时间推进？** 导热状态（线性温度分布、零速度）在 *任意* 瑞利数下都是稳态解——从静止开始的稳态求解器会直接收敛到该解。当瑞利数超过 "
+":math:`\\mathrm{Ra}_c` "
+"时，该状态不稳定，因此脚本对导热温度分布施加微小扰动，并采用向后欧拉法进行时间积分：不稳定性会物理地增长为对流卷，当解不再变化时运行停止。"
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:62
-#: 5ebb203e14a84e00bed1c740d6503d63
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:68
+#: 634bf77e3c0341cdac74499a1e59dbd9
+msgid "Three fields, one integrand"
+msgstr "三场，一个被积函数"
+
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:70
+#: 8eee91180cb447dcbb40c1777ece5c26
+msgid ""
+"The unknowns are declared as three fields — trial names ``(u, p, T)``, test "
+"names ``(v, q, s)``. Every term of the coupled weak form pairs one trial "
+"factor with one test factor, so the whole system is one bilinear integrand:"
+msgstr ""
+"未知量声明为三个场——试函数名 ``(u, p, T)``\\ ，测试函数名 ``(v, q, s)``\\ "
+"。耦合弱形式的每一项将一个试函数因子与一个测试函数因子配对，因此整个系统是一个双线性被积函数："
+
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:75
+#: efa4ec10a08648529d66681c80f8d166
 msgid "examples/fluid/rayleigh_benard/rayleigh_benard.py (essence)"
 msgstr "examples/fluid/rayleigh_benard/rayleigh_benard.py（核心部分）"
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:78
-#: 1854b3ea45e448bab29bf50d30b1fce0
-msgid ""
-"The buoyancy block at row 1 / col 3 is what couples temperature back into "
-"the momentum equation:"
-msgstr "位于第 1 行 / 第 3 列的浮力块正是将温度反耦合进动量方程的部分："
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:105
+#: 392fefe55c0246cc8a12930ea87e1922
+msgid "Two couplings deserve a closer look:"
+msgstr "两种耦合值得仔细分析："
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:81
-#: c2c8bfe00d944f27a84b9fefc8aabec8
-#, python-brace-format
-msgid "K_{1,3} \\;=\\; -\\rho\\, g\\, \\beta\\, v\\, u,"
-msgstr "K_{1,3} \\;=\\; -\\rho\\, g\\, \\beta\\, v\\, u,"
-
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:85
-#: cd04575ad6aa40109b31e35b0064a850
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:107
+#: b8796b647ef54030bb0d6a8a97c97154
 msgid ""
-"where here :math:`u` and :math:`v` are the trial- and test-shape function "
-"values (note the unfortunate name collision with the *velocity* :math:`v` "
-"field — see :doc:`../../user_guide/forms` for the dispatch convention). The "
-"temperature equation (row 3) re-uses the convection / diffusion block but "
-"with thermal conductivity :math:`\\kappa` in place of viscosity "
-":math:`\\mu`."
+"**Buoyancy** ``- rho g beta T v[1]`` pairs the *trial temperature* with the "
+"*vertical velocity test function* — an off-diagonal :math:`(v, T)` block "
+"that the mixed assembler extracts automatically. Temperature therefore feeds"
+" back into momentum **fully implicitly**; only the advecting velocity ``w`` "
+"is lagged (Picard)."
 msgstr ""
-"这里的 :math:`u` 与 :math:`v` 是试探形函数与测试形函数的值（请注意它们与\\ *速度*\\ 分量 :math:`v` "
-"不幸的命名冲突——分发约定参见 :doc:`../../user_guide/forms`\\ ）。温度方程（第 3 行）复用了对流 / "
-"扩散块，只是用热导率 :math:`\\kappa` 取代了黏度 :math:`\\mu`\\ 。"
+"**浮力项** ``- rho g beta T v[1]`` 将 *试函数温度* 与 *垂直速度测试函数* 配对——一个非对角 :math:`(v, "
+"T)` 块，由混合装配器自动提取。因此温度以 **全隐式** 方式反馈到动量方程中；只有对流速度 ``w`` 采用滞后处理（皮卡迭代）。"
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:92
-#: bbf6c288feb14b92af16bb3b8548f30a
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:113
+#: 7f07f8e25c3a4cea858b85e240bd7686
 msgid ""
-"The previous-iterate velocity ``w_prev`` and temperature ``T_prev`` arrive "
-"as ``point_data`` kwargs, exactly the same pattern as the single-physics "
-"cavity example."
+"**Energy transport** ``w.dot(gradT) * s + kappa * gradT.dot(grads)`` is a "
+"scalar advection-diffusion equation riding in the same matrix, with the same"
+" lagged ``w``."
 msgstr ""
-"上一迭代步的速度 ``w_prev`` 与温度 ``T_prev`` 以 ``point_data`` "
-"关键字参数的形式传入，模式与单物理场的方腔算例完全一致。"
+"**能量输运** ``w.dot(gradT) * s + kappa * gradT.dot(grads)`` 是嵌在同一矩阵中的标量对流-"
+"扩散方程，采用相同的滞后速度 ``w``\\ 。"
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:98
-#: 06d2c150064b42ce80e19ddb461e5ae9
-msgid "Stabilization"
-msgstr "稳定化"
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:119
+#: 49b4e9afabdb45d7910a04f117188a25
+msgid "Time marching to the attractor"
+msgstr "时间推进至吸引子"
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:100
-#: 9b967afb175d4ec88a90e151fd3821e3
-#, python-brace-format
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:121
+#: 8447ef4dcd5741448643709bbd44359c
 msgid ""
-"The script uses **PSPG only** (no SUPG), with a constant :math:`\\tau = 0.05"
-" / n_\\text{grid}`. At :math:`\\mathrm{Ra} = 10^4` the velocities are mild "
-"enough that SUPG is not strictly required; for higher Rayleigh numbers, swap"
-" in the adaptive :math:`\\tau` from :doc:`cylinder_flow`."
-msgstr ""
-"脚本\\ **仅使用 PSPG**\\ （不含 SUPG），并取常数 :math:`\\tau = 0.05 / n_\\text{grid}`\\ "
-"。在 :math:`\\mathrm{Ra} = 10^4` 下，速度足够温和，SUPG 并非严格必需；对于更高的瑞利数，可换用 "
-":doc:`cylinder_flow` 中的自适应 :math:`\\tau`\\ 。"
+"Each backward-Euler step assembles the matrix with the current velocity and "
+"the load vector with the previous fields, both through the same assembler:"
+msgstr "每个向后欧拉步通过同一装配器，用当前速度装配矩阵，用上一时刻的场装配载荷向量："
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:108
-#: 854e6fb528814455b19fff84ffa01037
-msgid "Picard iteration"
-msgstr "Picard 迭代"
-
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:110
-#: 12f3315754514c488412eef2ae672443
-msgid "The same fixed-point loop as :doc:`cavity`. Each iteration:"
-msgstr "与 :doc:`cavity` 相同的不动点循环。每次迭代："
-
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:112
-#: 7a3e10a81fef4ea3a34a9c5ff5595e0f
-#, python-brace-format
-msgid "Compute :math:`\\mathbf{w}^n, T^n` from the current solution vector."
-msgstr "由当前解向量计算 :math:`\\mathbf{w}^n, T^n`\\ 。"
-
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:114
-#: be968689b1b7438c8c0b393b0b023061
-msgid "Reassemble :math:`K` with the new ``point_data``."
-msgstr "用新的 ``point_data`` 重新装配 :math:`K`\\ 。"
-
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:115
-#: c1812b8157a44503a50a469d16d55fc9
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:139
+#: c6dd0229cf504627b2b4fbcd8db199cf
 msgid ""
-"Apply the :class:`~tensormesh.Condenser` for the velocity and temperature "
-"Dirichlet BCs (different masks per component!) and solve."
-msgstr "对速度与温度的狄利克雷边界条件应用 :class:`~tensormesh.Condenser`\\ （每个分量使用不同的掩码！）并求解。"
+"On the order-2 mesh both P2 fields (velocity and temperature) live on the "
+"mesh points, so the lagged data goes through plain ``point_data`` and the "
+"final fields plot directly."
+msgstr "在二阶网格上，两个 P2 场（速度和温度）均定义在网格节点上，因此滞后数据通过普通 ``point_data`` 传递，最终场可直接绘图。"
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:118
-#: 4d268b1596924408b8bc5a36e78a7aaa
-msgid "Check convergence against the previous iterate."
-msgstr "与上一迭代步比较以检查收敛性。"
-
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:120
-#: a4423dcd86414e8db3c2551b84998fa0
-#, python-brace-format
-msgid "Typical convergence: ~30 iterations at :math:`\\mathrm{Ra} = 10^4`."
-msgstr "典型收敛情况：在 :math:`\\mathrm{Ra} = 10^4` 下约需 30 次迭代。"
-
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:122
-#: e81628f8383b43ec99744493cadfa3b7
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:143
+#: 560d57701d0f4e1db9c6288206cd6b0c
 msgid "Rayleigh-Bénard temperature and velocity magnitude"
 msgstr "瑞利-贝纳德对流的温度与速度大小"
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:126
-#: 0ffe5349d249415bba9a9c0a043e600e
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:147
+#: 4f9f9f3b6ade4c39aa04981ec6374770
 msgid ""
 "Output of ``rayleigh_benard.py``. Left: temperature field — the warm bottom "
-"wall sends a rising plume up the centerline that splits at the cold top into"
-" two cool downward plumes along the side walls. Right: velocity magnitude — "
-"two counter-rotating convection rolls, with peak speeds along the rising / "
-"sinking columns and stagnation at the roll centers."
+"wall sends rising plumes that split at the cold top into cool downward "
+"plumes. Right: velocity magnitude — counter-rotating convection rolls, with "
+"peak speeds along the rising / sinking columns and stagnation at the roll "
+"centers."
 msgstr ""
 "``rayleigh_benard.py`` "
-"的输出。左：温度场——温暖的底壁沿中心线送出一股上升羽流，在寒冷的顶部分裂为沿两侧壁面下沉的两股冷羽流。右：速度大小——两个反向旋转的对流卷，峰值速度出现在上升"
-" / 下沉的流柱沿线，而卷心处则为滞止区。"
+"的输出。左：温度场——温暖的底部壁面产生上升羽流，在冷顶部分裂为向下流动的冷羽流。右：速度大小——反向旋转的对流卷，上升/下沉柱处速度最大，卷心处为滞止点。"
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:136
-#: bd1d9ba6cecb4e7eb1ac354ce087700e
-msgid "Output"
-msgstr "输出"
-
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:138
-#: 8807fd539c484e41aca409fd80d14b2c
-#, python-brace-format
-msgid ""
-"``rayleigh_benard.png`` shows two panels: temperature (with the "
-"characteristic warm rising plumes / cool sinking plumes) and velocity "
-"magnitude (with the two-roll structure). For a 2:1 cavity at moderate "
-":math:`\\mathrm{Ra}` the steady solution features two counter-rotating "
-"rolls."
-msgstr ""
-"``rayleigh_benard.png`` 显示两个面板：温度（带有特征性的温暖上升羽流 / 寒冷下沉羽流）以及速度大小（带有双卷结构）。对于中等 "
-":math:`\\mathrm{Ra}` 下的 2:1 腔体，稳态解呈现为两个反向旋转的卷。"
-
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:146
-#: 77568e7b17484e6a85d075a1e27850fc
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:155
+#: 83fd856b59af4f37b5e1c540db3520d8
 msgid "Running it"
 msgstr "运行方式"
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:153
-#: 456b774192084302a34a9059ff17fd5b
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:162
+#: f68c295d9ee147f8a3144250c8d87c1a
 msgid ""
-"Edit the ``ra=`` argument inside the script to sweep the Rayleigh number; "
-"values much above :math:`10^5` will need a finer mesh and likely a transient"
-" driver."
-msgstr "修改脚本中的 ``ra=`` 参数以扫描瑞利数；远高于 :math:`10^5` 的取值将需要更细的网格，并很可能需要一个瞬态驱动器。"
+"Edit the ``ra=`` argument to sweep the Rayleigh number; values much above "
+":math:`10^5` become unsteady and need a finer mesh and smaller time step."
+msgstr "编辑 ``ra=`` 参数以扫描瑞利数；远高于 :math:`10^5` 的值会变得非稳态，需要更细的网格和更小的时间步。"
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:159
-#: 2f06d1d64e02499986d7213bb3e529b9
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:168
+#: d5acaaee7601412c9804d1ccb7521ada
 msgid "What's next"
 msgstr "下一步"
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:161
-#: b257dc0be33847d6aec68ba551c256b3
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:170
+#: 43357109088e41549c96b04dd92002ef
 msgid ":doc:`cavity` — the same Picard recipe without temperature coupling."
 msgstr ":doc:`cavity`——不含温度耦合的同款 Picard 方案。"
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:163
-#: 7bb4b77fd6ee4f53b1ec07dadaad9ac2
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:172
+#: 0d54042325cc4b18a71741e616a2bba3
 msgid ""
 ":doc:`taylor_green` — a transient incompressible flow with an exact solution"
 " for verification."
 msgstr ":doc:`taylor_green`——一个具有精确解、用于验证的瞬态不可压缩流动。"
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:165
-#: 1ba52c826976446286021446ed226e84
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:174
+#: e64218240d974e269c06b78513deaa6c
 msgid ":doc:`../diffusion` — the heat equation in isolation."
 msgstr ":doc:`../diffusion`——单独求解的热方程。"
 
-#: ../../source/example_gallery/fluid/rayleigh_benard.rst:166
-#: c21c351db2b54fb8bdaff3ebf91a3181
+#: ../../source/example_gallery/fluid/rayleigh_benard.rst:175
+#: d41a7e1d8a8a4642a677183e8614414c
 msgid ""
-":doc:`../../user_guide/forms` — multi-component ``forward`` return "
-"signatures."
-msgstr ":doc:`../../user_guide/forms`——多分量 ``forward`` 返回值的签名。"
+":doc:`../../user_guide/mixed_assembly` — declaring fields and writing multi-"
+"field integrands."
+msgstr ":doc:`../../user_guide/mixed_assembly` —— 声明场和编写多场被积函数。"
+
+#~ msgid ""
+#~ "This is the only example in :doc:`index` that involves a **multi-physics "
+#~ "coupling** — momentum, continuity, and energy in one monolithic system."
+#~ msgstr "这是 :doc:`index` 中唯一涉及\\ **多物理场耦合**\\ 的算例——将动量、连续性与能量纳入一个整体系统。"
+
+#~ msgid "Coupled assembler"
+#~ msgstr "耦合装配器"
+
+#~ msgid ""
+#~ "The unknowns at each node are :math:`(u, v, p, T)` — four DOFs per node — "
+#~ "and the assembler returns a :math:`4 \\times 4` block per quadrature point:"
+#~ msgstr ""
+#~ "每个节点上的未知量为 :math:`(u, v, p, T)`——每个节点 4 个自由度——装配器在每个求积点返回一个 :math:`4 \\times"
+#~ " 4` 的块："
+
+#~ msgid ""
+#~ "The buoyancy block at row 1 / col 3 is what couples temperature back into "
+#~ "the momentum equation:"
+#~ msgstr "位于第 1 行 / 第 3 列的浮力块正是将温度反耦合进动量方程的部分："
+
+#~ msgid "K_{1,3} \\;=\\; -\\rho\\, g\\, \\beta\\, v\\, u,"
+#~ msgstr "K_{1,3} \\;=\\; -\\rho\\, g\\, \\beta\\, v\\, u,"
+
+#~ msgid ""
+#~ "where here :math:`u` and :math:`v` are the trial- and test-shape function "
+#~ "values (note the unfortunate name collision with the *velocity* :math:`v` "
+#~ "field — see :doc:`../../user_guide/forms` for the dispatch convention). The "
+#~ "temperature equation (row 3) re-uses the convection / diffusion block but "
+#~ "with thermal conductivity :math:`\\kappa` in place of viscosity "
+#~ ":math:`\\mu`."
+#~ msgstr ""
+#~ "这里的 :math:`u` 与 :math:`v` 是试探形函数与测试形函数的值（请注意它们与\\ *速度*\\ 分量 :math:`v` "
+#~ "不幸的命名冲突——分发约定参见 :doc:`../../user_guide/forms`\\ ）。温度方程（第 3 行）复用了对流 / "
+#~ "扩散块，只是用热导率 :math:`\\kappa` 取代了黏度 :math:`\\mu`\\ 。"
+
+#~ msgid ""
+#~ "The previous-iterate velocity ``w_prev`` and temperature ``T_prev`` arrive "
+#~ "as ``point_data`` kwargs, exactly the same pattern as the single-physics "
+#~ "cavity example."
+#~ msgstr ""
+#~ "上一迭代步的速度 ``w_prev`` 与温度 ``T_prev`` 以 ``point_data`` "
+#~ "关键字参数的形式传入，模式与单物理场的方腔算例完全一致。"
+
+#~ msgid "Stabilization"
+#~ msgstr "稳定化"
+
+#~ msgid ""
+#~ "The script uses **PSPG only** (no SUPG), with a constant :math:`\\tau = 0.05"
+#~ " / n_\\text{grid}`. At :math:`\\mathrm{Ra} = 10^4` the velocities are mild "
+#~ "enough that SUPG is not strictly required; for higher Rayleigh numbers, swap"
+#~ " in the adaptive :math:`\\tau` from :doc:`cylinder_flow`."
+#~ msgstr ""
+#~ "脚本\\ **仅使用 PSPG**\\ （不含 SUPG），并取常数 :math:`\\tau = 0.05 / n_\\text{grid}`\\ "
+#~ "。在 :math:`\\mathrm{Ra} = 10^4` 下，速度足够温和，SUPG 并非严格必需；对于更高的瑞利数，可换用 "
+#~ ":doc:`cylinder_flow` 中的自适应 :math:`\\tau`\\ 。"
+
+#~ msgid "Picard iteration"
+#~ msgstr "Picard 迭代"
+
+#~ msgid "The same fixed-point loop as :doc:`cavity`. Each iteration:"
+#~ msgstr "与 :doc:`cavity` 相同的不动点循环。每次迭代："
+
+#~ msgid "Compute :math:`\\mathbf{w}^n, T^n` from the current solution vector."
+#~ msgstr "由当前解向量计算 :math:`\\mathbf{w}^n, T^n`\\ 。"
+
+#~ msgid "Reassemble :math:`K` with the new ``point_data``."
+#~ msgstr "用新的 ``point_data`` 重新装配 :math:`K`\\ 。"
+
+#~ msgid ""
+#~ "Apply the :class:`~tensormesh.Condenser` for the velocity and temperature "
+#~ "Dirichlet BCs (different masks per component!) and solve."
+#~ msgstr "对速度与温度的狄利克雷边界条件应用 :class:`~tensormesh.Condenser`\\ （每个分量使用不同的掩码！）并求解。"
+
+#~ msgid "Check convergence against the previous iterate."
+#~ msgstr "与上一迭代步比较以检查收敛性。"
+
+#~ msgid "Typical convergence: ~30 iterations at :math:`\\mathrm{Ra} = 10^4`."
+#~ msgstr "典型收敛情况：在 :math:`\\mathrm{Ra} = 10^4` 下约需 30 次迭代。"
+
+#~ msgid "Output"
+#~ msgstr "输出"
+
+#~ msgid ""
+#~ "``rayleigh_benard.png`` shows two panels: temperature (with the "
+#~ "characteristic warm rising plumes / cool sinking plumes) and velocity "
+#~ "magnitude (with the two-roll structure). For a 2:1 cavity at moderate "
+#~ ":math:`\\mathrm{Ra}` the steady solution features two counter-rotating "
+#~ "rolls."
+#~ msgstr ""
+#~ "``rayleigh_benard.png`` 显示两个面板：温度（带有特征性的温暖上升羽流 / 寒冷下沉羽流）以及速度大小（带有双卷结构）。对于中等 "
+#~ ":math:`\\mathrm{Ra}` 下的 2:1 腔体，稳态解呈现为两个反向旋转的卷。"
+
+#~ msgid ""
+#~ ":doc:`../../user_guide/forms` — multi-component ``forward`` return "
+#~ "signatures."
+#~ msgstr ":doc:`../../user_guide/forms`——多分量 ``forward`` 返回值的签名。"

@@ -1,0 +1,546 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, TensorMesh Contributors
+# This file is distributed under the same license as the TensorMesh package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: TensorMesh 0.1.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-22 15:34+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../source/user_guide/mixed_assembly.rst:2
+#: 0c419d9d851a486ea73c7827570d5f07
+msgid "Mixed Assembly"
+msgstr "混合装配"
+
+#: ../../source/user_guide/mixed_assembly.rst:4
+#: 6aa6fa4afd394c07beffb56a5f95861c
+msgid ""
+"Many PDE systems couple several unknown fields in one weak form: velocity "
+"and pressure in Stokes / Navier-Stokes, displacement and pressure in "
+"poroelasticity, velocity, pressure **and** temperature in Boussinesq "
+"convection. Discretizing them stably usually requires *different* function "
+"spaces per field — the classic example is the Taylor-Hood pair (quadratic "
+"velocity, linear pressure), which satisfies the inf-sup (LBB) condition that"
+" equal-order pairs violate."
+msgstr ""
+"许多偏微分方程系统在一个弱形式中耦合多个未知场：斯托克斯/纳维-斯托克斯方程中的速度和压力，孔隙弹性中的位移和压力，布辛涅斯克对流中的速度、压力\\ "
+"**和**\\ 温度。对它们进行稳定离散化通常要求每个场使用\\ *不同*\\ 的函数空间——经典例子是泰勒-"
+"胡德元对（二次速度、线性压力），它满足等阶元对违反的 inf-sup（LBB）条件。"
+
+#: ../../source/user_guide/mixed_assembly.rst:12
+#: b53f75cf9fae469689291bd502dba864
+msgid ""
+":class:`~tensormesh.MixedElementAssembler` assembles such multi-field "
+"bilinear forms into **one block sparse matrix**. You declare the fields "
+"once, write the scalar integrand of the coupled weak form as a single "
+"``forward``, and everything downstream — boundary conditions via "
+":class:`~tensormesh.Condenser`, ``.solve()``, autograd — works on the block "
+"system exactly as it does for a single field:"
+msgstr ""
+":class:`~tensormesh.MixedElementAssembler` 将此类多场双线性形式装配为\\ **一个分块稀疏矩阵**\\ "
+"。你只需声明一次场，将耦合弱形式的标量被积函数写成一个 ``forward``\\ ，后续所有操作——通过 "
+":class:`~tensormesh.Condenser` 施加边界条件、\\ ``.solve()``\\ "
+"、autograd——都在分块系统上工作，与单场情形完全一致："
+
+#: ../../source/user_guide/mixed_assembly.rst:41
+#: 7ead0dad3c5541aa97a33a80cc2059f1
+msgid ""
+"The rest of this page walks through the pieces: field declarations, the "
+"integrand contract, the block DOF layout, load vectors, the data channels, "
+"and *generalized order pairs* — fields whose polynomial order differs from "
+"the mesh order."
+msgstr ""
+"本页余下部分逐步介绍各个组成部分：场声明、被积函数约定、分块自由度布局、载荷向量、数据通道，以及\\ *广义阶数对*——多项式阶数与网格阶数不同的场。"
+
+#: ../../source/user_guide/mixed_assembly.rst:50
+#: f251e95a5afc47a2a4ebd07041b8ba35
+msgid "Declaring fields"
+msgstr "声明场"
+
+#: ../../source/user_guide/mixed_assembly.rst:52
+#: 4d5e00288a13477398cf202d5c891d54
+msgid ""
+"``fields`` is a class attribute: a list of :class:`~tensormesh.Field` "
+"declarations, one per unknown. Each field names its **trial** and **test** "
+"function (the argument names your ``forward`` will use), its polynomial "
+"``order``, and its number of vector ``components``:"
+msgstr ""
+"``fields`` 是一个类属性：\\ :class:`~tensormesh.Field` 声明的列表，每个未知场一个。每个场命名其\\ "
+"**试函数**\\ 和\\ **检验函数**\\ （即你的 ``forward`` 将使用的参数名）、多项式 ``order``\\ ，以及向量 "
+"``components`` 的数量："
+
+#: ../../source/user_guide/mixed_assembly.rst:64
+#: 06476ce81b9c455f83423d7392f39338
+msgid "Three conventions to remember:"
+msgstr "三条需要记住的约定："
+
+#: ../../source/user_guide/mixed_assembly.rst:66
+#: 86d4ba17b3c34c12a1695840a462b10f
+#, python-brace-format
+msgid ""
+"**Trial indexes columns, test indexes rows.** The block "
+":math:`K_{\\beta\\alpha}` couples trial field :math:`\\alpha` (columns) to "
+"test field :math:`\\beta` (rows). For a symmetric weak form you never "
+"notice; for non-symmetric couplings (convection, divergence constraints) the"
+" declaration makes the orientation explicit."
+msgstr ""
+"**试函数索引列，检验函数索引行。** 分块 :math:`K_{\\beta\\alpha}` 将试场 :math:`\\alpha`\\ "
+"（列）耦合到检验场 :math:`\\beta`\\ "
+"（行）。对于对称弱形式你不会注意到这一点；对于非对称耦合（对流、散度约束），该声明显式地确定了方向。"
+
+#: ../../source/user_guide/mixed_assembly.rst:71
+#: af865dbef7cd4a40bce72b875fc4c76c
+msgid ""
+"**Names are global.** All trial and test names must be distinct, valid "
+"identifiers, must not be ``\"x\"`` (reserved for coordinates) and must not "
+"start with ``\"grad\"`` (gradients are derived as ``\"grad\" + name``)."
+msgstr ""
+"**名称是全局的。** 所有试函数和检验函数名称必须是互异的有效标识符，不能为 ``\"x\"``\\ （坐标保留字），也不能以 "
+"``\"grad\"`` 开头（梯度派生为 ``\"grad\" + name``\\ ）。"
+
+#: ../../source/user_guide/mixed_assembly.rst:75
+#: 25e1b1d0159f42f89a8361a82dfeefff
+msgid ""
+"**Order is per-field** and independent of the mesh order — see :ref:`mixed-"
+"generalized-pairs`."
+msgstr "**阶数是按场的**\\ ，与网格阶数无关——参见 :ref:`mixed-generalized-pairs`\\ 。"
+
+#: ../../source/user_guide/mixed_assembly.rst:81
+#: 5553a85ee52f46ccb52950ab0424edc8
+msgid "The scalar integrand"
+msgstr "标量被积函数"
+
+#: ../../source/user_guide/mixed_assembly.rst:83
+#: e39913a2171a41c4bad250f630573c83
+msgid ""
+"``forward`` returns the **scalar** integrand of the coupled bilinear form at"
+" one quadrature point — the same by-name dispatch as "
+":class:`~tensormesh.ElementAssembler` (see :ref:`forms-contract`), but the "
+"field arguments are now *tensor-valued*:"
+msgstr ""
+"``forward`` 返回耦合双线性形式在单个求积点处的\\ **标量**\\ 被积函数——与 "
+":class:`~tensormesh.ElementAssembler` 的按名分派相同（参见 :ref:`forms-contract`\\ "
+"），但场参数现在是\\ *张量值*\\ 的："
+
+#: ../../source/user_guide/mixed_assembly.rst:92
+#: 9d0aef481eea436cb3683f933e3c705e
+msgid "Argument"
+msgstr "参数"
+
+#: ../../source/user_guide/mixed_assembly.rst:93
+#: 8bc6ceeece61454a9268ba8299748464
+msgid "Per-point shape"
+msgstr "每点形状"
+
+#: ../../source/user_guide/mixed_assembly.rst:94
+#: 841ba1946e464471a76e2819790f2b0a
+msgid "Meaning"
+msgstr "含义"
+
+#: ../../source/user_guide/mixed_assembly.rst:95
+#: 1ec03ae5e01e4f76912328f43974e783
+msgid "scalar field value (``p``, ``q``)"
+msgstr "标量场值（\\ ``p``\\ 、\\ ``q``\\ ）"
+
+#: ../../source/user_guide/mixed_assembly.rst:96
+#: 3093e1e4412f40caa8a06bcf41aee7f6
+msgid "0-d ``[]``"
+msgstr "0维 ``[]``"
+
+#: ../../source/user_guide/mixed_assembly.rst:97
+#: 69bddb86fd42448987e395dcd6925c9e
+msgid "the field at the quadrature point"
+msgstr "求积点处的场值"
+
+#: ../../source/user_guide/mixed_assembly.rst:98
+#: 424cdd6d78954ba79b52614f0730f212
+msgid "scalar field gradient (``gradp``)"
+msgstr "标量场梯度（\\ ``gradp``\\ ）"
+
+#: ../../source/user_guide/mixed_assembly.rst:99
+#: aa00714ff10e405cafa50a3545f1523e
+msgid "``[D]``"
+msgstr "``[D]``"
+
+#: ../../source/user_guide/mixed_assembly.rst:100
+#: f23d5816bc9e411e80a149385326f1dc
+msgid "physical-space gradient"
+msgstr "物理空间梯度"
+
+#: ../../source/user_guide/mixed_assembly.rst:101
+#: c73de18dc4f54154af9ed2d9d40d51c3
+msgid "vector field value (``u``, ``v``)"
+msgstr "向量场值（\\ ``u``\\ 、\\ ``v``\\ ）"
+
+#: ../../source/user_guide/mixed_assembly.rst:102
+#: f85aa5d650f84477a1f54b39ad8bd9ef
+msgid "``[c]``"
+msgstr "``[c]``"
+
+#: ../../source/user_guide/mixed_assembly.rst:103
+#: 1331a6285ffa43e6879e55774662daee
+msgid "all :math:`c` components together"
+msgstr "全部 :math:`c` 个分量一起"
+
+#: ../../source/user_guide/mixed_assembly.rst:104
+#: 71e53c694fe94a1ab78b08d2a192e937
+msgid "vector field gradient (``gradu``)"
+msgstr "向量场梯度（\\ ``gradu``\\ ）"
+
+#: ../../source/user_guide/mixed_assembly.rst:105
+#: 7918c138d16e4b13acbeb983bab20a7d
+msgid "``[c, D]``"
+msgstr "``[c, D]``"
+
+#: ../../source/user_guide/mixed_assembly.rst:106
+#: d098fc13a15b4b229e3a6c9cd809643c
+msgid "the Jacobian: row :math:`i` is :math:`\\nabla u_i`"
+msgstr "雅可比矩阵：第 :math:`i` 行是 :math:`\\nabla u_i`"
+
+#: ../../source/user_guide/mixed_assembly.rst:108
+#: 462357c044d740e3a66584408400330a
+msgid ""
+"so ``gradu.diagonal().sum()`` is :math:`\\nabla\\cdot u`, ``(gradu * "
+"gradv).sum()`` is :math:`\\nabla u : \\nabla v`, and ``(gradu @ w).dot(v)`` "
+"is the convection term :math:`(w\\cdot\\nabla)u\\cdot v`. Only the arguments"
+" you name are computed: a pass that touches neither field of a block is "
+"skipped, so absent couplings (e.g. the zero pressure-pressure block of "
+"Stokes) cost nothing beyond their sparsity-pattern slot."
+msgstr ""
+"因此 ``gradu.diagonal().sum()`` 是 :math:`\\nabla\\cdot u`\\ ，\\ ``(gradu * "
+"gradv).sum()`` 是 :math:`\\nabla u : \\nabla v`\\ ，而 ``(gradu @ w).dot(v)`` "
+"是对流项 :math:`(w\\cdot\\nabla)u\\cdot v`\\ "
+"。仅计算你命名的参数：若某个分块的传递不涉及任何场，则跳过该分块，因此缺失的耦合（例如斯托克斯方程的压力-"
+"压力零分块）除了稀疏模式中的占位外不产生任何开销。"
+
+#: ../../source/user_guide/mixed_assembly.rst:118
+#: 7ea2fa2f911b4ecf94e96639ab9fd890
+msgid ""
+"The integrand must be **bilinear**: every term must contain exactly one "
+"trial factor and one test factor. Internally each :math:`(\\alpha, \\beta)` "
+"block is extracted by evaluating the integrand with the *other* fields "
+"zeroed — an identity for bilinear forms, silently wrong otherwise. The "
+"assembler guards this with a cheap zero-evaluation check and raises if your "
+"integrand has a constant or non-bilinear part. Nonlinear weak forms are "
+"handled the usual FEM way: linearize (Picard / Newton) and feed the previous"
+" iterate in as *data*, e.g. the lagged convection velocity ``w`` below."
+msgstr ""
+"被积函数必须是\\ **双线性的**\\ ：每一项必须恰好包含一个试函数因子和一个检验函数因子。内部通过对\\ *其他*\\ 场置零来提取每个 "
+":math:`(\\alpha, \\beta)` "
+"分块——这对双线性形式是恒等操作，否则则是静默错误。装配器通过廉价的零求值检查来防范这一点，若被积函数含常数项或非双线性部分则抛出异常。非线性弱形式按有限元常规方式处理：线性化（皮卡/牛顿）并将前一次迭代作为\\"
+" *数据*\\ 传入，例如下面滞后的对流速度 ``w``\\ 。"
+
+#: ../../source/user_guide/mixed_assembly.rst:129
+#: 82950896626744fb94bbb6a0f0bc63c5
+msgid ""
+"A Picard-linearized Navier-Stokes step, for example, adds one data argument "
+"to the Stokes integrand (see :doc:`/example_gallery/fluid/cavity` for the "
+"full script):"
+msgstr ""
+"例如，皮卡线性化的纳维-斯托克斯步在斯托克斯被积函数上增加一个数据参数（完整脚本参见 "
+":doc:`/example_gallery/fluid/cavity`\\ ）："
+
+#: ../../source/user_guide/mixed_assembly.rst:144
+#: 30eb340df88f424da1fbb8e0bf20cb4f
+msgid "Building and calling"
+msgstr "构建与调用"
+
+#: ../../source/user_guide/mixed_assembly.rst:146
+#: 8fd3b9006617400f986213956ee8b0f9
+msgid ""
+":meth:`~tensormesh.MixedElementAssembler.from_mesh` builds the assembler; "
+"extra positional/keyword arguments go to your ``__post_init__`` (physical "
+"parameters), exactly like the single-field assemblers:"
+msgstr ""
+":meth:`~tensormesh.MixedElementAssembler.from_mesh` 构建装配器；额外的位置/关键字参数传给你的 "
+"``__post_init__``\\ （物理参数），与单场装配器完全一致："
+
+#: ../../source/user_guide/mixed_assembly.rst:156
+#: 2630aab523794855abe03e3da4ff2dd3
+msgid ""
+"The default quadrature degree is ``2 * max(field orders)`` — exact for the "
+"products of two highest-order basis functions on affine elements. Pass "
+"``quadrature_order=`` to override (e.g. for data-weighted or convective "
+"terms); the shipped tables go up to degree 7."
+msgstr ""
+"默认求积阶数为 ``2 * max(field orders)``——对仿射单元上两个最高阶基函数的乘积精确。传入 "
+"``quadrature_order=`` 覆盖（例如用于数据加权项或对流项）；内置表最高到7阶。"
+
+#: ../../source/user_guide/mixed_assembly.rst:161
+#: 41031962552f405798692d0dbc71c923
+msgid ""
+"The result is a square :class:`~tensormesh.sparse.SparseMatrix` of size "
+":math:`N = \\sum_f n_f\\, c_f`. Repeated calls (Picard iterations, time "
+"steps) reuse the same cached index tensors, so a "
+":class:`~tensormesh.Condenser` built once keeps its condensation layout "
+"across calls."
+msgstr ""
+"结果是一个大小为 :math:`N = \\sum_f n_f\\, c_f` 的方阵 "
+":class:`~tensormesh.sparse.SparseMatrix`\\ "
+"。重复调用（皮卡迭代、时间步）复用相同的缓存索引张量，因此一次构建的 :class:`~tensormesh.Condenser` "
+"在多次调用间保持其凝聚布局不变。"
+
+#: ../../source/user_guide/mixed_assembly.rst:169
+#: 448ae6e5a2c74196bee186ddb213f7ee
+msgid ""
+"Mixed assembly is currently **single-device**: the "
+":func:`~tensormesh.distributed.distributed` decorator (:doc:`distributed`) "
+"covers the single-field assemblers only. Distributing the block layout "
+"across ranks needs a global DOF numbering layer that does not exist yet — it"
+" is a planned ROADMAP item."
+msgstr ""
+"混合装配目前为\\ **单设备**\\ ：\\ :func:`~tensormesh.distributed.distributed` 装饰器（\\ "
+":doc:`distributed`\\ ）仅覆盖单场装配器。跨进程分布分块布局需要尚不存在的全局自由度编号层——这是一项计划中的 ROADMAP "
+"条目。"
+
+#: ../../source/user_guide/mixed_assembly.rst:180
+#: 3bae233de22849ae8f74f836973aba21
+msgid "The block DOF layout"
+msgstr "分块自由度布局"
+
+#: ../../source/user_guide/mixed_assembly.rst:182
+#: 43f1f82134f84425bef3aeefdb667968
+msgid ""
+"The global DOF vector stacks the fields in declaration order, node-major "
+"within each field:"
+msgstr "全局自由度向量按声明顺序堆叠各场，每场内按节点优先："
+
+#: ../../source/user_guide/mixed_assembly.rst:185
+#: 3f1d8b3b1c2a49d0baf4ca4df078f930
+msgid ""
+"\\mathrm{dof} \\;=\\; \\mathrm{offset}_f + n_{\\mathrm{local}}\\cdot c_f + "
+"\\mathrm{comp}."
+msgstr ""
+"\\mathrm{dof} \\;=\\; \\mathrm{offset}_f + n_{\\mathrm{local}}\\cdot c_f + "
+"\\mathrm{comp}."
+
+#: ../../source/user_guide/mixed_assembly.rst:189
+#: 359222dbe8e149ceb6d078f0ccff9d66
+msgid ""
+"You never index this by hand — ``assembler.layout`` (a "
+":class:`~tensormesh.BlockLayout`) provides the vocabulary:"
+msgstr ""
+"你无需手动索引——``assembler.layout``\\ （一个 :class:`~tensormesh.BlockLayout`\\ "
+"）提供了相关操作："
+
+#: ../../source/user_guide/mixed_assembly.rst:214
+#: 614bb71bef214dd096718524d1bebb8e
+msgid ""
+"Boundary conditions then go through the **unchanged** "
+":class:`~tensormesh.Condenser` — a mixed system is just a bigger DOF vector "
+"with a boolean mask:"
+msgstr ""
+"边界条件则通过\\ **不变的** :class:`~tensormesh.Condenser` 施加——混合系统只是一个更大的带布尔掩码的自由度向量："
+
+#: ../../source/user_guide/mixed_assembly.rst:230
+#: a347262000294d7181cff2607f17b275
+msgid ""
+"``boundary_mask`` detects the boundary **topologically** (a facet referenced"
+" by exactly one cell), so it also works for meshes without ``is_boundary`` "
+"point data — e.g. gmsh imports — and for generalized-order fields whose DOFs"
+" are not mesh nodes."
+msgstr ""
+"``boundary_mask`` 通过\\ **拓扑方式**\\ 检测边界（仅被一个单元引用的面），因此它也适用于没有 ``is_boundary``"
+" 点数据的网格——例如 gmsh 导入的网格——以及自由度不是网格节点的广义阶次场。"
+
+#: ../../source/user_guide/mixed_assembly.rst:239
+#: cd2fbf96b77c441fb75c3375114f7d2b
+msgid "Load vectors"
+msgstr "载荷向量"
+
+#: ../../source/user_guide/mixed_assembly.rst:241
+#: a4359e5fb9ff44a9bbace08926e9c491
+msgid ""
+":meth:`~tensormesh.MixedElementAssembler.assemble_vector` is the linear form"
+" :math:`l(v)` of the mixed space: same dispatch, **test arguments only**, "
+"output a dense ``[N]`` vector in the same block layout. Override "
+"``forward_vector`` for the \"natural\" RHS of the problem, or pass a one-off"
+" ``func=``:"
+msgstr ""
+":meth:`~tensormesh.MixedElementAssembler.assemble_vector` 是混合空间的线性形式 "
+":math:`l(v)`\\ ：相同的分发机制，\\ **仅测试参数**\\ ，输出相同块布局的稠密 ``[N]`` "
+"向量。为问题的\"自然\"右端项重写 ``forward_vector``\\ ，或传入一次性 ``func=``\\ ："
+
+#: ../../source/user_guide/mixed_assembly.rst:267
+#: 6c22a45598ce41edaf910dd78e9713b9
+msgid ""
+"Because the load is integrated **in each field's own space**, sources on a "
+"generalized-order field are consistent by construction — no manual "
+"interpolation between spaces."
+msgstr "由于载荷在\\ **每个场自身的空间**\\ 中积分，广义阶次场上的源项按构造就是协调的——无需在之间手动插值。"
+
+#: ../../source/user_guide/mixed_assembly.rst:275
+#: 9fc06d168ac34057afc9cc2510df4554
+msgid "Data channels"
+msgstr "数据通道"
+
+#: ../../source/user_guide/mixed_assembly.rst:277
+#: 0f574a075a9244938083e2286093b023
+#, python-brace-format
+msgid ""
+"All the single-field channels work in ``forward`` / ``forward_vector`` — "
+"``x``, ``point_data`` (interpolated with the mesh-order basis, ``grad{key}``"
+" available), ``element_data``, ``scalar_data`` — plus one new channel:"
+msgstr ""
+"所有单场通道在 ``forward`` / ``forward_vector`` 中均可用——``x``\\ 、\\ ``point_data``\\ "
+"（以网格阶次基函数插值，\\ ``grad{key}`` 可用）、\\ ``element_data``\\ 、\\ "
+"``scalar_data``——外加一个新通道："
+
+#: ../../source/user_guide/mixed_assembly.rst:282
+#: 930764c65e034dc389b2fabf1c0f971e
+#, python-brace-format
+msgid "``field_data={\"name\": (field, values)}``"
+msgstr "``field_data={\"name\": (field, values)}``"
+
+#: ../../source/user_guide/mixed_assembly.rst:283
+#: bca6a3a6d1b4446ca3ea473606da3856
+#, python-brace-format
+msgid ""
+"Data living on a **field's own DOFs**, interpolated with that field's basis "
+"(``grad{name}`` available too). This is the channel for Picard / time "
+"stepping on generalized-order fields: the previous iterate of a topological "
+"P2 velocity has no mesh-point representation, so it must ride on its own DOF"
+" vector:"
+msgstr ""
+"数据位于\\ **场自身的自由度**\\ 上，以该场的基函数插值（\\ ``grad{name}`` 也可用）。这是用于 Picard / "
+"时间步进在广义阶次场上的通道：拓扑 P2 速度的前一次迭代没有网格点表示，因此必须承载于自身的自由度向量："
+
+#: ../../source/user_guide/mixed_assembly.rst:294
+#: f9486ea28c614ad9be7ead516ac1d50c
+msgid ""
+"On a mesh whose order equals the field order the two channels agree — "
+"``point_data`` is then the simpler spelling."
+msgstr "当网格阶次等于场阶次时，两个通道一致——此时 ``point_data`` 是更简单的写法。"
+
+#: ../../source/user_guide/mixed_assembly.rst:301
+#: 0d252beb7177443587f62b5fb145efa5
+msgid "Generalized order pairs"
+msgstr "广义阶次配对"
+
+#: ../../source/user_guide/mixed_assembly.rst:303
+#: deb879a2843745f7adac84a2875b5b10
+msgid ""
+"Field orders are **not** tied to the mesh order. Besides order 1 and the "
+"mesh order (whose DOFs sit on mesh nodes), any other order builds a "
+"*topological Lagrange DOF map*: one DOF per vertex, :math:`k-1` per unique "
+"(oriented) edge, plus cell interiors. In practice this means:"
+msgstr ""
+"场阶次\\ **不**\\ 绑定于网格阶次。除阶次 1 和网格阶次（其自由度位于网格节点）外，任何其他阶次都会构建一个\\ "
+"*拓扑拉格朗日自由度映射*\\ ：每个顶点一个自由度，每条唯一（定向）边 :math:`k-1` 个，加上单元内部。实际意味着："
+
+#: ../../source/user_guide/mixed_assembly.rst:308
+#: 6c8443db48f84a3582070cfa56ad1e2a
+msgid ""
+"**Taylor-Hood on a linear gmsh mesh.** A ``Field(order=2)`` on an imported "
+"P1 mesh creates the quadratic space topologically — no re-meshing at order "
+"2. The :doc:`cylinder flow </example_gallery/fluid/cylinder_flow>` and "
+":doc:`flow past obstacles </example_gallery/fluid/flow_obstacles>` examples "
+"run exactly this way."
+msgstr ""
+"**线性 gmsh 网格上的 Taylor-Hood。** 在导入的 P1 网格上，\\ ``Field(order=2)`` "
+"拓扑地创建二次空间——无需在阶次 2 重新划分网格。\\ :doc:`圆柱绕流 "
+"</example_gallery/fluid/cylinder_flow>` 和 :doc:`障碍物绕流 "
+"</example_gallery/fluid/flow_obstacles>` 示例正是以这种方式运行。"
+
+#: ../../source/user_guide/mixed_assembly.rst:314
+#: 8592a4fe79664f88be229c16dc359931
+msgid ""
+"**Higher pairs.** P3-P2 and beyond work the same; edge DOFs are stored on "
+"*oriented* edges so adjacent elements agree and the spaces stay "
+":math:`C^0`-conforming at any order."
+msgstr ""
+"**更高阶配对。** P3-P2 及更高阶同理；边自由度存储在\\ *定向*\\ 边上，因此相邻单元一致，空间在任意阶次保持 :math:`C^0` "
+"协调。"
+
+#: ../../source/user_guide/mixed_assembly.rst:317
+#: 39bea69b6168442dba2ae2ec97e62003
+msgid ""
+"**Geometry stays isoparametric at the mesh order.** A P2 field on a curved "
+"(order-2) mesh integrates on the curved geometry even when paired with a P1 "
+"pressure; sub- and super-parametric fields are both correct."
+msgstr ""
+"**几何始终保持网格阶次的等参数。** P2 场在弯曲（阶次 2）网格上积分时即使与 P1 压力配对也使用弯曲几何；次参数和超参数场都是正确的。"
+
+#: ../../source/user_guide/mixed_assembly.rst:322
+#: 8d93bd7c18ac4933b43ad485804c857a
+msgid ""
+"Current limits, checked with explicit errors: in 3D the topological map "
+"covers vertex + edge DOFs (tetra P2 works; orders needing face DOFs raise "
+"``NotImplementedError``), and the quadrature tables stop at degree 7 — about"
+" P3-P2 in practice."
+msgstr ""
+"当前限制，以显式错误检查：三维中拓扑映射覆盖顶点 + 边自由度（四面体 P2 可用；需要面自由度的阶次会抛出 "
+"``NotImplementedError``\\ ），求积表止于 7 次——实际约 P3-P2。"
+
+#: ../../source/user_guide/mixed_assembly.rst:327
+#: 4c15f0ba8d8c45cb979bdcb1a6d63d0a
+msgid ""
+"For fields with topological DOFs, ``layout.node_ids`` (a mesh-node concept) "
+"is unavailable; use ``layout.points(name)``, ``layout.boundary_mask(name)`` "
+"and ``layout.dof_mask(name, where=...)``, which work for every field kind, "
+"and move data with ``layout.prolong`` / ``layout.restrict`` (isoparametric "
+"interpolation)."
+msgstr ""
+"对于拓扑自由度场，\\ ``layout.node_ids``\\ （网格节点概念）不可用；请使用 ``layout.points(name)``\\ "
+"、\\ ``layout.boundary_mask(name)`` 和 ``layout.dof_mask(name, where=...)``\\ "
+"，它们适用于每种场类型，并用 ``layout.prolong`` / ``layout.restrict``\\ （等参数插值）传输数据。"
+
+#: ../../source/user_guide/mixed_assembly.rst:335
+#: e00a01b532424d47bda5bea94a0f12fa
+msgid "Worked examples"
+msgstr "实例教程"
+
+#: ../../source/user_guide/mixed_assembly.rst:337
+#: e22894128ecb4e9ba62dc3219f17edff
+msgid ""
+"The fluid example gallery is built entirely on mixed assembly, in increasing"
+" order of complexity:"
+msgstr "流体示例库完全基于混合装配构建，按复杂度递增："
+
+#: ../../source/user_guide/mixed_assembly.rst:340
+#: 421d8f1412404fb28b206e325d86d874
+msgid ""
+":doc:`/example_gallery/fluid/stokes_taylor_hood` — manufactured Stokes "
+"solution with a convergence study; the best starting point."
+msgstr ""
+":doc:`/example_gallery/fluid/stokes_taylor_hood` — 带收敛性研究的 manufactured "
+"Stokes 解；最佳入门点。"
+
+#: ../../source/user_guide/mixed_assembly.rst:342
+#: 57da7111f8ba4310a4523d7eb8753ada
+msgid ""
+":doc:`/example_gallery/fluid/cavity` — steady Navier-Stokes (Picard), 2D and"
+" 3D."
+msgstr ""
+":doc:`/example_gallery/fluid/cavity` — 定常 Navier-Stokes（Picard），二维和三维。"
+
+#: ../../source/user_guide/mixed_assembly.rst:344
+#: ac039721b0f84af68f6633a2b4c6926a
+msgid ""
+":doc:`/example_gallery/fluid/cylinder_flow` — transient Navier-Stokes with "
+"``forward_vector`` and ``field_data`` on a P1 gmsh mesh."
+msgstr ""
+":doc:`/example_gallery/fluid/cylinder_flow` — P1 gmsh 网格上使用 "
+"``forward_vector`` 和 ``field_data`` 的瞬态 Navier-Stokes。"
+
+#: ../../source/user_guide/mixed_assembly.rst:347
+#: 148081f0d1e44b2680d4956f10019afa
+msgid ""
+":doc:`/example_gallery/fluid/rayleigh_benard` — a **three-field** Boussinesq"
+" system (velocity, pressure, temperature) with an off-diagonal buoyancy "
+"block."
+msgstr ""
+":doc:`/example_gallery/fluid/rayleigh_benard` — **三场** Boussinesq "
+"系统（速度、压力、温度），含非对角浮力块。"
