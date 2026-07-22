@@ -12,9 +12,12 @@ from .element_assembler import ElementAssembler
 from .mixed_assembler import MixedElementAssembler, Field, BlockLayout
 from .node_assembler import NodeAssembler
 from .facet_assembler import FacetAssembler
+from .facet_bilinear import FacetBilinearAssembler
 from .builtin import (
     LaplaceElementAssembler,
+    AnisotropicLaplaceElementAssembler,
     MassElementAssembler,
+    ScaledMassElementAssembler,
     LinearElasticityElementAssembler,
     NeoHookeanModel,
     J2Plasticity,
@@ -31,8 +34,11 @@ __all__ = [
     "BlockLayout",
     "NodeAssembler",
     "FacetAssembler",
+    "FacetBilinearAssembler",
     "LaplaceElementAssembler",
+    "AnisotropicLaplaceElementAssembler",
     "MassElementAssembler",
+    "ScaledMassElementAssembler",
     "LinearElasticityElementAssembler",
     "NeoHookeanModel",
     "J2Plasticity",

@@ -32,27 +32,27 @@ bands:
 mesh -> Laplace/Mass assembler -> BlochReducer -> generalized eig
 ```
 
-- Square (rigid): $K_{ij}=\int\nabla\phi_i\!\cdot\!\nabla\phi_j$,
+- Square (rigid): $K_{ij}=\int\nabla\phi_i\cdot\nabla\phi_j$,
   $M_{ij}=\int\phi_i\phi_j$, $K p=(\omega/c)^2 M p$, $f=c\sqrt{\mu}/2\pi$;
-  path $M\!-\!\Gamma\!-\!X\!-\!M$.
+  path $M\to\Gamma\to X\to M$.
 - Triangular (penetrable): material varies in space, so the operators are
-  **weighted** — $K_{ij}=\int\frac1\rho\nabla\phi_i\!\cdot\!\nabla\phi_j$,
+  **weighted** — $K_{ij}=\int\frac1\rho\nabla\phi_i\cdot\nabla\phi_j$,
   $M_{ij}=\int\frac1{\rho c^2}\phi_i\phi_j$, $K p=\omega^2 M p$ — assembled with
   a per-element `ElementAssembler` carrying $1/\rho,\ 1/(\rho c^2)$ over a
-  conformal steel/water mesh; path $M\!-\!\Gamma\!-\!K\!-\!M$.
+  conformal steel/water mesh; path $M\to\Gamma\to K\to M$.
 
 Unit-cell meshes use gmsh `setPeriodic` (and `fragment` for the two-domain case)
 so opposite edges carry matching nodes — the precondition `BlochReducer` needs.
 
 **Transmission** — a normally-incident plane wave ($p_0=1$ Pa) crosses a finite
-slab of rigid cylinders; the power transmission $T(f)=\langle|p|^2\rangle_{\rm
-out}/|p_0|^2$ is swept over frequency:
+slab of rigid cylinders; the power transmission $T(f)=\langle|p|^2\rangle_{\mathrm{out}}/|p_0|^2$ is swept
+over frequency:
 
 ```text
 mesh -> Laplace/Mass assembler -> (K - k^2 M - i k B) p = -2 i k p0 e_in
 ```
 
-The first-order radiation term $B$ and the incident load $e_{\rm in}$ are
+The first-order radiation term $B$ and the incident load $e_{\mathrm{in}}$ are
 hand-rolled boundary line integrals (no PML needed — this matches COMSOL's
 first-order "Plane Wave Radiation"). At normal incidence the lateral periodic
 walls are mirror-symmetry planes, equivalent to natural Neumann.
@@ -65,8 +65,8 @@ next to the script, so the comparison reproduces **offline** — no COMSOL neede
 
 | Script | Reference | Agreement |
 | --- | --- | --- |
-| `band_structure_square.py` | square $M\!-\!\Gamma\!-\!X\!-\!M$, 31 k-points | mean **0.08 %**, p95 0.16 % |
-| `band_structure_triangular.py` | triangular $M\!-\!\Gamma\!-\!K\!-\!M$, 31 k-points | mean **0.51 %**, p95 1.45 % |
+| `band_structure_square.py` | square $M\to\Gamma\to X\to M$, 31 k-points | mean **0.08 %**, p95 0.16 % |
+| `band_structure_triangular.py` | triangular $M\to\Gamma\to K\to M$, 31 k-points | mean **0.51 %**, p95 1.45 % |
 | `transmission_slab.py` | 30–120 kHz, 46 frequencies | mean $|\Delta T|$ **0.007** |
 
 Bands are compared k-point by k-point at COMSOL's exact wavevectors (lowest 10
