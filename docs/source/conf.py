@@ -189,6 +189,9 @@ nitpick_ignore = [
     # torch_sla has no public Sphinx site.
     ('py:class', 'torch_sla.sparse_tensor.SparseTensor'),
     ('py:class', 'torch_sla.distributed.DSparseTensor'),
+    # TypeVar on the @distributed decorator's signature — autodoc renders
+    # ``Type[T]`` but the TypeVar itself has no documentation target.
+    ('py:class', 'tensormesh.distributed.assembler.T'),
     # Bare class names from autodoc-rendered type hints; we keep
     # python_use_unqualified_type_names = True for readability, which
     # prevents these from auto-prefixing with their (mostly matplotlib)
