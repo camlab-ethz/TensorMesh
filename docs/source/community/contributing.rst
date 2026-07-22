@@ -32,9 +32,9 @@ Clone and install in editable mode:
    cd TensorMesh
    pip install -e ".[test]"
 
-Optional extras: ``cupy`` / ``cudss`` (GPU sparse-direct solver
-backends), ``gpu`` (both at once), and ``example`` (Plotly for some
-figure scripts).
+Optional extras: ``cudss`` (NVIDIA GPU direct solver) / ``pyamg``
+(algebraic multigrid), ``gpu`` (all PyPI solver backends at once), and
+``example`` (Plotly for some figure scripts).
 
 Smoke-test the install by running the bundled checker, which solves a
 tiny Poisson problem on CPU (and on GPU if available) and reports

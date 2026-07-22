@@ -18,22 +18,23 @@ The recommended way to install TensorMesh is from PyPI:
 
 .. code-block:: bash
 
-    pip install tensormesh-fem             # CPU only
-    pip install "tensormesh-fem[gpu]"      # + CUDA sparse solvers (CuPy + cuDSS)
+    pip install tensormesh-fem             # CPU stack (SciPy + PyTorch Krylov)
+    pip install "tensormesh-fem[gpu]"      # + all PyPI solver backends (cuDSS + PyAMG)
 
-Use the second form if you have an NVIDIA GPU and want the CUDA sparse-solver
-backends — the ``[gpu]`` extra pulls in both CuPy and cuDSS through
+Use the second form if you have an NVIDIA GPU and want the fastest CUDA
+direct solver — the ``[gpu]`` extra pulls in cuDSS (plus PyAMG) through
 ``torch-sla``. The quotes are needed because ``[...]`` is a shell glob
 character; see `Sparse solvers and GPU acceleration`_ for the per-backend
-breakdown if you only want one of CuPy or cuDSS.
+breakdown if you only want one of them.
 
 Either form pulls in all required dependencies, including
 `torch-sla <https://www.torchsla.com/>`_, the differentiable sparse linear
 algebra library that powers TensorMesh's solvers. The base
-``pip install tensormesh-fem`` installs only the **CPU** sparse stack
-(SciPy / native PyTorch); see `Sparse solvers and GPU acceleration`_
-below for the full extras matrix (``[cupy]`` / ``[cudss]`` / ``[gpu]``) and
-how to verify which backends are usable on your machine.
+``pip install tensormesh-fem`` installs the **CPU** sparse stack
+(SciPy + a device-agnostic native-PyTorch Krylov backend); see
+`Sparse solvers and GPU acceleration`_ below for the full extras matrix
+(``[cudss]`` / ``[pyamg]`` / ``[gpu]``) and how to verify which backends
+are usable on your machine.
 
 
 Install from source
@@ -67,9 +68,10 @@ import-time** dependency — :mod:`tensormesh.sparse` will not import without it
 current and future solver work lands in ``torch-sla`` first; we recommend
 keeping it up to date.
 
-The base ``tensormesh-fem`` wheel only pulls the **CPU** stack
-(SciPy / native PyTorch). To enable a GPU backend, install one of the
-mirrored extras:
+The base ``tensormesh-fem`` wheel pulls the **CPU** stack
+(SciPy + native PyTorch Krylov — the latter also runs on CUDA/ROCm
+devices out of the box). To add another solver backend, install one of
+the mirrored extras:
 
 .. list-table::
    :header-rows: 1
@@ -79,21 +81,27 @@ mirrored extras:
      - Adds backend
      - When to pick this
    * - ``pip install tensormesh-fem``
-     - CPU only
-     - Default; no GPU sparse solves.
-   * - ``pip install "tensormesh-fem[cupy]"``
-     - CuPy (CUDA)
-     - Iterative GPU solvers (CG / GMRES / …) + CuPy SuperLU.
+     - CPU stack
+     - Default; ``scipy`` direct/iterative + device-agnostic
+       ``pytorch`` Krylov.
    * - ``pip install "tensormesh-fem[cudss]"``
      - cuDSS (CUDA)
      - Fastest GPU direct solver (LU / Cholesky / LDLT).
+   * - ``pip install "tensormesh-fem[pyamg]"``
+     - PyAMG (CPU)
+     - Algebraic-multigrid V-cycles for large PDE systems.
    * - ``pip install "tensormesh-fem[gpu]"``
-     - Both
-     - Convenience extra — installs ``torch-sla[all]``.
+     - All PyPI backends
+     - Convenience extra — installs ``torch-sla[all]``
+       (cuDSS + PyAMG).
 
-These mirror the upstream ``torch-sla`` extras (``[cupy]`` / ``[cudss]`` /
-``[all]``) — installing ``tensormesh-fem[gpu]`` is exactly equivalent to
-``pip install tensormesh-fem torch-sla[all]``, just spelled in one step.
+These mirror the upstream ``torch-sla`` extras (``[cudss]`` /
+``[pyamg]`` / ``[all]``) — installing ``tensormesh-fem[gpu]`` is exactly
+equivalent to ``pip install tensormesh-fem torch-sla[all]``, just spelled
+in one step. Two further backends — ``strumpack`` (portable multifrontal
+direct, CPU/CUDA/ROCm) and ``amgx`` (NVIDIA AmgX) — are compiled
+extensions shipped as prebuilt wheels on `torch-sla's GitHub Releases
+<https://github.com/sparsexlab/torch-sla>`_, not PyPI.
 
 Inspect what's installed
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -106,11 +114,12 @@ machine — and a one-line install hint for any that are not:
     >>> import torch_sla
     >>> torch_sla.show_backends()
     torch-sla backend status (CUDA: available)
-      scipy    [CPU]      available
-      eigen    [CPU]      not available — JIT-compiled C++ extension (requires a C++ compiler)
-      pytorch  [CPU/CUDA] available
-      cupy     [CUDA]     not available — pip install torch-sla[cupy]
-      cudss    [CUDA]     not available — pip install torch-sla[cudss]
+      scipy      [CPU]           available
+      pytorch    [CPU/CUDA]      available
+      cudss      [CUDA]          available
+      pyamg      [CPU]           available
+      amgx       [CUDA]          not available — pip install torch-sla[amgx]
+      strumpack  [CPU/CUDA/ROCm] not available — pip install torch-strumpack
 
 See :doc:`/user_guide/linear_solvers` for the full backend / method matrix
 and how to pick a non-default backend at solve time.

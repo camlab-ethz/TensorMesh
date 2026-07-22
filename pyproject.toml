@@ -58,11 +58,13 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# GPU backends — mirror torch-sla's extras so a single
-# `pip install "tensormesh-fem[cupy]"` (or [cudss], or [gpu]) pulls in
-# the right CUDA stack in one step.
-cupy = ["torch-sla[cupy]>=0.3.0"]
+# Solver backends — mirror torch-sla's PyPI-installable extras so a single
+# `pip install "tensormesh-fem[cudss]"` (or [pyamg], or [gpu]) pulls in the
+# right stack in one step. The native strumpack / amgx backends ship as
+# ABI-specific wheels on torch-sla's GitHub Releases (not PyPI) — install
+# those per the torch-sla README.
 cudss = ["torch-sla[cudss]>=0.3.0"]
+pyamg = ["torch-sla[pyamg]>=0.3.0"]
 gpu = ["torch-sla[all]>=0.3.0"]
 example = ["plotly"]
 test = [

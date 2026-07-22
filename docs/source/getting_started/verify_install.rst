@@ -102,27 +102,28 @@ PyTorch build), you should see something close to:
 
    TensorMesh smoke test
    ========================================
-   tensormesh : 0.1.0
+   tensormesh : 0.1.1
    torch      : 2.10.0+cu128
-   torch-sla  : 0.2.1
+   torch-sla  : 0.3.2
    cuda       : 12.8
 
    [CPU ] Poisson 2D ... OK   L2 error = 1.185e-02   0.05 s
    [CUDA] Poisson 2D ... OK   L2 error = 1.185e-02   0.88 s
 
    torch-sla backend status (CUDA: available)
-     scipy    [CPU]       available
-     eigen    [CPU]       not available — JIT-compiled C++ extension (requires a C++ compiler)
-     pytorch  [CPU/CUDA]  available
-     cupy     [CUDA]      available
-     cudss    [CUDA]      available
+     scipy      [CPU]           available
+     pytorch    [CPU/CUDA]      available
+     cudss      [CUDA]          available
+     pyamg      [CPU]           available
+     amgx       [CUDA]          not available — pip install torch-sla[amgx]
+     strumpack  [CPU/CUDA/ROCm] not available — pip install torch-strumpack
 
    All required checks passed.
 
 On a CPU-only machine (e.g. a macOS / Linux laptop) the ``cuda`` line
 reads ``not available``, the ``[CUDA]`` solve is skipped, and the
-backend-table header reads ``(CUDA: not available)`` with ``cupy`` /
-``cudss`` listed as optional extras to install.
+backend-table header reads ``(CUDA: not available)`` with the CUDA-only
+backends listed as optional extras to install.
 
 The exact L2 error depends on the mesh, but should be on the order of
 :math:`10^{-2}` — anything more than a few percent indicates a numerical
@@ -152,7 +153,7 @@ problem.
      reachable on CPU.
    * **CUDA, DOF < 2M** → **cuDSS** if available
      (``method="cholesky"`` when SPD, else ``ldlt`` / ``lu``); falls
-     back to CuPy, and finally to the PyTorch-native iterative CG.
+     back to the PyTorch-native iterative CG otherwise.
    * **CUDA, DOF ≥ 2M** → PyTorch-native iterative solver
      (``backend="pytorch"``, ``method="cg"`` for SPD or
      ``bicgstab`` otherwise) with Jacobi preconditioning, to stay
@@ -170,12 +171,16 @@ need them:
 
 * **scipy** ``[CPU]`` — SciPy / SuperLU direct and iterative solvers; the
   default CPU path, always available.
-* **pytorch** ``[CPU/CUDA]`` — torch-native iterative solvers (CG /
-  BiCGSTAB), always available and fully autograd-friendly.
-* **eigen** ``[CPU]`` — a JIT-compiled C++ direct solver; needs a C++
-  compiler on the machine.
-* **cupy** ``[CUDA]`` / **cudss** ``[CUDA]`` — GPU sparse-direct solvers
-  (``pip install torch-sla[cupy]`` / ``pip install torch-sla[cudss]``).
+* **pytorch** ``[CPU/CUDA]`` — torch-native Krylov solvers (CG, BiCGStab,
+  GMRES, MINRES, LSQR, LSMR), always available, device-agnostic (incl.
+  AMD ROCm) and fully autograd-friendly.
+* **cudss** ``[CUDA]`` — NVIDIA cuDSS, the fastest GPU direct solver
+  (``pip install torch-sla[cudss]``).
+* **pyamg** ``[CPU]`` — algebraic multigrid
+  (``pip install torch-sla[pyamg]``).
+* **strumpack** ``[CPU/CUDA/ROCm]`` / **amgx** ``[CUDA]`` — compiled
+  native backends (portable multifrontal direct / NVIDIA AmgX); prebuilt
+  wheels on torch-sla's GitHub Releases, not PyPI.
 
 Run ``torch_sla.show_backends()`` at any time to re-check status. See
 :doc:`../user_guide/linear_solvers` for guidance on choosing among them.

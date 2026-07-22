@@ -151,11 +151,10 @@ a neural network's prediction. See :doc:`differentiability`.
 
 **Modular linear algebra.** The solver layer is a separate package,
 ``torch-sla``. The same FEM code retargets between SciPy (CPU),
-Eigen (CPU), native PyTorch (CPU/GPU), cuDSS (GPU), and CuPy (GPU)
-by changing one keyword argument. PETSc and Hypre are on the
-``torch-sla`` roadmap; until they ship, fallback paths in
-:mod:`tensormesh.sparse` provide best-effort support if those
-libraries are already installed locally.
+native PyTorch Krylov (CPU/CUDA/ROCm), NVIDIA cuDSS (CUDA direct),
+STRUMPACK (portable direct, incl. AMD ROCm), PyAMG and NVIDIA AmgX
+(algebraic multigrid) by changing one keyword argument — six verified
+backends in total; see :doc:`linear_solvers`.
 
 
 What's next
