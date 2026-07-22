@@ -68,10 +68,12 @@ What lives in each module:
   :class:`~tensormesh.Prism`, :class:`~tensormesh.Pyramid`,
   :class:`~tensormesh.Line`), basis evaluation, quadrature rules, and
   the Gmsh/VTK ↔ TensorMesh ordering convention.
-* :mod:`tensormesh.assemble` — the three weak-form base classes
+* :mod:`tensormesh.assemble` — the weak-form base classes
   :class:`~tensormesh.ElementAssembler`,
   :class:`~tensormesh.NodeAssembler`,
-  :class:`~tensormesh.FacetAssembler`, plus built-ins for the most
+  :class:`~tensormesh.FacetAssembler` and the multi-field
+  :class:`~tensormesh.MixedElementAssembler` (Taylor-Hood and friends,
+  see :doc:`mixed_assembly`), plus built-ins for the most
   common forms (Laplace, mass, linear elasticity, Neo-Hookean, …).
 * :mod:`tensormesh.sparse` — :class:`~tensormesh.sparse.SparseMatrix`
   (subclass of ``torch_sla.SparseTensor``), so linear systems are
@@ -81,7 +83,9 @@ What lives in each module:
   :func:`~tensormesh.sparse.nonlinear_solve` free functions are
   legacy entry points scheduled for removal.
 * :mod:`tensormesh.operator` — :class:`~tensormesh.Condenser` for
-  Dirichlet BCs via static condensation.
+  Dirichlet BCs via static condensation, and
+  :class:`~tensormesh.BlochReducer` for Bloch-Floquet periodic BCs
+  (band-structure computations).
 * :mod:`tensormesh.ode` — explicit and implicit-linear time
   integrators (Euler, midpoint, Runge-Kutta) for transient problems.
 * :mod:`tensormesh.functional` — Voigt elasticity helpers, strain /
@@ -165,5 +169,7 @@ What's next
   :class:`~tensormesh.ElementAssembler` /
   :class:`~tensormesh.NodeAssembler` /
   :class:`~tensormesh.FacetAssembler` contract.
+* :doc:`mixed_assembly` — couple several fields in one block system
+  with :class:`~tensormesh.MixedElementAssembler`.
 * :doc:`../getting_started/quickstart` — the same pipeline as a
   complete worked example.

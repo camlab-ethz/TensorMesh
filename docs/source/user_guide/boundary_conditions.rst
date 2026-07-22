@@ -351,17 +351,22 @@ Gotchas
 What's not built in today
 -------------------------
 
-The :mod:`tensormesh.operator` module ships exactly one operator —
-:class:`~tensormesh.Condenser` for Dirichlet via static condensation.
-A few neighbouring techniques are *not* first-class operators:
+The :mod:`tensormesh.operator` module ships two operators —
+:class:`~tensormesh.Condenser` for Dirichlet via static condensation,
+and :class:`~tensormesh.BlochReducer` for **Bloch-Floquet periodic**
+conditions (opposite faces tied with a complex phase factor, the
+building block of band-structure computations — see the
+phononic-crystal examples). A few neighbouring techniques are *not*
+first-class operators:
 
 * **Lagrange multipliers** for Dirichlet — an alternative to
   condensation that keeps the original DOF layout but produces a
   saddle-point system. Workable by hand if you build the augmented
   matrix yourself, but no helper class.
-* **Periodic boundary conditions** — typically wired up by
-  identifying matched DOFs and merging the corresponding rows /
-  columns in the assembled matrix. No helper.
+* **Plain periodic boundary conditions** — the zero-phase special
+  case of :class:`~tensormesh.BlochReducer` covers meshes with
+  matched periodic faces; for general (non-matched) meshes you still
+  identify DOFs and merge rows / columns by hand.
 * **Robin (mixed) conditions** as a top-level operator — but the
   bilinear-form contribution :math:`\int_{\Gamma} \alpha\, u\, v\,
   \mathrm{d}S` is a one-line
