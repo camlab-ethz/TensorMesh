@@ -40,11 +40,17 @@ Three base classes cover the common cases. The choice depends on the
      - surface integral
      - 1-D :class:`torch.Tensor`
      - Neumann tractions, penalty contact, Robin BCs, surface tension, …
+   * - :class:`~tensormesh.MixedElementAssembler`
+     - multi-field bilinear + linear forms
+     - block :class:`~tensormesh.sparse.SparseMatrix` / 1-D :class:`torch.Tensor`
+     - Taylor-Hood Stokes / Navier-Stokes, coupled multi-physics — see :doc:`mixed_assembly`
 
-All three share the same dispatch contract for ``forward(...)``, the
-same ``from_mesh(...)`` / ``from_assembler(...)`` constructors, and the
-same call-time data plumbing. Learn the contract once and the three
-classes feel like a single tool.
+The first three share the same dispatch contract for ``forward(...)``,
+the same ``from_mesh(...)`` / ``from_assembler(...)`` constructors, and
+the same call-time data plumbing — learn the contract once and they
+feel like a single tool. The mixed assembler extends the same contract
+to several fields at once and has :doc:`its own chapter
+<mixed_assembly>`; this page covers the single-field classes.
 
 
 .. _forms-contract:
