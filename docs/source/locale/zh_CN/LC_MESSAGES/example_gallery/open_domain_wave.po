@@ -1,0 +1,279 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, TensorMesh Contributors
+# This file is distributed under the same license as the TensorMesh package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: TensorMesh 0.1.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-22 17:25+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../source/example_gallery/open_domain_wave.rst:2
+#: c3ad7dd85b8f4296b6d6836e9984bdce
+msgid "Open-Domain Wave (PML & Ports)"
+msgstr "开放域波动（PML 与端口）"
+
+#: ../../source/example_gallery/open_domain_wave.rst:4
+#: 270b55f803894cf78acf6ab57cd7e4db
+msgid ""
+"Frequency-domain wave problems on **open** domains need two ingredients "
+"beyond the plain complex Helmholtz assembly of :doc:`complex`: a way to "
+"drive and absorb waves at a boundary (**ports** / first-order absorbing "
+"conditions), and a **perfectly matched layer** (PML) that soaks up outgoing "
+"radiation without reflection. Both shipped as small, composable operators:"
+msgstr ""
+"开放域上的频域波动问题除了 :doc:`complex` 中介绍的复值亥姆霍兹装配之外，还需要两个要素：在边界上驱动和吸收波的方法（\\ **端口** "
+"/ 一阶吸收边界条件），以及吸收 outgoing 辐射而不产生反射的\\ **完全匹配层**\\ （PML）。两者均以小型、可组合算子的形式提供："
+
+#: ../../source/example_gallery/open_domain_wave.rst:11
+#: 8fd0526106e64379b1e41434a7663047
+msgid ""
+":func:`~tensormesh.robin_operator` / :func:`~tensormesh.port_source` — the "
+"boundary matrix :math:`\\int_\\Gamma c\\,N_iN_j\\,\\mathrm dS` and incident "
+"load of a Robin / impedance / plane-wave-port condition, built on "
+":class:`~tensormesh.FacetBilinearAssembler` (the bilinear counterpart of "
+":class:`~tensormesh.FacetAssembler`);"
+msgstr ""
+":func:`~tensormesh.robin_operator` / :func:`~tensormesh.port_source` —— 罗宾 /"
+" 阻抗 / 平面波端口条件的边界矩阵 :math:`\\int_\\Gamma c\\,N_iN_j\\,\\mathrm dS` 和入射载荷，基于 "
+":class:`~tensormesh.FacetBilinearAssembler` 构建（\\ "
+":class:`~tensormesh.FacetAssembler` 的双线性对应物）；"
+
+#: ../../source/example_gallery/open_domain_wave.rst:16
+#: a67706d26c0a4770820d0531a2a66a31
+msgid ""
+":func:`~tensormesh.functional.pml.cartesian_pml` — the stretched-coordinate "
+"PML tensor :math:`\\mathbf\\Lambda` and mass scaling, consumed by "
+":class:`~tensormesh.AnisotropicLaplaceElementAssembler` and "
+":class:`~tensormesh.assemble.ScaledMassElementAssembler`."
+msgstr ""
+":func:`~tensormesh.functional.pml.cartesian_pml` —— 拉伸坐标 PML 张量 "
+":math:`\\mathbf\\Lambda` 及质量缩放，供 "
+":class:`~tensormesh.AnisotropicLaplaceElementAssembler` 和 "
+":class:`~tensormesh.assemble.ScaledMassElementAssembler` 使用。"
+
+#: ../../source/example_gallery/open_domain_wave.rst:21
+#: 8c29d9c46b774dd29dd907c61ac30708
+msgid ""
+"Two worked examples in ``examples/wave/`` exercise them — an acoustic "
+"resonator driven through a port, and a photonic microdisk wrapped in a PML "
+"frame."
+msgstr ""
+"``examples/wave/`` 中的两个完整示例展示了它们的用法 —— 一个通过端口驱动的声学谐振器，以及一个包裹在 PML 框架中的光子微盘。"
+
+#: ../../source/example_gallery/open_domain_wave.rst:27
+#: b2deebe7bd2e4ad187fb738f14b4657b
+msgid "Helmholtz resonator (acoustics, ports)"
+msgstr "亥姆霍兹谐振器（声学，端口）"
+
+#: ../../source/example_gallery/open_domain_wave.rst:29
+#: 9c80ff775a7a4b7797f79cc1d302f9cf
+msgid ""
+"``examples/wave/helmholtz_resonator/helmholtz_resonator.py`` solves a 2D "
+"duct with a necked side cavity — the textbook Helmholtz resonator — driven "
+"by a plane-wave port at the inlet. All walls are sound-hard (natural "
+"Neumann); the port both injects the incident wave and absorbs the "
+"reflection:"
+msgstr ""
+"``examples/wave/helmholtz_resonator/helmholtz_resonator.py`` 求解一个带有颈缩侧腔的二维管道"
+" —— 经典的亥姆霍兹谐振器 —— 由入口处的平面波端口驱动。所有壁面均为刚性（自然诺伊曼边界条件）；端口同时注入入射波并吸收反射波："
+
+#: ../../source/example_gallery/open_domain_wave.rst:35
+#: baa8908d727f47cf9731ea99e3133880
+msgid ""
+"\\frac{\\partial p}{\\partial n} + i k\\, p = 2 i k\\, p_0\n"
+"\\quad\\text{on } \\Gamma_{\\text{port}} ."
+msgstr ""
+"\\frac{\\partial p}{\\partial n} + i k\\, p = 2 i k\\, p_0\n"
+"\\quad\\text{在 } \\Gamma_{\\text{port}} \\text{ 上}。"
+
+#: ../../source/example_gallery/open_domain_wave.rst:40
+#: 7dacbafb72404d7b876d8e7ce32c2eda
+msgid ""
+"In the weak form that is one boundary matrix and one boundary load on top of"
+" the usual stiffness/mass pair — the whole recipe is four lines:"
+msgstr "在弱形式中，这对应于常规刚度/质量矩阵对之上增加的一个边界矩阵和一个边界载荷 —— 整个实现仅需四行代码："
+
+#: ../../source/example_gallery/open_domain_wave.rst:43
+#: 86fd81598cb54c2785008ca3d80326a3
+msgid "examples/wave/helmholtz_resonator/helmholtz_resonator.py (essence)"
+msgstr "examples/wave/helmholtz_resonator/helmholtz_resonator.py（核心部分）"
+
+#: ../../source/example_gallery/open_domain_wave.rst:56
+#: 8e9add91db114303830ed44c4700668c
+msgid ""
+"Sweeping the frequency and reading the input impedance :math:`Z(f) = "
+"p_{\\text{avg}} / u_{\\text{in}}` at the inlet produces the resonance "
+"spectrum; the fundamental sits at **357 Hz** with a cavity pressure gain of "
+"~12x over the incident amplitude."
+msgstr ""
+"扫描频率并读取入口处的输入阻抗 :math:`Z(f) = p_{\\text{avg}} / u_{\\text{in}}`\\ "
+"，即可得到谐振谱；基频位于 **357 Hz**\\ ，腔体压力增益约为入射幅值的 12 倍。"
+
+#: ../../source/example_gallery/open_domain_wave.rst:61
+#: e2ef6f625d714e0e9b0165f9dc9314d7
+msgid "Helmholtz resonator pressure field and SPL at resonance"
+msgstr "亥姆霍兹谐振器在谐振时的压力场与声压级"
+
+#: ../../source/example_gallery/open_domain_wave.rst:66
+#: 07f03c8d9444472e846af28485f598bb
+msgid ""
+"The acoustic field at resonance: total pressure (top) and sound pressure "
+"level (bottom). The cavity rings at a nearly uniform high pressure while the"
+" duct stays quiet — the classic pressure-node line cuts across the neck."
+msgstr "谐振时的声场：总压力（上）和声压级（下）。腔体以近乎均匀的高压振荡，而管道保持安静 —— 经典的压力节线横贯颈部。"
+
+#: ../../source/example_gallery/open_domain_wave.rst:71
+#: fca0905653b74fc5b357e97fddf913af
+msgid "Input impedance over the frequency sweep"
+msgstr "频率扫描的输入阻抗"
+
+#: ../../source/example_gallery/open_domain_wave.rst:76
+#: 8d4502982a3d481b8e8ac1e278f70c90
+msgid ""
+"Input impedance :math:`|Z|/Z_0` over the sweep — the Helmholtz resonance and"
+" the duct harmonics appear as peaks, with anti-resonances between them."
+msgstr "扫描过程中的输入阻抗 :math:`|Z|/Z_0` —— 亥姆霍兹谐振和管道谐波表现为峰值，其间存在反谐振点。"
+
+#: ../../source/example_gallery/open_domain_wave.rst:82
+#: 82b1cb2e38d04fd8beb4b5160d9daac9
+msgid "Optical ring resonator (photonics, PML)"
+msgstr "光学环形谐振器（光子学，PML）"
+
+#: ../../source/example_gallery/open_domain_wave.rst:84
+#: 377fba573dad4c659fca4ba56d8c067a
+msgid ""
+"``examples/wave/optical_ring_resonator/optical_ring_resonator.py`` is a 2D "
+"TM photonic solve: a silicon bus waveguide evanescently couples light into a"
+" silicon microdisk (:math:`n = 3.48`) in silica cladding (:math:`n = 1.44`),"
+" and a stretched-coordinate PML frame makes the computational box behave as "
+"an open domain. The out-of-plane field :math:`E_z` obeys the PML-modified "
+"Helmholtz equation"
+msgstr ""
+"``examples/wave/optical_ring_resonator/optical_ring_resonator.py`` 是一个二维 TM "
+"光子学求解：硅总线波导通过倏逝耦合将光导入硅微盘（\\ :math:`n = 3.48`\\ ），周围为二氧化硅包层（\\ :math:`n = "
+"1.44`\\ ），拉伸坐标 PML 框架使计算域表现为开放域。面外电场 :math:`E_z` 服从 PML 修正的亥姆霍兹方程"
+
+#: ../../source/example_gallery/open_domain_wave.rst:91
+#: 813229a75e8147478b8d19002da42f18
+#, python-brace-format
+msgid ""
+"\\nabla\\cdot(\\mathbf\\Lambda\\,\\nabla E_z)\n"
+"+ k_0^2\\,\\varepsilon_r\\, s_x s_y\\, E_z = \\text{source},\n"
+"\\qquad\n"
+"\\mathbf\\Lambda = \\operatorname{diag}(s_y/s_x,\\ s_x/s_y),"
+msgstr ""
+"\\nabla\\cdot(\\mathbf\\Lambda\\,\\nabla E_z)\n"
+"+ k_0^2\\,\\varepsilon_r\\, s_x s_y\\, E_z = \\text{source},\n"
+"\\qquad\n"
+"\\mathbf\\Lambda = \\operatorname{diag}(s_y/s_x,\\ s_x/s_y),"
+
+#: ../../source/example_gallery/open_domain_wave.rst:98
+#: 3f742414d7694907913c78b5dbde751e
+msgid ""
+"with :math:`s_x = s_y = 1` outside the layer. The reusable library path is "
+"three calls:"
+msgstr "其中层外 :math:`s_x = s_y = 1`\\ 。可复用的库调用路径仅需三次调用："
+
+#: ../../source/example_gallery/open_domain_wave.rst:111
+#: c662ca847ab1463cb80476a7bcac4da3
+msgid ""
+"(The example itself evaluates :math:`\\varepsilon_r` and the stretch per "
+"quadrature point with an inline assembler for sharper Si/SiO₂ interfaces; "
+"the ``cartesian_pml`` path reproduces the same operator and matches the 2D "
+"Hankel Green function to correlation **0.994**.) A modal soft source "
+"launches the guided bus mode directionally toward the disk."
+msgstr ""
+"（该示例本身通过内联装配器逐求积点计算 :math:`\\varepsilon_r` 和拉伸函数，以获得更锐利的 Si/SiO₂ 界面；\\ "
+"``cartesian_pml`` 路径复现了相同的算子，并与二维汉克尔格林函数的相关性达到 **0.994**\\ "
+"。）模态软源以定向方式将导波总线模式发射向微盘。"
+
+#: ../../source/example_gallery/open_domain_wave.rst:117
+#: f489f48855e24009bf3ed0902ea45ca6
+msgid "Waveguide-coupled silicon microdisk on resonance"
+msgstr "谐振时的波导耦合硅微盘"
+
+#: ../../source/example_gallery/open_domain_wave.rst:121
+#: 3f980c342bcc43f2a766c26e873f360e
+#, python-brace-format
+msgid ""
+"On resonance the disk lights up in a whispering-gallery mode — a bright rim "
+"of azimuthal lobes (left: :math:`\\mathrm{Re}\\,E_z`, right: :math:`|E_z|`),"
+" the bus waveguide visibly depleted past the coupling point, and the PML "
+"frame absorbing the radiated field."
+msgstr ""
+"谐振时，微盘在耳语廊模式中点亮 —— 明亮的方位角瓣环（左：\\ :math:`\\mathrm{Re}\\,E_z`\\ ，右：\\ "
+":math:`|E_z|`\\ ），总线波导在耦合点之后明显衰减，PML 框架吸收辐射场。"
+
+#: ../../source/example_gallery/open_domain_wave.rst:126
+#: 1c4cc258293248e2a7b094fb4a1426ae
+msgid "Materials, launch plane, and PML frame of the optical example"
+msgstr "光学示例的材料、发射平面与 PML 框架"
+
+#: ../../source/example_gallery/open_domain_wave.rst:131
+#: 10fbe179f8604ca29c51a49135cec0d5
+msgid ""
+"The setup: materials, the two-plane directional launch, and the PML frame. "
+"Without the PML a hard box traps the radiation into a standing wave of ~8x "
+"the amplitude."
+msgstr "设置：材料、双向定向发射平面以及 PML 框架。若无 PML，硬壁边界会将辐射囚禁为驻波，幅值约为原来的 8 倍。"
+
+#: ../../source/example_gallery/open_domain_wave.rst:137
+#: 70e1e76e124e473ea0603b65ee1ce3c4
+msgid "Running them"
+msgstr "运行示例"
+
+#: ../../source/example_gallery/open_domain_wave.rst:144
+#: 38e6c9c43c8740f5bbcd4c8df7024b3c
+msgid ""
+"Both expose ``run_demo(...)`` returning diagnostics plus ``--no-plot`` / "
+"``--output`` flags; the optical script also takes ``--lam0-nm``, ``--order``"
+" and ``--mesh-h-nm`` (with P1 elements numerical dispersion blue-shifts the "
+"physical 1.55 µm resonance to the default 1512 nm)."
+msgstr ""
+"两者均提供返回诊断信息的 ``run_demo(...)`` 函数，以及 ``--no-plot`` / ``--output`` 标志；光学脚本还接受"
+" ``--lam0-nm``\\ 、\\ ``--order`` 和 ``--mesh-h-nm``\\ （使用 P1 单元时，数值色散会将物理 "
+"1.55 µm 的谐振蓝移至默认的 1512 nm）。"
+
+#: ../../source/example_gallery/open_domain_wave.rst:151
+#: 25d73d002a2d4da2840030f50338b3c0
+msgid "What's next"
+msgstr "下一步"
+
+#: ../../source/example_gallery/open_domain_wave.rst:153
+#: a37d23d220534f63ba4c977422ce0f5a
+msgid ":doc:`complex` — the complex-valued assembly these operators build on."
+msgstr ":doc:`complex` —— 这些算子所基于的复值装配。"
+
+#: ../../source/example_gallery/open_domain_wave.rst:154
+#: 89d4b3c7a2d3414b8502391c4966a8cb
+msgid ""
+":doc:`phononic_crystal` — the periodic counterpart (Bloch-Floquet boundary "
+"conditions instead of absorbing ones)."
+msgstr ":doc:`phononic_crystal` —— 周期性对应物（布洛赫-弗洛凯边界条件取代吸收边界条件）。"
+
+#: ../../source/example_gallery/open_domain_wave.rst:156
+#: c09f00f3596746d59d29b3f078f43c6e
+msgid ":doc:`modal_analysis` — eigenmodes instead of driven responses."
+msgstr ":doc:`modal_analysis` —— 本征模态而非受迫响应。"
+
+#: ../../source/example_gallery/open_domain_wave.rst:157
+#: 0338e9184a9042d29343532083572f23
+msgid ""
+":class:`~tensormesh.FacetBilinearAssembler` in the :doc:`API reference "
+"<../api/assemble>` — write your own boundary bilinear forms (impedance, "
+"radiation damping, …)."
+msgstr ""
+":class:`~tensormesh.FacetBilinearAssembler` 详见 :doc:`API 参考 "
+"<../api/assemble>` —— 编写您自己的边界双线性形式（阻抗、辐射阻尼等）。"

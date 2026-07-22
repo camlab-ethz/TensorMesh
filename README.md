@@ -195,8 +195,8 @@ A small selection from the
 | **Basics** | [`examples/basics/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/basics) | Mesh visualization, basis functions, element gallery |
 | **Poisson** | [`examples/poisson/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/poisson) | 2D / 3D Poisson, batched RHS, h-adaptivity |
 | **Diffusion** | [`examples/diffusion/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/diffusion) | Heat equation, Allen-Cahn phase field |
-| **Wave** | [`examples/wave/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/wave) | Wave equation with central-difference scheme; Helmholtz; phononic-crystal band structures via Bloch-Floquet periodic BCs |
-| **Solid** | [`examples/solid/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/solid) | Cantilever beam, hyperelasticity, contact, plasticity |
+| **Wave** | [`examples/wave/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/wave) | Wave equation; Helmholtz; phononic-crystal band structures (Bloch-Floquet); open-domain acoustics/photonics with PML + plane-wave ports; waveguide mode analysis |
+| **Solid** | [`examples/solid/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/solid) | Cantilever beam, hyperelasticity, contact, plasticity, vibration modes + FRF |
 | **Fluid** | [`examples/fluid/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/fluid) | Taylor-Hood mixed elements throughout: Stokes convergence study, lid-driven cavity, cylinder flow, flow past obstacles, Rayleigh-Bénard, Taylor-Green |
 | **Magnetostatics** | [`examples/maxwell/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/maxwell) | 3D Maxwell: magnetic field around a current-carrying wire via a stabilized nodal curl-curl formulation |
 | **Inverse design** | [`examples/inverse_design/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/inverse_design) | Coefficient-field identification and density-based topology optimization, all via autograd |
@@ -234,9 +234,9 @@ The core workflow: **Mesh → Assembler → SparseMatrix → Condenser → Solve
 | ---                          | --- |
 | `tensormesh.mesh`            | Mesh data structure; built-in generators (`gen_rectangle`, `gen_circle`, `gen_cube`, `gen_L`, …); Gmsh / VTK-HDF5 I/O |
 | `tensormesh.element`         | Shape functions, quadrature rules, element transformations (geometric order 1–4) |
-| `tensormesh.assemble`        | `ElementAssembler`, `NodeAssembler`, `FacetAssembler` for matrix and vector assembly; `MixedElementAssembler` for multi-field block systems (Taylor-Hood, generalized order pairs) |
+| `tensormesh.assemble`        | `ElementAssembler`, `NodeAssembler`, `FacetAssembler`, `FacetBilinearAssembler` for matrix, vector, and boundary-matrix assembly; `MixedElementAssembler` for multi-field block systems (Taylor-Hood, generalized order pairs) |
 | `tensormesh.sparse`          | `SparseMatrix` (subclass of `torch_sla.SparseTensor`); linear & nonlinear sparse solves via torch-sla backends (SciPy / native PyTorch Krylov / cuDSS / STRUMPACK / PyAMG / AmgX) |
-| `tensormesh.operator`        | `Condenser` for Dirichlet boundary conditions via static condensation; `BlochReducer` for Bloch-Floquet periodic BCs |
+| `tensormesh.operator`        | `Condenser` for Dirichlet boundary conditions via static condensation; `BlochReducer` for Bloch-Floquet periodic BCs; `robin_operator` / `port_source` wave boundary operators |
 | `tensormesh.ode`             | Time integrators: explicit / implicit Euler, midpoint, Runge–Kutta |
 | `tensormesh.dataset`         | Parametric PDE dataset generation (Poisson, Heat, Wave, linear elasticity) |
 | `tensormesh.visualization`   | Matplotlib and PyVista plotting backends |

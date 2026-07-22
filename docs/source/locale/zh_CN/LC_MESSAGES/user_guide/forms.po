@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-22 15:34+0200\n"
+"POT-Creation-Date: 2026-07-22 17:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_CN <LL@li.org>\n"
@@ -948,6 +948,8 @@ msgid ":class:`~tensormesh.LaplaceElementAssembler`"
 msgstr ":class:`~tensormesh.LaplaceElementAssembler`"
 
 #: ../../source/user_guide/forms.rst:525 ../../source/user_guide/forms.rst:528
+#: ../../source/user_guide/forms.rst:531 ../../source/user_guide/forms.rst:534
+#: 129f662f3c894693b6b483d7cb8374df 3187d0a8007048058c45d9d35830fe1e
 #: b26e9796e6444dcdb22bec76182d76e2
 msgid "Element"
 msgstr "Element"
@@ -959,92 +961,131 @@ msgid ""
 " diffusion stiffness"
 msgstr ":math:`\\int \\nabla u \\cdot \\nabla v\\, \\mathrm{d}\\Omega`——拉普拉斯 / 扩散刚度"
 
-#: ../../source/user_guide/forms.rst:527 86c2e35f6bee44fd9c3ffbc2910be1ea
+#: ../../source/user_guide/forms.rst:527 69f8e66aa9e64ed08819619aa917d6ba
+msgid ":class:`~tensormesh.AnisotropicLaplaceElementAssembler`"
+msgstr ":class:`~tensormesh.AnisotropicLaplaceElementAssembler`"
+
+#: ../../source/user_guide/forms.rst:529 85bf81b41a69418c8ce3bceda5404f46
+#, python-brace-format
+msgid ""
+":math:`\\int (\\mathbf{A}\\nabla u) \\cdot \\nabla v\\, \\mathrm{d}\\Omega` "
+"— tensor (possibly complex) coefficient, e.g. a PML stretch"
+msgstr ""
+":math:`\\int (\\mathbf{A}\\nabla u) \\cdot \\nabla v\\, \\mathrm{d}\\Omega` "
+"— 张量（可能为复数）系数，例如 PML 拉伸"
+
+#: ../../source/user_guide/forms.rst:530 86c2e35f6bee44fd9c3ffbc2910be1ea
 msgid ":class:`~tensormesh.MassElementAssembler`"
 msgstr ":class:`~tensormesh.MassElementAssembler`"
 
-#: ../../source/user_guide/forms.rst:529 f223d46b324b4835884861cdeda2b7ec
+#: ../../source/user_guide/forms.rst:532 f223d46b324b4835884861cdeda2b7ec
 #, python-brace-format
 msgid ""
 ":math:`\\int u\\, v\\, \\mathrm{d}\\Omega` — mass matrix (transient, "
 ":math:`L^2` projection)"
 msgstr ":math:`\\int u\\, v\\, \\mathrm{d}\\Omega`——质量矩阵（瞬态、\\ :math:`L^2` 投影）"
 
-#: ../../source/user_guide/forms.rst:530 69f8e66aa9e64ed08819619aa917d6ba
+#: ../../source/user_guide/forms.rst:533 69f8e66aa9e64ed08819619aa917d6ba
+msgid ":class:`~tensormesh.assemble.ScaledMassElementAssembler`"
+msgstr ":class:`~tensormesh.assemble.ScaledMassElementAssembler`"
+
+#: ../../source/user_guide/forms.rst:535 f223d46b324b4835884861cdeda2b7ec
+#, python-brace-format
+msgid ""
+":math:`\\int c\\, u\\, v\\, \\mathrm{d}\\Omega` — coefficient mass "
+"(Helmholtz reaction terms, variable wave speed)"
+msgstr ":math:`\\int c\\, u\\, v\\, \\mathrm{d}\\Omega` — 系数质量（亥姆霍兹反应项、可变波速）"
+
+#: ../../source/user_guide/forms.rst:536 86c2e35f6bee44fd9c3ffbc2910be1ea
+msgid ":class:`~tensormesh.FacetBilinearAssembler`"
+msgstr ":class:`~tensormesh.FacetBilinearAssembler`"
+
+#: ../../source/user_guide/forms.rst:537 1c5db20cca4241b8bf8230ceb586de29
+msgid "Facet (matrix)"
+msgstr "Facet（矩阵）"
+
+#: ../../source/user_guide/forms.rst:538 e2724e9553454bfdbfd59b279b5cc775
+#, python-brace-format
+msgid ""
+"boundary bilinear forms :math:`\\int_\\Gamma c\\, u\\, v\\, \\mathrm{d}S` — "
+"Robin / impedance / port operators"
+msgstr "边界双线性形式 :math:`\\int_\\Gamma c\\, u\\, v\\, \\mathrm{d}S` — 罗宾 / 阻抗 / 端口算子"
+
+#: ../../source/user_guide/forms.rst:539 69f8e66aa9e64ed08819619aa917d6ba
 msgid ":class:`~tensormesh.LinearElasticityElementAssembler`"
 msgstr ":class:`~tensormesh.LinearElasticityElementAssembler`"
 
-#: ../../source/user_guide/forms.rst:531 3187d0a8007048058c45d9d35830fe1e
+#: ../../source/user_guide/forms.rst:540 3187d0a8007048058c45d9d35830fe1e
 msgid "Element (vector)"
 msgstr "Element（向量）"
 
-#: ../../source/user_guide/forms.rst:532 5c6e3bb443d948238261dbc13f2964d8
+#: ../../source/user_guide/forms.rst:541 5c6e3bb443d948238261dbc13f2964d8
 msgid "small-strain isotropic elasticity (parameters ``E``, ``nu``)"
 msgstr "小应变各向同性弹性（参数 ``E``\\ 、\\ ``nu``\\ ）"
 
-#: ../../source/user_guide/forms.rst:533 9e3db545d0e549278508a64a2bece9c6
+#: ../../source/user_guide/forms.rst:542 9e3db545d0e549278508a64a2bece9c6
 msgid ":class:`~tensormesh.assemble.NeoHookeanModel`"
 msgstr ":class:`~tensormesh.assemble.NeoHookeanModel`"
 
-#: ../../source/user_guide/forms.rst:534 ../../source/user_guide/forms.rst:537
+#: ../../source/user_guide/forms.rst:543 ../../source/user_guide/forms.rst:546
 #: 129f662f3c894693b6b483d7cb8374df
 msgid "Element (energy)"
 msgstr "Element（能量）"
 
-#: ../../source/user_guide/forms.rst:535 e21402d5d84145049afd5c526736f276
+#: ../../source/user_guide/forms.rst:544 e21402d5d84145049afd5c526736f276
 msgid "Neo-Hookean hyperelasticity strain energy density"
 msgstr "新胡克超弹性应变能密度"
 
-#: ../../source/user_guide/forms.rst:536 f16746ad82f34b68889739ba6cc64dcf
+#: ../../source/user_guide/forms.rst:545 f16746ad82f34b68889739ba6cc64dcf
 msgid ":class:`~tensormesh.assemble.J2Plasticity`"
 msgstr ":class:`~tensormesh.assemble.J2Plasticity`"
 
-#: ../../source/user_guide/forms.rst:538 3665438c7fcd4ac4a946a772e40101a5
+#: ../../source/user_guide/forms.rst:547 3665438c7fcd4ac4a946a772e40101a5
 msgid ":math:`J_2` plasticity with isotropic hardening, return-mapping"
 msgstr "带各向同性硬化的 :math:`J_2` 塑性，返回映射"
 
-#: ../../source/user_guide/forms.rst:539 17510e7e8c4340aaa5e169c550479a83
+#: ../../source/user_guide/forms.rst:548 17510e7e8c4340aaa5e169c550479a83
 msgid ":class:`~tensormesh.assemble.ContactAssembler`"
 msgstr ":class:`~tensormesh.assemble.ContactAssembler`"
 
-#: ../../source/user_guide/forms.rst:540 1c5db20cca4241b8bf8230ceb586de29
+#: ../../source/user_guide/forms.rst:549 1c5db20cca4241b8bf8230ceb586de29
 msgid "Facet (energy)"
 msgstr "Facet（能量）"
 
-#: ../../source/user_guide/forms.rst:541 98fb394101f946c787a297f91b09c08d
+#: ../../source/user_guide/forms.rst:550 98fb394101f946c787a297f91b09c08d
 msgid "base class for penalty / barrier contact and surface terms"
 msgstr "罚函数 / 障碍接触及面项的基类"
 
-#: ../../source/user_guide/forms.rst:542 7e2dddcfe84b4ce28ff75d9e1f3caece
+#: ../../source/user_guide/forms.rst:551 7e2dddcfe84b4ce28ff75d9e1f3caece
 msgid ":func:`~tensormesh.const_node_assembler`"
 msgstr ":func:`~tensormesh.const_node_assembler`"
 
-#: ../../source/user_guide/forms.rst:543 ../../source/user_guide/forms.rst:546
+#: ../../source/user_guide/forms.rst:552 ../../source/user_guide/forms.rst:555
 #: beb4225f0e744237a3a15201671a2cc5
 msgid "Node (factory)"
 msgstr "Node（工厂）"
 
-#: ../../source/user_guide/forms.rst:544 a9a3a1e77c8f45e1b776d4c8df66816a
+#: ../../source/user_guide/forms.rst:553 a9a3a1e77c8f45e1b776d4c8df66816a
 #, python-brace-format
 msgid ":math:`\\int c\\, v\\, \\mathrm{d}\\Omega` — uniform body force; returns a class"
 msgstr ":math:`\\int c\\, v\\, \\mathrm{d}\\Omega`——均匀体力；返回一个类"
 
-#: ../../source/user_guide/forms.rst:545 b88d621a43ca469782dc6303c813cd73
+#: ../../source/user_guide/forms.rst:554 b88d621a43ca469782dc6303c813cd73
 msgid ":func:`~tensormesh.func_node_assembler`"
 msgstr ":func:`~tensormesh.func_node_assembler`"
 
-#: ../../source/user_guide/forms.rst:547 1e590554e3cf4689be43b53d048f3a39
+#: ../../source/user_guide/forms.rst:556 1e590554e3cf4689be43b53d048f3a39
 #, python-brace-format
 msgid ""
 ":math:`\\int f(\\mathbf{x})\\, v\\, \\mathrm{d}\\Omega` — spatially varying "
 "load; returns a class"
 msgstr ":math:`\\int f(\\mathbf{x})\\, v\\, \\mathrm{d}\\Omega`——随空间变化的载荷；返回一个类"
 
-#: ../../source/user_guide/forms.rst:549 ca7338605e6f41239d3db001077d2b2b
+#: ../../source/user_guide/forms.rst:558 ca7338605e6f41239d3db001077d2b2b
 msgid "Factory style for the node loads:"
 msgstr "节点载荷的工厂式写法："
 
-#: ../../source/user_guide/forms.rst:561 dd796c00dbd34983a9e668b92714f567
+#: ../../source/user_guide/forms.rst:570 dd796c00dbd34983a9e668b92714f567
 msgid ""
 "The factories exist because Python class objects can't be partially applied;"
 " a factory returns a freshly minted subclass that bakes the constant or "
@@ -1053,17 +1094,17 @@ msgstr ""
 "之所以需要这些工厂，是因为 Python 的类对象无法被偏应用（partial application）；工厂会返回一个全新的子类，把常量或函数固化进 "
 "``__post_init__``\\ 。"
 
-#: ../../source/user_guide/forms.rst:569 b416a4be160a4f21b0bebcfe5a83255f
+#: ../../source/user_guide/forms.rst:578 b416a4be160a4f21b0bebcfe5a83255f
 msgid "Energy-based assemblers (``element_energy`` + ``.energy()``)"
 msgstr "基于能量的装配器（\\ ``element_energy`` + ``.energy()``\\ ）"
 
-#: ../../source/user_guide/forms.rst:571 fcfec7f14c5645fead5352f007575fcc
+#: ../../source/user_guide/forms.rst:580 fcfec7f14c5645fead5352f007575fcc
 msgid ""
 "For nonlinear materials the most natural quantity to define is the *strain "
 "energy density* :math:`\\Psi`, not the residual or stiffness:"
 msgstr "对于非线性材料，最自然的定义量是 *应变能密度* :math:`\\Psi`\\ ，而非残差或刚度："
 
-#: ../../source/user_guide/forms.rst:574 be8ce8f054094b2bb4e9d5cbef189cdf
+#: ../../source/user_guide/forms.rst:583 be8ce8f054094b2bb4e9d5cbef189cdf
 msgid ""
 "\\Pi(\\mathbf{u}) \\;=\\; \\int_\\Omega \\Psi(\\nabla \\mathbf{u})\\, \\mathrm{d}\\Omega,\n"
 "\\qquad\n"
@@ -1077,7 +1118,7 @@ msgstr ""
 "\\qquad\n"
 "\\mathbf{K}_\\text{tan} \\;=\\; \\frac{\\partial^2 \\Pi}{\\partial \\mathbf{u}^2}."
 
-#: ../../source/user_guide/forms.rst:582 265b7e6c4b2e448d928d96816cee2069
+#: ../../source/user_guide/forms.rst:591 265b7e6c4b2e448d928d96816cee2069
 msgid ""
 ":class:`~tensormesh.ElementAssembler` supports this pattern via a parallel "
 "method, ``ElementAssembler.energy``, that integrates an ``element_energy`` "
@@ -1092,7 +1133,7 @@ msgstr ""
 ":func:`torch.autograd.functional.hessian`\\ （或一种适合 Krylov 方法的 Hessian-"
 "向量积）则给出切线刚度："
 
-#: ../../source/user_guide/forms.rst:602 809d6531baf5464090741cf7235cf4ed
+#: ../../source/user_guide/forms.rst:611 809d6531baf5464090741cf7235cf4ed
 msgid ""
 "Use the matrix-based path (``__call__`` returning a ``SparseMatrix``) for "
 "*linear* and *bilinear-symmetric* problems where you already have a closed-"
@@ -1103,15 +1144,15 @@ msgstr ""
 "对于已有闭式被积函数的 *线性* 与 *双线性对称* 问题，请使用基于矩阵的路径（\\ ``__call__`` 返回 "
 "``SparseMatrix``\\ ）；对于超弹性、塑性，以及任何通过对本构关系做自动微分能最简洁地表达物理的情形，请使用能量路径。"
 
-#: ../../source/user_guide/forms.rst:610 b1ea08e3fc7947e3b885a45c9409f6f0
+#: ../../source/user_guide/forms.rst:619 b1ea08e3fc7947e3b885a45c9409f6f0
 msgid "A custom form: reaction-diffusion"
 msgstr "一个自定义形式：反应-扩散"
 
-#: ../../source/user_guide/forms.rst:612 659ce9d215cf4a37a760c893820f94e1
+#: ../../source/user_guide/forms.rst:621 659ce9d215cf4a37a760c893820f94e1
 msgid "Combining stiffness and mass in one assembler:"
 msgstr "在一个装配器中组合刚度与质量："
 
-#: ../../source/user_guide/forms.rst:614 67c481ffcc164641aa0c2c163d2a0b6b
+#: ../../source/user_guide/forms.rst:623 67c481ffcc164641aa0c2c163d2a0b6b
 #, python-brace-format
 msgid ""
 "a(u, v) \\;=\\; \\int_{\\Omega} \\nabla u \\cdot \\nabla v \\;+\\; \\kappa "
@@ -1120,17 +1161,17 @@ msgstr ""
 "a(u, v) \\;=\\; \\int_{\\Omega} \\nabla u \\cdot \\nabla v \\;+\\; \\kappa "
 "\\, u v \\, \\mathrm{d}\\Omega"
 
-#: ../../source/user_guide/forms.rst:618 573d263c9e5145978ad55b67482d6dc2
+#: ../../source/user_guide/forms.rst:627 573d263c9e5145978ad55b67482d6dc2
 msgid "is just two terms inside ``forward``:"
 msgstr "在 ``forward`` 内部不过是两项之和："
 
-#: ../../source/user_guide/forms.rst:631 7e03c5b764ee4d5ca0a4fcf55f7cfeb3
+#: ../../source/user_guide/forms.rst:640 7e03c5b764ee4d5ca0a4fcf55f7cfeb3
 msgid ""
 "Argument order doesn't matter — the dispatch is by name. Mixing in "
 "``point_data`` is just more parameters:"
 msgstr "参数顺序无关紧要——分派是按名称进行的。把 ``point_data`` 混入其中也只是多几个参数而已："
 
-#: ../../source/user_guide/forms.rst:644 fc8f96204e694cd89ca33408afb7901f
+#: ../../source/user_guide/forms.rst:653 fc8f96204e694cd89ca33408afb7901f
 msgid ""
 "This generalises straightforwardly: anything you can write as one algebraic "
 "expression in PyTorch can go inside ``forward``, as long as the return shape"
@@ -1139,11 +1180,11 @@ msgstr ""
 "这一点可以直截了当地推广：只要返回形状符合 :ref:`forms-contract` 中的约定，任何你能在 PyTorch "
 "中写成单一代数表达式的东西都可以放进 ``forward``\\ 。"
 
-#: ../../source/user_guide/forms.rst:652 73fca8f13acd4baaa09c192dfc9fb0a7
+#: ../../source/user_guide/forms.rst:661 73fca8f13acd4baaa09c192dfc9fb0a7
 msgid "Memory batching with ``batch_size``"
 msgstr "用 ``batch_size`` 进行内存分批"
 
-#: ../../source/user_guide/forms.rst:654 db6a29e870a94c5c90dd1753a8de8f14
+#: ../../source/user_guide/forms.rst:663 db6a29e870a94c5c90dd1753a8de8f14
 msgid ""
 "For very fine meshes or high-order elements, holding all per-element "
 "quadrature tensors in memory at once may not fit. The assembler ``__call__``"
@@ -1153,24 +1194,24 @@ msgstr ""
 "对于非常细的网格或高阶单元，把所有逐单元的求积张量一次性放进内存可能装不下。装配器的 ``__call__`` 接受一个 ``batch_size`` "
 "参数，它把 *求积* 维度切分成若干块并逐块累加贡献："
 
-#: ../../source/user_guide/forms.rst:663 3695e5d6913844f28547f97482bceccc
+#: ../../source/user_guide/forms.rst:672 3695e5d6913844f28547f97482bceccc
 msgid ""
 "This is a memory knob, not problem-level vectorisation; for the latter see "
 ":doc:`batched_workflows`."
 msgstr "这是一个内存控制旋钮，而非问题级的向量化；后者请参见 :doc:`batched_workflows`\\ 。"
 
-#: ../../source/user_guide/forms.rst:666 802f9a82d12e4be8848d0ba4a8bb2313
+#: ../../source/user_guide/forms.rst:675 802f9a82d12e4be8848d0ba4a8bb2313
 msgid "How to disable batching:"
 msgstr "如何禁用分批处理："
 
-#: ../../source/user_guide/forms.rst:668 d22d6dfabbe54a1294a5433b32fb1bcc
+#: ../../source/user_guide/forms.rst:677 d22d6dfabbe54a1294a5433b32fb1bcc
 msgid ""
 ":class:`~tensormesh.ElementAssembler` — default ``batch_size=-1`` processes "
 "all quadrature at once."
 msgstr ""
 ":class:`~tensormesh.ElementAssembler`——默认 ``batch_size=-1``\\ ，一次性处理所有求积点。"
 
-#: ../../source/user_guide/forms.rst:670 54cd42554b4545eab37fb620a306cda3
+#: ../../source/user_guide/forms.rst:679 54cd42554b4545eab37fb620a306cda3
 msgid ""
 ":class:`~tensormesh.NodeAssembler` — default ``batch_size=1`` processes one "
 "quadrature point at a time; pass ``-1`` or ``None`` to disable batching and "
@@ -1179,14 +1220,14 @@ msgstr ""
 ":class:`~tensormesh.NodeAssembler`——默认 ``batch_size=1``\\ ，每次处理一个求积点；传入 "
 "``-1`` 或 ``None`` 可禁用分批处理并一次性处理所有求积点。"
 
-#: ../../source/user_guide/forms.rst:673 4512708bf47a4dab81f455d0092496c9
+#: ../../source/user_guide/forms.rst:682 4512708bf47a4dab81f455d0092496c9
 msgid ""
 ":class:`~tensormesh.FacetAssembler` — does not expose ``batch_size``; facet "
 "integrals are small enough that batching has not been needed."
 msgstr ""
 ":class:`~tensormesh.FacetAssembler`——不暴露 ``batch_size``\\ ；面积分足够小，至今无需分批处理。"
 
-#: ../../source/user_guide/forms.rst:676 ee5bc11c280f4d8997e89351536e946a
+#: ../../source/user_guide/forms.rst:685 ee5bc11c280f4d8997e89351536e946a
 msgid ""
 "Any positive integer ``batch_size`` produces the same assembled result as "
 "the un-batched call. When ``batch_size`` does not evenly divide the per-"
@@ -1197,11 +1238,11 @@ msgstr ""
 "任何正整数 ``batch_size`` 都会得到与未分批调用相同的装配结果。当 ``batch_size`` "
 "不能整除逐单元的求积点数时，循环会在末尾多跑一个（较短的）批次；大于 ``n_quadrature`` 的值则直接退化为单个完整批次。"
 
-#: ../../source/user_guide/forms.rst:684 68fafcf02c574de88143b79b8b4d01a8
+#: ../../source/user_guide/forms.rst:693 68fafcf02c574de88143b79b8b4d01a8
 msgid "Speeding up NodeAssembler with ``compile``"
 msgstr "用 ``compile`` 加速 NodeAssembler"
 
-#: ../../source/user_guide/forms.rst:686 f8e689f043ef46099bd1a98f98cb1bc2
+#: ../../source/user_guide/forms.rst:695 f8e689f043ef46099bd1a98f98cb1bc2
 msgid ""
 ":class:`~tensormesh.NodeAssembler` ships a fast path that bypasses "
 ":func:`torch.vmap` and uses direct broadcast operations instead. Enable it "
@@ -1210,7 +1251,7 @@ msgstr ""
 ":class:`~tensormesh.NodeAssembler` 提供了一条快速路径，它绕过 :func:`torch.vmap`\\ "
 "，转而使用直接的广播运算。通过链式调用 :meth:`~tensormesh.NodeAssembler.compile` 即可启用："
 
-#: ../../source/user_guide/forms.rst:707 ebcd09f6bcfc4bf282293c470d3e05c7
+#: ../../source/user_guide/forms.rst:716 ebcd09f6bcfc4bf282293c470d3e05c7
 msgid ""
 "The ``mode`` argument additionally controls whether ``torch.compile`` is "
 "layered on top: ``\"disable\"`` (default) does the vmap bypass only, "
@@ -1227,19 +1268,19 @@ msgstr ""
 ":meth:`~tensormesh.NodeAssembler.flat_mode` 是 ``compile(mode=\"disable\")`` "
 "的同义写法。"
 
-#: ../../source/user_guide/forms.rst:715 e9c4ffc57e444f63b0dce4477a767809
+#: ../../source/user_guide/forms.rst:724 e9c4ffc57e444f63b0dce4477a767809
 msgid ""
 "The fast path only fires when **all three** of the following hold; if any of"
 " them fails the call falls back transparently to the vmap path:"
 msgstr "只有当以下 **三个条件全部** 满足时，快速路径才会启用；若其中任何一个不满足，调用会透明地回退到 vmap 路径："
 
-#: ../../source/user_guide/forms.rst:718 5a6a4c2e2b2948aaaba2069369153249
+#: ../../source/user_guide/forms.rst:727 5a6a4c2e2b2948aaaba2069369153249
 msgid ""
 "``.compile()`` has been called on the assembler (``is_compiled`` returns "
 "``True``)."
 msgstr "已对该装配器调用过 ``.compile()``\\ （\\ ``is_compiled`` 返回 ``True``\\ ）。"
 
-#: ../../source/user_guide/forms.rst:720 745ad3bb8af34121969a205e49b1af14
+#: ../../source/user_guide/forms.rst:729 745ad3bb8af34121969a205e49b1af14
 msgid ""
 "The mesh has exactly one element type (``len(self.element_types) == 1``). "
 "Mixed-element meshes use the vmap path even with compile enabled."
@@ -1247,7 +1288,7 @@ msgstr ""
 "网格恰好只有一种单元类型（\\ ``len(self.element_types) == 1``\\ ）。即便启用了 compile，混合单元网格仍走 "
 "vmap 路径。"
 
-#: ../../source/user_guide/forms.rst:723 0d1df5d2d8ea4b4a8a32c6f109f01ad4
+#: ../../source/user_guide/forms.rst:732 0d1df5d2d8ea4b4a8a32c6f109f01ad4
 msgid ""
 "No ``func=`` override is passed at call time. Calling ``asm(func=alt_form)``"
 " always goes through the vmap path so that you can swap integrands without "
@@ -1256,7 +1297,7 @@ msgstr ""
 "调用时未传入 ``func=`` 覆盖。调用 ``asm(func=alt_form)`` 始终走 vmap "
 "路径，这样你就能在不重新编译的情况下替换被积函数。"
 
-#: ../../source/user_guide/forms.rst:729 e07382e9ea3444a58a72d45f379354ca
+#: ../../source/user_guide/forms.rst:738 e07382e9ea3444a58a72d45f379354ca
 #, python-brace-format
 msgid ""
 "The fast path replaces vmap with explicit broadcast operations, which "
@@ -1277,17 +1318,17 @@ msgstr ""
 "路径上更简单。快速路径也不会自动提供 ``x``\\ ；如果你需要坐标，请用自定义名称把它传进来（\\ ``point_data={\"xy\": "
 "mesh.points}``\\ ，然后 ``forward(self, xy, v)``\\ ）。"
 
-#: ../../source/user_guide/forms.rst:743 9c8fee9d0dfb481f86158907c01c3325
+#: ../../source/user_guide/forms.rst:752 9c8fee9d0dfb481f86158907c01c3325
 msgid "Writing your own assembler"
 msgstr "编写你自己的装配器"
 
-#: ../../source/user_guide/forms.rst:745 d1c546de43be4bc0aac694d877a8b220
+#: ../../source/user_guide/forms.rst:754 d1c546de43be4bc0aac694d877a8b220
 msgid ""
 "The library's design assumes most users will, at some point, write a custom "
 "assembler. Here is the practical recipe."
 msgstr "本库的设计假定大多数用户迟早都会编写自定义装配器。下面是实用的操作步骤。"
 
-#: ../../source/user_guide/forms.rst:748 b130dc00ca9245d6800199fddc8abb22
+#: ../../source/user_guide/forms.rst:757 b130dc00ca9245d6800199fddc8abb22
 msgid ""
 "**1. Pick the base class** by what you're assembling — a matrix "
 "(:class:`~tensormesh.ElementAssembler`), a load vector "
@@ -1303,7 +1344,7 @@ msgstr ""
 ":class:`~tensormesh.ElementAssembler` 上的 ``.energy()`` 路径，而不要手写残差 + "
 "刚度——自动微分会替你完成。"
 
-#: ../../source/user_guide/forms.rst:756 b629c3008ea0435ba6ee7f526bc63618
+#: ../../source/user_guide/forms.rst:765 b629c3008ea0435ba6ee7f526bc63618
 msgid ""
 "**2. Implement ``forward(self, ...)``**. Use only the parameter names listed"
 " in :ref:`forms-contract` (``u``, ``v``, ``gradu``, ``gradv``, ``x``, "
@@ -1318,7 +1359,7 @@ msgstr ""
 "``scalar_data`` 传入的键。以正确的阶数返回单点被积函数：标量问题返回 ``[B, B]``\\ （Element）或 ``[B]``\\"
 " （Node / Facet）；分块问题返回 ``[B, B, H, H]`` 或 ``[B, H]``\\ 。"
 
-#: ../../source/user_guide/forms.rst:764 45c156da168846cdb2b1eeda94d25fd4
+#: ../../source/user_guide/forms.rst:773 45c156da168846cdb2b1eeda94d25fd4
 msgid ""
 "**3. Stash parameters in ``__post_init__``**, not ``__init__``. The base "
 "class's ``__init__`` wires up the projector, transformation, and edges; "
@@ -1329,7 +1370,7 @@ msgstr ""
 "负责配置投影器、变换和边；\\ ``__post_init__`` 紧随其后运行，并接收构造函数的关键字参数，\\ ``self.E = E`` "
 "这类语句就该写在这里。"
 
-#: ../../source/user_guide/forms.rst:769 7f0f0de56f454188afdc7ebd9044f475
+#: ../../source/user_guide/forms.rst:778 7f0f0de56f454188afdc7ebd9044f475
 msgid ""
 "**4. Build the assembler via** "
 ":meth:`~tensormesh.ElementAssembler.from_mesh` **and call it.** Constructor "
@@ -1340,15 +1381,15 @@ msgstr ""
 "构造函数的关键字参数会被转发给 ``__post_init__``\\ 。该实例是可调用的（并且是一个 "
 ":class:`torch.nn.Module`\\ ，因此 ``.to(device)`` / ``.double()`` 都能直接生效）。"
 
-#: ../../source/user_guide/forms.rst:774 3a6f7857b5664fb5821e2380cb7db1bd
+#: ../../source/user_guide/forms.rst:783 3a6f7857b5664fb5821e2380cb7db1bd
 msgid "A self-contained template covering both styles:"
 msgstr "一个涵盖两种写法的自包含模板："
 
-#: ../../source/user_guide/forms.rst:798 33162a9bb443428a98c318d987c46d4d
+#: ../../source/user_guide/forms.rst:807 33162a9bb443428a98c318d987c46d4d
 msgid "**Debugging tips**"
 msgstr "**调试技巧**"
 
-#: ../../source/user_guide/forms.rst:800 b9da1a7964b24eb4a2c0f1bfa5d34e78
+#: ../../source/user_guide/forms.rst:809 b9da1a7964b24eb4a2c0f1bfa5d34e78
 msgid ""
 "If the dispatch fails with ``ValueError: <name> is not supported``, the "
 "parameter name doesn't match any built-in or any key you passed in the data "
@@ -1359,7 +1400,7 @@ msgstr ""
 "，说明该参数名既不匹配任何内置名称，也不匹配你在数据字典中传入的任何键。请检查诸如 ``grad_u`` 与 ``gradu``\\ 、或 "
 "``displacment`` 与 ``displacement`` 之类的拼写错误。"
 
-#: ../../source/user_guide/forms.rst:804 ec847277b6ea4203aa57dd419085201c
+#: ../../source/user_guide/forms.rst:813 ec847277b6ea4203aa57dd419085201c
 msgid ""
 "If you hit a shape error inside ``forward``, set ``batch_size=1`` and call "
 "the assembler on a one-element mesh; the tensors handed in are then small "
@@ -1371,7 +1412,7 @@ msgstr ""
 "并在仅含一个单元的网格上调用装配器；这样传入的张量就足够小，便于 ``print`` 和分析。请记住 ``forward`` 是 *在 vmap 下* "
 "运行的——你看到的张量已经去掉了前导的单元 / 求积点维度。"
 
-#: ../../source/user_guide/forms.rst:809 399969f3f7c644b7847235dfecbc0d1a
+#: ../../source/user_guide/forms.rst:818 399969f3f7c644b7847235dfecbc0d1a
 msgid ""
 "For sanity-checking the assembled output, run a known integral: a "
 "``MassElementAssembler`` should give ``1^T M 1 == area`` for the unit "
@@ -1385,39 +1426,39 @@ msgstr ""
 "``LaplaceElementAssembler`` 应给出零残差。\\ ``tests/assemble/test_facet.py`` "
 "文件中就有一整套这样的闭式检查。"
 
-#: ../../source/user_guide/forms.rst:817 55231e65bcb2470db458c625c863dd4b
+#: ../../source/user_guide/forms.rst:826 55231e65bcb2470db458c625c863dd4b
 msgid ""
 "For exhaustive examples covering hyperelasticity, plasticity, contact, and "
 "fluid problems, see the :doc:`/example_gallery/index`."
 msgstr "若需涵盖超弹性、塑性、接触和流体问题的详尽示例，请参见 :doc:`/example_gallery/index`\\ 。"
 
-#: ../../source/user_guide/forms.rst:822 c07eba80f5e64b689e3237e31e576c51
+#: ../../source/user_guide/forms.rst:831 c07eba80f5e64b689e3237e31e576c51
 msgid "What's next"
 msgstr "下一步"
 
-#: ../../source/user_guide/forms.rst:824 9f493586a8a44f74a074b6e80ec795f1
+#: ../../source/user_guide/forms.rst:833 9f493586a8a44f74a074b6e80ec795f1
 msgid ""
 ":doc:`boundary_conditions` — apply Dirichlet BCs to the matrix and vector "
 "you just assembled."
 msgstr ":doc:`boundary_conditions`——把狄利克雷边界条件施加到你刚刚装配好的矩阵和向量上。"
 
-#: ../../source/user_guide/forms.rst:826 df5c7b124d6a4ff8a133edb1d14e798e
+#: ../../source/user_guide/forms.rst:835 df5c7b124d6a4ff8a133edb1d14e798e
 msgid ":doc:`linear_solvers` — solve ``K x = b`` with the right backend."
 msgstr ":doc:`linear_solvers`——用合适的后端求解 ``K x = b``\\ 。"
 
-#: ../../source/user_guide/forms.rst:827 3078637e49fd44b4a892ee85b7d80917
+#: ../../source/user_guide/forms.rst:836 3078637e49fd44b4a892ee85b7d80917
 msgid ""
 ":doc:`differentiability` — backprop a loss through assembly and solve, for "
 "inverse problems and topology optimisation."
 msgstr ":doc:`differentiability`——让损失反向传播穿过装配与求解，用于反问题和拓扑优化。"
 
-#: ../../source/user_guide/forms.rst:829 df1c03489ac1467c8bf6c56dcab056ab
+#: ../../source/user_guide/forms.rst:838 df1c03489ac1467c8bf6c56dcab056ab
 msgid ""
 ":doc:`batched_workflows` — go from \"one mesh per call\" to \"thousands of "
 "meshes per call\" for ML dataset generation."
 msgstr ":doc:`batched_workflows`——从“每次调用一个网格”进阶到“每次调用数千个网格”，用于机器学习数据集生成。"
 
-#: ../../source/user_guide/forms.rst:831 41e295653eea4e139b6d90036c6d0b12
+#: ../../source/user_guide/forms.rst:840 41e295653eea4e139b6d90036c6d0b12
 msgid ""
 ":doc:`/example_gallery/index` — worked examples for elasticity, "
 "hyperelasticity, plasticity, contact, and fluids."

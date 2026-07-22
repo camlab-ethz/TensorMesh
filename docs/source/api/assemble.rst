@@ -40,6 +40,11 @@ Facet Assembler
     :show-inheritance:
     :exclude-members: dimension, edges, element_types, elements, n_points, projector, transformation, facet_mask
 
+.. autoclass:: tensormesh.FacetBilinearAssembler
+    :members:
+    :show-inheritance:
+    :exclude-members: dimension, edges, element_types, elements, n_points, projector, transformation, facet_mask
+
 Node Assembler
 --------------
 
@@ -56,7 +61,15 @@ Built-in Assemblers
     :members:
     :show-inheritance:
 
+.. autoclass:: tensormesh.AnisotropicLaplaceElementAssembler
+    :members:
+    :show-inheritance:
+
 .. autoclass:: tensormesh.MassElementAssembler
+    :members:
+    :show-inheritance:
+
+.. autoclass:: tensormesh.assemble.ScaledMassElementAssembler
     :members:
     :show-inheritance:
 

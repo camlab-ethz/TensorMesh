@@ -30,3 +30,15 @@ Plastic constitutive primitives, including the pure Drucker-Prager return mappin
     :members:
     :show-inheritance:
   
+pml
+---
+
+Stretched-coordinate PML coefficient fields for open-domain wave
+problems — consumed by
+:class:`~tensormesh.AnisotropicLaplaceElementAssembler` and
+:class:`~tensormesh.assemble.ScaledMassElementAssembler`; see the
+:doc:`open-domain wave examples </example_gallery/open_domain_wave>`.
+
+.. automodule:: tensormesh.functional.pml
+    :members:
+    :show-inheritance:

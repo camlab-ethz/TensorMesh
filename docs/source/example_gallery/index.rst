@@ -51,6 +51,20 @@ a concrete TensorMesh script you can run.
 
       Bloch-Floquet band structures and slab transmission, validated against COMSOL.
 
+   .. grid-item-card:: Open-Domain Wave
+      :link: open_domain_wave
+      :link-type: doc
+      :img-top: /_static/wave/optical_ring_resonator.png
+
+      PML and plane-wave ports: an acoustic Helmholtz resonator and a photonic microdisk.
+
+   .. grid-item-card:: Modal Analysis
+      :link: modal_analysis
+      :link-type: doc
+      :img-top: /_static/wave/waveguide_modes.png
+
+      Generalized eigenproblems: dielectric waveguide modes and cantilever vibration.
+
    .. grid-item-card:: Solid Mechanics
       :link: solid/index
       :link-type: doc
@@ -104,6 +118,8 @@ a concrete TensorMesh script you can run.
    wave
    complex
    phononic_crystal
+   open_domain_wave
+   modal_analysis
    solid/index
    fluid/index
    maxwell

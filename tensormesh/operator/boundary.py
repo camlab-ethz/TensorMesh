@@ -61,7 +61,7 @@ def robin_operator(mesh: Mesh,
     boundary_mask : str, torch.Tensor, or None
         Which boundary to integrate over (a per-node boolean tensor, a named
         mask, or ``None`` for the full boundary) — passed to
-        :meth:`FacetBilinearAssembler.from_mesh`.
+        ``FacetBilinearAssembler.from_mesh``.
     coeff : float, complex, or torch.Tensor
         Impedance/absorption coefficient :math:`c`; a scalar (e.g. ``1j*k`` for a
         first-order absorbing boundary) or a nodal ``[n_points]`` field.
