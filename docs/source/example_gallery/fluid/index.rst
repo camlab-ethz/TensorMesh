@@ -1,39 +1,59 @@
 Fluid Mechanics
 ===============
 
-A family of worked Navier-Stokes examples in ``examples/fluid/``,
-from the lid-driven cavity benchmark (2D and 3D) to a Rayleigh-Bénard
-convection problem coupling momentum and energy. They all share the
-same underlying recipe — a custom ``NavierStokesAssembler`` (or its
-transient cousin) defined in the example file, SUPG/PSPG
-stabilization for equal-order P1-P1 elements, Picard linearization
-for steady solves, implicit Euler for transient ones — so once you
-have read :doc:`cavity` the rest are essentially geometry and
-boundary-condition variations.
+A family of worked incompressible-flow examples in ``examples/fluid/``,
+from a manufactured Stokes problem with a convergence study to
+Rayleigh-Bénard convection coupling momentum and energy. They are all
+built on **Taylor-Hood P2-P1 mixed assembly**: a quadratic velocity and
+a linear pressure declared on one
+:class:`~tensormesh.MixedElementAssembler`, so the pair is inf-sup
+(LBB) stable and the weak form *is* the whole discretization — no
+SUPG/PSPG stabilization, no ``tau`` tuning.
 
-The ``NavierStokesAssembler`` itself lives **in the example
-folder**, not in ``tensormesh.assemble``. It is intentionally
-example-grade: the production-quality version will move into the
-core library when the assembler API for vector-valued problems
-stabilizes.
+The recipe is shared across the family (read
+:doc:`stokes_taylor_hood` first, then the rest are physics and
+boundary-condition variations):
+
+* declare ``Field(trial="u", test="v", order=2, components=d)`` and
+  ``Field(trial="p", test="q", order=1)``, write the scalar integrand
+  in ``forward``;
+* steady problems linearize convection with **Picard** (the lagged
+  velocity enters as data), transient ones add a backward-Euler mass
+  term and a ``forward_vector`` load;
+* boundary conditions go through ``assembler.layout`` masks and the
+  unchanged :class:`~tensormesh.Condenser`.
+
+On generated order-2 meshes the velocity nodes coincide with the mesh
+points; on linear gmsh/:class:`~tensormesh.MeshGen` meshes (cylinder,
+obstacles) the quadratic space is created **topologically** — no
+re-meshing at order 2. See :doc:`../../user_guide/mixed_assembly` for
+the machinery.
 
 .. grid:: 1 2 3 3
    :gutter: 4
+
+   .. grid-item-card:: Taylor-Hood Stokes
+      :link: stokes_taylor_hood
+      :link-type: doc
+      :img-top: /_static/fluid/stokes_taylor_hood_convergence.png
+
+      Manufactured Stokes solution + convergence study — the mixed-assembly tutorial.
 
    .. grid-item-card:: Lid-Driven Cavity
       :link: cavity
       :link-type: doc
       :img-top: /_static/fluid/cavity_results.png
 
-      Steady NS at Re=100, SUPG/PSPG stabilization, Picard iteration —
-      in 2D and 3D with one dimension-generic assembler.
+      Steady NS at Re=100, Picard iteration — in 2D and 3D with one
+      dimension-generic weak form.
 
    .. grid-item-card:: Cylinder Flow (Vortex Shedding)
       :link: cylinder_flow
       :link-type: doc
       :img-top: /_static/fluid/vortex_street.gif
 
-      Transient DFG benchmark, implicit Euler, drag/lift/Strouhal post-processing.
+      Transient DFG benchmark: backward Euler, topological P2 on a gmsh mesh,
+      vorticity via mixed load vectors.
 
    .. grid-item-card:: Flow Past Multiple Obstacles
       :link: flow_obstacles
@@ -47,7 +67,8 @@ stabilizes.
       :link-type: doc
       :img-top: /_static/fluid/rayleigh_benard.png
 
-      Boussinesq-coupled momentum + heat transport, buoyancy-driven flow.
+      Three-field Boussinesq system — velocity, pressure, and temperature
+      in one block matrix.
 
    .. grid-item-card:: Taylor-Green Vortex
       :link: taylor_green
@@ -61,6 +82,7 @@ stabilizes.
    :hidden:
    :maxdepth: 1
 
+   stokes_taylor_hood
    cavity
    cylinder_flow
    flow_obstacles

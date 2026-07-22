@@ -6,25 +6,21 @@ Navier-Stokes solvers. The physics is simple — a box of fluid, the top
 wall slides at unit speed, no-slip on the other walls, no body forces —
 but at moderate Reynolds numbers it already exhibits a primary vortex
 plus secondary corner eddies that any reasonable solver must reproduce.
-Two scripts in ``examples/fluid/cavity/`` run the steady-state problem at
-:math:`\mathrm{Re} = 100`: ``cavity.py`` on a triangulated unit square
-and ``cavity_3d.py`` on a tetrahedral unit cube. They share a single
-**dimension-generic** ``NavierStokesAssembler``, so the 3D case is
-essentially a mesh swap.
+Two scripts in ``examples/fluid/cavity/`` run the steady-state problem
+at :math:`\mathrm{Re} = 100` with **Taylor-Hood P2-P1 mixed
+elements**: ``cavity.py`` on a triangulated unit square and
+``cavity_3d.py`` on a tetrahedral unit cube. They share the same
+scalar weak-form integrand — it is dimension-generic, so the 3D case
+is essentially a mesh swap plus ``components=3``.
 
-.. caution::
-
-   TensorMesh does not yet natively support **mixed-element function
-   spaces** for coupled multi-physics — there is no built-in Taylor-Hood
-   (e.g. P2 velocity / P1 pressure) velocity-pressure pairing that would
-   satisfy the inf-sup (LBB) condition out of the box. These examples
-   therefore use **equal-order P1-P1** for every field and recover
-   stability with **SUPG/PSPG stabilization**, which is why the weak form
-   below carries the extra residual-based ``tau`` terms. Native support
-   for mixed elements and tighter coupled-multiphysics workflows is on the
-   roadmap and will be added incrementally; until then, treat the
-   ``NavierStokesAssembler`` here as an example-grade pattern rather than a
-   stable library API.
+Because the P2-P1 pair satisfies the discrete inf-sup (LBB) condition,
+the plain Galerkin form is stable as-is: there are **no SUPG/PSPG
+stabilization terms and no** ``tau`` **parameter** anywhere in these
+scripts. The block bookkeeping (two fields, different orders,
+different node sets) is owned by
+:class:`~tensormesh.MixedElementAssembler` — see
+:doc:`../../user_guide/mixed_assembly` for the machinery and
+:doc:`stokes_taylor_hood` for the linear (Stokes) warm-up.
 
 
 Problem
@@ -45,200 +41,165 @@ with :math:`\Omega = (0, 1)^d`, :math:`\mu = 1/\mathrm{Re}`,
 
 * top lid (:math:`y = 1`): :math:`\mathbf{u} = (1, 0, \dots)` (moving wall)
 * other walls: :math:`\mathbf{u} = \mathbf{0}` (no-slip)
-* one node: :math:`p = 0` (pressure pin to fix the null space).
+* one pressure DOF pinned to zero (the cavity is enclosed, so the
+  pressure is only determined up to a constant).
 
 
-Weak form and stabilization
----------------------------
+Weak form and Picard linearization
+----------------------------------
 
-The standard mixed weak form treats velocity and pressure together.
-Because the scripts use **equal-order** P1-P1 elements for both, the
-discrete LBB condition is violated and the naive Galerkin formulation has
-spurious pressure modes. The fix is **SUPG/PSPG stabilization**: add a
-residual-based perturbation to both the momentum and the continuity
-equations, scaled by a mesh-size-dependent parameter :math:`\tau`.
-
-Denote by
-:math:`\mathbf{w} = \mathbf{w}^{n}` the  velocity at the previous Picard iterate. The SUPG/PSPG-stabilized weak form seeks :math:`\mathbf{u} \in (H^1_0(\Omega))^d + \mathbf{u}_b` and :math:`p \in L^2(\Omega)/\mathbb{R}`
-such that for all :math:`\mathbf{v} \in (H^1_0(\Omega))^d, q \in L^2(\Omega)/\mathbb{R}`,
+Multiplying by test functions :math:`(\mathbf{v}, q)` and lagging the
+advecting velocity to the previous Picard iterate
+:math:`\mathbf{w} = \mathbf{u}^{n}` gives the linearized mixed form:
+find :math:`(\mathbf{u}, p)` such that
 
 .. math::
 
    \int_\Omega \rho\,(\mathbf{w}\cdot\nabla)\mathbf{u}\cdot\mathbf{v}\,\mathrm{d}x
    + \int_\Omega \mu\,\nabla\mathbf{u} : \nabla\mathbf{v}\,\mathrm{d}x
-   - \int_\Omega p\,(\nabla\cdot\mathbf{v})\,\mathrm{d}x \;+
-   \int_\Omega q\,(\nabla\cdot\mathbf{u})\,\mathrm{d}x \;=\; 0 .
+   - \int_\Omega p\,(\nabla\cdot\mathbf{v})\,\mathrm{d}x
+   - \int_\Omega q\,(\nabla\cdot\mathbf{u})\,\mathrm{d}x \;=\; 0
 
-Here, :math:`\mathbf{u}_b` incorporates the non-homogeneous velocity boundary conditions; :math:`L^2(\Omega)/\mathbb{R}` is the space modulo constants (since pressure is only determined up to an additive constant). 
-
-For equal-order P1-P1 this Galerkin form is unstable, so we append element-wise **SUPG/PSPG** terms built from the strong momentum residual
-
-.. math::
-
-   \mathbf{R}(\mathbf{u}, p) \;=\;
-   \rho\,(\mathbf{w}\cdot\nabla)\mathbf{u} + \nabla p - \mu\,\Delta\mathbf{u}.
-
-Note that the viscous term :math:`\mu\,\Delta\mathbf{u}` vanishes on P1 elements. The stabilized discretization uses P1-P1 elements for :math:`\mathbf{u}` and :math:`p`, and adds
-
-.. math::
-
-   \underbrace{\sum_e \int_{\Omega_e}
-       \tau\,(\mathbf{w}\cdot\nabla)\mathbf{v}\cdot\mathbf{R}\,\mathrm{d}x}_{\text{SUPG}}
-   \;+\;
-   \underbrace{\sum_e \int_{\Omega_e}
-       \tau\,\nabla q\cdot\mathbf{R}\,\mathrm{d}x}_{\text{PSPG}}
-
-to the aforementioned weak form, with :math:`\tau` being a stabilization parameter.
-
-The implementation is a custom
-:class:`~tensormesh.ElementAssembler` defined locally in the example. Its
-``forward`` returns the :math:`(d{+}1) \times (d{+}1)` block coupling one
-test node to one trial node — :math:`d` velocity components plus pressure
-— which the assembler stamps into a block-COO sparse matrix exactly as
-the built-in vector-valued assemblers do. The block is built from four
-named sub-blocks rather than entry-by-entry, so each physical term is
-visible:
+for all :math:`(\mathbf{v}, q)`. With Taylor-Hood spaces this needs no
+further ingredients, and the TensorMesh implementation is a direct
+transcription — two field declarations and the scalar integrand:
 
 .. code-block:: python
    :caption: examples/fluid/cavity/cavity.py (essence)
 
-   class NavierStokesAssembler(ElementAssembler):
-       def __post_init__(self, rho=1.0, mu=0.01, tau=0.1):
-           self.rho, self.mu, self.tau = rho, mu, tau
+   class NavierStokesAssembler(MixedElementAssembler):
+       fields = [
+           Field(trial="u", test="v", order=2, components=2),  # P2 velocity
+           Field(trial="p", test="q", order=1),                # P1 pressure
+       ]
 
-       def forward(self, u, v, gradu, gradv, w_prev):
-           dim = gradu.shape[0]
-           eye = torch.eye(dim, dtype=gradu.dtype, device=gradu.device)
+       def __post_init__(self, rho=1.0, mu=0.01):
+           self.rho = rho
+           self.mu = mu
 
-           # velocity-velocity: convection + diffusion + SUPG (diagonal in components)
-           convection = self.rho * torch.dot(w_prev, gradv) * u
-           diffusion  = self.mu * torch.dot(gradu, gradv)
-           supg       = self.rho * torch.dot(w_prev, gradv) * self.tau * torch.dot(w_prev, gradu)
-           A_uu = (convection + diffusion + supg) * eye               # [dim, dim]
+       def forward(self, gradu, p, v, gradv, q, w):
+           convection = self.rho * (gradu @ w).dot(v)
+           diffusion = self.mu * (gradu * gradv).sum()
+           return convection + diffusion \
+               - p * gradv.diagonal().sum() \
+               - q * gradu.diagonal().sum()
 
-           # pressure gradient in momentum (+ PSPG); divergence in continuity (+ PSPG)
-           B_up = -v * gradu + self.tau * torch.dot(w_prev, gradu) * gradv          # [dim]
-           B_pu =  u * gradv + self.tau * self.rho * torch.dot(w_prev, gradv) * gradu  # [dim]
-           C_pp =  self.tau * torch.dot(gradv, gradu)                  # PSPG pressure Laplacian
-
-           top    = torch.cat([A_uu, B_up.unsqueeze(1)], dim=1)        # [dim, dim+1]
-           bottom = torch.cat([B_pu, C_pp.reshape(1)]).unsqueeze(0)    # [1, dim+1]
-           return torch.cat([top, bottom], dim=0)                      # [dim+1, dim+1]
-
-The four named sub-blocks map one-to-one onto the terms of the stabilized
-weak form above:
-
-* ``A_uu`` — convection :math:`\rho\,(\mathbf{w}\cdot\nabla)\mathbf{u}\cdot\mathbf{v}`,
-  diffusion :math:`\mu\,\nabla\mathbf{u}:\nabla\mathbf{v}`, and the SUPG
-  convection term :math:`\tau\,(\mathbf{w}\cdot\nabla\mathbf{v})\,\rho\,(\mathbf{w}\cdot\nabla)\mathbf{u}`
-  (diagonal in the components, hence ``* eye``);
-* ``B_up`` — pressure gradient :math:`-p\,\nabla\cdot\mathbf{v}` and its SUPG
-  counterpart :math:`\tau\,(\mathbf{w}\cdot\nabla\mathbf{v})\cdot\nabla p`;
-* ``B_pu`` — divergence :math:`q\,\nabla\cdot\mathbf{u}` and the PSPG
-  convection term :math:`\tau\,\nabla q\cdot\rho\,(\mathbf{w}\cdot\nabla)\mathbf{u}`;
-* ``C_pp`` — the PSPG pressure-Laplacian :math:`\tau\,\nabla p\cdot\nabla q`.
-
-Because ``dim`` is read from ``gradu.shape[0]``, the same ``forward``
-produces a :math:`3{\times}3` block in 2D and a :math:`4{\times}4` block
-in 3D with no changes.
+``gradu`` is the velocity Jacobian (``[2, 2]`` in 2D, ``[3, 3]`` in
+3D), so ``(gradu @ w).dot(v)`` is the convection term
+:math:`(\mathbf{w}\cdot\nabla)\mathbf{u}\cdot\mathbf{v}` and
+``gradu.diagonal().sum()`` is the divergence. The lagged velocity
+``w`` is *data* (not a trial/test field), so the integrand stays
+bilinear — the mixed assembler's contract. Because the expression
+never hard-codes the dimension, the same class serves 2D and 3D.
 
 
 Picard iteration
 ----------------
 
-The convection term :math:`(\mathbf{u}\cdot\nabla)\mathbf{u}` is
-linearized by passing the previous-iterate velocity
-:math:`\mathbf{w}^{n}` as ``w_prev`` to the assembler:
-
-.. math::
-
-   \rho\, (\mathbf{w}^{n} \cdot \nabla)\mathbf{u}^{n+1}
-   \;=\; -\nabla p^{n+1} + \mu\, \Delta \mathbf{u}^{n+1}.
-
-This converges geometrically for moderate Reynolds numbers; the script
-iterates until ``||u_new - u_full|| / ||u_new|| < 1e-4``, typically ~8
-iterations at Re=100.
+Each iteration reassembles the matrix with the current velocity
+iterate and solves the linear saddle-point system:
 
 .. code-block:: python
 
-   assembler = NavierStokesAssembler.from_mesh(mesh, rho=rho, mu=mu, tau=tau)
-   condenser = Condenser(bc_mask, bc_val)
+   mesh = Mesh.gen_rectangle(chara_length=1.0 / n_grid, order=2).double()
+   assembler = NavierStokesAssembler.from_mesh(mesh, rho=1.0, mu=1.0 / re)
+   layout = assembler.layout
+
+   bc_mask = layout.dof_mask("u", mesh.boundary_mask)   # no-slip everywhere
+   bc_mask[layout.dof_index("p", int(layout.node_ids("p")[0]))] = True  # pin
+
+   bc_val = torch.zeros(layout.n_dofs, dtype=torch.float64)
+   bc_val[layout.dof_mask("u", is_top, component=0)] = 1.0   # moving lid
+
+   condenser = Condenser(bc_mask, bc_val[bc_mask])
+   sol = torch.zeros(layout.n_dofs, dtype=torch.float64)
+   sol[bc_mask] = bc_val[bc_mask]
 
    for i in range(max_iter):
-       w_prev = u_full.reshape(-1, n_dof)[:, :2]   # previous velocity
-       K = assembler(points, point_data={"w_prev": w_prev})
-       f = torch.zeros(n_points * n_dof, dtype=torch.float64)
-       K_, f_ = condenser(K, f)
-       u_new  = condenser.recover(K_.solve(f_))
+       w = layout.split(sol)["u"]            # previous-iterate velocity
+       K = assembler(point_data={"w": w})
+       f = torch.zeros(layout.n_dofs, dtype=torch.float64)
 
-       diff = torch.norm(u_new - u_full) / (torch.norm(u_new) + 1e-8)
-       u_full = u_new
-       if diff < tol:
-           break
+       K_, f_ = condenser(K, f)
+       sol = condenser.recover(K_.solve(f_))
+       # ...convergence check on the relative update...
 
 A few details that matter:
 
-* **DOF layout.** The unknowns are interleaved node-major:
-  ``[u_0, v_0, p_0, u_1, v_1, p_1, …]`` in 2D (``[u, v, w, p]`` per node
-  in 3D). The script's small ``component_dofs(n_points, n_dof, comp)``
-  helper turns "component ``comp`` at every node" into the flat global
-  indices the :class:`~tensormesh.Condenser` mask expects.
-* **Pressure pin.** ``bc_mask[n_dof - 1] = True`` clamps pressure to zero
-  at node 0 — required because pressure is only determined up to an
-  additive constant in incompressible flow.
-* ``w_prev`` is passed by name in ``point_data`` and arrives in
-  ``forward`` as the matching keyword argument; see
-  :doc:`../../user_guide/forms` for the dispatch contract.
+* **Block DOF layout.** The solution vector stacks all velocity DOFs
+  first, then the pressure DOFs. ``layout.dof_mask`` /
+  ``layout.dof_index`` build boundary masks in that numbering, and
+  ``layout.split(sol)`` returns ``{"u": [n_u, 2], "p": [n_p]}`` — no
+  hand-rolled index arithmetic anywhere.
+* **The lid mask.** On the order-2 mesh the P2 velocity nodes are
+  exactly the mesh points, so ``point_data={"w": w}`` and node masks
+  like ``is_top = mesh.points[:, 1] > 1 - 1e-6`` apply directly.
+* **Quadrature.** The default degree (``2 * max(order) = 4``) is one
+  shy of exact for the convection term — the standard, harmless
+  choice; pass ``quadrature_order=`` to integrate it exactly.
+
+Picard converges geometrically at moderate Reynolds numbers — the
+relative update shrinks below :math:`10^{-4}` in 8 iterations at
+Re = 100 on the default :math:`30 \times 30` grid.
 
 .. figure:: /_static/fluid/cavity_results.png
    :alt: Lid-driven cavity speed magnitude and pressure at Re=100
    :width: 100%
 
-   Output of ``cavity.py`` at Re = 100. Left: speed magnitude
-   :math:`\|u\|` — the moving lid drags fluid into the upper right,
-   sweeping it down the right wall and forming the primary vortex.
-   Right: pressure field, with the characteristic high-pressure spot in
-   the upper-right corner where the lid stagnates against the wall.
+   Output of ``cavity.py`` at Re = 100 (Taylor-Hood P2-P1). Left:
+   speed magnitude :math:`\|u\|` — the moving lid drags fluid into the
+   upper right, sweeping it down the right wall and forming the
+   primary vortex. Right: P1 pressure (prolonged to the P2 mesh points
+   for plotting), with the characteristic high-pressure spot in the
+   upper-right corner where the lid stagnates against the wall.
 
 
 Going to 3D — ``cavity_3d.py``
 ------------------------------
 
-``cavity_3d.py`` solves the same physics on a unit cube. Because the
-``NavierStokesAssembler`` is dimension-generic, the differences are
-mechanical:
+``cavity_3d.py`` solves the same physics on a unit cube, and shows the
+second way to obtain a Taylor-Hood pair: the tetrahedral mesh from
+``Mesh.gen_cube`` is **linear**, and the quadratic velocity space is
+generated *topologically* by the mixed assembler (one extra DOF per
+unique edge of the tet mesh) — no order-2 re-meshing. The field
+declarations become
 
-* ``Mesh.gen_cube(chara_length=…)`` (tetrahedral) replaces
-  ``Mesh.gen_rectangle``.
-* The DOF layout is per-node ``[u, v, w, p]`` (``n_dof = 4``) instead of
-  ``[u, v, p]``; ``w_prev`` now slices the first three components.
-* The output is volumetric: ``cavity_3d.vtu`` for ParaView, plus a
-  cross-section slice at :math:`z = 0.5` rendered via PyVista as
-  ``cavity_3d.png``.
+.. code-block:: python
 
-Everything else — the Picard loop, the SUPG/PSPG stamp, the pressure
-pin, the use of :class:`~tensormesh.Condenser` — is unchanged:
+   fields = [
+       Field(trial="u", test="v", order=2, components=3),
+       Field(trial="p", test="q", order=1),
+   ]
+
+and the ``forward`` integrand is byte-for-byte the one from 2D.
+Because the velocity DOFs are no longer mesh points, the script uses
+the layout's *topological* helpers for boundary conditions and
+post-processing:
 
 .. code-block:: python
    :caption: examples/fluid/cavity/cavity_3d.py (essence)
 
-   mesh = Mesh.gen_cube(chara_length=chara_length).double()
-   n_dof = 4                                          # [u, v, w, p] per node
-   assembler = NavierStokesAssembler.from_mesh(mesh, rho=rho, mu=mu, tau=tau)
-   condenser = Condenser(bc_mask, bc_val)
+   x_u = layout.points("u")                                   # P2 node coordinates
+   is_boundary = layout.split(layout.boundary_mask("u"))["u"][:, 0]
+   is_top = is_boundary & (x_u[:, 1] > 1.0 - 1e-6)
 
-   for i in range(max_iter):
-       w_prev = u_full.reshape(-1, n_dof)[:, :3]      # 3D velocity
-       K = assembler(mesh.points, point_data={"w_prev": w_prev})
-       f = torch.zeros(n_points * n_dof, dtype=torch.float64)
-       K_, f_ = condenser(K, f)
-       u_full = condenser.recover(K_.solve(f_))
+   bc_mask = layout.dof_mask("u", node_mask=is_boundary)      # no-slip walls
+   bc_val[layout.dof_mask("u", node_mask=is_top, component=0)] = 1.0
 
-The 4-DOFs-per-node layout makes the linear system large quickly — at
-``chara_length=0.05`` it is on the order of a million unknowns — so a GPU
-backend (``backend="cudss"`` or ``"pytorch"``, see
-:doc:`../../user_guide/linear_solvers`) is recommended once you go beyond
-a few thousand nodes.
+   # Picard loop: the lagged velocity lives on the P2 field's own DOFs
+   K = assembler(field_data={"w": ("u", w)})
+
+   # post-processing: interpolate the P2 velocity back to mesh points
+   velocity = layout.prolong("u", layout.split(sol)["u"])
+
+Note the two changes from 2D: ``boundary_mask`` finds the walls
+topologically (facet incidence — no ``is_boundary`` point data
+needed for the edge-generated nodes), and the lagged velocity enters
+through ``field_data`` because it has no mesh-point representation.
+At ``chara_length=0.1`` the system has 24k DOFs (7.6k P2 velocity
+nodes on 1.1k mesh points) and converges in 13 Picard iterations.
+The output is volumetric: ``cavity_3d.vtu`` for ParaView plus a
+:math:`z = 0.5` mid-plane slice rendered via PyVista.
 
 .. figure:: /_static/fluid/cavity_3d.png
    :alt: 3D lid-driven cavity speed and pressure on the z=0.5 mid-plane
@@ -247,9 +208,8 @@ a few thousand nodes.
    Output of ``cavity_3d.py``: speed magnitude (left) and pressure
    (right) on the :math:`z=0.5` mid-plane slice through the cube. The
    flow pattern matches the 2D solution near the lid but decays toward
-   the front and back walls, so the mid-plane shows weaker recirculation
-   than the strict-2D case. Full 3D fields are written to
-   ``cavity_3d.vtu`` for ParaView.
+   the front and back walls, so the mid-plane shows weaker
+   recirculation than the 2D benchmark.
 
 
 Running it
@@ -259,23 +219,20 @@ Running it
 
    cd examples/fluid/cavity
    python cavity.py        # 2D, writes cavity_results.png
-   python cavity_3d.py     # 3D, writes cavity_3d.vtu and cavity_3d.png
+   python cavity_3d.py     # 3D, writes cavity_3d.vtu + cavity_3d.png
 
-The console reports the relative residual at each Picard step plus the
-final convergence message. For 2D, compare the stream-function contours
-qualitatively against the Ghia / Ghia / Shin reference (1982) for
-Re=100 — the primary vortex center should match to within a few percent.
-For 3D, open ``cavity_3d.vtu`` in ParaView for full volumetric inspection
-(streamlines, iso-surfaces); the PNG is a quick sanity check.
+Both converge in :math:`\lesssim 15` Picard iterations at Re = 100
+with the default resolutions.
 
 
 What's next
 -----------
 
-* :doc:`cylinder_flow` — adds transient time stepping.
-* :doc:`taylor_green` — the same family of assemblers, now used for a
-  quantitative convergence study against an exact solution.
-* :doc:`../../user_guide/forms` — argument-dispatch contract for
-  vector-valued ``forward`` returns.
-* :doc:`../../user_guide/linear_solvers` — backend choice for the larger
-  3D systems.
+* :doc:`stokes_taylor_hood` — the linear warm-up with a convergence
+  study.
+* :doc:`cylinder_flow` — the transient version: backward Euler,
+  ``forward_vector`` load, vortex shedding.
+* :doc:`rayleigh_benard` — add a third field (temperature) to the
+  same block system.
+* :doc:`../../user_guide/mixed_assembly` — the mixed-assembly
+  contract in full.
