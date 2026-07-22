@@ -33,7 +33,7 @@ Conventions
 -----------
 * **Trial arguments index columns, test arguments index rows** (the
   standard :math:`a(u, v)` convention). Note this is the opposite letter
-  convention from :class:`~tensormesh.assemble.ElementAssembler`, where
+  convention from :class:`~tensormesh.ElementAssembler`, where
   the ``u`` argument is the test (row) function — here each role is
   explicit in the :class:`Field` declaration, so nothing is implicit.
 * A field with ``components == 1`` passes its value as a 0-d scalar and
@@ -54,7 +54,7 @@ Conventions
 * The sparsity pattern contains every block whose trial *and* test
   arguments appear in the ``forward`` signature. Changing the signature
   (or assembling with a different ``func=``) therefore changes the
-  pattern — build a fresh :class:`~tensormesh.operator.Condenser` in
+  pattern — build a fresh :class:`~tensormesh.Condenser` in
   that case.
 
 Field orders are decoupled from the mesh order (generalized pairs, e.g.
@@ -458,7 +458,7 @@ class MixedElementAssembler(nn.Module):
     bilinear).
 
     Besides the field arguments, ``forward`` may take the same data
-    arguments as :class:`~tensormesh.assemble.ElementAssembler`: ``x``
+    arguments as :class:`~tensormesh.ElementAssembler`: ``x``
     (coordinates), any ``point_data`` key and its ``grad{key}``,
     ``element_data`` keys and ``scalar_data`` keys — plus ``field_data``
     keys (and their ``grad{key}``), which live on a field's DOFs and are
@@ -467,9 +467,9 @@ class MixedElementAssembler(nn.Module):
 
     The assembled matrix is square of size
     :math:`N = \sum_f n_f c_f` with the field blocks laid out in
-    declaration order (see :class:`BlockLayout`); use ``assembler.layout``
+    declaration order (see :class:`~tensormesh.BlockLayout`); use ``assembler.layout``
     to build boundary-condition masks and to split/concatenate DOF
-    vectors. The unchanged :class:`~tensormesh.operator.Condenser`
+    vectors. The unchanged :class:`~tensormesh.Condenser`
     applies on top.
 
     Notes
@@ -487,8 +487,11 @@ class MixedElementAssembler(nn.Module):
     __autodoc__ = [
         "__call__",
         "forward",
+        "forward_vector",
         "__post_init__",
         "from_mesh",
+        "assemble_vector",
+        "layout",
     ]
 
     def __init__(self, topology: dict, *args, **kwargs):
@@ -1166,7 +1169,7 @@ class MixedElementAssembler(nn.Module):
         -------
         SparseMatrix
             Square sparse matrix of shape :math:`[N, N]` with
-            :math:`N = \sum_f n_f c_f` (see :class:`BlockLayout`).
+            :math:`N = \sum_f n_f c_f` (see :class:`~tensormesh.BlockLayout`).
         """
         points, point_data, element_data, scalar_data, field_data = \
             self._normalize_inputs(points, point_data, element_data, scalar_data, field_data)
@@ -1226,7 +1229,7 @@ class MixedElementAssembler(nn.Module):
 
         ``SparseMatrix.layout_signature`` is sequence-identity
         (``data_ptr`` + version), so downstream pattern caches like
-        :class:`~tensormesh.operator.Condenser` only hit when repeated
+        :class:`~tensormesh.Condenser` only hit when repeated
         assemblies hand over the *same* index tensors. Re-concatenating
         per call would allocate fresh tensors and defeat that, so the
         concatenation is cached per executed-block pattern (and rebuilt
@@ -1258,8 +1261,8 @@ class MixedElementAssembler(nn.Module):
         data — e.g. :math:`\int f \cdot v` for the Stokes momentum
         equation. It is evaluated with one-hot test basis functions per
         field and scattered into the same block DOF layout as
-        :meth:`__call__`, so the result pairs directly with the assembled
-        matrix and the :class:`~tensormesh.operator.Condenser`. Fields
+        :meth:`~tensormesh.MixedElementAssembler.__call__`, so the result pairs directly with the assembled
+        matrix and the :class:`~tensormesh.Condenser`. Fields
         whose test arguments do not appear contribute a zero segment.
 
         Works for every field kind, including generalized-order fields
@@ -1271,7 +1274,7 @@ class MixedElementAssembler(nn.Module):
         -------
         torch.Tensor
             Dense load vector of shape :math:`[N]` with
-            :math:`N = \sum_f n_f c_f` (see :class:`BlockLayout`).
+            :math:`N = \sum_f n_f c_f` (see :class:`~tensormesh.BlockLayout`).
         """
         points, point_data, element_data, scalar_data, field_data = \
             self._normalize_inputs(points, point_data, element_data, scalar_data, field_data)
