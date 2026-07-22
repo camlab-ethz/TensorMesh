@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-22 23:00+0200\n"
+"POT-Creation-Date: 2026-07-22 15:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_CN <LL@li.org>\n"
@@ -27,81 +27,131 @@ msgstr "流体力学"
 #: ../../source/example_gallery/fluid/index.rst:4
 #: 41a64bed455d45329b3d9dc368b47022
 msgid ""
-"A family of worked Navier-Stokes examples in ``examples/fluid/``, from the "
-"lid-driven cavity benchmark (2D and 3D) to a Rayleigh-Bénard convection "
-"problem coupling momentum and energy. They all share the same underlying "
-"recipe — a custom ``NavierStokesAssembler`` (or its transient cousin) "
-"defined in the example file, SUPG/PSPG stabilization for equal-order P1-P1 "
-"elements, Picard linearization for steady solves, implicit Euler for "
-"transient ones — so once you have read :doc:`cavity` the rest are "
-"essentially geometry and boundary-condition variations."
+"A family of worked incompressible-flow examples in ``examples/fluid/``, from"
+" a manufactured Stokes problem with a convergence study to Rayleigh-Bénard "
+"convection coupling momentum and energy. They are all built on **Taylor-Hood"
+" P2-P1 mixed assembly**: a quadratic velocity and a linear pressure declared"
+" on one :class:`~tensormesh.MixedElementAssembler`, so the pair is inf-sup "
+"(LBB) stable and the weak form *is* the whole discretization — no SUPG/PSPG "
+"stabilization, no ``tau`` tuning."
 msgstr ""
-"``examples/fluid/`` 中收录了一系列完整的纳维-斯托克斯算例，从顶盖驱动方腔基准（2D 与 3D）到耦合动量与能量的瑞利-"
-"贝纳德对流问题。它们都共享同一套底层方案——在算例文件中定义的自定义 ``NavierStokesAssembler``\\ （或其瞬态版本）、用于等阶"
-" P1-P1 单元的 SUPG/PSPG 稳定化、稳态求解的 Picard 线性化、瞬态求解的隐式欧拉法——因此一旦你读过 "
-":doc:`cavity`\\ ，其余算例本质上只是几何和边界条件上的变体。"
+"``examples/fluid/`` 目录下包含一组完整的不可压缩流动算例，从带收敛性分析的人工构造 Stokes 问题，到耦合动量与能量的瑞利-"
+"贝纳德对流。它们全部基于 **Taylor-Hood P2-P1 混合装配**\\ ：二次速度场与线性压力场在同一个 "
+":class:`~tensormesh.MixedElementAssembler` 上声明，因此该速度-压力对满足 inf-"
+"sup（LBB）稳定性条件，且弱形式 *即* 全部离散化——无需 SUPG/PSPG 稳定化，也无需调节 ``tau`` 参数。"
 
-#: ../../source/example_gallery/fluid/index.rst:14
-#: f5ee60ca229a4661acd7db111c029fad
+#: ../../source/example_gallery/fluid/index.rst:13
+#: ac974eee55184609aa6d40473d140d28
 msgid ""
-"The ``NavierStokesAssembler`` itself lives **in the example folder**, not in"
-" ``tensormesh.assemble``. It is intentionally example-grade: the production-"
-"quality version will move into the core library when the assembler API for "
-"vector-valued problems stabilizes."
+"The recipe is shared across the family (read :doc:`stokes_taylor_hood` "
+"first, then the rest are physics and boundary-condition variations):"
+msgstr "该系列算例共享同一套实现框架（请先阅读 :doc:`stokes_taylor_hood`\\ ，其余均为物理模型与边界条件的变体）："
+
+#: ../../source/example_gallery/fluid/index.rst:17
+#: 4fbe1aab33834279b28202e6a3bae7c6
+msgid ""
+"declare ``Field(trial=\"u\", test=\"v\", order=2, components=d)`` and "
+"``Field(trial=\"p\", test=\"q\", order=1)``, write the scalar integrand in "
+"``forward``;"
 msgstr ""
-"``NavierStokesAssembler`` 本身位于\\ **算例文件夹中**\\ ，而不在 ``tensormesh.assemble`` "
-"里。这是有意为之的示例级实现：当面向向量值问题的装配器 API 稳定后，生产级版本将会迁入核心库。"
+"声明 ``Field(trial=\"u\", test=\"v\", order=2, components=d)`` 与 "
+"``Field(trial=\"p\", test=\"q\", order=1)``\\ ，在 ``forward`` 中编写标量被积函数；"
+
+#: ../../source/example_gallery/fluid/index.rst:20
+#: ef83290f2395454abe4e90f6e3e6066c
+msgid ""
+"steady problems linearize convection with **Picard** (the lagged velocity "
+"enters as data), transient ones add a backward-Euler mass term and a "
+"``forward_vector`` load;"
+msgstr ""
+"定常问题采用 **Picard** 迭代对对流项进行线性化（滞后速度作为已知数据代入），非定常问题则添加后向 Euler 质量项以及 "
+"``forward_vector`` 载荷；"
 
 #: ../../source/example_gallery/fluid/index.rst:23
+#: 6239a6108ef348abb3c84f49dd989694
+msgid ""
+"boundary conditions go through ``assembler.layout`` masks and the unchanged "
+":class:`~tensormesh.Condenser`."
+msgstr ""
+"边界条件通过 ``assembler.layout`` 掩码以及未作改动的 :class:`~tensormesh.Condenser` 施加。"
+
+#: ../../source/example_gallery/fluid/index.rst:26
+#: 35deedb98b0048f49ead4d3a2c1478cb
+msgid ""
+"On generated order-2 meshes the velocity nodes coincide with the mesh "
+"points; on linear gmsh/:class:`~tensormesh.MeshGen` meshes (cylinder, "
+"obstacles) the quadratic space is created **topologically** — no re-meshing "
+"at order 2. See :doc:`../../user_guide/mixed_assembly` for the machinery."
+msgstr ""
+"在生成的二阶网格上，速度节点与网格点重合；对于线性 gmsh/:class:`~tensormesh.MeshGen` "
+"网格（圆柱、障碍物等），二次空间通过 **拓扑方式** 构造——无需在二阶下进行重新网格化。具体机制参见 "
+":doc:`../../user_guide/mixed_assembly`\\ 。"
+
+#: ../../source/example_gallery/fluid/index.rst:35
+#: 97287f70ecd64d36aed640726dc45ac7
+msgid "Taylor-Hood Stokes"
+msgstr "Taylor-Hood Stokes"
+
+#: ../../source/example_gallery/fluid/index.rst:40
+#: 131c2c5fb9ae45eeb457c4b73fb1c308
+msgid ""
+"Manufactured Stokes solution + convergence study — the mixed-assembly "
+"tutorial."
+msgstr "人工构造 Stokes 解 + 收敛性分析——混合装配教程。"
+
+#: ../../source/example_gallery/fluid/index.rst:42
 #: 9287bc072a8445da98678e82068a7a03
 msgid "Lid-Driven Cavity"
 msgstr "顶盖驱动方腔"
 
-#: ../../source/example_gallery/fluid/index.rst:28
+#: ../../source/example_gallery/fluid/index.rst:47
 #: 3f3f7f14f6d8411181ecec8a9f162b88
 msgid ""
-"Steady NS at Re=100, SUPG/PSPG stabilization, Picard iteration — in 2D and "
-"3D with one dimension-generic assembler."
-msgstr "Re=100 的稳态纳维-斯托克斯，SUPG/PSPG 稳定化，Picard 迭代——用同一个维度通用的装配器同时处理 2D 与 3D。"
+"Steady NS at Re=100, Picard iteration — in 2D and 3D with one dimension-"
+"generic weak form."
+msgstr "Re=100 的定常 NS 方程，Picard 迭代——以单个维度通用的弱形式实现二维与三维算例。"
 
-#: ../../source/example_gallery/fluid/index.rst:31
+#: ../../source/example_gallery/fluid/index.rst:50
 #: 689170ec077640f68af8870d0a478f60
 msgid "Cylinder Flow (Vortex Shedding)"
 msgstr "圆柱绕流（涡脱落）"
 
-#: ../../source/example_gallery/fluid/index.rst:36
-#: dfc5e8c2efa845dd906953d0bef16cd7
+#: ../../source/example_gallery/fluid/index.rst:55
+#: 9af219541009414bb1c98df2de98441a
 msgid ""
-"Transient DFG benchmark, implicit Euler, drag/lift/Strouhal post-processing."
-msgstr "瞬态 DFG 基准，隐式欧拉法，阻力/升力/斯特劳哈尔数的后处理。"
+"Transient DFG benchmark: backward Euler, topological P2 on a gmsh mesh, "
+"vorticity via mixed load vectors."
+msgstr "非定常 DFG 基准算例：后向 Euler、gmsh 网格上的拓扑 P2、通过混合载荷向量计算涡量。"
 
-#: ../../source/example_gallery/fluid/index.rst:38
+#: ../../source/example_gallery/fluid/index.rst:58
 #: 759d6a803f48404c9002199be8b7326e
 msgid "Flow Past Multiple Obstacles"
 msgstr "绕多个障碍物的流动"
 
-#: ../../source/example_gallery/fluid/index.rst:43
+#: ../../source/example_gallery/fluid/index.rst:63
 #: 79c67bce473d40eeb579fa5bd94251a9
 msgid ""
 "Steady channel flow at Re=150 around six circular obstacles via MeshGen CSG."
 msgstr "Re=150 的稳态通道流，绕六个圆形障碍物，网格通过 MeshGen 的 CSG 构造。"
 
-#: ../../source/example_gallery/fluid/index.rst:45
+#: ../../source/example_gallery/fluid/index.rst:65
 #: 84946935c07748e28ff9ebde68a0c604
 msgid "Rayleigh-Bénard Convection"
 msgstr "瑞利-贝纳德对流"
 
-#: ../../source/example_gallery/fluid/index.rst:50
-#: 351b577a450740f19096f222d956e2e5
-msgid "Boussinesq-coupled momentum + heat transport, buoyancy-driven flow."
-msgstr "布西内斯克近似耦合动量与热输运，浮力驱动的流动。"
+#: ../../source/example_gallery/fluid/index.rst:70
+#: 5df6b51cd7824acfbf312b234ecd684a
+msgid ""
+"Three-field Boussinesq system — velocity, pressure, and temperature in one "
+"block matrix."
+msgstr "三场 Boussinesq 系统——速度、压力与温度统一纳入一个块矩阵。"
 
-#: ../../source/example_gallery/fluid/index.rst:52
+#: ../../source/example_gallery/fluid/index.rst:73
 #: 97287f70ecd64d36aed640726dc45ac7
 msgid "Taylor-Green Vortex"
 msgstr "泰勒-格林涡"
 
-#: ../../source/example_gallery/fluid/index.rst:57
+#: ../../source/example_gallery/fluid/index.rst:78
 #: 82705f00dea445d292494e24ccdfa13b
 msgid "Decaying vortex with exact solution — the convergence-study showcase."
 msgstr "具有精确解的衰减涡——收敛性研究的范例。"
@@ -129,3 +179,34 @@ msgstr "具有精确解的衰减涡——收敛性研究的范例。"
 #~ msgid ""
 #~ "Same physics on a tetrahedral cube — the assembler is dimension-generic."
 #~ msgstr ""
+
+#~ msgid ""
+#~ "A family of worked Navier-Stokes examples in ``examples/fluid/``, from the "
+#~ "lid-driven cavity benchmark (2D and 3D) to a Rayleigh-Bénard convection "
+#~ "problem coupling momentum and energy. They all share the same underlying "
+#~ "recipe — a custom ``NavierStokesAssembler`` (or its transient cousin) "
+#~ "defined in the example file, SUPG/PSPG stabilization for equal-order P1-P1 "
+#~ "elements, Picard linearization for steady solves, implicit Euler for "
+#~ "transient ones — so once you have read :doc:`cavity` the rest are "
+#~ "essentially geometry and boundary-condition variations."
+#~ msgstr ""
+#~ "``examples/fluid/`` 中收录了一系列完整的纳维-斯托克斯算例，从顶盖驱动方腔基准（2D 与 3D）到耦合动量与能量的瑞利-"
+#~ "贝纳德对流问题。它们都共享同一套底层方案——在算例文件中定义的自定义 ``NavierStokesAssembler``\\ （或其瞬态版本）、用于等阶"
+#~ " P1-P1 单元的 SUPG/PSPG 稳定化、稳态求解的 Picard 线性化、瞬态求解的隐式欧拉法——因此一旦你读过 "
+#~ ":doc:`cavity`\\ ，其余算例本质上只是几何和边界条件上的变体。"
+
+#~ msgid ""
+#~ "The ``NavierStokesAssembler`` itself lives **in the example folder**, not in"
+#~ " ``tensormesh.assemble``. It is intentionally example-grade: the production-"
+#~ "quality version will move into the core library when the assembler API for "
+#~ "vector-valued problems stabilizes."
+#~ msgstr ""
+#~ "``NavierStokesAssembler`` 本身位于\\ **算例文件夹中**\\ ，而不在 ``tensormesh.assemble`` "
+#~ "里。这是有意为之的示例级实现：当面向向量值问题的装配器 API 稳定后，生产级版本将会迁入核心库。"
+
+#~ msgid ""
+#~ "Transient DFG benchmark, implicit Euler, drag/lift/Strouhal post-processing."
+#~ msgstr "瞬态 DFG 基准，隐式欧拉法，阻力/升力/斯特劳哈尔数的后处理。"
+
+#~ msgid "Boussinesq-coupled momentum + heat transport, buoyancy-driven flow."
+#~ msgstr "布西内斯克近似耦合动量与热输运，浮力驱动的流动。"

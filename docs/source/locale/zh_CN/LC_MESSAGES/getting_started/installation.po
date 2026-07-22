@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-07 15:56+0200\n"
+"POT-Creation-Date: 2026-07-22 15:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_CN <LL@li.org>\n"
@@ -60,15 +60,15 @@ msgstr "推荐通过 PyPI 来安装 TensorMesh："
 #: ../../source/getting_started/installation.rst:24
 #: fc8e060c91fc40d2b44a2ef7cda37f4f
 msgid ""
-"Use the second form if you have an NVIDIA GPU and want the CUDA sparse-"
-"solver backends — the ``[gpu]`` extra pulls in both CuPy and cuDSS through "
+"Use the second form if you have an NVIDIA GPU and want the fastest CUDA "
+"direct solver — the ``[gpu]`` extra pulls in cuDSS (plus PyAMG) through "
 "``torch-sla``. The quotes are needed because ``[...]`` is a shell glob "
 "character; see `Sparse solvers and GPU acceleration`_ for the per-backend "
-"breakdown if you only want one of CuPy or cuDSS."
+"breakdown if you only want one of them."
 msgstr ""
-"如果你拥有 NVIDIA GPU 并想使用 CUDA 稀疏求解器后端，请使用第二种形式——``[gpu]`` 这个 extra 会通过 ``torch-"
-"sla`` 同时安装 CuPy 和 cuDSS。这里需要加引号，因为 ``[...]`` 是 shell 的通配符字符；如果你只想要 CuPy 或 "
-"cuDSS 中的一个，请参阅 `Sparse solvers and GPU acceleration`_ 了解各后端的细分说明。"
+"如果您拥有 NVIDIA GPU 且需要最快的 CUDA 直接求解器，请使用第二种形式 —— ``[gpu]`` 额外依赖通过 ``torch-"
+"sla`` 引入 cuDSS（以及 PyAMG）。由于 ``[...]`` 是 shell 通配符，因此需要加引号；若只需其中一种后端，请参阅 "
+"`Sparse solvers and GPU acceleration`_ 了解各后端的详细说明。"
 
 #: ../../source/getting_started/installation.rst:30
 #: 6dcba5dcf845459a88d629f5717aaed8
@@ -76,42 +76,42 @@ msgid ""
 "Either form pulls in all required dependencies, including `torch-sla "
 "<https://www.torchsla.com/>`_, the differentiable sparse linear algebra "
 "library that powers TensorMesh's solvers. The base ``pip install tensormesh-"
-"fem`` installs only the **CPU** sparse stack (SciPy / native PyTorch); see "
-"`Sparse solvers and GPU acceleration`_ below for the full extras matrix "
-"(``[cupy]`` / ``[cudss]`` / ``[gpu]``) and how to verify which backends are "
-"usable on your machine."
+"fem`` installs the **CPU** sparse stack (SciPy + a device-agnostic native-"
+"PyTorch Krylov backend); see `Sparse solvers and GPU acceleration`_ below "
+"for the full extras matrix (``[cudss]`` / ``[pyamg]`` / ``[gpu]``) and how "
+"to verify which backends are usable on your machine."
 msgstr ""
-"无论采用哪种形式，都会拉取所有必需的依赖，包括 `torch-sla <https://www.torchsla.com/>`_ ——为 "
-"TensorMesh 的求解器提供支持的可微稀疏线性代数库。基础的 ``pip install tensormesh-fem`` 仅安装 **CPU**"
-" 稀疏栈（SciPy / native PyTorch）；有关完整附加依赖矩阵（\\ ``[cupy]`` / ``[cudss]`` / "
-"``[gpu]``\\ ）以及如何验证您的机器上可用哪些后端的信息，请参见下文 `Sparse solvers and GPU "
-"acceleration`_\\ 。"
+"两种形式都会安装所有必需的依赖，包括 `torch-sla <https://www.torchsla.com/>`_ —— 这是支撑 "
+"TensorMesh 求解器的可微稀疏线性代数库。基础的 ``pip install tensormesh-fem`` 安装 **CPU** "
+"稀疏栈（SciPy + 设备无关的原生 PyTorch Krylov 后端）；后文 `Sparse solvers and GPU "
+"acceleration`_ 中有完整的额外依赖矩阵（\\ ``[cudss]`` / ``[pyamg]`` / ``[gpu]``\\ "
+"）以及如何验证您的机器上哪些后端可用的说明。"
 
-#: ../../source/getting_started/installation.rst:40
+#: ../../source/getting_started/installation.rst:41
 #: b27012e160c44f37820bf71b2677da36
 msgid "Install from source"
 msgstr "从源码安装"
 
-#: ../../source/getting_started/installation.rst:42
+#: ../../source/getting_started/installation.rst:43
 #: 18f41d8bf31047e98ad27d5c39fce6c4
 msgid ""
 "For development work, or to get the latest unreleased changes, clone the "
 "repository and install in editable mode:"
 msgstr "如需进行开发工作，或获取尚未发布的最新改动，请克隆仓库并以可编辑模式安装："
 
-#: ../../source/getting_started/installation.rst:51
+#: ../../source/getting_started/installation.rst:52
 #: 1148b7bdeda9455c8c2b192c841645b8
 msgid ""
 "The ``-e`` (editable) flag means edits to the source tree are picked up "
 "without reinstalling. To install with the test dependencies as well:"
 msgstr "``-e``\\ （可编辑）标志意味着对源码树的修改会被自动识别，无需重新安装。若要同时安装测试依赖："
 
-#: ../../source/getting_started/installation.rst:60
+#: ../../source/getting_started/installation.rst:61
 #: e24f40e8fb544f38b95c430ee982305f
 msgid "Sparse solvers and GPU acceleration"
 msgstr "稀疏求解器与 GPU 加速"
 
-#: ../../source/getting_started/installation.rst:62
+#: ../../source/getting_started/installation.rst:63
 #: 42881e93418844dd9604e653177c74ce
 msgid ""
 "The sparse linear-algebra layer that powers TensorMesh's solvers lives in a "
@@ -127,61 +127,47 @@ msgstr ""
 "**硬性的、导入时即需满足** 的依赖——缺少它 :mod:`tensormesh.sparse` 将无法导入——并且它是 CPU 和 GPU "
 "稀疏求解的统一入口。当前和未来的所有求解器工作都会先落地到 ``torch-sla``\\ ；我们建议保持其为最新版本。"
 
-#: ../../source/getting_started/installation.rst:70
+#: ../../source/getting_started/installation.rst:71
 #: 07298eb2f77449e99724283d551c992b
 msgid ""
-"The base ``tensormesh-fem`` wheel only pulls the **CPU** stack (SciPy / "
-"native PyTorch). To enable a GPU backend, install one of the mirrored "
-"extras:"
+"The base ``tensormesh-fem`` wheel pulls the **CPU** stack (SciPy + native "
+"PyTorch Krylov — the latter also runs on CUDA/ROCm devices out of the box). "
+"To add another solver backend, install one of the mirrored extras:"
 msgstr ""
-"基础的 ``tensormesh-fem`` wheel 只会安装 **CPU** 栈（SciPy / 原生 PyTorch）。若要启用 GPU "
-"后端，请安装其中一个镜像的 extra："
+"基础的 ``tensormesh-fem`` wheel 包会拉取 **CPU** 栈（SciPy + 原生 PyTorch Krylov —— "
+"后者也可直接在 CUDA/ROCm 设备上运行）。如需添加其他求解器后端，请安装以下镜像额外依赖之一："
 
-#: ../../source/getting_started/installation.rst:78
-#: ../../source/getting_started/installation.rst:129
+#: ../../source/getting_started/installation.rst:80
+#: ../../source/getting_started/installation.rst:138
 #: b43f84fde76f48b0a4d1236b10d6ec4a eb5e87bcfa7b47c884b5b1e7ec12d253
 msgid "Install command"
 msgstr "安装命令"
 
-#: ../../source/getting_started/installation.rst:79
+#: ../../source/getting_started/installation.rst:81
 #: 94d4c0d88610443386717c2bdd387eed
 msgid "Adds backend"
 msgstr "新增的后端"
 
-#: ../../source/getting_started/installation.rst:80
+#: ../../source/getting_started/installation.rst:82
 #: 44316de130034326a5daa930679f1b7d
 msgid "When to pick this"
 msgstr "适用场景"
 
-#: ../../source/getting_started/installation.rst:81
+#: ../../source/getting_started/installation.rst:83
 #: 0c600881889b4c3ca5de55890197ddfb
 msgid "``pip install tensormesh-fem``"
 msgstr "``pip install tensormesh-fem``"
 
-#: ../../source/getting_started/installation.rst:82
-#: 061028aafbe94ee697c5d06d39a1c60c
-msgid "CPU only"
-msgstr "仅 CPU"
-
-#: ../../source/getting_started/installation.rst:83
-#: 337b3fc6b67d4636b525b9399bfa8d3a
-msgid "Default; no GPU sparse solves."
-msgstr "默认；不进行 GPU 稀疏求解。"
-
 #: ../../source/getting_started/installation.rst:84
-#: d7c9c2b86c0240a382db0192ef96deaf
-msgid "``pip install \"tensormesh-fem[cupy]\"``"
-msgstr "``pip install \"tensormesh-fem[cupy]\"``"
+#: 061028aafbe94ee697c5d06d39a1c60c
+msgid "CPU stack"
+msgstr "CPU 栈"
 
 #: ../../source/getting_started/installation.rst:85
-#: ec57c3895cfe46ecab29d6145e1b6af8
-msgid "CuPy (CUDA)"
-msgstr "CuPy（CUDA）"
-
-#: ../../source/getting_started/installation.rst:86
-#: dd6de941fb5a47e7baf1d6a266578e8c
-msgid "Iterative GPU solvers (CG / GMRES / …) + CuPy SuperLU."
-msgstr "迭代式 GPU 求解器（CG / GMRES / …）+ CuPy SuperLU。"
+#: 58793024dc4e4449ad3a58aa18038465
+msgid ""
+"Default; ``scipy`` direct/iterative + device-agnostic ``pytorch`` Krylov."
+msgstr "默认配置；\\ ``scipy`` 直接/迭代求解 + 设备无关的 ``pytorch`` Krylov。"
 
 #: ../../source/getting_started/installation.rst:87
 #: 190a24cce95b45a09a627fa3970a3dc0
@@ -199,98 +185,119 @@ msgid "Fastest GPU direct solver (LU / Cholesky / LDLT)."
 msgstr "最快的 GPU 直接求解器（LU / Cholesky / LDLT）。"
 
 #: ../../source/getting_started/installation.rst:90
+#: 190a24cce95b45a09a627fa3970a3dc0
+msgid "``pip install \"tensormesh-fem[pyamg]\"``"
+msgstr "``pip install \"tensormesh-fem[pyamg]\"``"
+
+#: ../../source/getting_started/installation.rst:91
+#: 0665378256b94e6eb7195bbf7f9f5df9
+msgid "PyAMG (CPU)"
+msgstr "PyAMG (CPU)"
+
+#: ../../source/getting_started/installation.rst:92
+#: d39bfbc1d1cd40069e249b566167b97d
+msgid "Algebraic-multigrid V-cycles for large PDE systems."
+msgstr "用于大型偏微分方程系统的代数多重网格 V 循环。"
+
+#: ../../source/getting_started/installation.rst:93
 #: f3e5ee896cd4431d880845b7095f7c5d
 msgid "``pip install \"tensormesh-fem[gpu]\"``"
 msgstr "``pip install \"tensormesh-fem[gpu]\"``"
 
-#: ../../source/getting_started/installation.rst:91
-#: c58555bd71e04cc3967146060ce35a00
-msgid "Both"
-msgstr "两者皆有"
-
-#: ../../source/getting_started/installation.rst:92
-#: 637863ffdd2345d389f75117e724c7f9
-msgid "Convenience extra — installs ``torch-sla[all]``."
-msgstr "便捷 extra——安装 ``torch-sla[all]``\\ 。"
-
 #: ../../source/getting_started/installation.rst:94
-#: dba377e61c0c4cc29c62c2d335d246dc
-msgid ""
-"These mirror the upstream ``torch-sla`` extras (``[cupy]`` / ``[cudss]`` / "
-"``[all]``) — installing ``tensormesh-fem[gpu]`` is exactly equivalent to "
-"``pip install tensormesh-fem torch-sla[all]``, just spelled in one step."
-msgstr ""
-"这些 extra 镜像了上游 ``torch-sla`` 的 extra（\\ ``[cupy]`` / ``[cudss]`` / "
-"``[all]``\\ ）——安装 ``tensormesh-fem[gpu]`` 与 ``pip install tensormesh-fem "
-"torch-sla[all]`` 完全等价，只是将其写成了一步完成。"
+#: 1b3ecd7ae1d04662bba93d9567e68e36
+msgid "All PyPI backends"
+msgstr "所有 PyPI 后端"
 
-#: ../../source/getting_started/installation.rst:99
+#: ../../source/getting_started/installation.rst:95
+#: 637863ffdd2345d389f75117e724c7f9
+msgid "Convenience extra — installs ``torch-sla[all]`` (cuDSS + PyAMG)."
+msgstr "便捷额外依赖 —— 安装 ``torch-sla[all]``\\ （cuDSS + PyAMG）。"
+
+#: ../../source/getting_started/installation.rst:98
+#: cde55459cecf421faafa5c5557dd36d0
+msgid ""
+"These mirror the upstream ``torch-sla`` extras (``[cudss]`` / ``[pyamg]`` / "
+"``[all]``) — installing ``tensormesh-fem[gpu]`` is exactly equivalent to "
+"``pip install tensormesh-fem torch-sla[all]``, just spelled in one step. Two"
+" further backends — ``strumpack`` (portable multifrontal direct, "
+"CPU/CUDA/ROCm) and ``amgx`` (NVIDIA AmgX) — are compiled extensions shipped "
+"as prebuilt wheels on `torch-sla's GitHub Releases "
+"<https://github.com/sparsexlab/torch-sla>`_, not PyPI."
+msgstr ""
+"这些镜像了上游 ``torch-sla`` 的额外依赖（\\ ``[cudss]`` / ``[pyamg]`` / ``[all]``\\ ）—— "
+"安装 ``tensormesh-fem[gpu]`` 完全等价于 ``pip install tensormesh-fem torch-"
+"sla[all]``\\ ，只是一步完成的写法。另外两个后端 —— ``strumpack``\\ （可移植的多波前直接求解器，支持 "
+"CPU/CUDA/ROCm）和 ``amgx``\\ （NVIDIA AmgX）—— 是以预编译 wheel 包形式在 `torch-sla 的 "
+"GitHub Releases <https://github.com/sparsexlab/torch-sla>`_ 上发布的，而非 PyPI。"
+
+#: ../../source/getting_started/installation.rst:107
 #: e329ab6161304b19bbe2a391303e3c8f
 msgid "Inspect what's installed"
 msgstr "查看已安装的内容"
 
-#: ../../source/getting_started/installation.rst:101
+#: ../../source/getting_started/installation.rst:109
 #: 166ed81eb0cf47c8a417020b17b2f25c
 msgid ""
 "After installing, you can see which backends are usable on the current "
 "machine — and a one-line install hint for any that are not:"
 msgstr "安装完成后，你可以查看当前机器上有哪些后端可用——对于尚不可用的后端，还会给出一行安装提示："
 
-#: ../../source/getting_started/installation.rst:115
+#: ../../source/getting_started/installation.rst:124
 #: e3b0d48a01cf49f3ab5a4e17a78729fd
 msgid ""
 "See :doc:`/user_guide/linear_solvers` for the full backend / method matrix "
 "and how to pick a non-default backend at solve time."
 msgstr "完整的后端／方法矩阵，以及如何在求解时选择非默认后端，请参阅 :doc:`/user_guide/linear_solvers`\\ 。"
 
-#: ../../source/getting_started/installation.rst:120
+#: ../../source/getting_started/installation.rst:129
 #: cc7e3d714ded4611ba7ecd00163d2e39
 msgid "Other extras"
 msgstr "其他 extras"
 
-#: ../../source/getting_started/installation.rst:122
+#: ../../source/getting_started/installation.rst:131
 #: a9af084c2e204555a487c5878512fef2
 msgid "A couple of smaller extras for optional functionality:"
 msgstr "另有几个用于可选功能的较小 extras："
 
-#: ../../source/getting_started/installation.rst:128
+#: ../../source/getting_started/installation.rst:137
 #: 29c24548c015449bb63e8a71d8ff9c93
 msgid "Extra"
 msgstr "Extra"
 
-#: ../../source/getting_started/installation.rst:130
+#: ../../source/getting_started/installation.rst:139
 #: bc0e9495932f40039018e4fcc8b3309f
 msgid "Plotly for example notebooks"
 msgstr "用于示例 notebook 的 Plotly"
 
-#: ../../source/getting_started/installation.rst:131
+#: ../../source/getting_started/installation.rst:140
 #: 88025dc49ef145c893df1eda9d98ace4
 msgid "``pip install \"tensormesh-fem[example]\"``"
 msgstr "``pip install \"tensormesh-fem[example]\"``"
 
-#: ../../source/getting_started/installation.rst:132
+#: ../../source/getting_started/installation.rst:141
 #: cc6c18ee464846a0a117fd003de28cc4
 msgid "Test suite (pytest, pytest-cov)"
 msgstr "测试套件（pytest、pytest-cov）"
 
-#: ../../source/getting_started/installation.rst:133
+#: ../../source/getting_started/installation.rst:142
 #: 07a252bf97754fc3bfaa58a1d66ce045
 msgid "``pip install \"tensormesh-fem[test]\"``"
 msgstr "``pip install \"tensormesh-fem[test]\"``"
 
-#: ../../source/getting_started/installation.rst:135
+#: ../../source/getting_started/installation.rst:144
 #: 5aa1e465adb54a94b6ce70bb7f84d3a4
 msgid ""
 "Two further packages are commonly useful but are *not* declared as extras — "
 "install them directly when needed:"
 msgstr "另有两个包通常也很有用，但 *未* 被声明为 extras——需要时请直接安装它们："
 
-#: ../../source/getting_started/installation.rst:145
+#: ../../source/getting_started/installation.rst:154
 #: a1048f5836a0441085c4cd03c29bf995
 msgid "Next steps"
 msgstr "后续步骤"
 
-#: ../../source/getting_started/installation.rst:147
+#: ../../source/getting_started/installation.rst:156
 #: 2c863795792e48eb965e4c8a07c4b39d
 msgid ""
 "Once installed, head to :doc:`verify_install` to run a smoke test, or jump "
@@ -323,3 +330,15 @@ msgstr ""
 #~ "Eigen / native PyTorch). To enable a GPU backend, install one of the "
 #~ "mirrored extras:"
 #~ msgstr ""
+
+#~ msgid "CPU only"
+#~ msgstr "仅 CPU"
+
+#~ msgid "Default; no GPU sparse solves."
+#~ msgstr "默认；不进行 GPU 稀疏求解。"
+
+#~ msgid "Iterative GPU solvers (CG / GMRES / …) + CuPy SuperLU."
+#~ msgstr "迭代式 GPU 求解器（CG / GMRES / …）+ CuPy SuperLU。"
+
+#~ msgid "Both"
+#~ msgstr "两者皆有"

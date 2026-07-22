@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-19 14:04+0200\n"
+"POT-Creation-Date: 2026-07-22 15:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_CN <LL@li.org>\n"
@@ -20,37 +20,38 @@ msgstr ""
 "Generated-By: Babel 2.18.0\n"
 
 #: ../../source/example_gallery/fluid/taylor_green.rst:2
-#: a412cf285c544f549f023ad9a1030714
+#: 4e00dea2be7041058c5ffd16f6830a09
 msgid "Taylor-Green Vortex (Convergence Study)"
 msgstr "泰勒-格林涡（收敛性研究）"
 
 #: ../../source/example_gallery/fluid/taylor_green.rst:4
-#: 1d01c5fda48740338fae5cc8d1619222
+#: 667bc5f91d9a435a80792b412de76202
 msgid ""
 "The Taylor-Green vortex is the canonical incompressible-flow benchmark with "
 "a known exact solution: a periodic decaying vortex on the square :math:`[0, "
 "2\\pi]^2` whose velocity and pressure can be written down in closed form. "
 "The script ``examples/fluid/taylor_green/taylor_green.py`` uses it to drive "
-"a quantitative **h-convergence study** of the transient Navier-Stokes solver"
-" — the only example in :doc:`index` whose purpose is verification rather "
-"than visualization."
+"a quantitative **h-convergence study** of the transient Taylor-Hood Navier-"
+"Stokes solver — the only example in :doc:`index` whose purpose is "
+"verification rather than visualization."
 msgstr ""
-"泰勒-格林涡是具有已知精确解的经典不可压缩流动基准：在正方形 :math:`[0, 2\\pi]^2` "
-"上的一个周期性衰减涡，其速度与压力都可写成闭式解。脚本 ``examples/fluid/taylor_green/taylor_green.py`` "
-"用它来对瞬态纳维-斯托克斯求解器开展定量的 **h 收敛性研究**——这是 :doc:`index` 中唯一以验证而非可视化为目的的算例。"
+"Taylor-Green 涡是不可压缩流体的经典基准问题，具有已知的精确解：在正方形区域 :math:`[0, 2\\pi]^2` "
+"上的一个周期性衰减涡，其速度和压力均可写出闭式表达式。脚本 "
+"``examples/fluid/taylor_green/taylor_green.py`` 利用该问题对瞬态 Taylor-Hood Navier-"
+"Stokes 求解器进行定量的 **h-收敛性研究** —— 这是 :doc:`index` 中唯一以验证而非可视化为目的的算例。"
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:15
-#: 791f7b895d924109b37faacfb34faddb
+#: ../../source/example_gallery/fluid/taylor_green.rst:16
+#: 687d655d742b416ba659d23516d5ea4e
 msgid "Exact solution"
 msgstr "精确解"
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:17
-#: 2217cb73d1b542a88f2fe37c73328973
+#: ../../source/example_gallery/fluid/taylor_green.rst:18
+#: b3c39628e3124ad38d9a518b8a85f24a
 msgid "For viscosity :math:`\\nu` and time :math:`t`,"
 msgstr "对于黏度 :math:`\\nu` 与时间 :math:`t`\\ ，"
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:19
-#: d1c022822aa34417985451c42279f52e
+#: ../../source/example_gallery/fluid/taylor_green.rst:20
+#: 08ab08a37e19437e9ee13f438d94d03c
 #, python-brace-format
 msgid ""
 "u(x, y, t) &= -\\cos(x)\\, \\sin(y)\\, e^{-2\\nu t}, \\\\\n"
@@ -61,8 +62,8 @@ msgstr ""
 "v(x, y, t) &= \\phantom{-}\\sin(x)\\, \\cos(y)\\, e^{-2\\nu t}, \\\\\n"
 "p(x, y, t) &= -\\tfrac14 \\bigl(\\cos(2x) + \\cos(2y)\\bigr)\\, e^{-4\\nu t}."
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:25
-#: 08d9fa745c384a008b4c8e94adf35f51
+#: ../../source/example_gallery/fluid/taylor_green.rst:26
+#: 3d7457eea00c4d80ba9220bc4bfd340e
 msgid ""
 "The velocity decays exponentially with rate :math:`2\\nu` (twice the "
 "kinematic viscosity); the pressure decays at rate :math:`4\\nu`. "
@@ -72,119 +73,114 @@ msgstr ""
 "速度以速率 :math:`2\\nu`\\ （运动黏度的两倍）指数衰减；压力以速率 :math:`4\\nu` 衰减。代入即可验证 :math:`(u,"
 " v, p)` 精确满足不可压缩纳维-斯托克斯方程。"
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:31
-#: 9889eab90d414ad183bf2e67017b12c7
+#: ../../source/example_gallery/fluid/taylor_green.rst:32
+#: 387c6a924b9a439eae7ee7d0384f039b
 msgid ""
 "The script imposes Dirichlet velocities on every boundary node equal to the "
-"exact solution at the current time. This sidesteps the need for periodic "
-"boundaries and isolates the spatial / temporal discretization error."
-msgstr "脚本在每个边界节点上施加等于当前时刻精确解的狄利克雷速度。这样既绕开了对周期性边界的需求，也将空间 / 时间离散误差单独隔离出来。"
+"exact solution at the current time, and pins one pressure DOF to its exact "
+"value. This sidesteps the need for periodic boundaries and isolates the "
+"discretization error."
+msgstr ""
+"该脚本在每个边界节点上施加等于当前时刻精确解的狄利克雷速度，并将一个压力自由度固定为其精确值。这避免了周期性边界条件的需求，并分离出离散化误差。"
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:38
-#: 0a1959b0b5e5470ab935fcabeea9fc35
+#: ../../source/example_gallery/fluid/taylor_green.rst:39
+#: 88f7a1772db1491c9b261e9183966835
 msgid "Solver"
 msgstr "求解器"
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:40
-#: 81985bb7b61342deb99dd2caa3e5e8a9
+#: ../../source/example_gallery/fluid/taylor_green.rst:41
+#: c3d79044e58d49fdb0eea40e35ac992c
+#, python-brace-format
 msgid ""
 "The transient ``NavierStokesTransientAssembler`` from :doc:`cylinder_flow` "
-"is reused verbatim — implicit Euler in time, SUPG/PSPG with adaptive "
-":math:`\\tau` in space. The only changes are:"
+"is reused verbatim — Taylor-Hood P2-P1 in space "
+"(:class:`~tensormesh.MixedElementAssembler`), backward Euler plus Picard "
+"sub-iterations in time, ``forward_vector`` for the :math:`\\rho/\\Delta "
+"t\\,\\mathbf{u}^n\\cdot\\mathbf{v}` load. The only changes are:"
 msgstr ""
-"来自 :doc:`cylinder_flow` 的瞬态 ``NavierStokesTransientAssembler`` "
-"被原样复用——时间上采用隐式欧拉法，空间上采用带自适应 :math:`\\tau` 的 SUPG/PSPG。仅有的改动是："
-
-#: ../../source/example_gallery/fluid/taylor_green.rst:45
-#: a529e80b94034b219133e4402cb6cbbe
-msgid "domain :math:`[0, 2\\pi]^2` instead of the cylinder channel,"
-msgstr "计算域为 :math:`[0, 2\\pi]^2`\\ ，而非圆柱通道，"
-
-#: ../../source/example_gallery/fluid/taylor_green.rst:46
-#: 44b990e283e84054b2e4935600a98583
-msgid ""
-"Dirichlet velocity from the exact solution rather than a parabolic inlet,"
-msgstr "狄利克雷速度取自精确解，而非抛物型入口，"
+"直接复用来自 :doc:`cylinder_flow` 的瞬态 ``NavierStokesTransientAssembler`` —— 空间上采用 "
+"Taylor-Hood P2-P1（\\ :class:`~tensormesh.MixedElementAssembler`\\ "
+"），时间上采用后向欧拉加 Picard 子迭代，\\ ``forward_vector`` 用于 :math:`\\rho/\\Delta "
+"t\\,\\mathbf{u}^n\\cdot\\mathbf{v}` 载荷。唯一的改动如下："
 
 #: ../../source/example_gallery/fluid/taylor_green.rst:48
-#: d2f26fa2f20144ea8a89e5b9f2a91423
+#: 4dca583b56fe47e597e73e73b19a6b0d
 msgid ""
-"every step writes :math:`L^2` errors against the analytical velocity and "
-"pressure to a results file."
-msgstr "每一步都将相对于解析速度与压力的 :math:`L^2` 误差写入结果文件。"
+"domain :math:`[0, 2\\pi]^2` (an order-2 generated mesh, so the P2 velocity "
+"nodes are the mesh points and the exact solution can be evaluated on them "
+"directly),"
+msgstr "计算域为 :math:`[0, 2\\pi]^2`\\ （二阶生成网格，因此 P2 速度节点即为网格点，精确解可直接在其上求值），"
 
 #: ../../source/example_gallery/fluid/taylor_green.rst:51
-#: bd827ebbe7a84c038e8ac58d4b5523e1
+#: 37d45cb35dd04093a1fcd5e031626608
+msgid ""
+"Dirichlet velocity from the exact solution rather than a parabolic inlet — "
+"updated each step via ``condenser.update_dirichlet``,"
+msgstr "狄利克雷速度取自精确解而非抛物线入口 —— 每步通过 ``condenser.update_dirichlet`` 更新，"
+
+#: ../../source/example_gallery/fluid/taylor_green.rst:54
+#: 645976d5633e427397b8f5f67d5c025d
+msgid ""
+":math:`L^2` errors against the analytical velocity and pressure at the final"
+" time."
+msgstr "最后时刻速度及压力的 :math:`L^2` 误差与解析解对比。"
+
+#: ../../source/example_gallery/fluid/taylor_green.rst:57
+#: 9d45192ca6f249e89976666bc9fa6abf
 msgid "examples/fluid/taylor_green/taylor_green.py (essence)"
 msgstr "examples/fluid/taylor_green/taylor_green.py（核心部分）"
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:71
-#: 6a1678355b064ee8b0f0f677c5e84910
+#: ../../source/example_gallery/fluid/taylor_green.rst:81
+#: 292153805d234972937323606075f9b1
 msgid "h-convergence"
 msgstr "h 收敛性"
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:73
-#: e427776f3645454e83cb610e59aadb51
+#: ../../source/example_gallery/fluid/taylor_green.rst:83
+#: 077378dd688e469ea756619daf79dfdd
 #, python-brace-format
 msgid ""
-"The script sweeps the mesh size :math:`h = 2\\pi / n_\\text{grid}` through a"
-" list of values and records the :math:`L^2` velocity and pressure errors at "
-"a fixed final time. For P1-P1 elements with SUPG/PSPG one expects:"
+"Taylor-Hood spatial theory promises :math:`\\|\\mathbf{u}_h - "
+"\\mathbf{u}\\|_{L^2} = \\mathcal{O}(h^3)` and :math:`\\|p_h - p\\|_{L^2} = "
+"\\mathcal{O}(h^2)` — but backward Euler contributes an "
+":math:`\\mathcal{O}(\\Delta t)` error on top. The study therefore couples "
+":math:`\\Delta t = h^2/4`, so the temporal error shrinks at least as fast as"
+" the :math:`\\mathcal{O}(h^2)` pressure error. In this slowly-decaying "
+"vortex (:math:`\\nu = 0.01`) the time-error constant is small, so the "
+"measured rates land at the **spatial** limits — :math:`\\approx 3` for the "
+"velocity, :math:`\\approx 2` for the P1 pressure:"
 msgstr ""
-"脚本让网格尺寸 :math:`h = 2\\pi / n_\\text{grid}` 遍历一组取值，并在固定的终止时刻记录 :math:`L^2` "
-"速度误差与压力误差。对于带 SUPG/PSPG 的 P1-P1 单元，预期为："
+"Taylor-Hood 空间理论预示 :math:`\\|\\mathbf{u}_h - \\mathbf{u}\\|_{L^2} = "
+"\\mathcal{O}(h^3)` 且 :math:`\\|p_h - p\\|_{L^2} = \\mathcal{O}(h^2)` —— "
+"但后向欧拉额外引入 :math:`\\mathcal{O}(\\Delta t)` 误差。因此该研究取 :math:`\\Delta t = "
+"h^2/4`\\ ，使得时间误差至少以与 :math:`\\mathcal{O}(h^2)` 压力误差同等的速度衰减。在此缓慢衰减的涡流（\\ "
+":math:`\\nu = 0.01`\\ ）中，时间误差常数较小，故实测收敛率落在 **空间** 极限 —— 速度约为 :math:`3`\\ ，P1"
+" 压力约为 :math:`2`\\ ："
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:78
-#: 33fba1ccb1374e7ea1cbbd5f9a84fd73
-#, python-brace-format
-msgid ":math:`\\|\\mathbf{u}_h - \\mathbf{u}\\|_{L^2} = \\mathcal{O}(h^2)`"
-msgstr ":math:`\\|\\mathbf{u}_h - \\mathbf{u}\\|_{L^2} = \\mathcal{O}(h^2)`"
-
-#: ../../source/example_gallery/fluid/taylor_green.rst:79
-#: 537690b6521c420ca152629b76e5af3a
-#, python-brace-format
-msgid ":math:`\\|p_h - p\\|_{L^2} = \\mathcal{O}(h)`"
-msgstr ":math:`\\|p_h - p\\|_{L^2} = \\mathcal{O}(h)`"
-
-#: ../../source/example_gallery/fluid/taylor_green.rst:81
-#: 30ec3d64f3d84863b84001b1a41ddaea
-msgid "The console output is a table:"
-msgstr "控制台输出为一张表格："
-
-#: ../../source/example_gallery/fluid/taylor_green.rst:92
-#: 3966e0ec7fc24ad697456f29ed24741f
+#: ../../source/example_gallery/fluid/taylor_green.rst:102
+#: d15f44b8d2d742c494856ac0538de57e
 msgid ""
-"(numbers approximate, will vary slightly with the chosen :math:`\\nu` and "
-":math:`\\Delta t`). The plot ``taylor_green_convergence.png`` shows the same"
-" data on a log-log axis with reference :math:`h^2` and :math:`h^1` slopes."
+"The plot ``taylor_green_convergence.png`` shows the same data on a log-log "
+"axis with the reference :math:`h^2` slope. If the observed rates fall to 1, "
+"something in the solver is wrong — most often a subtle bug in the boundary-"
+"condition imposition or the time stepping."
 msgstr ""
-"（数值为近似值，会随所选的 :math:`\\nu` 与 :math:`\\Delta t` 略有变化）。图 "
-"``taylor_green_convergence.png`` 在对数-对数坐标轴上展示相同数据，并附有参考的 :math:`h^2` 与 "
-":math:`h^1` 斜率。"
+"``taylor_green_convergence.png`` 以双对数坐标展示相同数据，并标注参考 :math:`h^2` 斜率。若观测收敛率降至 "
+"1，则求解器中存在错误 —— 最常见的是边界条件施加或时间步进中的隐蔽缺陷。"
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:97
-#: 33aabd5ec46b4f16a6a3c35a9d3d2986
-#, python-brace-format
-msgid ""
-"If the observed rates differ from the expected :math:`\\mathcal{O}(h^2)` / "
-":math:`\\mathcal{O}(h)`, something in the solver is wrong — most often a "
-"subtle bug in the stabilization or in the boundary-condition imposition."
-msgstr ""
-"如果观测到的收敛阶与预期的 :math:`\\mathcal{O}(h^2)` / :math:`\\mathcal{O}(h)` "
-"不符，那么求解器中必有问题——最常见的是稳定化或边界条件施加中的隐蔽 bug。"
-
-#: ../../source/example_gallery/fluid/taylor_green.rst:104
-#: 732bbdc9d2794454b919ee725e0b3971
+#: ../../source/example_gallery/fluid/taylor_green.rst:110
+#: 023b5a592e0241d78a84061a87ddd418
 msgid "Mass-weighted error norm"
 msgstr "质量加权误差范数"
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:106
-#: bf09b5b4f2054c9b9042a381f0e7dcea
-msgid "The script computes the discrete :math:`L^2` norm via the mass matrix:"
-msgstr "脚本通过质量矩阵计算离散的 :math:`L^2` 范数："
+#: ../../source/example_gallery/fluid/taylor_green.rst:112
+#: 0bf8503c073e4047a440c36c74e83a93
+msgid ""
+"The script computes the discrete :math:`L^2` norm via the mass matrix of the"
+" P2 space:"
+msgstr "该脚本通过 P2 空间的质量矩阵计算离散 :math:`L^2` 范数："
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:109
-#: a29be2d4cb1a4971925f2488fa07ef17
+#: ../../source/example_gallery/fluid/taylor_green.rst:115
+#: a59337c1111c43f9866737f9ea6d1594
 #, python-brace-format
 msgid ""
 "\\|e_h\\|_{L^2}^2\n"
@@ -199,55 +195,58 @@ msgstr ""
 "\\;=\\;\n"
 "\\sum_K \\int_K e_h^2 \\,\\mathrm{d}\\Omega,"
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:117
-#: ccaf8543f955417f8d670d984428ff0d
+#: ../../source/example_gallery/fluid/taylor_green.rst:123
+#: dbc94047ad2a4e0093e7a84357060180
 msgid ""
-"assembled by :class:`~tensormesh.MassElementAssembler`. This is the right "
-"norm for FEM error analysis (it integrates over the elements, weighted by "
-"the basis), unlike the simple Euclidean norm of the nodal error vector."
+"assembled by :class:`~tensormesh.MassElementAssembler` on the order-2 mesh. "
+"The P1 pressure is prolonged into the P2 space first (``layout.prolong`` — "
+"exact, since :math:`P_1 \\subset P_2`), so one mass matrix serves both "
+"fields. This is the right norm for FEM error analysis, unlike the simple "
+"Euclidean norm of the nodal error vector."
 msgstr ""
-"其中质量矩阵由 :class:`~tensormesh.MassElementAssembler` "
-"装配。这是有限元误差分析的正确范数（它在各单元上积分，并以基函数加权），不同于节点误差向量的简单欧几里得范数。"
+"由 :class:`~tensormesh.MassElementAssembler` 在二阶网格上装配。P1 压力先延拓至 P2 空间（\\ "
+"``layout.prolong`` —— 精确的，因为 :math:`P_1 \\subset P_2`\\ "
+"），故一个质量矩阵即可服务于两个场。这是有限元误差分析中的正确范数，不同于节点误差向量的简单欧几里得范数。"
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:124
-#: 3de22554938f4b47aaba062c2b4dd9a2
+#: ../../source/example_gallery/fluid/taylor_green.rst:132
+#: 40fc31a4885b4b13b3daa6c986e46075
 msgid "Output"
 msgstr "输出"
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:126
-#: 8fc8a3a7d37a43908829a320894c8f60
+#: ../../source/example_gallery/fluid/taylor_green.rst:134
+#: a0fda820c5254715874c293a578faf82
 msgid "**Console table** — convergence rates at every refinement step."
 msgstr "**控制台表格**——每个加密步上的收敛阶。"
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:127
-#: 35e09860ef864e01b6b9de721d56c677
+#: ../../source/example_gallery/fluid/taylor_green.rst:135
+#: bcb9422f88ea443e87ee1249c7d71209
 msgid ""
 "**``taylor_green_convergence.png``** — log-log error plot vs mesh size with "
-"reference slopes."
-msgstr "**``taylor_green_convergence.png``**——误差关于网格尺寸的对数-对数图，并附参考斜率。"
+"the reference slope."
+msgstr "**``taylor_green_convergence.png``** —— 误差双对数图随网格尺寸变化，附参考斜率。"
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:129
-#: 1010aae60c3149f0b4199ea543fb3e5d
+#: ../../source/example_gallery/fluid/taylor_green.rst:137
+#: 7f648ea80eb8434784ba92b275b74fa9
 msgid ""
 "**``taylor_green_results.png``** — three-panel snapshot of the finest mesh: "
 "speed, pressure, velocity-error magnitude."
 msgstr "**``taylor_green_results.png``**——最细网格的三联面板快照：速度、压力、速度误差大小。"
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:131
-#: ef70c7bbbbd2485f8e6fc2c0df866388
+#: ../../source/example_gallery/fluid/taylor_green.rst:139
+#: b6e058c7226047fb8fd0477bc9c3eb90
 msgid ""
 "**``taylor_green.mp4``** (optional) — animation of the decaying vortex."
 msgstr "**``taylor_green.mp4``**\\ （可选）——衰减涡的动画。"
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:134
-#: 546a99d5ba704a058ab1561608217050
+#: ../../source/example_gallery/fluid/taylor_green.rst:142
+#: f70c21162cb9494885e89feb930495ba
 msgid ""
 "Taylor-Green vortex at t=0.5 — vorticity + streamlines, speed + velocity "
 "vectors"
 msgstr "t=0.5 时的泰勒-格林涡——涡量＋流线，速度＋速度矢量"
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:138
-#: df660416bed241aaa74d0da1ff8820cd
+#: ../../source/example_gallery/fluid/taylor_green.rst:146
+#: 7e6e01fbf5754cd5b270ee3bca9240ae
 msgid ""
 "Output of ``taylor_green.py`` at :math:`t=0.5`. Left: vorticity field with "
 "overlaid streamlines — the canonical periodic :math:`2\\times2` pattern of "
@@ -260,38 +259,89 @@ msgstr ""
 ":math:`2\\times2` 交替符号涡阵列。右：带速度矢量的速度大小，展示了相邻卷之间特征性的“鞍”状结构。相对解析初始条件，幅值已衰减了 "
 ":math:`\\exp(-2\\nu t)`\\ ，脚本的收敛性研究即以此为参考真值。"
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:149
-#: d685ccb081ba463fb324e5e4fc463efb
+#: ../../source/example_gallery/fluid/taylor_green.rst:157
+#: 083161078dcf45089720f90c3fc4e49d
 msgid "Running it"
 msgstr "运行方式"
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:158
-#: 563bd93b363b477896cc4b721d465780
+#: ../../source/example_gallery/fluid/taylor_green.rst:166
+#: 967843d47d5b4b8f944bb45b098aed5d
 msgid "What's next"
 msgstr "下一步"
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:160
-#: c6fd75b58f4b4b9f92e746e607eeefc3
+#: ../../source/example_gallery/fluid/taylor_green.rst:168
+#: 619a5ed3ef5f4be8bdd771628a389f16
+msgid ""
+":doc:`stokes_taylor_hood` — the steady counterpart: pure spatial convergence"
+" at the full Taylor-Hood rates."
+msgstr ":doc:`stokes_taylor_hood` —— 稳态对应算例：纯空间收敛，达到完整的 Taylor-Hood 收敛率。"
+
+#: ../../source/example_gallery/fluid/taylor_green.rst:170
+#: c58475c94f1147168dd83de9293868f9
 msgid ""
 ":doc:`cavity` and :doc:`cylinder_flow` — the qualitative NS solvers whose "
-"convergence this example verifies."
-msgstr ":doc:`cavity` 与 :doc:`cylinder_flow`——本算例所验证收敛性的定性纳维-斯托克斯求解器。"
+"accuracy this example verifies."
+msgstr ":doc:`cavity` 与 :doc:`cylinder_flow` —— 本算例验证其精度的定性 NS 求解器。"
 
-#: ../../source/example_gallery/fluid/taylor_green.rst:162
-#: c8ebdeac0c4b4c418c8d37a0390dc7ae
-msgid ""
-":doc:`../../user_guide/elements_and_quadrature` — switch to higher-order "
-"elements (``order=2``) and the expected rates shift to :math:`h^3` / "
-":math:`h^2`."
-msgstr ""
-":doc:`../../user_guide/elements_and_quadrature`——切换到更高阶的单元（\\ ``order=2``\\ "
-"），预期收敛阶将变为 :math:`h^3` / :math:`h^2`\\ 。"
-
-#: ../../source/example_gallery/fluid/taylor_green.rst:165
-#: 0815805e239345a387f0570af86da227
+#: ../../source/example_gallery/fluid/taylor_green.rst:172
+#: 7265ea912a64459884ca2ef45a166d3a
 msgid ""
 ":doc:`../../user_guide/time_integration` — a higher-order time integrator "
-"from :mod:`tensormesh.ode` would reduce the time error component."
+"from :mod:`tensormesh.ode` would expose the spatial :math:`h^3` velocity "
+"rate."
 msgstr ""
-":doc:`../../user_guide/time_integration`——来自 :mod:`tensormesh.ode` "
-"的更高阶时间积分器可减小时间误差分量。"
+":doc:`../../user_guide/time_integration` —— :mod:`tensormesh.ode` "
+"中的高阶时间积分器可展现空间 :math:`h^3` 速度收敛率。"
+
+#~ msgid "domain :math:`[0, 2\\pi]^2` instead of the cylinder channel,"
+#~ msgstr "计算域为 :math:`[0, 2\\pi]^2`\\ ，而非圆柱通道，"
+
+#~ msgid ""
+#~ "The script sweeps the mesh size :math:`h = 2\\pi / n_\\text{grid}` through a"
+#~ " list of values and records the :math:`L^2` velocity and pressure errors at "
+#~ "a fixed final time. For P1-P1 elements with SUPG/PSPG one expects:"
+#~ msgstr ""
+#~ "脚本让网格尺寸 :math:`h = 2\\pi / n_\\text{grid}` 遍历一组取值，并在固定的终止时刻记录 :math:`L^2` "
+#~ "速度误差与压力误差。对于带 SUPG/PSPG 的 P1-P1 单元，预期为："
+
+#~ msgid ":math:`\\|\\mathbf{u}_h - \\mathbf{u}\\|_{L^2} = \\mathcal{O}(h^2)`"
+#~ msgstr ":math:`\\|\\mathbf{u}_h - \\mathbf{u}\\|_{L^2} = \\mathcal{O}(h^2)`"
+
+#~ msgid ":math:`\\|p_h - p\\|_{L^2} = \\mathcal{O}(h)`"
+#~ msgstr ":math:`\\|p_h - p\\|_{L^2} = \\mathcal{O}(h)`"
+
+#~ msgid "The console output is a table:"
+#~ msgstr "控制台输出为一张表格："
+
+#~ msgid ""
+#~ "(numbers approximate, will vary slightly with the chosen :math:`\\nu` and "
+#~ ":math:`\\Delta t`). The plot ``taylor_green_convergence.png`` shows the same"
+#~ " data on a log-log axis with reference :math:`h^2` and :math:`h^1` slopes."
+#~ msgstr ""
+#~ "（数值为近似值，会随所选的 :math:`\\nu` 与 :math:`\\Delta t` 略有变化）。图 "
+#~ "``taylor_green_convergence.png`` 在对数-对数坐标轴上展示相同数据，并附有参考的 :math:`h^2` 与 "
+#~ ":math:`h^1` 斜率。"
+
+#~ msgid ""
+#~ "If the observed rates differ from the expected :math:`\\mathcal{O}(h^2)` / "
+#~ ":math:`\\mathcal{O}(h)`, something in the solver is wrong — most often a "
+#~ "subtle bug in the stabilization or in the boundary-condition imposition."
+#~ msgstr ""
+#~ "如果观测到的收敛阶与预期的 :math:`\\mathcal{O}(h^2)` / :math:`\\mathcal{O}(h)` "
+#~ "不符，那么求解器中必有问题——最常见的是稳定化或边界条件施加中的隐蔽 bug。"
+
+#~ msgid ""
+#~ "assembled by :class:`~tensormesh.MassElementAssembler`. This is the right "
+#~ "norm for FEM error analysis (it integrates over the elements, weighted by "
+#~ "the basis), unlike the simple Euclidean norm of the nodal error vector."
+#~ msgstr ""
+#~ "其中质量矩阵由 :class:`~tensormesh.MassElementAssembler` "
+#~ "装配。这是有限元误差分析的正确范数（它在各单元上积分，并以基函数加权），不同于节点误差向量的简单欧几里得范数。"
+
+#~ msgid ""
+#~ ":doc:`../../user_guide/elements_and_quadrature` — switch to higher-order "
+#~ "elements (``order=2``) and the expected rates shift to :math:`h^3` / "
+#~ ":math:`h^2`."
+#~ msgstr ""
+#~ ":doc:`../../user_guide/elements_and_quadrature`——切换到更高阶的单元（\\ ``order=2``\\ "
+#~ "），预期收敛阶将变为 :math:`h^3` / :math:`h^2`\\ 。"

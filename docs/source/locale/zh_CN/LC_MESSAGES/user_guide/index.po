@@ -8,101 +8,124 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-19 14:04+0200\n"
+"POT-Creation-Date: 2026-07-22 15:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: zh_CN\n"
 "Language-Team: zh_CN <LL@li.org>\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: ../../source/user_guide/index.rst:2 eff52b2da3e544a2a14738d865920efe
+#: ../../source/user_guide/index.rst:2 ae761010754a48a7bb1e45911a78d453
 msgid "User Guide"
 msgstr "用户指南"
 
-#: ../../source/user_guide/index.rst:4 ae1106ca0161489f98832e7b7b65f9ff
+#: ../../source/user_guide/index.rst:4 cb1cb3b3c28540ee9b53d2d1dc992b4d
 msgid ""
-"In-depth, topic-oriented guides covering TensorMesh's core concepts, "
-"design choices, and how to wield each component."
+"In-depth, topic-oriented guides covering TensorMesh's core concepts, design "
+"choices, and how to wield each component."
 msgstr "面向主题的深入指南，涵盖 TensorMesh 的核心概念、设计取舍，以及如何运用每一个组件。"
 
-#: ../../source/user_guide/index.rst:10 0d3923532559442bbb794dfe328073fa
+#: ../../source/user_guide/index.rst:10 170dd8da148e4610b8389fdd40c5b371
 msgid "Concepts"
 msgstr "核心概念"
 
-#: ../../source/user_guide/index.rst:14 6cbe2a74fc274b6880d6724ca7bf5612
-msgid "What TensorMesh is, the FEM pipeline, and how the modules fit together."
+#: ../../source/user_guide/index.rst:14 ca72092bda114bd291ad1cc3ed088d85
+msgid ""
+"What TensorMesh is, the FEM pipeline, and how the modules fit together."
 msgstr "TensorMesh 是什么、有限元方法流水线，以及各模块如何协同工作。"
 
-#: ../../source/user_guide/index.rst:16 856c00efd2e54c16b630d60fd6af84fa
+#: ../../source/user_guide/index.rst:16 1420bc0c130c4d1e967b037139b1a96b
 msgid "Meshes"
 msgstr "网格"
 
-#: ../../source/user_guide/index.rst:20 84997aa3174149acb3993a20509cedcb
+#: ../../source/user_guide/index.rst:20 64b466bfd8bd4236905965b5fd5dcc39
 msgid "Build, inspect, and load/save meshes; per-node and per-cell data."
 msgstr "构建、检查与加载/保存网格；逐节点与逐单元数据。"
 
-#: ../../source/user_guide/index.rst:22 1089ff4c9df24980979df2060c72156e
+#: ../../source/user_guide/index.rst:22 98865142d5274f02bf3d089ea98de507
 msgid "Elements & Quadrature"
 msgstr "单元与求积"
 
-#: ../../source/user_guide/index.rst:26 45e74ad401584477a03a079961a072d3
+#: ../../source/user_guide/index.rst:26 aaebbc79f8204fc4afd639b4870e7718
 msgid ""
 "The element zoo, basis functions, quadrature rules, and ordering "
 "conventions."
 msgstr "单元家族、基函数、求积规则以及排序约定。"
 
-#: ../../source/user_guide/index.rst:28 b12b266060a3468b9a6dd7580676b682
+#: ../../source/user_guide/index.rst:28 9df9894af35a4b04a175a7a7e48fbfc6
 msgid "Forms"
 msgstr "弱形式"
 
-#: ../../source/user_guide/index.rst:32 1b0fa79da7b84f938a1b3aac68d7c0ca
+#: ../../source/user_guide/index.rst:32 4d1b39df6fb04f0493f7fa319a3eab2b
 msgid "Write weak forms in pure Python via the three assembler base classes."
 msgstr "通过三个装配器基类，用纯 Python 编写弱形式。"
 
-#: ../../source/user_guide/index.rst:34 75a2802add32423e83a9f26997fa2621
+#: ../../source/user_guide/index.rst:34 3b2816f97f3e405bb1b9880700a908f4
+msgid "Mixed Assembly"
+msgstr "混合装配"
+
+#: ../../source/user_guide/index.rst:38 e23aabc4e05e48ce923f6fe28dcea003
+msgid ""
+"Multi-field block systems — Taylor-Hood Stokes, generalized order pairs, "
+"coupled physics."
+msgstr "多场块系统 —— Taylor-Hood Stokes、广义阶次配对、耦合物理。"
+
+#: ../../source/user_guide/index.rst:40 3bebd9b24b7442fe8fbcf3aad16a9e77
 msgid "Boundary Conditions"
 msgstr "边界条件"
 
-#: ../../source/user_guide/index.rst:38 110f4031071c4e83b3bc9d5ea49734ae
+#: ../../source/user_guide/index.rst:44 5c5f764cc9bf4e19b48a04d9efba2989
 msgid "Apply Dirichlet BCs via static condensation; handle Neumann naturally."
 msgstr "通过静态凝聚施加狄利克雷边界条件；自然地处理诺伊曼边界条件。"
 
-#: ../../source/user_guide/index.rst:40 7497a16bbaf840088525d737bfff0a90
+#: ../../source/user_guide/index.rst:46 e6021f0f9fcb4d58b39af5c94a92bd29
 msgid "Sparse Solvers"
 msgstr "稀疏求解器"
 
-#: ../../source/user_guide/index.rst:44 324c3afb6d8246aebf3a7bd9b6d07098
+#: ../../source/user_guide/index.rst:50 49f89ad60fbb40c5b39aacec887c0837
 msgid ""
-"Linear and nonlinear sparse solves via torch-sla — five backends, batched"
-" RHS, Newton / Picard / Anderson."
-msgstr "通过 torch-sla 进行线性与非线性稀疏求解——五种后端、batch 右端项，以及 Newton / Picard / Anderson 方法。"
+"Linear and nonlinear sparse solves via torch-sla — five backends, batched "
+"RHS, Newton / Picard / Anderson."
+msgstr ""
+"通过 torch-sla 进行线性与非线性稀疏求解——五种后端、batch 右端项，以及 Newton / Picard / Anderson 方法。"
 
-#: ../../source/user_guide/index.rst:46 f2302dafd06146b1afcd999c97de8f7a
+#: ../../source/user_guide/index.rst:52 34706d511cd54025a15248eed3db3841
 msgid "Time Integration"
 msgstr "时间积分"
 
-#: ../../source/user_guide/index.rst:50 9d1bf1a1296147bf9bd559f83797c641
-msgid "Explicit and implicit-linear Runge-Kutta schemes for transient problems."
+#: ../../source/user_guide/index.rst:56 6039887ede1d4306b54d08183b36a9fb
+msgid ""
+"Explicit and implicit-linear Runge-Kutta schemes for transient problems."
 msgstr "用于瞬态问题的显式与隐式线性龙格-库塔格式。"
 
-#: ../../source/user_guide/index.rst:52 07a055a845dd4bd39bb3e22f72241ba1
+#: ../../source/user_guide/index.rst:58 dca48f7f588d4a97a3e567c2c65d2965
 msgid "Batched Workflows"
 msgstr "批量化工作流"
 
-#: ../../source/user_guide/index.rst:56 d2003821e0ce4fc6997967aa58babd3b
+#: ../../source/user_guide/index.rst:62 e71f00a6d0df440a8e389392f48993b4
 msgid "Three axes of batching: memory chunking, batched RHS, and ML datasets."
 msgstr "批量化的三个维度：内存分块、batch 右端项，以及机器学习数据集。"
 
-#: ../../source/user_guide/index.rst:58 252a8c37e5634569bbbf06fa2444ffe8
+#: ../../source/user_guide/index.rst:64 340c65106a67434fb7ac53b867217adc
 msgid "Differentiability"
 msgstr "可微性"
 
-#: ../../source/user_guide/index.rst:62 395ff30ded094463ac04c04823260f18
+#: ../../source/user_guide/index.rst:68 e3a3bea87b4d4f0e9c14ca532fefd68f
 msgid ""
 "End-to-end gradients through assemble → solve, for inverse problems and "
 "topology opt."
 msgstr "贯穿 assemble → solve 的端到端梯度，用于反问题与拓扑优化。"
+
+#: ../../source/user_guide/index.rst:70 fcd4cb1eb8644f4db19c0f2ea407acfd
+msgid "Distributed FEM"
+msgstr "分布式有限元方法"
+
+#: ../../source/user_guide/index.rst:74 27733e301ae04c0c8488b20a79c06f6a
+msgid ""
+"Partition the mesh, assemble per GPU, and solve one system across devices "
+"via torch-sla."
+msgstr "划分网格，逐 GPU 装配，并通过 torch-sla 跨设备求解统一系统。"
