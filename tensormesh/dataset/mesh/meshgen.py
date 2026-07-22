@@ -436,10 +436,23 @@ class MeshGen:
             gmsh.option.setNumber("Mesh.RecombinationAlgorithm", 0)
     
 
-            # Better handling of curved surfaces
-            gmsh.option.setNumber("Mesh.MeshSizeFromCurvature", 1)
+            # Better handling of curved surfaces. MeshSizeFromCurvature is
+            # the target number of elements per 2*pi radians of curvature —
+            # NOT an on/off flag. The old value of 1 requested one element
+            # per full turn, i.e. a target size of ~2*pi*r on a sphere of
+            # radius r (larger than the sphere itself); together with
+            # MeshSizeExtendFromBoundary=0 below this starves the 3D
+            # Delaunay mesher of a consistent size field around small
+            # spherical cavities and generate() never returns (issue #40).
+            gmsh.option.setNumber("Mesh.MeshSizeFromCurvature", 20)
             gmsh.option.setNumber("Mesh.MinimumCirclePoints", 12)
             gmsh.option.setNumber("Mesh.MinimumCurvePoints", 8)
+
+            # MeshSizeExtendFromBoundary=0 also stops the sizes prescribed
+            # on the geometry points from propagating into the volume, so
+            # cap the interior size explicitly — chara_length keeps its
+            # meaning away from the boundary.
+            gmsh.option.setNumber("Mesh.MeshSizeMax", self.chara_length)
 
             # Disable size extension from boundary for more uniform mesh
             gmsh.option.setNumber("Mesh.MeshSizeExtendFromBoundary", 0)
