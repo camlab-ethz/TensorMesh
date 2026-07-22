@@ -8,9 +8,21 @@ rectangular channel with a small cylinder near the inlet. At
 :math:`\mathrm{Re} = 100` the wake becomes unstable, vortices
 shed alternately from the top and bottom of the cylinder, and a
 **von Kármán vortex street** propagates downstream. The geometry
-and parameters follow the DFG 2D-1 benchmark (Schäfer & Turek,
-1996), which gives reference values for drag/lift coefficients
-and the Strouhal number.
+and parameters follow the DFG 2D benchmark (Schäfer & Turek,
+1996).
+
+Discretization: **Taylor-Hood P2-P1** via
+:class:`~tensormesh.MixedElementAssembler`, backward Euler in time
+with Picard sub-iterations. Two things make this script the
+"advanced" mixed example:
+
+* the gmsh/:class:`~tensormesh.MeshGen` channel mesh is **linear**
+  — the quadratic velocity space is generated *topologically* on
+  top of it (one DOF per unique edge), no order-2 re-meshing;
+* the load vector and the vorticity post-processing both go through
+  :meth:`~tensormesh.MixedElementAssembler.assemble_vector`, with
+  the lagged velocities riding on the P2 field's own DOFs via
+  ``field_data``.
 
 
 Problem
@@ -33,114 +45,131 @@ circular cylinder of radius :math:`r = 0.05` centered at
   :math:`u_x(y) = 4\,U_\text{max}\, y\, (H - y) / H^2`,
   :math:`u_y = 0`,
 * walls and cylinder surface: no-slip,
-* outlet (:math:`x = 2.2`): "do-nothing" + pressure pin,
+* outlet (:math:`x = 2.2`): "do-nothing" (natural), which also
+  fixes the pressure gauge — **no pressure pin is needed**,
 
 with :math:`U_\text{max} = 1.5` giving :math:`\bar{U} = 1`,
 :math:`D = 0.1`, :math:`\rho = 1`, :math:`\mu = 10^{-3}`, and
 hence :math:`\mathrm{Re} = \rho \bar{U} D / \mu = 100`.
 
 
-Time integration: implicit Euler
---------------------------------
+Time integration: backward Euler + Picard
+-----------------------------------------
 
-The transient term :math:`\rho\, \partial_t \mathbf{u}` is
-discretized with backward Euler — implicit, unconditionally
-stable. Each timestep solves
+The transient term is discretized with backward Euler — implicit,
+unconditionally stable. Each timestep solves
 
 .. math::
 
    \rho\, \frac{\mathbf{u}^{n+1} - \mathbf{u}^{n}}{\Delta t}
-   + \rho\, (\mathbf{u}^{n} \cdot \nabla)\mathbf{u}^{n+1}
+   + \rho\, (\mathbf{w} \cdot \nabla)\mathbf{u}^{n+1}
    \;=\; -\nabla p^{n+1} + \mu\, \Delta \mathbf{u}^{n+1},
 
-(convection linearized by lagging the advecting velocity to
-:math:`\mathbf{u}^n`). The script implements this as a transient
-variant of the cavity assembler, with the mass term
-:math:`\rho/\Delta t \cdot u\, v` added to the diagonal block
-along with a corresponding SUPG residual:
+with the advecting velocity :math:`\mathbf{w}` updated by one or
+two Picard sub-iterations per step. Matrix side and load side are
+the two halves of one assembler:
 
 .. code-block:: python
    :caption: examples/fluid/cylinder_flow/cylinder_flow.py (essence)
 
-   class NavierStokesTransientAssembler(ElementAssembler):
-       def __post_init__(self, rho=1.0, mu=0.01, dt=1e-3, tau=1e-3):
-           self.rho, self.mu, self.dt, self.tau = rho, mu, dt, tau
+   class NavierStokesTransientAssembler(MixedElementAssembler):
+       fields = [
+           Field(trial="u", test="v", order=2, components=2),
+           Field(trial="p", test="q", order=1),
+       ]
 
-       def forward(self, u, v, gradu, gradv, w_prev):
-           dim = gradu.shape[0]
-           mass        = self.rho * (u * v) / self.dt
-           convection  = self.rho * torch.dot(w_prev, gradv) * u
-           diffusion   = self.mu * torch.dot(gradu, gradv)
-           supg_test   = self.tau * torch.dot(w_prev, gradu)
-           supg_res    = (self.rho/self.dt * v
-                          + self.rho * torch.dot(w_prev, gradv)) * supg_test
-           momentum_diag = mass + convection + diffusion + supg_res
-           # …assemble (dim+1)×(dim+1) block as in cavity.py…
+       def __post_init__(self, rho=1.0, mu=0.01, dt=1e-3):
+           self.rho, self.mu, self.dt = rho, mu, dt
 
-The previous-timestep solution :math:`\mathbf{u}^n` enters the
-RHS through a separate ``NodeAssembler`` (``MomentumRHSAssembler``)
-that contributes :math:`\rho/\Delta t\, \mathbf{u}^n \cdot v`.
-Both assemblers share the same ``tau`` field, updated each step
-to reflect the local cell Reynolds number.
+       def forward(self, u, gradu, p, v, gradv, q, w):
+           mass = self.rho / self.dt * u.dot(v)
+           convection = self.rho * (gradu @ w).dot(v)
+           diffusion = self.mu * (gradu * gradv).sum()
+           return mass + convection + diffusion \
+               - p * gradv.diagonal().sum() \
+               - q * gradu.diagonal().sum()
 
+       def forward_vector(self, v, uprev):
+           return self.rho / self.dt * uprev.dot(v)
 
-Stabilization
--------------
+The time loop is then three lines of assembly per Picard pass —
+note the ``field_data`` channel carrying the lagged P2 velocities:
 
-The cylinder problem is more demanding than the cavity:
-upstream cells see nearly-uniform flow, the wake region needs
-fine-grained convection-dominated stabilization. The script uses
-an **adaptive** :math:`\tau`:
+.. code-block:: python
 
-.. math::
-
-   \tau \;=\;
-   \left[
-     \left(\frac{2}{\Delta t}\right)^2
-     + \left(\frac{2|\mathbf{u}|}{h}\right)^2
-     + \left(\frac{4\nu}{h^2}\right)^2
-   \right]^{-1/2},
-
-evaluated per element from the local mesh size :math:`h` and
-velocity magnitude. This makes the diffusive part of SUPG dominate
-where the flow is slow and the convective part dominate in the
-wake.
+   for step in range(n_steps):
+       u_prev = layout.split(sol)["u"]        # [n_u, 2] on the P2 DOFs
+       for _ in range(picard_iter):
+           w = layout.split(u_iter)["u"]
+           K = assembler(field_data={"w": ("u", w)})
+           f = assembler.assemble_vector(field_data={"uprev": ("u", u_prev)})
+           K_, f_ = condenser(K, f)
+           u_iter = condenser.recover(K_.solve(f_))
+       sol = u_iter
 
 
-Post-processing
----------------
+Boundary conditions on the topological P2 space
+-----------------------------------------------
 
-At every saved frame the script derives a **vorticity** field
-:math:`\omega = \partial_x v - \partial_y u` by :math:`L^2`
-projection: assemble a mass matrix
-:class:`~tensormesh.MassElementAssembler`, build the projection
-right-hand side :math:`\tilde\omega` from
-:math:`\partial_x v - \partial_y u` (itself assembled with a
-:class:`~tensormesh.NodeAssembler`), and solve
-:math:`M\,\omega = \tilde\omega`. This is the standard recipe for
-recovering a smooth nodal field from element-wise gradients on
-piecewise-linear FEM.
+MeshGen meshes carry no ``is_boundary`` point data, and half the
+velocity nodes are edge midpoints that are not mesh points at all.
+Both problems disappear with the layout's topological helpers —
+``boundary_mask`` classifies DOFs by facet incidence, and
+``points("u")`` gives every velocity node a coordinate:
+
+.. code-block:: python
+
+   x_u = layout.points("u")
+   is_boundary = layout.split(layout.boundary_mask("u"))["u"][:, 0]
+   is_inlet = is_boundary & (x_u[:, 0] <= eps)
+   is_outlet = x_u[:, 0] >= length - eps
+   no_slip = is_boundary & ~is_inlet & ~is_outlet   # walls + cylinder
+
+   bc_mask = layout.dof_mask("u", node_mask=is_inlet | no_slip)
+   y_in = x_u[is_inlet, 1]
+   bc_val[layout.dof_mask("u", node_mask=is_inlet, component=0)] = \
+       4.0 * u_max * y_in * (height - y_in) / (height * height)
+
+The outlet is left free (do-nothing), which anchors the pressure —
+the saddle-point system is non-singular without a pin.
+
+
+Post-processing: vorticity as a mixed load vector
+-------------------------------------------------
+
+At every saved frame the script recovers the vorticity
+:math:`\omega = \partial_x u_y - \partial_y u_x` by :math:`L^2`
+projection onto the P1 pressure space. The projection RHS
+:math:`\int \omega_h\, q\,\mathrm{d}x` uses the **exact P2
+gradient** of the velocity — a one-line ``func=`` linear form,
+with the velocity passed via ``field_data``:
+
+.. code-block:: python
+
+   omega_rhs = assembler.assemble_vector(
+       func=lambda q, gradw: (gradw[1, 0] - gradw[0, 1]) * q,
+       field_data={"w": ("u", velocity)},
+   )
+   omega = m_mat.solve(layout.split(omega_rhs)["p"])   # P1 mass matrix
 
 The von Kármán street is the qualitative signature to look for:
-once the wake destabilizes (typically after :math:`t \gtrsim 5`)
-vortices shed alternately from the top and bottom of the cylinder
-at a Strouhal number :math:`\mathrm{St} = f D / \bar{U} \approx 0.3`,
-visible directly in the vorticity animation.
+once the wake destabilizes, vortices shed alternately from the top
+and bottom of the cylinder and convect downstream at roughly the
+mean inlet velocity.
 
 
 Output and rendering
 --------------------
 
-* **Frame sequence.** Every ``N`` steps the script renders a
-  three-panel PNG (vorticity, speed, pressure) into ``frames/``
+* **Frame sequence.** Every ``save_every`` steps the script renders
+  a three-panel PNG (vorticity, speed, pressure) into ``frames/``
   via ``mesh.plot``.
 * **MP4 rendering.** The companion script
   ``examples/fluid/cylinder_flow/render_video.py`` stitches the
   ``frames/*.png`` sequence into ``vortex_street.mp4`` with an
   ``ffmpeg`` concat pass.
 * **Final snapshot.** ``cylinder_flow_final.png`` is the same
-  three-panel figure for the last step, for inclusion in talks and
-  reports.
+  three-panel figure for the last step.
 
 .. raw:: html
 
@@ -174,11 +203,11 @@ coarsen the mesh for a quick smoke test.
 What's next
 -----------
 
-* :doc:`cavity` — the steady cousin with the same SUPG/PSPG
-  recipe.
+* :doc:`cavity` — the steady cousin with the same weak form minus
+  the time terms.
 * :doc:`taylor_green` — a transient problem with an exact
-  solution, for verifying the time integrator's order.
+  solution, for verifying accuracy.
 * :doc:`flow_obstacles` — steady flow through a more complex
   channel geometry.
-* :doc:`../../user_guide/time_integration` — implicit-linear
-  integrators that subsume the manual backward-Euler loop.
+* :doc:`../../user_guide/mixed_assembly` — ``forward_vector``,
+  ``field_data``, and generalized order pairs in detail.

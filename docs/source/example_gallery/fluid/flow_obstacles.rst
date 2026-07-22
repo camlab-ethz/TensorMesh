@@ -10,6 +10,12 @@ varying size and position. The mesh is generated programmatically
 via :class:`~tensormesh.MeshGen` using CSG (constructive solid
 geometry): start with a rectangle, subtract six discs.
 
+The discretization is the same **Taylor-Hood P2-P1** mixed pair as
+:doc:`cavity` — and like :doc:`cylinder_flow`, the MeshGen mesh is
+linear, so the quadratic velocity space is generated
+**topologically** on top of it by the
+:class:`~tensormesh.MixedElementAssembler`.
+
 
 Problem
 -------
@@ -39,7 +45,8 @@ Boundary conditions:
   :math:`u_x(y) = 4\,y\,(1 - y)`,
 * walls (:math:`y = 0`, :math:`y = 1`) and obstacle surfaces:
   no-slip,
-* outlet (:math:`x = 3`): :math:`p = 0`.
+* outlet (:math:`x = 3`): "do-nothing" (natural), which also fixes
+  the pressure gauge — no pressure BC at all.
 
 At :math:`\mathrm{Re} = 150` the flow is steady (no shedding),
 the wake of each obstacle interacts with the next, and the
@@ -79,24 +86,32 @@ ordering. See :doc:`../../user_guide/meshes` for the full
 Solver
 ------
 
-Identical to :doc:`cavity` — same custom ``NavierStokesAssembler``,
-same SUPG/PSPG stabilization, same Picard linearization. The only
-real differences are:
-
-* the boundary masks are richer (inlet, walls, obstacle
-  surfaces, outlet),
-* the inlet velocity is non-zero (parabolic), so the
-  :class:`~tensormesh.Condenser` is built with
-  ``dirichlet_value`` containing the prescribed inlet profile,
-* the outlet has no velocity BC; only the pressure is pinned to
-  zero.
+Identical to :doc:`cavity` — the same two-field
+``NavierStokesAssembler`` (Picard-linearized convection, four-line
+scalar integrand) with richer boundary masks. Because the velocity
+DOFs include topologically generated edge nodes, the masks are
+built from the layout's own coordinates and boundary detection —
+no geometric distance tests against the obstacle circles needed:
 
 .. code-block:: python
 
-   is_inlet  = points[:, 0] < 1e-6
-   is_outlet = points[:, 0] > 3.0 - 1e-6
-   is_wall   = (points[:, 1] < 1e-6) | (points[:, 1] > 1.0 - 1e-6)
-   # …assemble u_mask / u_val accordingly, then Picard-iterate as in cavity…
+   x_u = layout.points("u")                                # P2 node coords
+   is_boundary = layout.split(layout.boundary_mask("u"))["u"][:, 0]
+   is_inlet = is_boundary & (x_u[:, 0] < eps)
+   is_outlet = x_u[:, 0] > LENGTH - eps
+   no_slip = is_boundary & ~is_inlet & ~is_outlet          # walls + obstacles
+
+   bc_mask = layout.dof_mask("u", node_mask=is_inlet | no_slip)
+   y_in = x_u[is_inlet, 1]
+   bc_val[layout.dof_mask("u", node_mask=is_inlet, component=0)] = \
+       4.0 * y_in * (1.0 - y_in)
+
+   # Picard loop: lagged velocity on the P2 field's own DOFs
+   K = assembler(field_data={"w": ("u", w)})
+
+The obstacle surfaces fall out of the topological classification
+automatically: they are boundary nodes that are neither inlet nor
+outlet.
 
 
 Output
@@ -116,12 +131,12 @@ sanity checks on the picture:
    :alt: Speed magnitude and pressure for steady flow past 6 random circular obstacles
    :width: 100%
 
-   Output of ``flow_obstacles.py`` at Re = 150. Left: speed
-   magnitude — high-velocity jets squeeze between obstacle
-   pairs and broaden into wakes downstream. Right: pressure —
-   stagnation upstream of each obstacle, low-pressure pockets
-   in the wakes, and a near-uniform streamwise pressure drop
-   across the channel.
+   Output of ``flow_obstacles.py`` at Re = 150 (Taylor-Hood P2-P1).
+   Left: speed magnitude — high-velocity jets squeeze between
+   obstacle pairs and broaden into wakes downstream. Right:
+   pressure — stagnation upstream of each obstacle, low-pressure
+   pockets in the wakes, and a near-uniform streamwise pressure
+   drop across the channel.
 
 
 Running it
@@ -132,8 +147,8 @@ Running it
    cd examples/fluid/flow_obstacles
    python flow_obstacles.py     # writes flow_obstacles.png
 
-The Picard loop converges in roughly 20 iterations at the default
-mesh resolution.
+At the default resolution (51k DOFs) the Picard loop converges in
+8 iterations.
 
 
 What's next
@@ -144,3 +159,5 @@ What's next
   body", where shedding takes over.
 * :doc:`../../user_guide/meshes` — full ``MeshGen`` API including
   3D primitives and hybrid meshes.
+* :doc:`../../user_guide/mixed_assembly` — topological P2 spaces on
+  linear meshes (generalized order pairs).
