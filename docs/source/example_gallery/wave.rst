@@ -167,6 +167,8 @@ Running the example
 What's next
 -----------
 
+* :doc:`phononic_crystal` — the frequency-domain cousin: Bloch-Floquet
+  band structures and slab transmission for periodic acoustic media.
 * :doc:`../user_guide/time_integration` — explicit and
   implicit-linear integrator classes.
 * :doc:`../user_guide/linear_solvers` — backend choice and the
