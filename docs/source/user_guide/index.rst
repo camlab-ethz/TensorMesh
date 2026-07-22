@@ -31,6 +31,12 @@ design choices, and how to wield each component.
 
       Write weak forms in pure Python via the three assembler base classes.
 
+   .. grid-item-card:: Mixed Assembly
+      :link: mixed_assembly
+      :link-type: doc
+
+      Multi-field block systems — Taylor-Hood Stokes, generalized order pairs, coupled physics.
+
    .. grid-item-card:: Boundary Conditions
       :link: boundary_conditions
       :link-type: doc
@@ -70,6 +76,7 @@ design choices, and how to wield each component.
    meshes
    elements_and_quadrature
    forms
+   mixed_assembly
    boundary_conditions
    linear_solvers
    time_integration
