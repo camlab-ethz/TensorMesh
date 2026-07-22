@@ -35,9 +35,9 @@ from typing import Optional, Union
 
 import torch
 
-from .assemble.facet_bilinear import FacetBilinearAssembler
-from .mesh import Mesh
-from .sparse.matrix import SparseMatrix
+from ..assemble.facet_bilinear import FacetBilinearAssembler
+from ..mesh import Mesh
+from ..sparse.matrix import SparseMatrix
 
 
 class _RobinMass(FacetBilinearAssembler):
@@ -78,8 +78,13 @@ def robin_operator(mesh: Mesh,
     pts = mesh.points if points is None else points
     n = pts.shape[0]
     if not torch.is_tensor(coeff):
-        c = torch.full((n,), coeff, dtype=torch.as_tensor(coeff).dtype
-                       if not isinstance(coeff, complex) else torch.complex128)
+        # scalar coefficient: follow the mesh precision (float64 mesh ->
+        # complex128 / float64 coefficient) instead of torch's float32 default
+        if isinstance(coeff, complex):
+            cdtype = torch.complex128 if pts.dtype == torch.float64 else torch.complex64
+        else:
+            cdtype = pts.dtype
+        c = torch.full((n,), coeff, dtype=cdtype, device=pts.device)
     else:
         c = coeff
     asm = _RobinMass.from_mesh(mesh, boundary_mask=boundary_mask,

@@ -142,7 +142,7 @@ class ScaledMassElementAssembler(ElementAssembler):
     (from ``point_data``, possibly spatially varying and **complex**).  Handy for
     the reaction / potential term of a Helmholtz problem — e.g. the PML mass
     scaling :math:`k_0^2\,\varepsilon\, s_{\mathrm{prod}}` (see
-    :func:`tensormesh.pml.cartesian_pml`), or a variable wave speed.
+    :func:`tensormesh.cartesian_pml`), or a variable wave speed.
 
     Examples
     --------

@@ -1,5 +1,5 @@
 from .mesh import Mesh
-from .operator import Condenser, BlochReducer
+from .operator import Condenser, BlochReducer, robin_operator, port_source
 # from .element import get_shape_val, get_shape_grad, get_basis
 from .element import Transformation,\
                         Element,\
@@ -16,8 +16,6 @@ from .element import element_type2element,\
                         element_types
 from .assemble import ElementAssembler, MixedElementAssembler, Field, BlockLayout, NodeAssembler, FacetAssembler, FacetBilinearAssembler
 from .assemble import LaplaceElementAssembler, AnisotropicLaplaceElementAssembler, MassElementAssembler, ScaledMassElementAssembler, LinearElasticityElementAssembler, const_node_assembler, func_node_assembler
-from .pml import cartesian_pml
-from .bc import robin_operator, port_source
 from .functional import *
 from .dataset import MeshGen
 from .distributed import (
