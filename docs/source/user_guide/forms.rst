@@ -524,9 +524,18 @@ them are importable directly from ``tensormesh``:
    * - :class:`~tensormesh.LaplaceElementAssembler`
      - Element
      - :math:`\int \nabla u \cdot \nabla v\, \mathrm{d}\Omega` — Laplacian / diffusion stiffness
+   * - :class:`~tensormesh.AnisotropicLaplaceElementAssembler`
+     - Element
+     - :math:`\int (\mathbf{A}\nabla u) \cdot \nabla v\, \mathrm{d}\Omega` — tensor (possibly complex) coefficient, e.g. a PML stretch
    * - :class:`~tensormesh.MassElementAssembler`
      - Element
      - :math:`\int u\, v\, \mathrm{d}\Omega` — mass matrix (transient, :math:`L^2` projection)
+   * - :class:`~tensormesh.assemble.ScaledMassElementAssembler`
+     - Element
+     - :math:`\int c\, u\, v\, \mathrm{d}\Omega` — coefficient mass (Helmholtz reaction terms, variable wave speed)
+   * - :class:`~tensormesh.FacetBilinearAssembler`
+     - Facet (matrix)
+     - boundary bilinear forms :math:`\int_\Gamma c\, u\, v\, \mathrm{d}S` — Robin / impedance / port operators
    * - :class:`~tensormesh.LinearElasticityElementAssembler`
      - Element (vector)
      - small-strain isotropic elasticity (parameters ``E``, ``nu``)

@@ -351,13 +351,18 @@ Gotchas
 What's not built in today
 -------------------------
 
-The :mod:`tensormesh.operator` module ships two operators —
+The :mod:`tensormesh.operator` module ships
 :class:`~tensormesh.Condenser` for Dirichlet via static condensation,
-and :class:`~tensormesh.BlochReducer` for **Bloch-Floquet periodic**
+:class:`~tensormesh.BlochReducer` for **Bloch-Floquet periodic**
 conditions (opposite faces tied with a complex phase factor, the
 building block of band-structure computations — see the
-phononic-crystal examples). A few neighbouring techniques are *not*
-first-class operators:
+phononic-crystal examples), and the **wave boundary operators**
+:func:`~tensormesh.robin_operator` / :func:`~tensormesh.port_source` —
+the assembled Robin / impedance / plane-wave-port matrix and load,
+built on :class:`~tensormesh.FacetBilinearAssembler` (see the
+:doc:`open-domain wave examples
+</example_gallery/open_domain_wave>`). A few neighbouring techniques
+are *not* first-class operators:
 
 * **Lagrange multipliers** for Dirichlet — an alternative to
   condensation that keeps the original DOF layout but produces a
@@ -367,11 +372,6 @@ first-class operators:
   case of :class:`~tensormesh.BlochReducer` covers meshes with
   matched periodic faces; for general (non-matched) meshes you still
   identify DOFs and merge rows / columns by hand.
-* **Robin (mixed) conditions** as a top-level operator — but the
-  bilinear-form contribution :math:`\int_{\Gamma} \alpha\, u\, v\,
-  \mathrm{d}S` is a one-line
-  :class:`~tensormesh.FacetAssembler` subclass; just add it to
-  ``K`` before condensing.
 
 Penalty contact, surface tension, pressure loads, and similar
 energy-based boundary terms *are* first-class — see

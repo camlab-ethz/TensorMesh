@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-22 15:34+0200\n"
+"POT-Creation-Date: 2026-07-22 17:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_CN <LL@li.org>\n"
@@ -89,21 +89,41 @@ msgid ""
 "COMSOL."
 msgstr "布洛赫-弗洛凯能带结构与平板透射，结果与 COMSOL 验证对比。"
 
-#: ../../source/example_gallery/index.rst:54 a2b46870143443a4b0e3a0b4048a3209
+#: ../../source/example_gallery/index.rst:54 c32867734b4a4935ba872384059038ec
+msgid "Open-Domain Wave"
+msgstr "开放域波动"
+
+#: ../../source/example_gallery/index.rst:59 dbb76ff484a24a7b968cc83b5c47a898
+msgid ""
+"PML and plane-wave ports: an acoustic Helmholtz resonator and a photonic "
+"microdisk."
+msgstr "PML 与平面波端口：声学亥姆霍兹谐振器与光子微盘。"
+
+#: ../../source/example_gallery/index.rst:61 06e62daa212b4efd954cb8acbfe4e77d
+msgid "Modal Analysis"
+msgstr "模态分析"
+
+#: ../../source/example_gallery/index.rst:66 519c072768124d2fae762c6b311e5953
+msgid ""
+"Generalized eigenproblems: dielectric waveguide modes and cantilever "
+"vibration."
+msgstr "广义特征值问题：介质波导模式与悬臂梁振动。"
+
+#: ../../source/example_gallery/index.rst:68 a2b46870143443a4b0e3a0b4048a3209
 msgid "Solid Mechanics"
 msgstr "固体力学"
 
-#: ../../source/example_gallery/index.rst:59 0de9acb3afd044dfb3b988e6cb9c0278
+#: ../../source/example_gallery/index.rst:73 0de9acb3afd044dfb3b988e6cb9c0278
 msgid ""
 "Linear elasticity, hyperelasticity, contact, and plasticity — a progressive "
 "solver ladder."
 msgstr "线弹性、超弹性、接触与塑性——一条循序渐进的求解器进阶之路。"
 
-#: ../../source/example_gallery/index.rst:61 90a4b8c27cdb4dae8141565f4a62df41
+#: ../../source/example_gallery/index.rst:75 90a4b8c27cdb4dae8141565f4a62df41
 msgid "Fluid Mechanics"
 msgstr "流体力学"
 
-#: ../../source/example_gallery/index.rst:66 8bf0eb168bff4fa8871941ed9f0e2143
+#: ../../source/example_gallery/index.rst:80 8bf0eb168bff4fa8871941ed9f0e2143
 msgid ""
 "Incompressible Navier-Stokes with Taylor-Hood mixed elements: Stokes, "
 "cavity, cylinder flow, Rayleigh-Bénard, and more."
@@ -111,41 +131,41 @@ msgstr ""
 "采用 Taylor-Hood 混合单元的不可压缩 Navier-Stokes 方程：涵盖 Stokes 流、方腔驱动流、圆柱绕流、Rayleigh-"
 "Bénard 对流等。"
 
-#: ../../source/example_gallery/index.rst:68 c812952ff37c49758a50b359017efad9
+#: ../../source/example_gallery/index.rst:82 c812952ff37c49758a50b359017efad9
 msgid "Magnetostatics"
 msgstr "静磁学"
 
-#: ../../source/example_gallery/index.rst:73 9fc3de7f2d0b4ca1a777221b2b3f568c
+#: ../../source/example_gallery/index.rst:87 9fc3de7f2d0b4ca1a777221b2b3f568c
 msgid ""
 "3D Maxwell: magnetic field around a wire via a stabilized nodal curl-curl "
 "formulation."
 msgstr "三维 Maxwell：通过稳定化的节点旋度-旋度（curl-curl）格式求解导线周围的磁场。"
 
-#: ../../source/example_gallery/index.rst:75 e11f62b6c2184afdbfdb59deaf6d56bf
+#: ../../source/example_gallery/index.rst:89 e11f62b6c2184afdbfdb59deaf6d56bf
 msgid "Inverse Design & Identification"
 msgstr "反向设计与参数辨识"
 
-#: ../../source/example_gallery/index.rst:80 47296accc2d245dd850b73a79ed10cbe
+#: ../../source/example_gallery/index.rst:94 47296accc2d245dd850b73a79ed10cbe
 msgid ""
 "Differentiable FEM: coefficient-field identification and density-based "
 "topology optimization."
 msgstr "可微有限元方法：系数场辨识与基于密度的拓扑优化。"
 
-#: ../../source/example_gallery/index.rst:82 a581f3ec0cb340ecb07453ce86456760
+#: ../../source/example_gallery/index.rst:96 a581f3ec0cb340ecb07453ce86456760
 msgid "Physics-Informed Learning"
 msgstr "物理信息学习"
 
-#: ../../source/example_gallery/index.rst:87 c14fa1ed4e554ecca2951b1a76eb69ea
+#: ../../source/example_gallery/index.rst:101 c14fa1ed4e554ecca2951b1a76eb69ea
 msgid ""
 "Train a neural network to minimize the assembled Galerkin residual ``||K u -"
 " F||²``."
 msgstr "训练神经网络以最小化装配得到的 Galerkin 残差 ``||K u - F||²``\\ 。"
 
-#: ../../source/example_gallery/index.rst:89 36765ffef2804afcbfaa82229dd81603
+#: ../../source/example_gallery/index.rst:103 36765ffef2804afcbfaa82229dd81603
 msgid "ML Datasets"
 msgstr "机器学习数据集"
 
-#: ../../source/example_gallery/index.rst:94 6356ecc06a1e4682a9c6c00fc414340c
+#: ../../source/example_gallery/index.rst:108 6356ecc06a1e4682a9c6c00fc414340c
 msgid ""
 "Batch generation of heat and wave snapshots for training neural operators."
 msgstr "批量生成热方程与波动方程的快照，用于训练神经算子。"

@@ -3,7 +3,7 @@
 A 2D **acoustic Helmholtz resonator** — a duct with a necked side cavity, driven
 by a plane-wave port — solved in the frequency domain on TensorMesh. It showcases
 the library boundary operators [`tensormesh.robin_operator` /
-`tensormesh.port_source`](../../../tensormesh/bc.py) (built on
+`tensormesh.port_source`](../../../tensormesh/operator/boundary.py) (built on
 `FacetBilinearAssembler`): the port line mass and the incident-wave load.
 
 Example-only: no public API is added. It reuses the scalar-Helmholtz assembly

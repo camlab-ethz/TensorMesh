@@ -22,3 +22,14 @@ BlochReducer
     :members:
     :show-inheritance:
     :exclude-members: master_dof, node_R
+
+Wave boundary operators
+-----------------------
+
+Assembled boundary matrix / load of first-order absorbing and
+plane-wave-port conditions — see the :doc:`open-domain wave examples
+</example_gallery/open_domain_wave>`.
+
+.. autofunction:: tensormesh.robin_operator
+
+.. autofunction:: tensormesh.port_source

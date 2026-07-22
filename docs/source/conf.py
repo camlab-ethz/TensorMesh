@@ -192,6 +192,11 @@ nitpick_ignore = [
     # TypeVar on the @distributed decorator's signature — autodoc renders
     # ``Type[T]`` but the TypeVar itself has no documentation target.
     ('py:class', 'tensormesh.distributed.assembler.T'),
+    # Informal napoleon type phrases in cartesian_pml's docstring
+    # ("sequence of (lo, hi)", "float or sequence of float").
+    ('py:class', 'sequence'),
+    ('py:class', 'lo'),
+    ('py:class', 'hi'),
     # Bare class names from autodoc-rendered type hints; we keep
     # python_use_unqualified_type_names = True for readability, which
     # prevents these from auto-prefixing with their (mostly matplotlib)

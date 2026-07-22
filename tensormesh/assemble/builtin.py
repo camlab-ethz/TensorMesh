@@ -138,11 +138,11 @@ class MassElementAssembler(ElementAssembler):
 class ScaledMassElementAssembler(ElementAssembler):
     r"""Coefficient-weighted mass assembler :math:`\int_\Omega c\, N_i N_j\, d\Omega`.
 
-    Like :class:`MassElementAssembler` but with a scalar nodal coefficient ``c``
+    Like :class:`~tensormesh.MassElementAssembler` but with a scalar nodal coefficient ``c``
     (from ``point_data``, possibly spatially varying and **complex**).  Handy for
     the reaction / potential term of a Helmholtz problem — e.g. the PML mass
     scaling :math:`k_0^2\,\varepsilon\, s_{\mathrm{prod}}` (see
-    :func:`tensormesh.cartesian_pml`), or a variable wave speed.
+    :func:`~tensormesh.functional.pml.cartesian_pml`), or a variable wave speed.
 
     Examples
     --------

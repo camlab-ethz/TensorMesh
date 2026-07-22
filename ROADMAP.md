@@ -14,7 +14,7 @@ Decouple the **field order from the mesh order**: the mesh order (fixed at impor
 
 ## 3. Complex-valued FEM → Helmholtz, PML, metamaterial topology optimization
 
-**Status**: scalar complex Helmholtz is **unblocked end-to-end**. See [`examples/wave/helmholtz/`](examples/wave/helmholtz/) for a manufactured-solution validation; the PML and TopOpt follow-ups are now the remaining work.
+**Status**: scalar complex Helmholtz is **unblocked end-to-end** ([`examples/wave/helmholtz/`](examples/wave/helmholtz/)), and the **PML + open-boundary layer shipped** via PR #39: `cartesian_pml` (stretched-coordinate coefficients), `AnisotropicLaplaceElementAssembler` / `ScaledMassElementAssembler` (complex tensor/scalar coefficients), `FacetBilinearAssembler` (boundary bilinear forms), and `robin_operator` / `port_source` (first-order absorbing / plane-wave ports) — exercised by the port-driven Helmholtz resonator and the PML-framed optical ring resonator ([`examples/wave/`](examples/wave/)). The metamaterial TopOpt example is the remaining work.
 
 Unblock the assembly stack for complex-valued systems so a complex element matrix can flow end-to-end into a complex-symmetric LDLᵀ / Hermitian LDLᴴ solve — enabling time-harmonic Helmholtz with PML and, on top of it, topology optimization of acoustic and (2D / scalar) electromagnetic metamaterials.
 
@@ -24,9 +24,9 @@ Assembly-side unblock landed (see commit history): `ElementAssembler.type()` now
 
 Solver-side dependency (the complex solve **and the correct complex adjoint** — essential for TopOpt, where a wrong adjoint yields silently wrong design sensitivities) lives in torch-sla and has shipped — see torch-sla `linear_solve.py` / `nvmath_backend.py` for the complex LDLᵀ / LDLᴴ path and `tests/test_complex_support.py` for the gradcheck.
 
-Remaining work for item 2:
-- PML example proper: anisotropic complex tensor coefficient `A(x), c(x)` inside the absorbing layer, scattering-by-obstacle setup.
-- Metamaterial TopOpt example wiring SIMP + adjoint through the complex Helmholtz path; the OC kernel may need swapping for MMA on wave objectives.
+Remaining work for item 3:
+- ~~PML example proper~~ — ✅ shipped in PR #39 (`cartesian_pml` + anisotropic/scaled assemblers; optical ring resonator example).
+- Metamaterial TopOpt example wiring SIMP + adjoint through the complex Helmholtz path; the OC kernel may need swapping for MMA on wave objectives. Prerequisite worth adding first: an autograd check through `robin_operator` / the PML coefficient fields (the design sensitivities flow through both).
 
 Topology-optimization scaffolding mostly exists: the density → SIMP → filter → OC pipeline is already proven on real problems (`tensormesh/optimizer/oc.py`, `examples/inverse_design/`). The wave objective is real (e.g. `|u|²` at a target point), so autograd's real-loss convention holds — but classic OC assumes monotone, compliance-like sensitivities, so a wave objective may want MMA instead.
 

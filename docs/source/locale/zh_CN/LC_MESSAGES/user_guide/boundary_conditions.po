@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-22 15:34+0200\n"
+"POT-Creation-Date: 2026-07-22 17:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_CN <LL@li.org>\n"
@@ -524,20 +524,28 @@ msgid "What's not built in today"
 msgstr "目前尚未内置的功能"
 
 #: ../../source/user_guide/boundary_conditions.rst:354
-#: c86173d3676e4f14b04ef0595eec9825
+#: 8d5946479e3a42948b520481d37ea39f
 msgid ""
-"The :mod:`tensormesh.operator` module ships two operators — "
-":class:`~tensormesh.Condenser` for Dirichlet via static condensation, and "
-":class:`~tensormesh.BlochReducer` for **Bloch-Floquet periodic** conditions "
-"(opposite faces tied with a complex phase factor, the building block of "
-"band-structure computations — see the phononic-crystal examples). A few "
-"neighbouring techniques are *not* first-class operators:"
+"The :mod:`tensormesh.operator` module ships :class:`~tensormesh.Condenser` "
+"for Dirichlet via static condensation, :class:`~tensormesh.BlochReducer` for"
+" **Bloch-Floquet periodic** conditions (opposite faces tied with a complex "
+"phase factor, the building block of band-structure computations — see the "
+"phononic-crystal examples), and the **wave boundary operators** "
+":func:`~tensormesh.robin_operator` / :func:`~tensormesh.port_source` — the "
+"assembled Robin / impedance / plane-wave-port matrix and load, built on "
+":class:`~tensormesh.FacetBilinearAssembler` (see the :doc:`open-domain wave "
+"examples </example_gallery/open_domain_wave>`). A few neighbouring "
+"techniques are *not* first-class operators:"
 msgstr ""
-":mod:`tensormesh.operator` 模块提供两个算子 —— :class:`~tensormesh.Condenser` "
-"用于通过静态凝聚处理狄利克雷边界条件，以及 :class:`~tensormesh.BlochReducer` 用于 **布洛赫-弗洛凯周期** "
-"条件（相对的面通过复相位因子耦合，这是能带结构计算的基本构件 —— 参见声子晶体示例）。以下几种相关技术 *并非* 一等算子："
+":mod:`tensormesh.operator` 模块提供了 :class:`~tensormesh.Condenser`\\ "
+"，用于通过静态凝聚处理狄利克雷边界条件；\\ :class:`~tensormesh.BlochReducer`\\ ，用于 **Bloch-"
+"Floquet 周期性** 边界条件（相对的面通过复相位因子耦合，这是能带结构计算的基本构件——参见声子晶体示例）；以及 **波动边界算子** "
+":func:`~tensormesh.robin_operator` / "
+":func:`~tensormesh.port_source`——装配后的罗宾/阻抗/平面波端口矩阵与载荷，基于 "
+":class:`~tensormesh.FacetBilinearAssembler` 构建（参见 :doc:`开放域波动示例 "
+"</example_gallery/open_domain_wave>`\\ ）。另有若干相关技术 *未* 作为一等算子实现："
 
-#: ../../source/user_guide/boundary_conditions.rst:362
+#: ../../source/user_guide/boundary_conditions.rst:367
 #: 890ed23f704f40a88eade2c5da89fec5
 msgid ""
 "**Lagrange multipliers** for Dirichlet — an alternative to condensation that"
@@ -547,7 +555,7 @@ msgstr ""
 "用于狄利克雷的 **拉格朗日乘子** —— "
 "凝聚的一种替代方案，它保留原始的自由度布局，但会产生一个鞍点系统。如果你自行构建增广矩阵，手动实现是可行的，但没有现成的辅助类。"
 
-#: ../../source/user_guide/boundary_conditions.rst:366
+#: ../../source/user_guide/boundary_conditions.rst:371
 #: 59dc265a9f904dd4876b25a99246a404
 msgid ""
 "**Plain periodic boundary conditions** — the zero-phase special case of "
@@ -557,19 +565,6 @@ msgid ""
 msgstr ""
 "**简单周期边界条件** —— :class:`~tensormesh.BlochReducer` "
 "的零相位特例可处理周期面匹配的网格；对于一般（非匹配）网格，仍需手动识别自由度并合并行/列。"
-
-#: ../../source/user_guide/boundary_conditions.rst:370
-#: 659e31f05a4e4d5e82f03ff03717840c
-#, python-brace-format
-msgid ""
-"**Robin (mixed) conditions** as a top-level operator — but the bilinear-form"
-" contribution :math:`\\int_{\\Gamma} \\alpha\\, u\\, v\\, \\mathrm{d}S` is a"
-" one-line :class:`~tensormesh.FacetAssembler` subclass; just add it to ``K``"
-" before condensing."
-msgstr ""
-"作为顶层算子的 **罗宾（混合）条件** —— 不过其双线性形式贡献 :math:`\\int_{\\Gamma} \\alpha\\, u\\, "
-"v\\, \\mathrm{d}S` 只需一行代码的 :class:`~tensormesh.FacetAssembler` "
-"子类即可；在凝聚之前将它加到 ``K`` 上就行。"
 
 #: ../../source/user_guide/boundary_conditions.rst:376
 #: e6de0d0cd50e4ff482fd11f550aeb888
@@ -622,3 +617,13 @@ msgstr ":doc:`../getting_started/quickstart` —— 包含齐次边界条件在�
 #~ " DOFs and merging the corresponding rows / columns in the assembled matrix. "
 #~ "No helper."
 #~ msgstr "**周期性边界条件** —— 通常通过识别匹配的自由度、并在装配后的矩阵中合并对应的行/列来实现。没有现成的辅助工具。"
+
+#~ msgid ""
+#~ "**Robin (mixed) conditions** as a top-level operator — but the bilinear-form"
+#~ " contribution :math:`\\int_{\\Gamma} \\alpha\\, u\\, v\\, \\mathrm{d}S` is a"
+#~ " one-line :class:`~tensormesh.FacetAssembler` subclass; just add it to ``K``"
+#~ " before condensing."
+#~ msgstr ""
+#~ "作为顶层算子的 **罗宾（混合）条件** —— 不过其双线性形式贡献 :math:`\\int_{\\Gamma} \\alpha\\, u\\, "
+#~ "v\\, \\mathrm{d}S` 只需一行代码的 :class:`~tensormesh.FacetAssembler` "
+#~ "子类即可；在凝聚之前将它加到 ``K`` 上就行。"

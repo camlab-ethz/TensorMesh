@@ -1,0 +1,218 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, TensorMesh Contributors
+# This file is distributed under the same license as the TensorMesh package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: TensorMesh 0.1.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-22 17:25+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../source/example_gallery/modal_analysis.rst:2
+#: 3cad1ac48de349c2a16b67e374f27bcc
+msgid "Modal Analysis"
+msgstr "模态分析"
+
+#: ../../source/example_gallery/modal_analysis.rst:4
+#: bddcfd6df2104a32a3d4e6affbbc6d8a
+msgid ""
+"Two examples that solve **generalized eigenproblems** instead of driven "
+"systems — one photonic, one structural. Both follow the same recipe: "
+"assemble two (or three) matrices with the builtin assemblers, hand them to a"
+" shift-invert sparse eigensolver, and read physical frequencies / "
+"propagation constants off the spectrum:"
+msgstr ""
+"两个求解\\ **广义特征值问题**\\ "
+"而非受迫系统的示例——一个光子学，一个结构力学。两者遵循相同的流程：使用内置装配器装配两个（或三个）矩阵，将其交给位移-"
+"逆稀疏特征值求解器，并从频谱中读取物理频率/传播常数："
+
+#: ../../source/example_gallery/modal_analysis.rst:14
+#: b9e5f9bb9f904e099f9f8c15dc4368b3
+msgid ""
+"Each validates against a closed-form reference (Marcatili's slab "
+"approximation, Euler-Bernoulli beam theory)."
+msgstr "每个示例均与闭合形式参考解进行验证（Marcatili 平板近似、欧拉-伯努利梁理论）。"
+
+#: ../../source/example_gallery/modal_analysis.rst:19
+#: 03717ff3d1ae4ed9bc75497b2b7c1270
+msgid "Rectangular waveguide modes (photonics)"
+msgstr "矩形波导模式（光子学）"
+
+#: ../../source/example_gallery/modal_analysis.rst:21
+#: cbb17250e75b4aa0be922b4a77dc2c74
+msgid ""
+"``examples/wave/wave_guide_mode/waveguide_modes.py`` computes the guided "
+"modes of a rectangular dielectric waveguide from its 2D cross-section. In "
+"the weakly-guiding scalar approximation the transverse field :math:`E(x,y)` "
+"and propagation constant :math:`\\beta` satisfy"
+msgstr ""
+"``examples/wave/wave_guide_mode/waveguide_modes.py`` "
+"从其二维截面计算矩形介质波导的导波模式。在弱导标量近似下，横向电场 :math:`E(x,y)` 和传播常数 :math:`\\beta` 满足"
+
+#: ../../source/example_gallery/modal_analysis.rst:26
+#: 090c7ded299046f3a0c818ff45427e90
+msgid "\\big(K - k_0^2 M_\\varepsilon\\big)\\,E \\;=\\; -\\beta^2\\, M\\,E,"
+msgstr "\\big(K - k_0^2 M_\\varepsilon\\big)\\,E \\;=\\; -\\beta^2\\, M\\,E,"
+
+#: ../../source/example_gallery/modal_analysis.rst:30
+#: 63654ba027694698b0fb60bc2c85e1aa
+msgid ""
+"built from three builtins — stiffness "
+"(:class:`~tensormesh.LaplaceElementAssembler`), mass "
+"(:class:`~tensormesh.MassElementAssembler`), and the index-weighted mass "
+":math:`M_\\varepsilon = \\int n^2\\,\\phi_i\\phi_j` "
+"(:class:`~tensormesh.assemble.ScaledMassElementAssembler`). A mode is guided"
+" when its effective index :math:`n_{\\text{eff}} = \\beta/k_0` falls between"
+" the cladding and core indices; the default geometry (:math:`18 \\times 14` "
+"µm core, :math:`n = 1.450/1.444`, :math:`\\lambda_0 = 1.55` µm) carries "
+"seven guided modes, and the computed effective indices agree with "
+"Marcatili's separable slab approximation to :math:`\\sim 10^{-4}`."
+msgstr ""
+"由三个内置装配器构建——刚度矩阵（\\ :class:`~tensormesh.LaplaceElementAssembler`\\ ）、质量矩阵（\\"
+" :class:`~tensormesh.MassElementAssembler`\\ ），以及折射率加权质量矩阵 "
+":math:`M_\\varepsilon = \\int n^2\\,\\phi_i\\phi_j`\\ （\\ "
+":class:`~tensormesh.assemble.ScaledMassElementAssembler`\\ ）。当模式的有效折射率 "
+":math:`n_{\\text{eff}} = \\beta/k_0` 介于包层与纤芯折射率之间时，该模式为导波模式；默认几何参数（\\ "
+":math:`18 \\times 14` µm 纤芯，\\ :math:`n = 1.450/1.444`\\ ，\\ "
+":math:`\\lambda_0 = 1.55` µm）支持七个导波模式，计算所得有效折射率与 Marcatili 可分离平板近似一致至 "
+":math:`\\sim 10^{-4}`\\ 。"
+
+#: ../../source/example_gallery/modal_analysis.rst:42
+#: 582d81d733e64c4dacb43a8f000ecf8e
+msgid "Guided transverse modes of a rectangular dielectric waveguide"
+msgstr "矩形介质波导的导波横向模式"
+
+#: ../../source/example_gallery/modal_analysis.rst:46
+#: ef39e7e1de5241898d5a0a08d2c67515
+#, python-brace-format
+msgid ""
+"The guided transverse fields :math:`E_{pq}` (red/blue = field sign, core "
+"outlined), labelled by their lobe counts along :math:`x` and :math:`y` — the"
+" fundamental :math:`E_{11}`, the dipole pair :math:`E_{21}/E_{12}`, and the "
+"higher-order modes."
+msgstr ""
+"导波横向电场 :math:`E_{pq}`\\ （红/蓝表示场符号，纤芯轮廓勾勒），按沿 :math:`x` 和 :math:`y` "
+"方向的瓣数标记——基模 :math:`E_{11}`\\ 、偶极子对 :math:`E_{21}/E_{12}`\\ ，以及高阶模式。"
+
+#: ../../source/example_gallery/modal_analysis.rst:53
+#: 06df131e3e8440bfa004f82b21cd1aab
+msgid "Cantilever beam vibration (structural)"
+msgstr "悬臂梁振动（结构力学）"
+
+#: ../../source/example_gallery/modal_analysis.rst:55
+#: e72390f6f1224a99b4d0e5e519c38496
+msgid ""
+"``examples/solid/beam_vibration_analysis/vibration_cylinder.py`` runs the "
+"classic free-vibration analysis of a clamped-free steel cylinder (:math:`L ="
+" 1` m, :math:`R = 25` mm) in 3D linear elasticity:"
+msgstr ""
+"``examples/solid/beam_vibration_analysis/vibration_cylinder.py`` 对固支-"
+"自由钢圆柱（\\ :math:`L = 1` m，\\ :math:`R = 25` mm）进行经典三维线弹性自由振动分析："
+
+#: ../../source/example_gallery/modal_analysis.rst:59
+#: 2af98ba864204af48452ce437a54bfab
+msgid "K\\,\\phi = \\omega^2 M\\,\\phi,"
+msgstr "K\\,\\phi = \\omega^2 M\\,\\phi,"
+
+#: ../../source/example_gallery/modal_analysis.rst:63
+#: 8b0c5066e4de446ab9ba762e13214d07
+msgid ""
+"with :math:`K` from :class:`~tensormesh.LinearElasticityElementAssembler` "
+"and the consistent vector mass built from the scalar mass matrix "
+"(:math:`M_{\\text{vec}} = \\rho\\, M_{\\text{scalar}} \\otimes I_3`). The "
+"clamped base is removed by the usual :class:`~tensormesh.Condenser` mask. On"
+" top of the modes, a **modal FRF** — the tip response to a transverse tip "
+"force with 1% modal damping — shows the resonance/antiresonance structure."
+msgstr ""
+"其中 :math:`K` 来自 :class:`~tensormesh.LinearElasticityElementAssembler`\\ "
+"，一致向量质量矩阵由标量质量矩阵构建（\\ :math:`M_{\\text{vec}} = \\rho\\, M_{\\text{scalar}} "
+"\\otimes I_3`\\ ）。固支端通过常规的 :class:`~tensormesh.Condenser` 掩码去除。在模态分析之上，\\ "
+"**模态频响函数**——横向尖端力作用下含 1% 模态阻尼的尖端响应——展示了共振/反共振结构。"
+
+#: ../../source/example_gallery/modal_analysis.rst:72
+#: 5b0e4a98321141a491f509979cd9b23c
+msgid ""
+"The first bending frequency comes out at **37.2 Hz** vs Euler-Bernoulli "
+"theory's 36.2 Hz (+3% with P1 tets, converging with refinement); because the"
+" section is circular, every bending mode arrives as a near-degenerate pair "
+"(two orthogonal bending planes), followed by the first torsion and axial "
+"modes."
+msgstr ""
+"第一阶弯曲频率计算结果为 **37.2 Hz**\\ ，而欧拉-伯努利理论值为 36.2 Hz（P1 四面体单元偏高 "
+"3%，随网格加密收敛）；由于截面为圆形，每阶弯曲模式均以近简并模态对形式出现（两个正交弯曲平面），随后为第一阶扭转和轴向模式。"
+
+#: ../../source/example_gallery/modal_analysis.rst:78
+#: 616d3a79c0a4421bb1d138120e56cab8
+msgid "Cantilever cylinder mode shapes"
+msgstr "悬臂圆柱模态振型"
+
+#: ../../source/example_gallery/modal_analysis.rst:82
+#: 687b0a966b604ae78d485f1874512923
+msgid ""
+"Deformed mode shapes (displacement magnitude, exaggerated): the bending "
+"pairs, first torsion, and first axial mode."
+msgstr "变形模态振型（位移幅值，已 exaggerate）：弯曲模态对、第一阶扭转和第一阶轴向模式。"
+
+#: ../../source/example_gallery/modal_analysis.rst:85
+#: 0e556c3b748c4b4db1728f74a8925bb1
+msgid "Tip displacement FRF with modal damping"
+msgstr "含模态阻尼的尖端位移频响函数"
+
+#: ../../source/example_gallery/modal_analysis.rst:90
+#: 9ed9a9c694d74183adce2bfa3bfb91f7
+msgid ""
+"Dynamic amplification :math:`|u_x|/u_{\\text{static}}` at the tip — flat at "
+"1 below the first resonance, peaking on each bending mode, dropping into "
+"antiresonances between them."
+msgstr ""
+"尖端动态放大系数 :math:`|u_x|/u_{\\text{static}}`——第一共振频率以下平坦为 "
+"1，在各弯曲模态处达到峰值，其间落入反共振谷。"
+
+#: ../../source/example_gallery/modal_analysis.rst:96
+#: 74d176bfa33945d8abfb09be7aefc821
+msgid "Running them"
+msgstr "运行示例"
+
+#: ../../source/example_gallery/modal_analysis.rst:103
+#: aed51f42c6934b288c8d5fac4f72e972
+msgid ""
+"Both expose ``run_demo(...)`` plus geometry / mode-count / mesh-size flags "
+"(``--help`` lists them). The eigensolves run through SciPy's shift-invert "
+"Lanczos on the assembled sparse matrices — post-processing only, the "
+"assembly core stays torch."
+msgstr ""
+"两者均提供 ``run_demo(...)`` 接口以及几何/模态数/网格尺寸参数（\\ ``--help`` 列出全部参数）。特征值求解通过 "
+"SciPy 的位移-逆 Lanczos 方法在装配好的稀疏矩阵上运行——仅为后处理，装配核心保持 torch 不变。"
+
+#: ../../source/example_gallery/modal_analysis.rst:110
+#: 384ae4a8561f4ea2a6d9422472033c89
+msgid "What's next"
+msgstr "下一步"
+
+#: ../../source/example_gallery/modal_analysis.rst:112
+#: 52446f055dc7419baf66914b5e43d2d0
+msgid ""
+":doc:`phononic_crystal` — eigenproblems with Bloch-Floquet phase boundary "
+"conditions (band structures)."
+msgstr ":doc:`phononic_crystal` —— 含布洛赫-弗洛凯相位边界条件的特征值问题（能带结构）。"
+
+#: ../../source/example_gallery/modal_analysis.rst:114
+#: f05fec3fedf54c89bc141f9fc5584cdf
+msgid ":doc:`open_domain_wave` — the driven counterparts: ports and PML."
+msgstr ":doc:`open_domain_wave` —— 受迫对应问题：端口与完全匹配层。"
+
+#: ../../source/example_gallery/modal_analysis.rst:115
+#: e49478f3d812474b8f83e3505224de49
+msgid ":doc:`solid/index` — the static and nonlinear solid-mechanics ladder."
+msgstr ":doc:`solid/index` —— 静力学与非线性固体力学进阶。"

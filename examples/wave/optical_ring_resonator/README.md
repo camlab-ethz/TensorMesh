@@ -7,7 +7,7 @@ disk lights up in a **whispering-gallery mode** (WGM) — a bright ring of
 azimuthal lobes on the rim.
 
 It exercises the open-domain wave operators
-[`tensormesh.cartesian_pml`](../../../tensormesh/pml.py) +
+[`tensormesh.cartesian_pml`](../../../tensormesh/functional/pml.py) +
 `AnisotropicLaplaceElementAssembler` + `ScaledMassElementAssembler`. Example-only:
 no public API is added.
 

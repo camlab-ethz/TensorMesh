@@ -15,7 +15,7 @@ the volume operator.  :class:`FacetBilinearAssembler` fills exactly that gap: it
 scattered into a :class:`~tensormesh.sparse.matrix.SparseMatrix`.
 
 It shares all of :class:`FacetAssembler`'s topology construction
-(:meth:`from_mesh` / :meth:`from_elements`); only the assembly returns a matrix.
+(``from_mesh`` / ``from_elements``); only the assembly returns a matrix.
 """
 from __future__ import annotations
 
@@ -32,7 +32,7 @@ from ..vmap import vmap
 class FacetBilinearAssembler(FacetAssembler):
     r"""Assemble a bilinear form over boundary facets into a sparse matrix.
 
-    Override :meth:`forward` with the integrand of a boundary bilinear form at a
+    Override ``forward`` with the integrand of a boundary bilinear form at a
     single facet-quadrature point and basis pair — e.g. ``u * v`` for a boundary
     mass matrix, or ``c * u * v`` with a nodal coefficient ``c`` (impedance,
     radiation).  ``gradu`` / ``gradv`` and any ``point_data`` key are available
