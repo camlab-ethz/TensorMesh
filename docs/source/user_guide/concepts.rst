@@ -99,8 +99,9 @@ What lives in each module:
   (Optimality Criteria) for compliance-based topology optimization.
 * :mod:`tensormesh.visualization` — matplotlib (2D) and PyVista (3D)
   backends; lazily imported by :meth:`~tensormesh.Mesh.plot`.
-* :mod:`tensormesh.distributed` — graph-partitioned distributed
-  assembly across multiple ranks (advanced; see the example gallery).
+* :mod:`tensormesh.distributed` — partitioned multi-GPU assembly
+  wired into ``torch-sla``'s distributed solver (see
+  :doc:`distributed`).
 
 The sparse-linear-algebra stack (``SparseMatrix``, ``.solve`` /
 ``.nonlinear_solve``, gradient-aware adjoint backward) is delegated to
