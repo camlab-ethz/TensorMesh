@@ -37,7 +37,7 @@ conditions, and time integration.
 - **GPU-native & differentiable.** Built on PyTorch from the ground up. Moving an entire FEM workflow to the GPU takes a single line of code — every downstream assembly, solve, and gradient inherits the device automatically, with no separate backend or data-marshalling step. Native autograd flows seamlessly through assembly and solve, enabling end-to-end differentiable PDE pipelines.
 - **High-performance tensorized assembly.** A fully tensorized Map-Reduce algorithm powered by [TensorGalerkin](https://arxiv.org/abs/2602.05052), which fuses element-wise operations into monolithic GPU kernels, eliminating Python-level loops and delivering order-of-magnitude speedups over CPU-based FEM stacks.
 - **JIT-free & debugging-friendly.** Eager execution with no compilation overhead. Dynamic meshes, adaptive refinement, and interactive workflows just work — no recompilation latency, no opaque traces.
-- **Comprehensive element & mesh support.** Triangular, tetrahedral, pyramid, and prismatic elements with automated mesh generation for common geometries and seamless Gmsh / VTKHDF5 I/O.
+- **Comprehensive element & mesh support.** Triangular, tetrahedral, pyramid, and prismatic elements with automated mesh generation for common geometries and seamless Gmsh / VTKHDF5 I/O. Multi-field mixed assembly (e.g. LBB-stable Taylor-Hood Stokes) declares each field's order independently of the mesh — quadratic spaces are generated topologically even on linear meshes.
 - **Flexible Solvers.** Powered by [torch-sla](https://www.torchsla.com/), our companion library for differentiable sparse linear algebra. Linear, nonlinear, and eigenvalue solvers run across multiple backends on CPU and GPU, with full autograd support, batched solves, and distributed multi-GPU scaling.
 - **Pythonic API.** Custom weak forms in pure Python — no separate DSL, no form compiler. If you can write PyTorch, you can write FEM.
 
@@ -190,9 +190,9 @@ A small selection from the
 | **Basics** | [`examples/basics/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/basics) | Mesh visualization, basis functions, element gallery |
 | **Poisson** | [`examples/poisson/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/poisson) | 2D / 3D Poisson, batched RHS, h-adaptivity |
 | **Diffusion** | [`examples/diffusion/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/diffusion) | Heat equation, Allen-Cahn phase field |
-| **Wave** | [`examples/wave/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/wave) | Wave equation with central-difference scheme |
+| **Wave** | [`examples/wave/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/wave) | Wave equation with central-difference scheme; Helmholtz; phononic-crystal band structures via Bloch-Floquet periodic BCs |
 | **Solid** | [`examples/solid/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/solid) | Cantilever beam, hyperelasticity, contact, plasticity |
-| **Fluid** | [`examples/fluid/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/fluid) | Lid-driven cavity, cylinder flow, flow past obstacles, Rayleigh-Bénard, Taylor-Green |
+| **Fluid** | [`examples/fluid/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/fluid) | Taylor-Hood mixed elements throughout: Stokes convergence study, lid-driven cavity, cylinder flow, flow past obstacles, Rayleigh-Bénard, Taylor-Green |
 | **Magnetostatics** | [`examples/maxwell/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/maxwell) | 3D Maxwell: magnetic field around a current-carrying wire via a stabilized nodal curl-curl formulation |
 | **Inverse design** | [`examples/inverse_design/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/inverse_design) | Coefficient-field identification and density-based topology optimization, all via autograd |
 | **Physics-informed** | [`examples/physics_informed/`](https://github.com/camlab-ethz/TensorMesh/tree/main/examples/physics_informed) | Train a neural network to minimize the assembled Galerkin residual |
@@ -229,9 +229,9 @@ The core workflow: **Mesh → Assembler → SparseMatrix → Condenser → Solve
 | ---                          | --- |
 | `tensormesh.mesh`            | Mesh data structure; built-in generators (`gen_rectangle`, `gen_circle`, `gen_cube`, `gen_L`, …); Gmsh / VTK-HDF5 I/O |
 | `tensormesh.element`         | Shape functions, quadrature rules, element transformations (geometric order 1–4) |
-| `tensormesh.assemble`        | `ElementAssembler`, `NodeAssembler`, `FacetAssembler` for matrix and vector assembly |
+| `tensormesh.assemble`        | `ElementAssembler`, `NodeAssembler`, `FacetAssembler` for matrix and vector assembly; `MixedElementAssembler` for multi-field block systems (Taylor-Hood, generalized order pairs) |
 | `tensormesh.sparse`          | `SparseMatrix` (subclass of `torch_sla.SparseTensor`); linear & nonlinear sparse solves via torch-sla backends (SciPy / Eigen / native PyTorch / CuPy / cuDSS) |
-| `tensormesh.operator`        | `Condenser` for Dirichlet boundary conditions via static condensation |
+| `tensormesh.operator`        | `Condenser` for Dirichlet boundary conditions via static condensation; `BlochReducer` for Bloch-Floquet periodic BCs |
 | `tensormesh.ode`             | Time integrators: explicit / implicit Euler, midpoint, Runge–Kutta |
 | `tensormesh.dataset`         | Parametric PDE dataset generation (Poisson, Heat, Wave, linear elasticity) |
 | `tensormesh.visualization`   | Matplotlib and PyVista plotting backends |
