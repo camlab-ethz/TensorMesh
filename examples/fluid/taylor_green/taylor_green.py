@@ -1,3 +1,13 @@
+"""Decaying 2D Taylor-Green vortex — transient incompressible Navier-Stokes.
+
+Taylor-Hood P2-P1 mixed discretization (backward Euler + Picard) with the
+exact analytical solution for verification. The velocity lives on the
+order-2 mesh points, the pressure on the corner vertices; the pair is
+LBB-stable so the assembler is the four-line weak form — no SUPG/PSPG
+terms, no ``tau`` schedule. Backward Euler is first-order in time, so
+the convergence study couples ``dt ~ h^2`` to expose the O(h^2) spatial
+accuracy of the pressure (the P2 velocity is even more accurate).
+"""
 import os
 import sys
 import math
@@ -15,7 +25,7 @@ from tqdm import tqdm
 # Add project root to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 
-from tensormesh import Mesh, Condenser, ElementAssembler, NodeAssembler
+from tensormesh import Condenser, Field, Mesh, MixedElementAssembler
 from tensormesh.assemble import MassElementAssembler
 from tensormesh.visualization import draw_mesh_2d_static, draw_mesh_2d_stream
 
@@ -39,86 +49,43 @@ def exact_pressure(points, t, nu):
 
 
 # ---------------------------------------------------------------------------
-# Assemblers (reused from cylinder_flow.py pattern)
+# Assembler (same pattern as cylinder_flow.py)
 # ---------------------------------------------------------------------------
 
-class NavierStokesTransientAssembler(ElementAssembler):
-    """Transient incompressible Navier-Stokes with SUPG/PSPG stabilization."""
+class NavierStokesTransientAssembler(MixedElementAssembler):
+    r"""Backward-Euler, Picard-linearized incompressible Navier-Stokes:
 
-    def __post_init__(self, rho: float = 1.0, mu: float = 0.01,
-                      dt: float = 1e-3, tau: float = 1e-3):
+    .. math::
+
+        \rho\,\frac{u - u_{\mathrm{prev}}}{\Delta t}
+        + \rho\,(w\cdot\nabla)u - \mu\,\Delta u + \nabla p = 0,
+        \qquad \nabla\cdot u = 0.
+
+    ``forward`` is the bilinear (matrix) side, ``forward_vector`` the load
+    vector; the lagged velocities enter via ``point_data`` (the order-2
+    mesh points coincide with the P2 velocity nodes).
+    """
+
+    fields = [
+        Field(trial="u", test="v", order=2, components=2),
+        Field(trial="p", test="q", order=1),
+    ]
+
+    def __post_init__(self, rho=1.0, mu=0.01, dt=1e-3):
         self.rho = rho
         self.mu = mu
         self.dt = dt
-        self.tau = tau
 
-    def set_tau(self, tau: float) -> None:
-        self.tau = tau
+    def forward(self, u, gradu, p, v, gradv, q, w):
+        mass = self.rho / self.dt * u.dot(v)
+        convection = self.rho * (gradu @ w).dot(v)
+        diffusion = self.mu * (gradu * gradv).sum()
+        return mass + convection + diffusion \
+            - p * gradv.diagonal().sum() \
+            - q * gradu.diagonal().sum()
 
-    def forward(self, u, v, gradu, gradv, w_prev):
-        dim = gradu.shape[0]
-
-        mass = self.rho * (u * v) / self.dt
-        convection = self.rho * torch.dot(w_prev, gradv) * u
-        diffusion = self.mu * torch.dot(gradu, gradv)
-
-        supg_test = self.tau * torch.dot(w_prev, gradu)
-        supg_residual = (self.rho / self.dt * v
-                         + self.rho * torch.dot(w_prev, gradv)) * supg_test
-
-        momentum_diag = mass + convection + diffusion + supg_residual
-
-        rows = []
-        for d_test in range(dim):
-            row = []
-            for d_trial in range(dim):
-                if d_test == d_trial:
-                    row.append(momentum_diag)
-                else:
-                    row.append(torch.tensor(0.0, dtype=u.dtype, device=u.device))
-            row.append(-v * gradu[d_test] + gradv[d_test] * supg_test)
-            rows.append(torch.stack(row))
-
-        continuity = []
-        for d_trial in range(dim):
-            continuity.append(
-                gradv[d_trial] * u
-                + self.tau * (self.rho / self.dt * v
-                              + self.rho * torch.dot(w_prev, gradv)) * gradu[d_trial]
-            )
-        continuity.append(self.tau * torch.dot(gradv, gradu))
-        rows.append(torch.stack(continuity))
-
-        return torch.stack(rows)
-
-
-class MomentumRHSAssembler(NodeAssembler):
-    """RHS for implicit Euler with SUPG/PSPG."""
-
-    def __post_init__(self, rho: float = 1.0, dt: float = 1e-3, tau: float = 1e-3):
-        self.rho = rho
-        self.dt = dt
-        self.tau = tau
-
-    def set_tau(self, tau: float) -> None:
-        self.tau = tau
-
-    def forward(self, v, gradv, u_prev, w_prev):
-        supg_v = self.tau * (w_prev[0] * gradv[0] + w_prev[1] * gradv[1])
-        r0 = self.rho * u_prev[0] * (v + supg_v) / self.dt
-        r1 = self.rho * u_prev[1] * (v + supg_v) / self.dt
-        r2 = self.tau * self.rho * (u_prev[0] * gradv[0] + u_prev[1] * gradv[1]) / self.dt
-        return torch.stack([r0, r1, r2])
-
-
-# ---------------------------------------------------------------------------
-# Stabilization parameter
-# ---------------------------------------------------------------------------
-
-def compute_tau(h, mu, rho, velocity):
-    speed = torch.norm(velocity, dim=1)
-    speed_ref = float(torch.quantile(speed.detach().cpu(), 0.95).item()) + 1e-8
-    return (h * h) / (4.0 * mu + 2.0 * rho * speed_ref * h)
+    def forward_vector(self, v, uprev):
+        return self.rho / self.dt * uprev.dot(v)
 
 
 # ---------------------------------------------------------------------------
@@ -317,110 +284,83 @@ def solve_taylor_green(nu=0.01, n_grid=30, dt=0.01, t_final=1.0, picard_iter=2,
     if verbose:
         print(f"Taylor-Green: nu={nu}, grid={n_grid}, h={h:.4f}, dt={dt}, t_final={t_final}")
 
+    # Order-2 mesh: its points are exactly the P2 velocity nodes.
     mesh = Mesh.gen_rectangle(
         left=0.0, right=L, bottom=0.0, top=L,
-        chara_length=h, element_type="tri"
+        chara_length=h, element_type="tri", order=2,
     ).double()
     points = mesh.points
     n_points = points.shape[0]
     n_steps = int(round(t_final / dt))
     rho = 1.0
 
+    assembler = NavierStokesTransientAssembler.from_mesh(mesh, rho=rho, mu=nu, dt=dt)
+    layout = assembler.layout
+
     if verbose:
-        print(f"  Mesh: {n_points} nodes, {n_steps} time steps")
+        print(f"  Mesh: {n_points} P2 points, {layout.n_nodes('p')} P1 pressure "
+              f"nodes, {layout.n_dofs} DOFs, {n_steps} time steps")
 
-    # --- Boundary conditions ---
-    is_boundary = mesh.boundary_mask
-    bc_mask = torch.zeros(n_points * 3, dtype=torch.bool)
-    bc_val = torch.zeros(n_points * 3, dtype=torch.float64)
+    # --- Boundary conditions: exact velocity on the boundary + pressure pin ---
+    pin = layout.dof_index("p", int(layout.node_ids("p")[0]))
+    x_p = layout.points("p")
 
-    bnd_idx = torch.where(is_boundary)[0]
+    def dirichlet_values(t):
+        bc_val = torch.zeros(layout.n_dofs, dtype=torch.float64)
+        bc_val[layout.dof_mask("u")] = exact_velocity(points, t, nu).reshape(-1)
+        bc_val[pin] = exact_pressure(x_p, t, nu)[0]
+        return bc_val
 
-    # Velocity Dirichlet on all boundary nodes
-    bc_mask[bnd_idx * 3] = True
-    bc_mask[bnd_idx * 3 + 1] = True
+    bc_mask = layout.dof_mask("u", mesh.boundary_mask)
+    bc_mask[pin] = True
+    condenser = Condenser(bc_mask, dirichlet_values(0.0))
 
-    # Pressure pin: pin node 0 to exact pressure
-    bc_mask[2] = True
+    # --- Initial condition: exact fields at t=0 ---
+    sol = layout.cat(
+        u=exact_velocity(points, 0.0, nu),
+        p=exact_pressure(x_p, 0.0, nu),
+    )
 
-    # Set initial BC values at t=0
-    vel0 = exact_velocity(points, 0.0, nu)
-    p0 = exact_pressure(points, 0.0, nu)
-    bc_val[bnd_idx * 3] = vel0[bnd_idx, 0]
-    bc_val[bnd_idx * 3 + 1] = vel0[bnd_idx, 1]
-    bc_val[2] = p0[0]
-
-    # --- Initial condition ---
-    u_full = torch.zeros(n_points * 3, dtype=torch.float64)
-    u_full[torch.arange(n_points) * 3] = vel0[:, 0]
-    u_full[torch.arange(n_points) * 3 + 1] = vel0[:, 1]
-    u_full[torch.arange(n_points) * 3 + 2] = p0
-    u_full[bc_mask] = bc_val[bc_mask]
-
-    # --- Assemblers ---
-    tau0 = (h * h) / (4.0 * nu)  # viscous limit for small initial velocity
-    ns_asm = NavierStokesTransientAssembler.from_mesh(mesh, rho=rho, mu=nu, dt=dt, tau=tau0)
-    rhs_asm = MomentumRHSAssembler.from_mesh(mesh, rho=rho, dt=dt, tau=tau0)
-    condenser = Condenser(bc_mask, bc_val)
-
-    # Mass matrix for L2 error
-    mass_asm = MassElementAssembler.from_mesh(mesh)
-    M = mass_asm()
+    # Mass matrix of the P2 space (order-2 mesh) for L2 errors.
+    M = MassElementAssembler.from_mesh(mesh, quadrature_order=4)()
 
     # --- Snapshot collection for video ---
     if save_video:
-        sol0 = u_full.reshape(-1, 3)
-        snapshots_speed = [torch.norm(sol0[:, :2], dim=1).float()]
-        snapshots_pressure = [sol0[:, 2].float()]
+        fields0 = layout.split(sol)
+        snapshots_speed = [torch.norm(fields0["u"], dim=1).float()]
+        snapshots_pressure = [layout.prolong("p", fields0["p"]).float()]
         snapshots_velerr = [torch.zeros(n_points, dtype=torch.float32)]
-        snapshots_velocity = [sol0[:, :2].clone()]
+        snapshots_velocity = [fields0["u"].clone()]
 
     # --- Time stepping ---
     iterator = tqdm(range(1, n_steps + 1), desc="Time stepping") if verbose else range(1, n_steps + 1)
     for step in iterator:
-        t_new = step * dt
+        condenser.update_dirichlet(dirichlet_values(step * dt))
 
-        # Update Dirichlet values to exact solution at t_new
-        vel_exact_bnd = exact_velocity(points[bnd_idx], t_new, nu)
-        p_exact_pin = exact_pressure(points[:1], t_new, nu)
-        bc_val_new = torch.zeros_like(bc_val)
-        bc_val_new[bnd_idx * 3] = vel_exact_bnd[:, 0]
-        bc_val_new[bnd_idx * 3 + 1] = vel_exact_bnd[:, 1]
-        bc_val_new[2] = p_exact_pin[0]
-        condenser.update_dirichlet(bc_val_new)
-
-        u_prev = u_full.clone()
-        u_iter = u_prev.clone()
+        u_prev = layout.split(sol)["u"]
+        u_iter = sol.clone()
 
         for _ in range(picard_iter):
-            vel_prev = u_iter.reshape(-1, 3)[:, :2]
-            tau = compute_tau(h, nu, rho, vel_prev)
-            ns_asm.set_tau(tau)
-            rhs_asm.set_tau(tau)
-
-            K = ns_asm(points, point_data={"w_prev": vel_prev})
-            f = rhs_asm(points, point_data={
-                "u_prev": u_prev.reshape(-1, 3)[:, :2],
-                "w_prev": vel_prev,
-            })
+            w = layout.split(u_iter)["u"]
+            K = assembler(point_data={"w": w})
+            f = assembler.assemble_vector(point_data={"uprev": u_prev})
 
             K_cond, f_cond = condenser(K, f)
-            u_cond = K_cond.solve(f_cond)
-            u_new = condenser.recover(u_cond)
+            u_new = condenser.recover(K_cond.solve(f_cond))
 
             picard_err = torch.norm(u_new - u_iter) / (torch.norm(u_new) + 1e-12)
             u_iter = u_new
             if float(picard_err) < picard_tol:
                 break
 
-        u_full = u_iter
+        sol = u_iter
 
         # Collect snapshots
         if save_video and step % snapshot_interval == 0:
-            sol_snap = u_full.reshape(-1, 3)
-            vel_snap = sol_snap[:, :2]
+            fields_snap = layout.split(sol)
+            vel_snap = fields_snap["u"]
             snapshots_speed.append(torch.norm(vel_snap, dim=1).float())
-            snapshots_pressure.append(sol_snap[:, 2].float())
+            snapshots_pressure.append(layout.prolong("p", fields_snap["p"]).float())
             vel_ex_snap = exact_velocity(points, step * dt, nu)
             snapshots_velerr.append(torch.norm(vel_snap - vel_ex_snap, dim=1).float())
             snapshots_velocity.append(vel_snap.clone())
@@ -457,10 +397,10 @@ def solve_taylor_green(nu=0.01, n_grid=30, dt=0.01, t_final=1.0, picard_iter=2,
         save_vortex_snapshot(points, snapshots_velocity[0], t=0.0,
                              filename=video_filename.replace(".mp4", "_t0.png"))
 
-    # --- Compute errors ---
-    sol = u_full.reshape(-1, 3)
-    vel_num = sol[:, :2]
-    p_num = sol[:, 2]
+    # --- Compute errors (P1 pressure prolonged into the P2 space is exact) ---
+    fields = layout.split(sol)
+    vel_num = fields["u"]
+    p_num = layout.prolong("p", fields["p"])
 
     vel_ex = exact_velocity(points, t_final, nu)
     p_ex = exact_pressure(points, t_final, nu)
@@ -478,7 +418,7 @@ def solve_taylor_green(nu=0.01, n_grid=30, dt=0.01, t_final=1.0, picard_iter=2,
         print(f"  L2 pressure error: {l2_p:.6e} (relative: {rel_p:.6e})")
 
     return {
-        "mesh": mesh, "u_full": u_full, "h": h, "n_points": n_points,
+        "mesh": mesh, "sol": sol, "h": h, "n_points": n_points,
         "l2_vel": l2_vel, "l2_p": l2_p,
         "rel_vel": rel_vel, "rel_p": rel_p,
         "vel_num": vel_num, "vel_ex": vel_ex, "p_num": p_num, "p_ex": p_ex,
@@ -501,7 +441,9 @@ def convergence_study(nu=0.01, grids=None, t_final=0.5):
     for n in grids:
         L = 2.0 * math.pi
         h = L / n
-        dt = 0.5 * h  # CFL-like coupling: dt ~ O(h)
+        # Backward Euler is O(dt); couple dt ~ h^2 so the time error shrinks
+        # at the same rate as the O(h^2) pressure error.
+        dt = 0.25 * h * h
         res = solve_taylor_green(nu=nu, n_grid=n, dt=dt, t_final=t_final)
         results.append(res)
 
@@ -527,10 +469,10 @@ def convergence_study(nu=0.01, grids=None, t_final=0.5):
     ax.loglog(hs, l2_ps, "s-", label="pressure L2 error")
     # Reference slopes
     h_ref = np.array(hs)
-    ax.loglog(h_ref, l2_vels[0] * (h_ref / hs[0]) ** 2, "k--", alpha=0.4, label="O(h$^2$)")
+    ax.loglog(h_ref, l2_ps[0] * (h_ref / hs[0]) ** 2, "k--", alpha=0.4, label="O(h$^2$)")
     ax.set_xlabel("h")
     ax.set_ylabel("L2 error")
-    ax.set_title("Taylor-Green Vortex Convergence")
+    ax.set_title("Taylor-Green Vortex Convergence (Taylor-Hood P2-P1)")
     ax.legend()
     ax.grid(True, which="both", alpha=0.3)
     fig.tight_layout()
