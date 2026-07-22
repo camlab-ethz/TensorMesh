@@ -1261,7 +1261,7 @@ class MixedElementAssembler(nn.Module):
         data — e.g. :math:`\int f \cdot v` for the Stokes momentum
         equation. It is evaluated with one-hot test basis functions per
         field and scattered into the same block DOF layout as
-        :meth:`~tensormesh.MixedElementAssembler.__call__`, so the result pairs directly with the assembled
+        ``__call__``, so the result pairs directly with the assembled
         matrix and the :class:`~tensormesh.Condenser`. Fields
         whose test arguments do not appear contribute a zero segment.
 
