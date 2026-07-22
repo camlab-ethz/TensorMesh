@@ -20,7 +20,7 @@ Requirements:
 * **PyTorch ≥ 2.0** (with CUDA if you want to run the GPU paths)
 
 Everything else installs from PyPI in the step below — including
-``torch-sla`` (``>= 0.2.1``), the hard dependency that provides every
+``torch-sla`` (``>= 0.3.0``), the hard dependency that provides every
 sparse-solver backend. No C++ toolchain or manual build step is
 required.
 
