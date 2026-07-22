@@ -44,6 +44,13 @@ a concrete TensorMesh script you can run.
 
       Time-harmonic Helmholtz with a complex coefficient, condensation, and solve.
 
+   .. grid-item-card:: Phononic Crystals
+      :link: phononic_crystal
+      :link-type: doc
+      :img-top: /_static/wave/band_structure_square.png
+
+      Bloch-Floquet band structures and slab transmission, validated against COMSOL.
+
    .. grid-item-card:: Solid Mechanics
       :link: solid/index
       :link-type: doc
@@ -56,7 +63,7 @@ a concrete TensorMesh script you can run.
       :link-type: doc
       :img-top: /_static/fluid/cavity_results.png
 
-      Incompressible Navier-Stokes: cavity, cylinder flow, Rayleigh-Bénard, and more.
+      Incompressible Navier-Stokes with Taylor-Hood mixed elements: Stokes, cavity, cylinder flow, Rayleigh-Bénard, and more.
 
    .. grid-item-card:: Magnetostatics
       :link: maxwell
@@ -103,6 +110,7 @@ a concrete TensorMesh script you can run.
    diffusion
    wave
    complex
+   phononic_crystal
    solid/index
    fluid/index
    maxwell
