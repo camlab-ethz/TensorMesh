@@ -102,7 +102,7 @@ PyTorch build), you should see something close to:
 
    TensorMesh smoke test
    ========================================
-   tensormesh : 0.1.1
+   tensormesh : 0.2.0
    torch      : 2.10.0+cu128
    torch-sla  : 0.3.2
    cuda       : 12.8
