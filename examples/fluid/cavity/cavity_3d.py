@@ -1,9 +1,11 @@
 """3D lid-driven cavity — steady incompressible Navier-Stokes.
 
-The 3D extension of ``cavity.py``. The ``NavierStokesAssembler`` below is
-dimension-generic (it reads ``dim`` from ``gradu.shape[0]`` and stamps a
-``(dim+1) x (dim+1)`` block), so the only real change from 2D is the mesh,
-the per-node DOF layout ``[u, v, w, p]``, and the volumetric output.
+The 3D extension of ``cavity.py``: Taylor-Hood P2-P1 on tetrahedra. The
+scalar weak-form integrand in ``forward`` is dimension-generic — the only
+changes from 2D are ``components=3``, the mesh, and the volumetric output.
+The gmsh mesh is linear; the quadratic velocity space is generated
+**topologically** (one extra DOF per unique edge of the tet mesh), so the
+same script pattern works without an order-2 mesh.
 """
 import os
 import sys
@@ -13,118 +15,87 @@ import torch
 # Add project root to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 
-from tensormesh import Mesh, Condenser, ElementAssembler
+from tensormesh import Condenser, Field, Mesh, MixedElementAssembler
 from tensormesh.visualization import setup_headless
 
 
-class NavierStokesAssembler(ElementAssembler):
-    r"""Steady Navier-Stokes weak form with SUPG/PSPG stabilization.
+class NavierStokesAssembler(MixedElementAssembler):
+    r"""Picard-linearized steady Navier-Stokes (identical to ``cavity.py``):
 
-    ``forward`` returns the ``(dim+1) x (dim+1)`` block coupling one test
-    node to one trial node, with velocity components and pressure laid
-    out as ``[u, v, (w,) p]``::
+    .. math::
 
-        [ A_uu   B_up ]   A_uu : velocity-velocity (convection + diffusion + SUPG)
-        [ B_pu   C_pp ]   B_up : pressure gradient in the momentum eqn (+ PSPG)
-                          B_pu : divergence in the continuity eqn (+ PSPG)
-                          C_pp : PSPG pressure Laplacian
+        \rho\,(w\cdot\nabla)u\cdot v + \mu\,\nabla u : \nabla v
+        - p\,\nabla\cdot v - q\,\nabla\cdot u.
 
-    Equal-order P1-P1 violates the inf-sup (LBB) condition, so the bare
-    Galerkin form admits spurious pressure modes; the SUPG/PSPG terms
-    scaled by ``tau`` restore stability. The velocity block is kept
-    diagonal (components decoupled) -- the standard simplification for a
-    stabilized equal-order formulation. Identical to the assembler in
-    ``cavity.py``; the same class handles 2D and 3D.
+    ``gradu`` is the ``[3, 3]`` velocity Jacobian here, but the integrand
+    reads the dimension off its operands, so the expression is unchanged.
     """
 
-    def __post_init__(self, rho=1.0, mu=0.01, tau=0.1):
+    fields = [
+        Field(trial="u", test="v", order=2, components=3),
+        Field(trial="p", test="q", order=1),
+    ]
+
+    def __post_init__(self, rho=1.0, mu=0.01):
         self.rho = rho
         self.mu = mu
-        self.tau = tau
 
-    def forward(self, u, v, gradu, gradv, w_prev):
-        dim = gradu.shape[0]
-        eye = torch.eye(dim, dtype=gradu.dtype, device=gradu.device)
-
-        # velocity-velocity: convection + diffusion + SUPG, diagonal in components
-        convection = self.rho * torch.dot(w_prev, gradv) * u
-        diffusion = self.mu * torch.dot(gradu, gradv)
-        supg = self.rho * torch.dot(w_prev, gradv) * self.tau * torch.dot(w_prev, gradu)
-        A_uu = (convection + diffusion + supg) * eye                          # [dim, dim]
-
-        # pressure gradient in the momentum equation (+ PSPG consistency term)
-        B_up = -v * gradu + self.tau * torch.dot(w_prev, gradu) * gradv       # [dim]
-
-        # divergence in the continuity equation (+ PSPG)
-        B_pu = u * gradv + self.tau * self.rho * torch.dot(w_prev, gradv) * gradu  # [dim]
-
-        # PSPG pressure Laplacian
-        C_pp = self.tau * torch.dot(gradv, gradu)                             # scalar
-
-        top = torch.cat([A_uu, B_up.unsqueeze(1)], dim=1)                     # [dim, dim+1]
-        bottom = torch.cat([B_pu, C_pp.reshape(1)]).unsqueeze(0)             # [1, dim+1]
-        return torch.cat([top, bottom], dim=0)                               # [dim+1, dim+1]
+    def forward(self, gradu, p, v, gradv, q, w):
+        convection = self.rho * (gradu @ w).dot(v)
+        diffusion = self.mu * (gradu * gradv).sum()
+        return convection + diffusion \
+            - p * gradv.diagonal().sum() \
+            - q * gradu.diagonal().sum()
 
 
-def component_dofs(n_points, n_dof, comp):
-    """Global DOF indices of component ``comp`` under the node-major
-    ``[u, v, w, p]`` layout (``comp`` 0..dim-1 = velocity, last = pressure)."""
-    return torch.arange(n_points) * n_dof + comp
-
-
-def solve_cavity_3d(re=100, chara_length=0.05, max_iter=30, tol=1e-4):
+def solve_cavity_3d(re=100, chara_length=0.1, max_iter=25, tol=1e-4):
     setup_headless()
     print(f"Solving 3D lid-driven cavity at Re={re}, chara_length={chara_length}...")
 
-    # --- Mesh and physical parameters ---
+    # --- Mesh (linear tets; the P2 velocity space is built topologically) ---
     mesh = Mesh.gen_cube(chara_length=chara_length).double()
-    points = mesh.points
-    n_points = points.shape[0]
-    n_dof = 4  # (u, v, w, p) per node
-    print(f"  Mesh: {n_points} nodes, {n_points * n_dof} DOFs")
 
-    rho = 1.0
-    mu = 1.0 / re
-    tau = 0.5 * chara_length  # mesh-size-scaled stabilization parameter
+    assembler = NavierStokesAssembler.from_mesh(mesh, rho=1.0, mu=1.0 / re)
+    layout = assembler.layout
+    print(f"  Mesh: {mesh.points.shape[0]} P1 points, "
+          f"{layout.n_nodes('u')} P2 velocity nodes, {layout.n_dofs} DOFs")
 
-    # --- Boundary conditions ---
-    is_boundary = mesh.boundary_mask
-    is_top = points[:, 1] > 1.0 - 1e-6
+    # --- Boundary conditions on the P2 velocity space ---
+    x_u = layout.points("u")
+    is_boundary = layout.split(layout.boundary_mask("u"))["u"][:, 0]  # node level
+    is_top = is_boundary & (x_u[:, 1] > 1.0 - 1e-6)
 
-    bc_mask = torch.zeros(n_points * n_dof, dtype=torch.bool)
-    bc_val = torch.zeros(n_points * n_dof, dtype=torch.float64)
+    bc_mask = layout.dof_mask("u", node_mask=is_boundary)  # no-slip on every wall
+    bc_mask[layout.dof_index("p", int(layout.node_ids("p")[0]))] = True  # pressure pin
 
-    for d in range(3):  # no-slip (u = v = w = 0) on every boundary node
-        bc_mask[component_dofs(n_points, n_dof, d)] = is_boundary
-    bc_val[component_dofs(n_points, n_dof, 0)[is_top]] = 1.0  # moving lid: u = 1 on top
-    bc_mask[n_dof - 1] = True  # pin pressure at node 0 to fix the constant null space
+    bc_val = torch.zeros(layout.n_dofs, dtype=torch.float64)
+    bc_val[layout.dof_mask("u", node_mask=is_top, component=0)] = 1.0  # moving lid
+
+    condenser = Condenser(bc_mask, bc_val[bc_mask])
 
     # --- Picard iteration ---
-    assembler = NavierStokesAssembler.from_mesh(mesh, rho=rho, mu=mu, tau=tau)
-    condenser = Condenser(bc_mask, bc_val)
-
-    u_full = torch.zeros(n_points * n_dof, dtype=torch.float64)
-    u_full[bc_mask] = bc_val[bc_mask]
+    sol = torch.zeros(layout.n_dofs, dtype=torch.float64)
+    sol[bc_mask] = bc_val[bc_mask]
 
     for i in range(max_iter):
-        w_prev = u_full.reshape(-1, n_dof)[:, :3]  # previous-iterate velocity (3D)
-        K = assembler(points, point_data={"w_prev": w_prev})
-        f = torch.zeros(n_points * n_dof, dtype=torch.float64)
+        w = layout.split(sol)["u"]  # previous-iterate velocity on the P2 DOFs
+        K = assembler(field_data={"w": ("u", w)})
+        f = torch.zeros(layout.n_dofs, dtype=torch.float64)
 
         K_, f_ = condenser(K, f)
-        u_new = condenser.recover(K_.solve(f_))
+        sol_new = condenser.recover(K_.solve(f_))
 
-        diff = torch.norm(u_new - u_full) / (torch.norm(u_new) + 1e-8)
+        diff = torch.norm(sol_new - sol) / (torch.norm(sol_new) + 1e-8)
         print(f"  Picard {i:2d}: relative diff = {diff:.6e}")
-        u_full = u_new
+        sol = sol_new
         if diff < tol:
             print("Converged!")
             break
 
-    # --- Post-processing ---
-    sol = u_full.reshape(-1, n_dof)
-    velocity = sol[:, :3]
-    pressure = sol[:, 3]
+    # --- Post-processing (fields interpolated back to the P1 mesh points) ---
+    fields = layout.split(sol)
+    velocity = layout.prolong("u", fields["u"])  # [n_points, 3]
+    pressure = fields["p"]  # P1 == mesh points
     speed = torch.norm(velocity, dim=1)
     print(f"  Max speed: {speed.max().item():.4f}, "
           f"pressure range: [{pressure.min().item():.4f}, {pressure.max().item():.4f}]")
@@ -163,4 +134,4 @@ def solve_cavity_3d(re=100, chara_length=0.05, max_iter=30, tol=1e-4):
 
 
 if __name__ == "__main__":
-    solve_cavity_3d(re=100, chara_length=0.05, max_iter=30)
+    solve_cavity_3d(re=100, chara_length=0.1, max_iter=25)
