@@ -25,9 +25,12 @@ past 400M DOF on multi-GPU nodes.
    the :class:`~tensormesh.Condenser` bridge currently round-trips
    through a gathered single-device matrix, and the distributed RHS
    assembly still returns the full-length vector on every rank.
-   Worked examples with multi-GPU benchmark numbers will be added to
-   the example gallery once they are validated on a multi-card
-   cluster.
+   The decorator covers the **single-field** assemblers only —
+   :class:`~tensormesh.MixedElementAssembler` is not yet supported
+   (its block DOF layout needs a global numbering layer across
+   partitions; see the ROADMAP for the plan). Worked examples with
+   multi-GPU benchmark numbers will be added to the example gallery
+   once they are validated on a multi-card cluster.
 
 
 Partitioning the mesh
