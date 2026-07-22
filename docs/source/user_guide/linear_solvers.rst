@@ -21,19 +21,23 @@ Install ``torch-sla``
    lands — TensorMesh tracks ``torch-sla`` releases as the canonical
    sparse-linear-algebra layer and we recommend keeping it up to date.
 
-The base wheel ships the CPU stack (SciPy / native PyTorch).
-GPU backends are opt-in extras — you can install one or both, depending
-on which CUDA solver you want:
+The base wheel ships the CPU stack (SciPy / native PyTorch Krylov).
+Additional backends are opt-in extras:
 
 .. code-block:: bash
 
-   pip install torch-sla              # CPU stack only
-   pip install "torch-sla[cupy]"      # + CuPy backend (iterative + SuperLU)
-   pip install "torch-sla[cudss]"     # + cuDSS backend (fastest GPU direct)
-   pip install "torch-sla[all]"       # both GPU backends + dev tooling
+   pip install torch-sla              # CPU stack (scipy + pytorch backends)
+   pip install "torch-sla[cudss]"     # + NVIDIA cuDSS (fastest GPU direct)
+   pip install "torch-sla[pyamg]"     # + PyAMG algebraic multigrid (CPU setup)
+   pip install "torch-sla[all]"       # every PyPI-installable runtime backend
 
-TensorMesh also exposes the GPU extras at its own install layer
-(``pip install "tensormesh-fem[cupy]"`` etc.) — see
+The two **native compiled** backends — ``strumpack`` (portable
+multifrontal direct, CPU/CUDA/ROCm) and ``amgx`` (NVIDIA AmgX
+AMG/Krylov) — ship as prebuilt wheels on torch-sla's GitHub Releases
+rather than PyPI; see the `torch-sla README
+<https://github.com/sparsexlab/torch-sla>`_ for the wheel-selection
+rules. TensorMesh also mirrors the PyPI extras at its own install
+layer (``pip install "tensormesh-fem[cudss]"`` etc.) — see
 :doc:`/getting_started/installation`.
 
 Inspect available backends
@@ -48,11 +52,12 @@ install any that are missing:
    >>> import torch_sla
    >>> torch_sla.show_backends()
    torch-sla backend status (CUDA: available)
-     scipy    [CPU]      available
-     eigen    [CPU]      not available — JIT-compiled C++ extension (requires a C++ compiler)
-     pytorch  [CPU/CUDA] available
-     cupy     [CUDA]     not available — pip install torch-sla[cupy]
-     cudss    [CUDA]     not available — pip install torch-sla[cudss]
+     scipy      [CPU]           available
+     pytorch    [CPU/CUDA]      available
+     cudss      [CUDA]          available
+     pyamg      [CPU]           available
+     amgx       [CUDA]          not available — pip install torch-sla[amgx]
+     strumpack  [CPU/CUDA/ROCm] not available — pip install torch-strumpack
 
 What ``torch-sla`` gives TensorMesh:
 
@@ -89,14 +94,16 @@ for SPD systems and BiCGStab / LU otherwise. You do **not** pass an
 
 Key keyword arguments (full list in the ``torch-sla`` reference):
 
-* ``backend``: ``"auto"`` (CPU → SciPy, CUDA → cuDSS when available,
-  else CuPy / native PyTorch), or one of ``"scipy"``, ``"eigen"``,
-  ``"pytorch"``, ``"cupy"``, ``"cudss"``.
+* ``backend``: ``"auto"`` (picked from the device, dtype, and problem
+  size — CPU → SciPy, CUDA → cuDSS when available, very large systems
+  → native PyTorch Krylov), or one of ``"scipy"``, ``"pytorch"``,
+  ``"cudss"``, ``"strumpack"``, ``"pyamg"``, ``"amgx"``.
 * ``method``: ``"auto"`` (chosen from matrix properties + backend), or
-  an iterative method (``"cg"``, ``"bicgstab"``, ``"minres"``,
-  ``"gmres"``, ``"lgmres"``) or a direct factorization (``"lu"``,
-  ``"umfpack"``, ``"cholesky"``, ``"ldlt"``). Not every backend
-  supports every method — see the table below.
+  an iterative method (``"cg"``, ``"bicgstab"``, ``"gmres"``,
+  ``"minres"``, ``"lsqr"``, ``"lsmr"``), a direct factorization
+  (``"lu"``, ``"umfpack"``, ``"cholesky"``, ``"ldlt"``), or an AMG
+  cycle (``"amg"``). Not every backend supports every method — see the
+  table below.
 * ``atol`` (default ``1e-10``), ``tol`` (default ``1e-12``),
   ``maxiter`` (default ``10000``) for iterative convergence.
 * ``verbose=True`` prints a one-line summary of the auto-selected
@@ -112,9 +119,12 @@ Key keyword arguments (full list in the ``torch-sla`` reference):
 Supported backends
 ------------------
 
+Six verified backends (each checked against a reference solution to
+at/near machine-precision relative residual):
+
 .. list-table::
    :header-rows: 1
-   :widths: 14 12 12 16 46
+   :widths: 14 12 16 14 44
 
    * - Backend
      - String
@@ -126,30 +136,67 @@ Supported backends
      - CPU
      - both
      - ``lu``, ``umfpack``, ``cg``, ``bicgstab``, ``gmres``,
-       ``lgmres``, ``minres``, ``qmr``. Default on CPU.
-   * - Eigen
-     - ``"eigen"``
-     - CPU
-     - iterative
-     - ``cg``, ``bicgstab``. C++ Eigen via pybind11.
+       ``lgmres``, ``minres``, ``qmr``. **Default on CPU.**
    * - Native PyTorch
      - ``"pytorch"``
-     - CPU / GPU
+     - CPU / CUDA / ROCm
      - iterative
-     - ``cg``, ``bicgstab`` with Jacobi preconditioning. Pure
-       torch — fully autograd-traced.
-   * - CuPy
-     - ``"cupy"``
-     - GPU
-     - both
-     - ``lu``, ``cg``, ``cgs``, ``gmres``, ``minres``, ``lsqr``,
-       ``lsmr``.
+     - ``cg``, ``bicgstab``, ``gmres``, ``minres``, ``lsqr``,
+       ``lsmr`` — Krylov with Jacobi preconditioning, pure torch,
+       device-agnostic (incl. AMD ROCm). The very-large-problem
+       path (> 2M DOF).
    * - cuDSS
      - ``"cudss"``
-     - GPU
+     - CUDA
      - direct
      - ``lu``, ``cholesky``, ``ldlt``. NVIDIA cuDSS — fastest GPU
-       path; default on CUDA when memory allows.
+       direct path; **default on CUDA** when memory allows.
+   * - STRUMPACK
+     - ``"strumpack"``
+     - CPU / CUDA / ROCm
+     - direct
+     - ``lu`` — portable multifrontal direct solver (the GPU direct
+       option on AMD). Wheel from GitHub Releases
+       (``torch-strumpack``).
+   * - PyAMG
+     - ``"pyamg"``
+     - CPU setup
+     - iterative (AMG)
+     - ``amg``, ``ruge_stuben``, ``smoothed_aggregation`` —
+       algebraic-multigrid V-cycles for PDE systems.
+   * - AmgX
+     - ``"amgx"``
+     - CUDA
+     - iterative (AMG / Krylov)
+     - ``amg``, ``cg``/``pcg``, ``bicgstab``/``pbicgstab``,
+       ``gmres``/``fgmres`` — NVIDIA AmgX. Wheel from GitHub
+       Releases (``torch-amgx``).
+
+Which one to reach for, by problem size (from torch-sla's Poisson
+benchmarks, tested to 400M DOF multi-GPU):
+
+.. list-table::
+   :header-rows: 1
+   :widths: 34 30 36
+
+   * - Problem size
+     - CPU
+     - CUDA
+   * - < 2M DOF
+     - ``scipy`` + ``lu``
+     - ``cudss`` + ``cholesky``
+   * - 2M – 169M DOF
+     - ``pytorch`` + ``cg``
+     - ``pytorch`` + ``cg``
+   * - > 169M DOF
+     - ``DSparseMatrix`` multi-process
+     - ``DSparseMatrix`` multi-GPU
+
+Rules of thumb: direct solvers give machine precision but their
+memory fill-in caps them around 2M DOF; the iterative paths converge
+to ~1e-6 but scale near-linearly. Use ``float64`` for iterative
+convergence. For the distributed row, see the multi-GPU assembly
+example in :doc:`/example_gallery/distributed`.
 
 
 Batched right-hand sides
