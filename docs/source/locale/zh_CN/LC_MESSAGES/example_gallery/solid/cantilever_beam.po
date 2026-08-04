@@ -8,15 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-22 23:00+0200\n"
+"POT-Creation-Date: 2026-08-04 21:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: zh_CN <LL@li.org>\n"
 "Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
 "Generated-By: Babel 2.18.0\n"
 
 #: ../../source/example_gallery/solid/cantilever_beam.rst:2
@@ -25,29 +25,34 @@ msgid "Cantilever Beam"
 msgstr "悬臂梁"
 
 #: ../../source/example_gallery/solid/cantilever_beam.rst:4
+#: 72d2b1e624414891b9d51328f196117d
+msgid "Open in Colab"
+msgstr "在 Colab 中打开"
+
+#: ../../source/example_gallery/solid/cantilever_beam.rst:8
 #: 5dea76ba32f44fd4a2cbfac34018844c
 msgid ""
 "The textbook entry-point for solid mechanics in TensorMesh: a :math:`2.0 "
-"\\times 0.2 \\times 0.2` m steel cantilever clamped at one end, loaded by a "
-"downward force at the other. Linear small-strain elasticity, one direct "
-"linear solve, ~30 lines of code. The script is "
+"\\times 0.2 \\times 0.2` m steel cantilever clamped at one end, loaded by"
+" a downward force at the other. Linear small-strain elasticity, one "
+"direct linear solve, ~30 lines of code. The script is "
 "``examples/solid/cantilever_beam/cantilever_beam.py``."
 msgstr ""
 "TensorMesh 中固体力学的教科书式入门示例：一根 :math:`2.0 \\times 0.2 \\times 0.2` m "
 "的钢制悬臂梁，一端固定，另一端施加向下的力。线性小应变弹性，一次直接线性求解，约 30 行代码。脚本位于 "
 "``examples/solid/cantilever_beam/cantilever_beam.py``\\ 。"
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:13
+#: ../../source/example_gallery/solid/cantilever_beam.rst:17
 #: d50f87f3d277435a924c4f48838f1e71
 msgid "Problem"
 msgstr "问题"
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:15
+#: ../../source/example_gallery/solid/cantilever_beam.rst:19
 #: e9af9df3b74d4f7fa1be8d3a228af3a4
 msgid "Small-strain linear elasticity:"
 msgstr "小应变线弹性："
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:17
+#: ../../source/example_gallery/solid/cantilever_beam.rst:21
 #: 13132bb4c6214cf69dd2177edf4a616f
 #, python-brace-format
 msgid ""
@@ -56,73 +61,75 @@ msgid ""
 "\\qquad\n"
 "\\boldsymbol{\\sigma} \\;=\\; \\mathbb{C} : \\boldsymbol{\\varepsilon},\n"
 "\\qquad\n"
-"\\boldsymbol{\\varepsilon} = \\tfrac12 (\\nabla\\mathbf{u} + \\nabla\\mathbf{u}^T),"
+"\\boldsymbol{\\varepsilon} = \\tfrac12 (\\nabla\\mathbf{u} + "
+"\\nabla\\mathbf{u}^T),"
 msgstr ""
 "\\nabla \\cdot \\boldsymbol{\\sigma} \\;=\\; \\mathbf{0}\n"
 "\\quad \\text{in } \\Omega,\n"
 "\\qquad\n"
 "\\boldsymbol{\\sigma} \\;=\\; \\mathbb{C} : \\boldsymbol{\\varepsilon},\n"
 "\\qquad\n"
-"\\boldsymbol{\\varepsilon} = \\tfrac12 (\\nabla\\mathbf{u} + \\nabla\\mathbf{u}^T),"
+"\\boldsymbol{\\varepsilon} = \\tfrac12 (\\nabla\\mathbf{u} + "
+"\\nabla\\mathbf{u}^T),"
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:26
+#: ../../source/example_gallery/solid/cantilever_beam.rst:30
 #: 90ad7e9176414c6eb095413f508e3836
 #, python-brace-format
 msgid ""
 "where :math:`\\mathbb{C}` is the isotropic stiffness tensor with Young's "
-"modulus :math:`E = 200` GPa and Poisson's ratio :math:`\\nu = 0.3`. Boundary"
-" conditions:"
+"modulus :math:`E = 200` GPa and Poisson's ratio :math:`\\nu = 0.3`. "
+"Boundary conditions:"
 msgstr ""
-"其中 :math:`\\mathbb{C}` 是各向同性刚度张量，杨氏模量 :math:`E = 200` GPa，泊松比 :math:`\\nu = "
-"0.3`\\ 。边界条件："
+"其中 :math:`\\mathbb{C}` 是各向同性刚度张量，杨氏模量 :math:`E = 200` GPa，泊松比 :math:`\\nu"
+" = 0.3`\\ 。边界条件："
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:30
+#: ../../source/example_gallery/solid/cantilever_beam.rst:34
 #: e6cdf01899804c39a874fa6d042830da
 #, python-brace-format
 msgid "clamp at :math:`x = 0`: :math:`\\mathbf{u} = \\mathbf{0}`,"
 msgstr "在 :math:`x = 0` 处固定：\\ :math:`\\mathbf{u} = \\mathbf{0}`\\ ，"
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:31
+#: ../../source/example_gallery/solid/cantilever_beam.rst:35
 #: ae9b74f690b14c3583be44edc7882a05
 msgid ""
-"tip load at :math:`x = 2`: total force :math:`F = -100` kN distributed over "
-"the right face nodes,"
+"tip load at :math:`x = 2`: total force :math:`F = -100` kN distributed "
+"over the right face nodes,"
 msgstr "在 :math:`x = 2` 处的端部载荷：总力 :math:`F = -100` kN，分布于右端面节点上，"
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:33
+#: ../../source/example_gallery/solid/cantilever_beam.rst:37
 #: 97e6cd91b9a7468397344b827385cdcc
 msgid "all other surfaces: traction-free."
 msgstr "其余所有表面：无面力（自由）。"
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:37
+#: ../../source/example_gallery/solid/cantilever_beam.rst:41
 #: 2d9ed9a94e7d4fb18944c889714de56a
 msgid "TensorMesh setup"
 msgstr "TensorMesh 设置"
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:39
+#: ../../source/example_gallery/solid/cantilever_beam.rst:43
 #: c21c04d6d9ea47efa923513569d51c55
 msgid "The full driver:"
 msgstr "完整的驱动脚本："
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:41
+#: ../../source/example_gallery/solid/cantilever_beam.rst:45
 #: 5900823d156b4a67b6ef51152c1f0367
 msgid "examples/solid/cantilever_beam/cantilever_beam.py"
 msgstr "examples/solid/cantilever_beam/cantilever_beam.py"
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:82
+#: ../../source/example_gallery/solid/cantilever_beam.rst:86
 #: 71daa8011d23434da2ea30a16161f9c5
 msgid "A few details that make this short:"
 msgstr "几个让代码如此简短的细节："
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:84
+#: ../../source/example_gallery/solid/cantilever_beam.rst:88
 #: 8b0a50c43d964bce850f575d619ccb55
 msgid ""
-":class:`~tensormesh.LinearElasticityElementAssembler` is a built-in vector-"
-"valued assembler — it returns a stiffness block of size ``[mesh.dim, "
-"mesh.dim]`` per (test, trial) basis pair, all wrapped into one "
-":class:`~tensormesh.sparse.SparseMatrix` of shape ``[mesh.dim * n_points, "
-"mesh.dim * n_points]``. See :doc:`../../user_guide/forms` for the "
-"convention."
+":class:`~tensormesh.LinearElasticityElementAssembler` is a built-in "
+"vector-valued assembler — it returns a stiffness block of size "
+"``[mesh.dim, mesh.dim]`` per (test, trial) basis pair, all wrapped into "
+"one :class:`~tensormesh.sparse.SparseMatrix` of shape ``[mesh.dim * "
+"n_points, mesh.dim * n_points]``. See :doc:`../../user_guide/forms` for "
+"the convention."
 msgstr ""
 ":class:`~tensormesh.LinearElasticityElementAssembler` "
 "是一个内置的向量值装配器——它为每一对（测试、试探）基函数返回一个大小为 ``[mesh.dim, mesh.dim]`` "
@@ -130,46 +137,47 @@ msgstr ""
 ":class:`~tensormesh.sparse.SparseMatrix`\\ 。约定参见 "
 ":doc:`../../user_guide/forms`\\ 。"
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:90
+#: ../../source/example_gallery/solid/cantilever_beam.rst:94
 #: b05bc897f1284c0e8a929c9185192dd3
 msgid ""
 "The DOF layout is per-node ``[u_x, u_y, u_z]``; "
-"``torch.repeat_interleave(fixed_node_mask, dim)`` lifts the per-node mask to"
-" per-DOF."
+"``torch.repeat_interleave(fixed_node_mask, dim)`` lifts the per-node mask"
+" to per-DOF."
 msgstr ""
 "自由度按节点排布为 ``[u_x, u_y, u_z]``\\ ；\\ "
 "``torch.repeat_interleave(fixed_node_mask, dim)`` 把逐节点的掩码提升为逐自由度的掩码。"
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:93
+#: ../../source/example_gallery/solid/cantilever_beam.rst:97
 #: 4ef6fb0708104839ac01c0d3f12af307
 msgid ""
-":mod:`tensormesh.material` ships predefined isotropic materials (``Steel``, "
-"``Aluminum``, ``Rubber``, ``Bone``) so you don't have to memorize :math:`E` "
-"and :math:`\\nu`."
+":mod:`tensormesh.material` ships predefined isotropic materials "
+"(``Steel``, ``Aluminum``, ``Rubber``, ``Bone``) so you don't have to "
+"memorize :math:`E` and :math:`\\nu`."
 msgstr ""
-":mod:`tensormesh.material` 提供了预定义的各向同性材料（\\ ``Steel``\\ 、\\ ``Aluminum``\\ "
-"、\\ ``Rubber``\\ 、\\ ``Bone``\\ ），这样你就无需记忆 :math:`E` 和 :math:`\\nu`\\ 。"
+":mod:`tensormesh.material` 提供了预定义的各向同性材料（\\ ``Steel``\\ 、\\ "
+"``Aluminum``\\ 、\\ ``Rubber``\\ 、\\ ``Bone``\\ ），这样你就无需记忆 :math:`E` 和 "
+":math:`\\nu`\\ 。"
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:96
+#: ../../source/example_gallery/solid/cantilever_beam.rst:100
 #: 90af2e27b5e74c489f6edcb6a4a1da5d
 msgid ""
 "``plot_deformation`` exaggerates the deformation by ``scale=50`` for "
 "visibility — the actual tip displacement is on the order of millimeters."
 msgstr "``plot_deformation`` 通过 ``scale=50`` 放大变形以便观察——实际的端部位移仅为毫米量级。"
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:102
+#: ../../source/example_gallery/solid/cantilever_beam.rst:106
 #: de8bda37014046f480bd473daa7b248f
 msgid "Sanity check"
 msgstr "合理性检验"
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:104
+#: ../../source/example_gallery/solid/cantilever_beam.rst:108
 #: 75af0506753c4af6a6ba0f7002ea4eb1
 msgid ""
-"For a tip-loaded prismatic cantilever, Euler-Bernoulli beam theory predicts "
-"a tip deflection"
+"For a tip-loaded prismatic cantilever, Euler-Bernoulli beam theory "
+"predicts a tip deflection"
 msgstr "对于端部受载的等截面悬臂梁，欧拉-伯努利梁理论预测的端部挠度为"
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:107
+#: ../../source/example_gallery/solid/cantilever_beam.rst:111
 #: 1fbd1fda9bc049369ffc838c47998b13
 #, python-brace-format
 msgid ""
@@ -181,70 +189,71 @@ msgstr ""
 "\\qquad\n"
 "I = \\frac{b\\, h^3}{12},"
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:113
+#: ../../source/example_gallery/solid/cantilever_beam.rst:117
 #: 752774fe5ed24f00a361ed0ec3fd2b27
 msgid ""
-"with :math:`L = 2` m, :math:`b = h = 0.2` m, :math:`E = 200` GPa, :math:`F ="
-" 10^5` N. That gives :math:`\\delta \\approx 5.0` mm. The FEM solution at "
-"the right-face center should agree to within the coarse-mesh approximation "
-"error (a few percent at ``chara_length=0.08``)."
+"with :math:`L = 2` m, :math:`b = h = 0.2` m, :math:`E = 200` GPa, "
+":math:`F = 10^5` N. That gives :math:`\\delta \\approx 5.0` mm. The FEM "
+"solution at the right-face center should agree to within the coarse-mesh "
+"approximation error (a few percent at ``chara_length=0.08``)."
 msgstr ""
 "其中 :math:`L = 2` m，\\ :math:`b = h = 0.2` m，\\ :math:`E = 200` GPa，\\ "
 ":math:`F = 10^5` N。由此得到 :math:`\\delta \\approx 5.0` "
 "mm。有限元解在右端面中心处的结果应与之吻合，误差不超过粗网格的近似误差（在 ``chara_length=0.08`` 时为百分之几）。"
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:119
+#: ../../source/example_gallery/solid/cantilever_beam.rst:123
 #: 885a6945ab3746d68ffefc869772edc7
 msgid ""
-"Steel cantilever beam — deformed shape with tip load, displacement coloring"
+"Steel cantilever beam — deformed shape with tip load, displacement "
+"coloring"
 msgstr "钢制悬臂梁——端部受载下的变形形状，按位移着色"
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:123
+#: ../../source/example_gallery/solid/cantilever_beam.rst:127
 #: b5b7c2891fc949cca52c106219b54629
 msgid ""
 "Output of ``cantilever_beam.py``. The undeformed beam is drawn in light "
-"grey; the deformed configuration is colored by displacement magnitude. Blue "
-"cubes mark fixed nodes at :math:`x=0`; red arrows mark the distributed tip "
-"load on the :math:`x=L` face. The deformation is exaggerated by ~62× so the "
-"bending is visible at this aspect ratio — the actual tip displacement is on "
-"the order of millimeters and matches the Euler-Bernoulli closed form to "
-"within the coarse-mesh approximation error."
+"grey; the deformed configuration is colored by displacement magnitude. "
+"Blue cubes mark fixed nodes at :math:`x=0`; red arrows mark the "
+"distributed tip load on the :math:`x=L` face. The deformation is "
+"exaggerated by ~62× so the bending is visible at this aspect ratio — the "
+"actual tip displacement is on the order of millimeters and matches the "
+"Euler-Bernoulli closed form to within the coarse-mesh approximation "
+"error."
 msgstr ""
 "``cantilever_beam.py`` 的输出。未变形的梁以浅灰色绘制；变形后的构型按位移大小着色。蓝色立方体标记 :math:`x=0` "
 "处的固定节点；红色箭头标记 :math:`x=L` 面上分布的端部载荷。变形被放大了约 62 "
 "倍，以便在此长宽比下能看清弯曲——实际的端部位移仅为毫米量级，与欧拉-伯努利闭式解吻合，误差不超过粗网格的近似误差。"
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:135
+#: ../../source/example_gallery/solid/cantilever_beam.rst:139
 #: 70664e2b58d64ef29dbe4e0e1f845ed9
 msgid "Running it"
 msgstr "运行示例"
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:142
+#: ../../source/example_gallery/solid/cantilever_beam.rst:146
 #: 3a61105f9a3c48ef8e190e425b0602b8
 msgid "Console output reports the maximum nodal displacement in millimeters."
 msgstr "控制台输出会以毫米为单位报告最大节点位移。"
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:147
+#: ../../source/example_gallery/solid/cantilever_beam.rst:151
 #: 3777be438c704ae8b9c9ccef0117e6ae
 msgid "What's next"
 msgstr "下一步"
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:149
+#: ../../source/example_gallery/solid/cantilever_beam.rst:153
 #: d3923689c428431d9bda6633a486400a
 msgid ""
 ":doc:`../../user_guide/forms` — vector-valued assembler return shapes "
 "(``[dim, dim]`` blocks per quadrature point)."
-msgstr ""
-":doc:`../../user_guide/forms` —— 向量值装配器的返回形状（每个求积点为 ``[dim, dim]`` 块）。"
+msgstr ":doc:`../../user_guide/forms` —— 向量值装配器的返回形状（每个求积点为 ``[dim, dim]`` 块）。"
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:151
+#: ../../source/example_gallery/solid/cantilever_beam.rst:155
 #: f6fd8e3e0fee441bba4e8aa0709f83ad
 msgid ""
 ":doc:`../../user_guide/boundary_conditions` — DOF masking for vector "
 "unknowns."
 msgstr ":doc:`../../user_guide/boundary_conditions` —— 针对向量未知量的自由度掩码。"
 
-#: ../../source/example_gallery/solid/cantilever_beam.rst:153
+#: ../../source/example_gallery/solid/cantilever_beam.rst:157
 #: 5795c5c59af54911a4888c42e4dd8a31
 msgid ""
 ":doc:`hyperelastic_beam` — same geometry-style problem, but large "
@@ -252,6 +261,8 @@ msgid ""
 msgstr ":doc:`hyperelastic_beam` —— 几何风格相同的问题，但通过新胡克能量实现大变形。"
 
 #~ msgid ""
-#~ ":doc:`emmentaler` — a more elaborate 3D geometry showing exactly the same "
+#~ ":doc:`emmentaler` — a more elaborate 3D"
+#~ " geometry showing exactly the same "
 #~ "recipe."
 #~ msgstr ""
+

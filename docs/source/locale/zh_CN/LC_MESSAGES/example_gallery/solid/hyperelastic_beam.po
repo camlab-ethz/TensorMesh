@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-25 20:23+0200\n"
+"POT-Creation-Date: 2026-08-04 21:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh_CN\n"
@@ -25,6 +25,11 @@ msgid "Hyperelastic Beam (Neo-Hookean)"
 msgstr "超弹性梁（新胡克）"
 
 #: ../../source/example_gallery/solid/hyperelastic_beam.rst:4
+#: 9f6b4b066ade43cfa55da2064de094d0
+msgid "Open in Colab"
+msgstr "在 Colab 中打开"
+
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:8
 #: 523ace90ceb04fcf90b9a3a34e7636eb
 msgid ""
 "The simplest finite-strain example in the gallery: a :math:`1.0 \\times "
@@ -37,7 +42,7 @@ msgstr ""
 "的橡胶梁，一端固定，另一端由扭转力场扭转。采用可压缩新胡克应变能密度和 L-BFGS 能量最小化求解。脚本位于 "
 "``examples/solid/hyperelastic_beam/hyperelastic_beam.py``\\ 。"
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:11
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:15
 #: b6722759a9464131848650906f50f4f5
 msgid ""
 "Why study this example before the harder ones below: it isolates the "
@@ -50,17 +55,17 @@ msgstr ""
 "，没有孔洞、没有接触、也没有辅助场——因此本示例与 ``cantilever_beam.py`` "
 "之间的差异，恰好就是从“线性求解”到“在非凸能量上做 L-BFGS”的转变。"
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:19
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:23
 #: 8c087bae78914ff19d8f11fbdd77f3fa
 msgid "Problem"
 msgstr "问题"
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:21
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:25
 #: 1dfe1ab082374b44966a1725f6903743
 msgid "Compressible Neo-Hookean strain energy:"
 msgstr "可压缩新胡克应变能："
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:23
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:27
 #: 558b569de8a44ff9856171aa3207c148
 #, python-brace-format
 msgid ""
@@ -74,7 +79,7 @@ msgstr ""
 "- \\mu \\ln J\n"
 "+ \\frac{\\lambda}{2}\\, (\\ln J)^2,"
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:30
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:34
 #: 868c0b10f1af4285a8ca55b3e9c1ac56
 #, python-brace-format
 msgid ""
@@ -91,18 +96,18 @@ msgstr ""
 ":mod:`tensormesh.material` 中的 ``Rubber.lame_params``\\ （\\ :math:`E "
 "\\approx 10` MPa，\\ :math:`\\nu \\approx 0.48`\\ ，近乎不可压缩）。"
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:39
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:43
 #: 5cf1d53fee864a439ed980df7708436d
 msgid "Boundary conditions:"
 msgstr "边界条件："
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:41
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:45
 #: 613a31c3ab7947cd9277cf69ca22e36f
 #, python-brace-format
 msgid "clamp at :math:`x = 0`: :math:`\\mathbf{u} = \\mathbf{0}`,"
 msgstr "在 :math:`x = 0` 处固定：\\ :math:`\\mathbf{u} = \\mathbf{0}`\\ ，"
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:42
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:46
 #: 5480aee0dc3c4513b9625808f0da0bb5
 #, python-brace-format
 msgid ""
@@ -112,22 +117,22 @@ msgid ""
 "nodal load :math:`f_i = \\int_\\Gamma N_i\\, \\mathbf{t}\\, "
 "\\mathrm{d}A`, ramped over 10 load steps,"
 msgstr ""
-"在 :math:`x = 1` 处的扭转载荷：诺伊曼面力 :math:`\\mathbf{t} = C\\, (0, -z, y)`\\ ，"
-"其中 :math:`C = 2.4 \\times 10^7`\\ ，通过 :class:`~tensormesh.FacetAssembler` "
+"在 :math:`x = 1` 处的扭转载荷：诺伊曼面力 :math:`\\mathbf{t} = C\\, (0, -z, y)`\\ ，其中 "
+":math:`C = 2.4 \\times 10^7`\\ ，通过 :class:`~tensormesh.FacetAssembler` "
 "在端面上积分，得到一致节点载荷 :math:`f_i = \\int_\\Gamma N_i\\, \\mathbf{t}\\, "
 "\\mathrm{d}A`\\ ，并在 10 个载荷步内逐步加载，"
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:48
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:52
 #: b6c1e0973b0e47ddb263263357617f54
 msgid "all other surfaces: traction-free."
 msgstr "其余所有表面：无面力（自由）。"
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:52
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:56
 #: 2667cfcff23740a88c2055448a9ff30f
 msgid "TensorMesh setup"
 msgstr "TensorMesh 设置"
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:54
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:58
 #: b868e87ca1204892bee8895dd7033e81
 #, python-brace-format
 msgid ""
@@ -141,17 +146,17 @@ msgstr ""
 "``element_energy`` 在每个求积点返回 :math:`\\Psi(\\mathbf{F})`——仅此而已。TensorMesh "
 "在各单元上积分，求和得到一个标量总能量，随后 PyTorch 的 autograd 为 L-BFGS 提供梯度："
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:61
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:65
 #: e5f8995ea0224696957bc8a6b6fe8774
 msgid "examples/solid/hyperelastic_beam/hyperelastic_beam.py (essence)"
 msgstr "examples/solid/hyperelastic_beam/hyperelastic_beam.py（核心部分）"
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:100
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:104
 #: 73d8bf20d3c448f0bca9d460d7f7c460
 msgid "A few details worth flagging:"
 msgstr "几个值得注意的细节："
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:102
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:106
 #: d5091a4a80db40c7a5cc684a7a000a31
 msgid ""
 "**Quadratic tetrahedra** (``order=2``). Linear (P1) tets *lock* in the "
@@ -161,7 +166,7 @@ msgstr ""
 "**二次四面体单元**\\ （\\ ``order=2``\\ ）。线性（P1）四面体在近乎不可压缩极限（\\ :math:`\\nu \\to "
 "0.5`\\ ）下会发生 *闭锁*\\ 。对本问题而言，P2 单元是开销最小的解决办法。"
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:105
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:109
 #: 39db6a33e0a54175b3dea1669947d209
 msgid ""
 "**J-clamping.** ``torch.clamp(J, min=1e-6)`` keeps the energy finite when"
@@ -172,7 +177,7 @@ msgstr ""
 "**对 J 进行截断。** 当 L-BFGS 过冲进入翻折构型时，\\ ``torch.clamp(J, min=1e-6)`` "
 "能让能量保持有限。一种更优雅但更慢的替代方案是添加一个障碍项，把 :math:`J` 推回 :math:`(0, \\infty)`\\ 。"
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:109
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:113
 #: 7b7bb296d12c4af189333cca78ce9539
 msgid ""
 "**Boundary conditions via masking.** The script uses the pattern "
@@ -185,7 +190,7 @@ msgstr ""
 "这一模式在闭包内部施加狄利克雷边界条件——被掩码的自由度上的梯度自动为零，因此 L-BFGS 不会去动它们。这就无需单独创建一个 "
 ":class:`~tensormesh.Condenser` 实例，并且能与 autograd 顺畅协作。"
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:115
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:119
 #: 94f7f2c0acca499798ee6154da434039
 msgid ""
 "**Incremental loading is mandatory.** Without it, L-BFGS warm-started "
@@ -196,12 +201,12 @@ msgstr ""
 "**增量加载是必须的。** 否则，从静止构型热启动的 L-BFGS 通常无法在满扭转下找到对应的能量盆地。对这根梁来说 10 "
 "步就足够了；更刚硬的材料或更剧烈的加载则需要更多步。"
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:120
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:124
 #: 5ada72c9378e45e8a725768d94d89a01
 msgid "Hyperelastic rubber beam under torsion, deformed configuration"
 msgstr "扭转下的超弹性橡胶梁，变形后的构型"
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:124
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:128
 #: 67b0c3971a2f425b8a6019998c68397a
 msgid ""
 "Output of ``hyperelastic_beam.py``: the rubber beam in its final twisted "
@@ -215,36 +220,36 @@ msgstr ""
 "10 个 LBFGS 载荷步内逐步施加的规定扭转载荷。与上面的线性悬臂梁不同，变形以 1.0 "
 "倍显示——新胡克响应无需线性化即可处理有限转动，不会产生线性化伪影。"
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:135
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:139
 #: 73af6fc05f764468ae08c21aa364c26a
 msgid "Running it"
 msgstr "运行示例"
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:142
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:146
 #: 411f08f672ec42419da7f38c6e228294
 msgid "Console output reports the maximum nodal displacement at every load step."
 msgstr "控制台输出会在每个载荷步报告最大节点位移。"
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:147
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:151
 #: 5b72476c3f704877950b8c723bb51839
 msgid "What's next"
 msgstr "下一步"
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:149
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:153
 #: c439679b0c874a90a01f1b0df3e964c2
 msgid ""
 ":doc:`cantilever_beam` — the linear-elastic counterpart; the diff between"
 " the two scripts is small but illuminating."
 msgstr ":doc:`cantilever_beam` —— 线弹性对应版本；两个脚本之间的差异虽小，却很有启发性。"
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:151
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:155
 #: 6a3c55e47d9c47d8b1c8493d7f3d3851
 msgid ""
 ":doc:`hertzian_contact` — another L-BFGS-driven problem, this time with a"
 " contact-penalty energy."
 msgstr ":doc:`hertzian_contact` —— 另一个由 L-BFGS 驱动的问题，这次带有接触罚能量。"
 
-#: ../../source/example_gallery/solid/hyperelastic_beam.rst:153
+#: ../../source/example_gallery/solid/hyperelastic_beam.rst:157
 #: 11125a2e9ce647a3ab38439c2d917ef3
 msgid ""
 ":doc:`../../user_guide/forms` — vector-valued ``element_energy`` returns "

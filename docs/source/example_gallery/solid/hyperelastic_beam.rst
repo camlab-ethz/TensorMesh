@@ -1,6 +1,10 @@
 Hyperelastic Beam (Neo-Hookean)
 ================================
 
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+   :target: https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/hyperelastic_beam.ipynb
+   :alt: Open in Colab
+
 The simplest finite-strain example in the gallery: a
 :math:`1.0 \times 0.4 \times 0.4` m rubber beam clamped at one end
 and twisted at the other by a torsional force field. Solved with a

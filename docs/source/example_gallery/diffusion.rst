@@ -18,6 +18,10 @@ unconditionally energy-stable convex–concave splitting
 2D heat equation — ``heat/heat.py``
 -----------------------------------
 
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+   :target: https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/heat.ipynb
+   :alt: Open in Colab
+
 The strong form is
 
 .. math::
@@ -109,6 +113,10 @@ backward-Euler step damps the highest Fourier mode.*
 
 Allen-Cahn phase field — ``allen-cahn/ac.py``
 ---------------------------------------------
+
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+   :target: https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/allen_cahn.ipynb
+   :alt: Open in Colab
 
 The Allen-Cahn equation is the textbook nonlinear phase-field
 model:

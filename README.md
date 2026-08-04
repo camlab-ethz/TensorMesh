@@ -182,6 +182,24 @@ A small selection from the
   <tr>
     <td><a href="https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/poisson_galerkin.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/></a></td>
     <td><b>Physics-informed learning</b> — train on the Galerkin residual</td>
+    <td><a href="https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/poisson_3d.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/></a></td>
+    <td><b>3D Poisson</b> — the same weak form on tetrahedra</td>
+  </tr>
+  <tr>
+    <td><a href="https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/cantilever_beam.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/></a></td>
+    <td><b>Cantilever beam</b> — 3D linear elasticity</td>
+    <td><a href="https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/hyperelastic_beam.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/></a></td>
+    <td><b>Hyperelastic beam</b> — large deformation, energy minimisation</td>
+  </tr>
+  <tr>
+    <td><a href="https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/heat.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/></a></td>
+    <td><b>Heat equation</b> — implicit stepping, animated</td>
+    <td><a href="https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/wave.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/></a></td>
+    <td><b>Wave equation</b> — explicit stepping + energy conservation</td>
+  </tr>
+  <tr>
+    <td><a href="https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/allen_cahn.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/></a></td>
+    <td><b>Allen-Cahn</b> — phase field, a Newton solve every step</td>
     <td colspan="2"></td>
   </tr>
 </table>

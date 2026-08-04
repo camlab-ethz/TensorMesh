@@ -8,36 +8,40 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-22 15:34+0200\n"
+"POT-Creation-Date: 2026-08-04 21:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: zh_CN <LL@li.org>\n"
 "Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
 "Generated-By: Babel 2.18.0\n"
 
 #: ../../source/example_gallery/wave.rst:2 beb52512c922458ca38df3378ed58f55
 msgid "Wave Equation"
 msgstr "波动方程"
 
-#: ../../source/example_gallery/wave.rst:4 1c174782964e4aaeb36f33e876d24373
+#: ../../source/example_gallery/wave.rst:4 a35ba3d019d142aebf45b113b6841697
+msgid "Open in Colab"
+msgstr "在 Colab 中打开"
+
+#: ../../source/example_gallery/wave.rst:8 1c174782964e4aaeb36f33e876d24373
 msgid ""
-"A single script, ``examples/wave/wave.py``, solves the linear scalar wave "
-"equation on the unit square with explicit central-difference time stepping. "
-"It is the canonical hyperbolic counterpart to the heat example in "
-":doc:`diffusion`."
+"A single script, ``examples/wave/wave.py``, solves the linear scalar wave"
+" equation on the unit square with explicit central-difference time "
+"stepping. It is the canonical hyperbolic counterpart to the heat example "
+"in :doc:`diffusion`."
 msgstr ""
 "单个脚本 ``examples/wave/wave.py`` 在单位正方形上以显式中心差分时间步进求解线性标量波动方程。它是 "
 ":doc:`diffusion` 中热传导示例的经典双曲型对应。"
 
-#: ../../source/example_gallery/wave.rst:9 21b8454a28044499b5a8aab3538dbf15
+#: ../../source/example_gallery/wave.rst:13 21b8454a28044499b5a8aab3538dbf15
 msgid "The strong form is"
 msgstr "强形式为"
 
-#: ../../source/example_gallery/wave.rst:11 5191e087a7774e01a82dcec33d361e6b
+#: ../../source/example_gallery/wave.rst:15 5191e087a7774e01a82dcec33d361e6b
 #, python-brace-format
 msgid ""
 "u_{tt} \\;=\\; c^2\\, \\Delta u\n"
@@ -48,26 +52,26 @@ msgstr ""
 "\\quad \\text{in } \\Omega,\n"
 "\\qquad u = 0 \\text{ on } \\partial\\Omega,"
 
-#: ../../source/example_gallery/wave.rst:17 8147073819e148bfa86af79054fe69d5
+#: ../../source/example_gallery/wave.rst:21 8147073819e148bfa86af79054fe69d5
 #, python-brace-format
 msgid ""
 "with a multi-frequency Fourier-series initial condition from "
-":class:`~tensormesh.dataset.WaveMultiFrequency` and zero initial velocity. "
-"The script runs at :math:`c = 2.0`, :math:`\\Delta t = 10^{-3}`, for 100 "
-"steps."
+":class:`~tensormesh.dataset.WaveMultiFrequency` and zero initial "
+"velocity. The script runs at :math:`c = 2.0`, :math:`\\Delta t = "
+"10^{-3}`, for 100 steps."
 msgstr ""
-"初始条件取自 :class:`~tensormesh.dataset.WaveMultiFrequency` 的多频傅里叶级数，初速度为零。脚本以 "
-":math:`c = 2.0`\\ 、\\ :math:`\\Delta t = 10^{-3}` 运行 100 步。"
+"初始条件取自 :class:`~tensormesh.dataset.WaveMultiFrequency` 的多频傅里叶级数，初速度为零。脚本以"
+" :math:`c = 2.0`\\ 、\\ :math:`\\Delta t = 10^{-3}` 运行 100 步。"
 
-#: ../../source/example_gallery/wave.rst:24 a94a27e732b34fa1bcbf05a91fe6b497
+#: ../../source/example_gallery/wave.rst:28 a94a27e732b34fa1bcbf05a91fe6b497
 msgid "Central-difference time stepping"
 msgstr "中心差分时间步进"
 
-#: ../../source/example_gallery/wave.rst:26 f4b099f4c2834295aac5aec9a2fb2d53
+#: ../../source/example_gallery/wave.rst:30 f4b099f4c2834295aac5aec9a2fb2d53
 msgid "The standard discretization in time is"
 msgstr "标准的时间离散为"
 
-#: ../../source/example_gallery/wave.rst:28 b670f4710c784af98717021ca41ed0bd
+#: ../../source/example_gallery/wave.rst:32 b670f4710c784af98717021ca41ed0bd
 #, python-brace-format
 msgid ""
 "M\\, U^{n+1}\n"
@@ -78,26 +82,27 @@ msgstr ""
 "\\;=\\;\n"
 "2\\, M\\, U^{n} - M\\, U^{n-1} - \\Delta t^2\\, c^2\\, A\\, U^{n},"
 
-#: ../../source/example_gallery/wave.rst:34 754186cc7a704bf2aabee0cabcc231b5
+#: ../../source/example_gallery/wave.rst:38 754186cc7a704bf2aabee0cabcc231b5
 msgid ""
-"where :math:`M` is the mass matrix and :math:`A` is the Laplace stiffness. "
-"This is **explicit** in time — at each step we solve against a fixed mass "
-"matrix only, so factorize-once / back-sub-many is the right pattern."
+"where :math:`M` is the mass matrix and :math:`A` is the Laplace "
+"stiffness. This is **explicit** in time — at each step we solve against a"
+" fixed mass matrix only, so factorize-once / back-sub-many is the right "
+"pattern."
 msgstr ""
 "其中 :math:`M` 是质量矩阵，\\ :math:`A` 是拉普拉斯刚度。这在时间上是\\ **显式**\\ "
 "的——每一步只需对一个固定的质量矩阵求解，因此“分解一次 / 多次回代”才是正确的模式。"
 
-#: ../../source/example_gallery/wave.rst:39 2100ad2ba8a2422485aa468c666a89c3
+#: ../../source/example_gallery/wave.rst:43 2100ad2ba8a2422485aa468c666a89c3
 #, python-brace-format
 msgid ""
-"The first step needs special treatment because :math:`U^{-1}` is unknown; "
-"using the Taylor expansion :math:`U^{-1} \\approx U^{0} - \\Delta t\\, "
+"The first step needs special treatment because :math:`U^{-1}` is unknown;"
+" using the Taylor expansion :math:`U^{-1} \\approx U^{0} - \\Delta t\\, "
 "V^{0}` and the initial condition :math:`V^{0} = 0` gives"
 msgstr ""
-"第一步需要特殊处理，因为 :math:`U^{-1}` 未知；利用泰勒展开 :math:`U^{-1} \\approx U^{0} - \\Delta"
-" t\\, V^{0}` 以及初始条件 :math:`V^{0} = 0`\\ ，得到"
+"第一步需要特殊处理，因为 :math:`U^{-1}` 未知；利用泰勒展开 :math:`U^{-1} \\approx U^{0} - "
+"\\Delta t\\, V^{0}` 以及初始条件 :math:`V^{0} = 0`\\ ，得到"
 
-#: ../../source/example_gallery/wave.rst:44 b2e05b9924fc45d4a7409d6e6d460eee
+#: ../../source/example_gallery/wave.rst:48 b2e05b9924fc45d4a7409d6e6d460eee
 #, python-brace-format
 msgid ""
 "2\\, M\\, U^{1}\n"
@@ -108,149 +113,154 @@ msgstr ""
 "\\;=\\;\n"
 "2\\, M\\, U^{0} - \\Delta t^2\\, c^2\\, A\\, U^{0}."
 
-#: ../../source/example_gallery/wave.rst:52 eb623d2628ae4b6ab6e0f2cc01effa9a
+#: ../../source/example_gallery/wave.rst:56 eb623d2628ae4b6ab6e0f2cc01effa9a
 msgid "TensorMesh setup"
 msgstr "TensorMesh 设置"
 
-#: ../../source/example_gallery/wave.rst:54 18c5f874759e47bea8e33e1a3ac1df2c
+#: ../../source/example_gallery/wave.rst:58 18c5f874759e47bea8e33e1a3ac1df2c
 msgid ""
 "Two tiny assemblers (one for :math:`M`, one for :math:`A`), one "
 ":class:`~tensormesh.Condenser` for the homogeneous Dirichlet BC, and a "
 "15-line time loop. Note the small helper that scales a "
-":class:`~tensormesh.sparse.SparseMatrix` while keeping the ``SparseMatrix`` "
-"type:"
+":class:`~tensormesh.sparse.SparseMatrix` while keeping the "
+"``SparseMatrix`` type:"
 msgstr ""
 "两个极小的装配器（一个用于 :math:`M`\\ ，一个用于 :math:`A`\\ ）、一个用于齐次狄利克雷边界条件的 "
 ":class:`~tensormesh.Condenser`\\ ，以及一个 15 行的时间循环。注意那个对 "
-":class:`~tensormesh.sparse.SparseMatrix` 做缩放、同时保持 ``SparseMatrix`` 类型的小辅助函数："
+":class:`~tensormesh.sparse.SparseMatrix` 做缩放、同时保持 ``SparseMatrix`` "
+"类型的小辅助函数："
 
-#: ../../source/example_gallery/wave.rst:60 eae1afa29f7e46c396ed8d6c5fb35ba7
+#: ../../source/example_gallery/wave.rst:64 eae1afa29f7e46c396ed8d6c5fb35ba7
 msgid "examples/wave/wave.py"
 msgstr "examples/wave/wave.py"
 
-#: ../../source/example_gallery/wave.rst:97 6fb9a8d328474f808ae21e6afabdf33a
+#: ../../source/example_gallery/wave.rst:101 6fb9a8d328474f808ae21e6afabdf33a
 msgid "A few practical notes:"
 msgstr "几点实用说明："
 
-#: ../../source/example_gallery/wave.rst:99 484e7636a123402c9c8eec6dfeb0f5f0
+#: ../../source/example_gallery/wave.rst:103 484e7636a123402c9c8eec6dfeb0f5f0
 #, python-brace-format
 msgid ""
-"**Stability.** Central differences are conditionally stable — :math:`\\Delta"
-" t \\lesssim h / c`. The script's choice (:math:`\\Delta t = 10^{-3}`, "
-":math:`h = 0.01`, :math:`c = 2`) satisfies this comfortably."
+"**Stability.** Central differences are conditionally stable — "
+":math:`\\Delta t \\lesssim h / c`. The script's choice (:math:`\\Delta t "
+"= 10^{-3}`, :math:`h = 0.01`, :math:`c = 2`) satisfies this comfortably."
 msgstr ""
 "**稳定性。** 中心差分是条件稳定的——:math:`\\Delta t \\lesssim h / c`\\ 。脚本所取的参数（\\ "
 ":math:`\\Delta t = 10^{-3}`\\ 、\\ :math:`h = 0.01`\\ 、\\ :math:`c = 2`\\ "
 "）能轻松满足该条件。"
 
-#: ../../source/example_gallery/wave.rst:103 e35eabf81c7a49a689fdf26375a972c3
+#: ../../source/example_gallery/wave.rst:107 e35eabf81c7a49a689fdf26375a972c3
 msgid ""
-"**Factorize once.** ``M_`` (the condensed mass matrix) is recovered from the"
-" first-step matrix and reused in every loop iteration; only the RHS changes."
+"**Factorize once.** ``M_`` (the condensed mass matrix) is recovered from "
+"the first-step matrix and reused in every loop iteration; only the RHS "
+"changes."
 msgstr "**分解一次。** ``M_``\\ （凝聚后的质量矩阵）从第一步的矩阵中恢复，并在每次循环迭代中重复使用；只有右端项发生变化。"
 
-#: ../../source/example_gallery/wave.rst:106 546b180c36ec40e1a458d84bda254e5e
+#: ../../source/example_gallery/wave.rst:110 546b180c36ec40e1a458d84bda254e5e
 msgid ""
 "**GPU-ready.** The script picks ``cuda`` when available and "
-"``mesh.to(device)`` moves the entire mesh + buffers in one call. Snapshots "
-"are moved back to CPU only at the end for visualization."
+"``mesh.to(device)`` moves the entire mesh + buffers in one call. "
+"Snapshots are moved back to CPU only at the end for visualization."
 msgstr ""
 "**支持 GPU。** 脚本在可用时选择 ``cuda``\\ ，\\ ``mesh.to(device)`` "
 "一次调用即可将整个网格及缓冲区移动过去。快照仅在最后为可视化才移回 CPU。"
 
-#: ../../source/example_gallery/wave.rst:111 16ac7b768c6446cb941bf816367828de
+#: ../../source/example_gallery/wave.rst:115 16ac7b768c6446cb941bf816367828de
 msgid ""
 "For a higher-order time integrator (Newmark, Runge-Kutta) drop in "
-":class:`~tensormesh.ode.ExplicitRungeKutta` from :mod:`tensormesh.ode` — see"
-" :doc:`../user_guide/time_integration`."
+":class:`~tensormesh.ode.ExplicitRungeKutta` from :mod:`tensormesh.ode` — "
+"see :doc:`../user_guide/time_integration`."
 msgstr ""
 "如需使用高阶时间积分器（Newmark、龙格-库塔），可直接换用 "
-":class:`~tensormesh.ode.ExplicitRungeKutta`\\ （来自 :mod:`tensormesh.ode`\\ "
-"）—— 参见 :doc:`../user_guide/time_integration`\\ 。"
+":class:`~tensormesh.ode.ExplicitRungeKutta`\\ （来自 :mod:`tensormesh.ode`\\"
+" ）—— 参见 :doc:`../user_guide/time_integration`\\ 。"
 
-#: ../../source/example_gallery/wave.rst:123 d150d0a80201465f801cc818e5bd4884
+#: ../../source/example_gallery/wave.rst:127 d150d0a80201465f801cc818e5bd4884
 msgid ""
 "*Output of* ``wave.py``: *FEM prediction (left) vs analytical solution "
-"(right) for a multi-frequency standing wave on the unit square. Phase and "
-"amplitude track the analytical reference throughout the run; central "
+"(right) for a multi-frequency standing wave on the unit square. Phase and"
+" amplitude track the analytical reference throughout the run; central "
 "differences preserve energy as long as the CFL condition is satisfied.*"
 msgstr ""
 "*``wave.py`` 的输出*\\ ：\\ "
 "*单位正方形上多频驻波的有限元预测（左）与解析解（右）对比。在整个运行过程中，相位和振幅都紧跟解析参考解；只要满足 CFL "
 "条件，中心差分就能保持能量守恒。*"
 
-#: ../../source/example_gallery/wave.rst:131 880feb6920c049948d796f666e386aaa
+#: ../../source/example_gallery/wave.rst:135 880feb6920c049948d796f666e386aaa
 msgid "Energy conservation"
 msgstr "能量守恒"
 
-#: ../../source/example_gallery/wave.rst:133 076d9dd3df62497f8244c9f43b3ba4f0
+#: ../../source/example_gallery/wave.rst:137 076d9dd3df62497f8244c9f43b3ba4f0
 msgid "The undamped wave equation conserves the mechanical energy"
 msgstr "无阻尼波动方程守恒机械能"
 
-#: ../../source/example_gallery/wave.rst:135 4da6b65aa30947f7aa2b0c40cd44c804
+#: ../../source/example_gallery/wave.rst:139 4da6b65aa30947f7aa2b0c40cd44c804
 msgid ""
 "E \\;=\\; \\underbrace{\\tfrac12\\, v^\\top M\\, v}_{\\text{kinetic}}\n"
-"     \\;+\\; \\underbrace{\\tfrac12\\, u^\\top (c^2 A)\\, u}_{\\text{potential}},"
+"     \\;+\\; \\underbrace{\\tfrac12\\, u^\\top (c^2 A)\\, "
+"u}_{\\text{potential}},"
 msgstr ""
 "E \\;=\\; \\underbrace{\\tfrac12\\, v^\\top M\\, v}_{\\text{kinetic}}\n"
-"     \\;+\\; \\underbrace{\\tfrac12\\, u^\\top (c^2 A)\\, u}_{\\text{potential}},"
+"     \\;+\\; \\underbrace{\\tfrac12\\, u^\\top (c^2 A)\\, "
+"u}_{\\text{potential}},"
 
-#: ../../source/example_gallery/wave.rst:140 f06bcfbd4a6f4f4da149628fe46b372e
+#: ../../source/example_gallery/wave.rst:144 f06bcfbd4a6f4f4da149628fe46b372e
 #, python-brace-format
 msgid ""
-"with the velocity :math:`v = u_t` taken as the centered difference of the "
-"stored displacement history. ``wave.py`` evaluates this at every step and "
-"writes ``wave_energy.png`` — a direct check on the time stepping, since the "
-"central-difference scheme conserves a discrete energy up to "
+"with the velocity :math:`v = u_t` taken as the centered difference of the"
+" stored displacement history. ``wave.py`` evaluates this at every step "
+"and writes ``wave_energy.png`` — a direct check on the time stepping, "
+"since the central-difference scheme conserves a discrete energy up to "
 ":math:`\\mathcal{O}(\\Delta t^2)` whenever the CFL condition holds."
 msgstr ""
 "其中速度 :math:`v = u_t` 取为所存储位移历史的中心差分。\\ ``wave.py`` 在每一步都计算它并写出 "
 "``wave_energy.png``——这是对时间步进的直接检验，因为只要 CFL 条件成立，中心差分格式就能在 "
 ":math:`\\mathcal{O}(\\Delta t^2)` 精度内守恒一个离散能量。"
 
-#: ../../source/example_gallery/wave.rst:151 f75a14bab3e74650a74f1d417acb1c58
+#: ../../source/example_gallery/wave.rst:155 f75a14bab3e74650a74f1d417acb1c58
 #, python-brace-format
 msgid ""
 "Kinetic and potential energy exchange out of phase while the total (red) "
 "stays flat: the relative drift over the 100-step run is about "
-":math:`1.5\\times10^{-3}`. The motion starts as pure potential energy (zero "
-"initial velocity) and equipartitions as the standing wave develops."
+":math:`1.5\\times10^{-3}`. The motion starts as pure potential energy "
+"(zero initial velocity) and equipartitions as the standing wave develops."
 msgstr ""
 "动能与势能反相交换，而总能量（红色）保持平直：100 步运行中的相对漂移约为 :math:`1.5\\times10^{-3}`\\ "
 "。运动起始时为纯势能（初速度为零），随着驻波形成而趋于能量均分。"
 
-#: ../../source/example_gallery/wave.rst:159 4550d008153e4f0496ad1c38dd8fe388
+#: ../../source/example_gallery/wave.rst:163 4550d008153e4f0496ad1c38dd8fe388
 msgid "Running the example"
 msgstr "运行示例"
 
-#: ../../source/example_gallery/wave.rst:168 854a2729218b45838471bf0fd0ff7d2d
+#: ../../source/example_gallery/wave.rst:172 854a2729218b45838471bf0fd0ff7d2d
 msgid "What's next"
 msgstr "接下来"
 
-#: ../../source/example_gallery/wave.rst:170 9078ef804b2f4c7ca3a0736d9da86863
+#: ../../source/example_gallery/wave.rst:174 9078ef804b2f4c7ca3a0736d9da86863
 msgid ""
-":doc:`phononic_crystal` — the frequency-domain cousin: Bloch-Floquet band "
-"structures and slab transmission for periodic acoustic media."
+":doc:`phononic_crystal` — the frequency-domain cousin: Bloch-Floquet band"
+" structures and slab transmission for periodic acoustic media."
 msgstr ":doc:`phononic_crystal` — 频域近亲：周期性声学介质中的布洛赫-弗洛凯能带结构与平板透射。"
 
-#: ../../source/example_gallery/wave.rst:172 202f47a0d66846e29617e1b6f4a292df
+#: ../../source/example_gallery/wave.rst:176 202f47a0d66846e29617e1b6f4a292df
 msgid ""
 ":doc:`../user_guide/time_integration` — explicit and implicit-linear "
 "integrator classes."
 msgstr ":doc:`../user_guide/time_integration`——显式与隐式线性积分器类。"
 
-#: ../../source/example_gallery/wave.rst:174 836ce4f3c7984e169bb05c0ec098dd91
+#: ../../source/example_gallery/wave.rst:178 836ce4f3c7984e169bb05c0ec098dd91
 msgid ""
-":doc:`../user_guide/linear_solvers` — backend choice and the factorize-once "
-"/ batched-solve recipes."
+":doc:`../user_guide/linear_solvers` — backend choice and the factorize-"
+"once / batched-solve recipes."
 msgstr ":doc:`../user_guide/linear_solvers`——后端选择，以及“分解一次 / 批量求解”的实用方法。"
 
-#: ../../source/example_gallery/wave.rst:176 64f571f6fdf745dbb01381dc99fcb37e
+#: ../../source/example_gallery/wave.rst:180 64f571f6fdf745dbb01381dc99fcb37e
 msgid ""
 ":doc:`dataset` — the same wave equation, batched over 100 random initial "
 "conditions."
 msgstr ":doc:`dataset`——同一个波动方程，在 100 个随机初始条件上批量求解。"
 
-#: ../../source/example_gallery/wave.rst:178 93b7dff617b84593a28b967809d2e2c2
+#: ../../source/example_gallery/wave.rst:182 93b7dff617b84593a28b967809d2e2c2
 msgid ":doc:`diffusion` — the parabolic counterpart with implicit Euler."
 msgstr ":doc:`diffusion`——采用隐式 Euler 的抛物型对应。"
+
