@@ -12,3 +12,4 @@ Maintenance notes:
 
 - The install cell pins the `tensormesh-fem` release the notebook content was written against; bump the pin (and re-run the notebook) as part of each release.
 - `examples/*.py` stays the source of truth — when an example changes, update its notebook counterpart.
+- Notebooks are committed **with executed outputs** so GitHub and Colab show the expected figures and convergence tables up front; re-running them (previous point) refreshes the outputs at the same time.
