@@ -120,6 +120,10 @@ A few details worth pointing out:
 3D extension — ``poisson_3d.py``
 --------------------------------
 
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+   :target: https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/poisson_3d.ipynb
+   :alt: Open in Colab
+
 Identical machinery, swapping in a tetrahedral cube:
 
 .. code-block:: python

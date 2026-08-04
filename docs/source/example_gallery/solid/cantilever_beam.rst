@@ -1,6 +1,10 @@
 Cantilever Beam
 ===============
 
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+   :target: https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/cantilever_beam.ipynb
+   :alt: Open in Colab
+
 The textbook entry-point for solid mechanics in TensorMesh: a
 :math:`2.0 \times 0.2 \times 0.2` m steel cantilever clamped at
 one end, loaded by a downward force at the other. Linear

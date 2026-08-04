@@ -1,6 +1,10 @@
 Wave Equation
 =============
 
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+   :target: https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/wave.ipynb
+   :alt: Open in Colab
+
 A single script, ``examples/wave/wave.py``, solves the linear scalar
 wave equation on the unit square with explicit central-difference
 time stepping. It is the canonical hyperbolic counterpart to the
