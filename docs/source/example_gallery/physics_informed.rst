@@ -1,6 +1,10 @@
 Physics-Informed Learning
 =========================
 
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+   :target: https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/poisson_galerkin.ipynb
+   :alt: Open in Colab
+
 Because every TensorMesh operator is autograd-traced, the assembled FEM
 system itself can serve as the loss for training a neural network. Rather
 than *solving* ``K u = F``, we represent the solution by a network

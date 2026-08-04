@@ -20,6 +20,7 @@
   <img src="https://img.shields.io/badge/PyTorch-2.0%2B-ee4c2c?logo=pytorch&logoColor=white" alt="PyTorch 2.0+"/>
   <a href="https://github.com/camlab-ethz/TensorMesh/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="License: Apache-2.0"/></a>
   <a href="https://docs.tensor-mesh.com/"><img src="https://github.com/camlab-ethz/TensorMesh/actions/workflows/docs.yml/badge.svg" alt="Documentation"/></a>
+  <a href="https://github.com/camlab-ethz/TensorMesh/tree/main/notebooks"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Run examples in Colab"/></a>
 </p>
 
 ---
@@ -149,7 +150,41 @@ See the full walkthrough in the
 ## Examples
 
 A small selection from the
-[example gallery](https://docs.tensor-mesh.com/example_gallery/index.html):
+[example gallery](https://docs.tensor-mesh.com/example_gallery/index.html).
+**Nothing to install** — these run in your browser as
+[Colab notebooks](https://github.com/camlab-ethz/TensorMesh/tree/main/notebooks):
+
+<table>
+  <tr>
+    <td><a href="https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/basics.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/></a></td>
+    <td><b>Basics</b> — elements, basis functions, meshes</td>
+    <td><a href="https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/poisson.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/></a></td>
+    <td><b>Poisson</b> — the full pipeline in 25 lines</td>
+  </tr>
+  <tr>
+    <td><a href="https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/poisson_h_adaptivity.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/></a></td>
+    <td><b>h-adaptivity</b> — solve → estimate → mark → remesh</td>
+    <td><a href="https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/helmholtz.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/></a></td>
+    <td><b>Helmholtz</b> — complex-valued FEM end to end</td>
+  </tr>
+  <tr>
+    <td><a href="https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/stokes_taylor_hood.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/></a></td>
+    <td><b>Stokes</b> — Taylor-Hood mixed elements + convergence</td>
+    <td><a href="https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/cavity.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/></a></td>
+    <td><b>Lid-driven cavity</b> — steady Navier-Stokes</td>
+  </tr>
+  <tr>
+    <td><a href="https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/flow_obstacles.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/></a></td>
+    <td><b>Flow past obstacles</b> — CSG meshing + Picard iteration</td>
+    <td><a href="https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/coefficient_identification.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/></a></td>
+    <td><b>Inverse design</b> — autograd <i>through</i> the FEM solve</td>
+  </tr>
+  <tr>
+    <td><a href="https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/poisson_galerkin.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/></a></td>
+    <td><b>Physics-informed learning</b> — train on the Galerkin residual</td>
+    <td colspan="2"></td>
+  </tr>
+</table>
 
 <table>
   <tr>

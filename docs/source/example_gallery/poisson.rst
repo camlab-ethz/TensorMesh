@@ -148,6 +148,10 @@ PNG for quick inspection.
 h-adaptive refinement on the L-shape — ``poisson_h_adaptivity.py``
 -------------------------------------------------------------------
 
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+   :target: https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/poisson_h_adaptivity.ipynb
+   :alt: Open in Colab
+
 This is the one example on this page that goes well beyond the
 weak form. The L-shaped domain has a re-entrant corner at
 :math:`(0.5, 0.5)`, where the exact solution

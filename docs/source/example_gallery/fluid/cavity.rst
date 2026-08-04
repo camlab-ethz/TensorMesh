@@ -1,6 +1,10 @@
 Lid-Driven Cavity
 =================
 
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+   :target: https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/cavity.ipynb
+   :alt: Open in Colab
+
 The lid-driven cavity is the textbook benchmark for incompressible
 Navier-Stokes solvers. The physics is simple — a box of fluid, the top
 wall slides at unit speed, no-slip on the other walls, no body forces —

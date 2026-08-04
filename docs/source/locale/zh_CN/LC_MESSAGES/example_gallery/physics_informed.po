@@ -8,15 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-22 23:00+0200\n"
+"POT-Creation-Date: 2026-08-04 21:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: zh_CN <LL@li.org>\n"
 "Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
 "Generated-By: Babel 2.18.0\n"
 
 #: ../../source/example_gallery/physics_informed.rst:2
@@ -25,165 +25,177 @@ msgid "Physics-Informed Learning"
 msgstr "物理信息学习"
 
 #: ../../source/example_gallery/physics_informed.rst:4
+#: 2dfb74b64810418db963409fbcf6d56e
+msgid "Open in Colab"
+msgstr "在 Colab 中打开"
+
+#: ../../source/example_gallery/physics_informed.rst:8
 #: f51974e19b7544f6994e225fa4982aac
 msgid ""
 "Because every TensorMesh operator is autograd-traced, the assembled FEM "
-"system itself can serve as the loss for training a neural network. Rather "
-"than *solving* ``K u = F``, we represent the solution by a network "
-":math:`u_\\theta(x, y)` and minimise the **discrete Galerkin residual** of "
-"the weak form:"
+"system itself can serve as the loss for training a neural network. Rather"
+" than *solving* ``K u = F``, we represent the solution by a network "
+":math:`u_\\theta(x, y)` and minimise the **discrete Galerkin residual** "
+"of the weak form:"
 msgstr ""
-"由于 TensorMesh 的每个算子都被 autograd 追踪，装配好的 FEM 系统本身就可以充当训练神经网络的损失。我们不是去 *求解* ``K"
-" u = F``\\ ，而是用一个网络 :math:`u_\\theta(x, y)` 表示解，并最小化弱形式的 **离散伽辽金残差**\\ ："
+"由于 TensorMesh 的每个算子都被 autograd 追踪，装配好的 FEM 系统本身就可以充当训练神经网络的损失。我们不是去 *求解* "
+"``K u = F``\\ ，而是用一个网络 :math:`u_\\theta(x, y)` 表示解，并最小化弱形式的 **离散伽辽金残差**\\"
+" ："
 
-#: ../../source/example_gallery/physics_informed.rst:10
+#: ../../source/example_gallery/physics_informed.rst:14
 #: 24e3f72cc0b541a8a19c36ba5420d506
 #, python-brace-format
 msgid "\\min_{\\theta}\\;\\; \\big\\| K\\, u_\\theta - F \\big\\|^2 ,"
 msgstr "\\min_{\\theta}\\;\\; \\big\\| K\\, u_\\theta - F \\big\\|^2 ,"
 
-#: ../../source/example_gallery/physics_informed.rst:14
+#: ../../source/example_gallery/physics_informed.rst:18
 #: 114cea1caf9447a08e6eaa9a4191e9d7
 msgid ""
 "where :math:`u_\\theta` is the network evaluated at the mesh nodes. The "
 "residual is the FEM (weak-form) residual assembled by TensorMesh — not a "
-"strong-form collocation residual — and since ``SparseMatrix.__matmul__`` is "
-"differentiable, ``loss = ||K u_theta - F||^2`` back-propagates straight into"
-" the network weights. No linear solve, no hand-coded adjoint."
+"strong-form collocation residual — and since ``SparseMatrix.__matmul__`` "
+"is differentiable, ``loss = ||K u_theta - F||^2`` back-propagates "
+"straight into the network weights. No linear solve, no hand-coded "
+"adjoint."
 msgstr ""
 "其中 :math:`u_\\theta` 是在网格节点处求值的网络。该残差是由 TensorMesh 装配的 "
-"FEM（弱形式）残差——而非强形式配点残差——并且由于 ``SparseMatrix.__matmul__`` 是可微的，\\ ``loss = ||K"
-" u_theta - F||^2`` 会直接反向传播到网络权重中。无需线性求解，无需手写伴随。"
+"FEM（弱形式）残差——而非强形式配点残差——并且由于 ``SparseMatrix.__matmul__`` 是可微的，\\ ``loss = "
+"||K u_theta - F||^2`` 会直接反向传播到网络权重中。无需线性求解，无需手写伴随。"
 
-#: ../../source/example_gallery/physics_informed.rst:20
+#: ../../source/example_gallery/physics_informed.rst:24
 #: 159b6af8a4514efcb10e8daf779b5123
 msgid ""
-"This gallery starts with a single Poisson example; the pattern extends to "
-"any weak form TensorMesh can assemble."
+"This gallery starts with a single Poisson example; the pattern extends to"
+" any weak form TensorMesh can assemble."
 msgstr "本示例库从单个泊松方程示例开始；该模式可推广到 TensorMesh 能够装配的任意弱形式。"
 
-#: ../../source/example_gallery/physics_informed.rst:25
+#: ../../source/example_gallery/physics_informed.rst:29
 #: 1956166c4de44baaa842a85fbc2492c4
 msgid "Poisson via the Galerkin residual — ``poisson_galerkin.py``"
 msgstr "通过伽辽金残差求解泊松方程 —— ``poisson_galerkin.py``"
 
-#: ../../source/example_gallery/physics_informed.rst:27
+#: ../../source/example_gallery/physics_informed.rst:31
 #: 8748277c7f8f4d058552fbb517d35a08
 msgid "Solve"
 msgstr "求解"
 
-#: ../../source/example_gallery/physics_informed.rst:29
+#: ../../source/example_gallery/physics_informed.rst:33
 #: 3d7b9104f7dc4a1e9e00250bb1b42378
 #, python-brace-format
-msgid "-\\Delta u = f \\quad\\text{in }(0,1)^2,\\qquad u = 0 \\text{ on }\\partial\\Omega,"
-msgstr "-\\Delta u = f \\quad\\text{in }(0,1)^2,\\qquad u = 0 \\text{ on }\\partial\\Omega,"
+msgid ""
+"-\\Delta u = f \\quad\\text{in }(0,1)^2,\\qquad u = 0 \\text{ on "
+"}\\partial\\Omega,"
+msgstr ""
+"-\\Delta u = f \\quad\\text{in }(0,1)^2,\\qquad u = 0 \\text{ on "
+"}\\partial\\Omega,"
 
-#: ../../source/example_gallery/physics_informed.rst:33
+#: ../../source/example_gallery/physics_informed.rst:37
 #: bc55a69070ec4da8ae5bb5347ee2bbd8
 msgid ""
 "with the manufactured solution :math:`u = \\sin\\pi x\\,\\sin\\pi y` (so "
-":math:`f = 2\\pi^2\\,\\sin\\pi x\\,\\sin\\pi y`), which lets us score the "
-"network against an analytical field."
+":math:`f = 2\\pi^2\\,\\sin\\pi x\\,\\sin\\pi y`), which lets us score the"
+" network against an analytical field."
 msgstr ""
 "采用制造解 :math:`u = \\sin\\pi x\\,\\sin\\pi y`\\ （因此 :math:`f = "
 "2\\pi^2\\,\\sin\\pi x\\,\\sin\\pi y`\\ ），这使我们能够将网络与解析场进行对照评分。"
 
-#: ../../source/example_gallery/physics_informed.rst:37
+#: ../../source/example_gallery/physics_informed.rst:41
 #: 22a5c72c9390450baa0be4a384221a01
 #, python-brace-format
 msgid ""
-"TensorMesh assembles the Laplace stiffness :math:`K` and the consistent load"
-" :math:`F = M f` **once**; :class:`~tensormesh.Condenser` reduces them to "
-"the interior system :math:`K_- u = F_-` (homogeneous Dirichlet data). The "
-"minimiser of :math:`\\|K_- u - F_-\\|^2` is exactly the FEM solution "
-":math:`K_-^{-1}F_-`, so the network is trained to reproduce it:"
+"TensorMesh assembles the Laplace stiffness :math:`K` and the consistent "
+"load :math:`F = M f` **once**; :class:`~tensormesh.Condenser` reduces "
+"them to the interior system :math:`K_- u = F_-` (homogeneous Dirichlet "
+"data). The minimiser of :math:`\\|K_- u - F_-\\|^2` is exactly the FEM "
+"solution :math:`K_-^{-1}F_-`, so the network is trained to reproduce it:"
 msgstr ""
 "TensorMesh **一次性**\\ 装配拉普拉斯刚度 :math:`K` 和一致载荷 :math:`F = M f`\\ ；\\ "
 ":class:`~tensormesh.Condenser` 将它们约化为内部系统 :math:`K_- u = F_-`\\ "
 "（齐次狄利克雷数据）。\\ :math:`\\|K_- u - F_-\\|^2` 的最小化解恰好是 FEM 解 "
 ":math:`K_-^{-1}F_-`\\ ，因此训练网络去复现它："
 
-#: ../../source/example_gallery/physics_informed.rst:76
+#: ../../source/example_gallery/physics_informed.rst:80
 #: 19487c0b75794f139d35650bcc84d19a
 #, python-brace-format
 msgid ""
-"The squared residual is ill-conditioned (its Hessian is :math:`K_-^{T}K_-`),"
-" so — as is standard for physics-informed training — an Adam warm-up is "
-"followed by a short **LBFGS** refine, which drives the residual down by "
-"another order of magnitude."
+"The squared residual is ill-conditioned (its Hessian is "
+":math:`K_-^{T}K_-`), so — as is standard for physics-informed training — "
+"an Adam warm-up is followed by a short **LBFGS** refine, which drives the"
+" residual down by another order of magnitude."
 msgstr ""
-"平方残差是病态的（其海森矩阵为 :math:`K_-^{T}K_-`\\ ），因此——正如物理信息训练中的标准做法——在 Adam 预热之后接一段简短的"
-" **LBFGS** 精修，将残差再压低一个数量级。"
+"平方残差是病态的（其海森矩阵为 :math:`K_-^{T}K_-`\\ ），因此——正如物理信息训练中的标准做法——在 Adam "
+"预热之后接一段简短的 **LBFGS** 精修，将残差再压低一个数量级。"
 
-#: ../../source/example_gallery/physics_informed.rst:85
+#: ../../source/example_gallery/physics_informed.rst:89
 #: d24de4e83232428aa93bc9038c671cd9
 #, python-brace-format
 msgid ""
 "Training history. Both the relative Galerkin residual and the relative "
 ":math:`L^2` error against the exact solution fall from "
-":math:`\\mathcal{O}(1)`; the periodic spikes are Adam overshooting, and the "
-"sharp final drop at iteration 8000 is the LBFGS block."
+":math:`\\mathcal{O}(1)`; the periodic spikes are Adam overshooting, and "
+"the sharp final drop at iteration 8000 is the LBFGS block."
 msgstr ""
-"训练历史。相对伽辽金残差与相对于精确解的相对 :math:`L^2` 误差都从 :math:`\\mathcal{O}(1)` 开始下降；周期性的尖峰是"
-" Adam 过冲所致，而第 8000 次迭代处那一急剧的最终下降则来自 LBFGS 阶段。"
+"训练历史。相对伽辽金残差与相对于精确解的相对 :math:`L^2` 误差都从 :math:`\\mathcal{O}(1)` "
+"开始下降；周期性的尖峰是 Adam 过冲所致，而第 8000 次迭代处那一急剧的最终下降则来自 LBFGS 阶段。"
 
-#: ../../source/example_gallery/physics_informed.rst:90
+#: ../../source/example_gallery/physics_informed.rst:94
 #: 55af6e0c2af64ba6822338c1a246c2cc
 msgid "The learned field is indistinguishable from the analytical solution:"
 msgstr "学习到的场与解析解难以区分："
 
-#: ../../source/example_gallery/physics_informed.rst:96
+#: ../../source/example_gallery/physics_informed.rst:100
 #: f98e1d7d48e149f5b0c3e32b61e1907e
 #, python-brace-format
 msgid ""
 "Exact :math:`u` (left), the learned :math:`u_\\theta` (middle), and the "
-"absolute error (right, :math:`\\le 6\\times10^{-3}`). The network reaches a "
-"relative :math:`L^2` error of about :math:`0.5\\%` against the exact "
-"solution and :math:`0.3\\%` against the direct FEM solve — i.e. it recovers "
-"the FEM solution to within the mesh's own discretisation error, in about ten"
-" seconds on CPU."
+"absolute error (right, :math:`\\le 6\\times10^{-3}`). The network reaches"
+" a relative :math:`L^2` error of about :math:`0.5\\%` against the exact "
+"solution and :math:`0.3\\%` against the direct FEM solve — i.e. it "
+"recovers the FEM solution to within the mesh's own discretisation error, "
+"in about ten seconds on CPU."
 msgstr ""
 "精确解 :math:`u`\\ （左）、学习到的 :math:`u_\\theta`\\ （中），以及绝对误差（右，\\ :math:`\\le "
-"6\\times10^{-3}`\\ ）。网络相对于精确解的相对 :math:`L^2` 误差约为 :math:`0.5\\%`\\ ，相对于直接 "
-"FEM 求解的误差约为 :math:`0.3\\%`——也就是说，它在网格自身的离散化误差范围内复现了 FEM 解，在 CPU 上约耗时十秒。"
+"6\\times10^{-3}`\\ ）。网络相对于精确解的相对 :math:`L^2` 误差约为 :math:`0.5\\%`\\ ，相对于直接"
+" FEM 求解的误差约为 :math:`0.3\\%`——也就是说，它在网格自身的离散化误差范围内复现了 FEM 解，在 CPU 上约耗时十秒。"
 
-#: ../../source/example_gallery/physics_informed.rst:105
+#: ../../source/example_gallery/physics_informed.rst:109
 #: 02c05b97f754479da4f2cb32e5a58476
 msgid ""
-"This is the *variational / Galerkin* flavour of physics-informed learning: "
-"the loss is the assembled weak-form residual, so the physics enters exactly "
-"as it does in the FEM (one assembly, reused every iteration) and boundary "
-"conditions are handled by :class:`~tensormesh.Condenser` rather than by a "
-"penalty term. The network here is a plain :class:`torch.nn.Module`; see "
-":doc:`../user_guide/differentiability` for the three ways to wire a network "
-"into a TensorMesh pipeline."
+"This is the *variational / Galerkin* flavour of physics-informed "
+"learning: the loss is the assembled weak-form residual, so the physics "
+"enters exactly as it does in the FEM (one assembly, reused every "
+"iteration) and boundary conditions are handled by "
+":class:`~tensormesh.Condenser` rather than by a penalty term. The network"
+" here is a plain :class:`torch.nn.Module`; see "
+":doc:`../user_guide/differentiability` for the three ways to wire a "
+"network into a TensorMesh pipeline."
 msgstr ""
 "这是物理信息学习的 *变分 / 伽辽金* 类型：损失是装配好的弱形式残差，因此物理以与 FEM "
 "中完全相同的方式进入（一次装配，每次迭代复用），而边界条件由 :class:`~tensormesh.Condenser` "
 "处理，而非通过惩罚项。这里的网络是一个普通的 :class:`torch.nn.Module`\\ ；将网络接入 TensorMesh "
 "流水线的三种方式参见 :doc:`../user_guide/differentiability`\\ 。"
 
-#: ../../source/example_gallery/physics_informed.rst:116
+#: ../../source/example_gallery/physics_informed.rst:120
 #: 3f229690e31a4b5ba9817c8bfc462a39
 msgid "Running the example"
 msgstr "运行示例"
 
-#: ../../source/example_gallery/physics_informed.rst:123
+#: ../../source/example_gallery/physics_informed.rst:127
 #: cd477acba61d41f2b458688d73f77ded
 msgid ""
-"Flags: ``--device cuda``, ``--chara-length``, ``--adam-iters``, ``--lbfgs-"
-"iters``, ``--width``, ``--depth`` (``-h`` for the list)."
+"Flags: ``--device cuda``, ``--chara-length``, ``--adam-iters``, "
+"``--lbfgs-iters``, ``--width``, ``--depth`` (``-h`` for the list)."
 msgstr ""
-"参数：\\ ``--device cuda``\\ 、\\ ``--chara-length``\\ 、\\ ``--adam-iters``\\ "
-"、\\ ``--lbfgs-iters``\\ 、\\ ``--width``\\ 、\\ ``--depth``\\ （\\ ``-h`` "
+"参数：\\ ``--device cuda``\\ 、\\ ``--chara-length``\\ 、\\ ``--adam-iters``\\"
+" 、\\ ``--lbfgs-iters``\\ 、\\ ``--width``\\ 、\\ ``--depth``\\ （\\ ``-h`` "
 "可查看列表）。"
 
-#: ../../source/example_gallery/physics_informed.rst:128
+#: ../../source/example_gallery/physics_informed.rst:132
 #: 3c6819653cd740a6a5ae3983d776d7c0
 msgid "What's next"
 msgstr "下一步"
 
-#: ../../source/example_gallery/physics_informed.rst:130
+#: ../../source/example_gallery/physics_informed.rst:134
 #: 8ed6dbc3c40e4cde9c0e24afce00e33b
 msgid ""
 ":doc:`../user_guide/differentiability` — why the assembled system is "
@@ -192,14 +204,15 @@ msgstr ""
 ":doc:`../user_guide/differentiability` —— 为什么装配好的系统是可微的，以及梯度如何穿过 "
 "``SparseMatrix`` 流动。"
 
-#: ../../source/example_gallery/physics_informed.rst:132
+#: ../../source/example_gallery/physics_informed.rst:136
 #: ac6b7f438cf14dc2b9417e598d7800ab
 msgid ""
-":doc:`inverse_design` — the same autograd machinery used for identification "
-"and design rather than for the forward solution."
+":doc:`inverse_design` — the same autograd machinery used for "
+"identification and design rather than for the forward solution."
 msgstr ":doc:`inverse_design` —— 同样的自动微分机制，用于辨识与设计，而非用于前向求解。"
 
-#: ../../source/example_gallery/physics_informed.rst:134
+#: ../../source/example_gallery/physics_informed.rst:138
 #: 2b90d737965241f99f6e0b2dbc5f2ecf
 msgid ":doc:`poisson` — the classical (solved, not learned) Poisson examples."
 msgstr ":doc:`poisson` —— 经典的（求解而非学习的）泊松方程示例。"
+
