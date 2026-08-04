@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-07 15:56+0200\n"
+"POT-Creation-Date: 2026-08-04 20:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh_CN\n"
@@ -93,21 +93,25 @@ msgstr ""
 msgid "Basic 2D Poisson — ``poisson.py``"
 msgstr "基础二维泊松——``poisson.py``"
 
-#: ../../source/example_gallery/poisson.rst:42 d10d0a1f5fa5426c9b4b431a0bda2c47
+#: ../../source/example_gallery/poisson.rst:42 4e2b044d56584291ad8bef290c42184e
+msgid "Open in Colab"
+msgstr "在 Colab 中打开"
+
+#: ../../source/example_gallery/poisson.rst:46 d10d0a1f5fa5426c9b4b431a0bda2c47
 msgid ""
 "The shortest end-to-end driver in the repo. The full pipeline fits in 25 "
 "lines:"
 msgstr "仓库中最短的端到端驱动脚本。完整流程仅需 25 行："
 
-#: ../../source/example_gallery/poisson.rst:45 43ed311655364bd1b0fdc722211b57fb
+#: ../../source/example_gallery/poisson.rst:49 43ed311655364bd1b0fdc722211b57fb
 msgid "examples/poisson/poisson.py"
 msgstr "examples/poisson/poisson.py"
 
-#: ../../source/example_gallery/poisson.rst:78 37a9d74752584926ac327823140a6fe8
+#: ../../source/example_gallery/poisson.rst:82 37a9d74752584926ac327823140a6fe8
 msgid "A few details worth pointing out:"
 msgstr "有几处细节值得指出："
 
-#: ../../source/example_gallery/poisson.rst:80 d52c2c48d3504c3a97e314ceacc031b4
+#: ../../source/example_gallery/poisson.rst:84 d52c2c48d3504c3a97e314ceacc031b4
 msgid ""
 "``assembler(mesh.points)`` returns a "
 ":class:`~tensormesh.sparse.SparseMatrix` built from the gradient bilinear"
@@ -116,7 +120,7 @@ msgstr ""
 "``assembler(mesh.points)`` 返回一个由梯度双线性形式构建的 "
 ":class:`~tensormesh.sparse.SparseMatrix`\\ 。纯 Python 弱形式，无需自定义核。"
 
-#: ../../source/example_gallery/poisson.rst:83 7b65af3b326b45a1974d578bf899fcc5
+#: ../../source/example_gallery/poisson.rst:87 7b65af3b326b45a1974d578bf899fcc5
 #, python-brace-format
 msgid ""
 "``FAssembler`` carries the source ``f`` through the integrand by name "
@@ -127,7 +131,7 @@ msgstr ""
 "``forward(v, f)`` 中的 ``f`` 关键字参数）。完整的参数分派约定参见 "
 ":doc:`../user_guide/forms`\\ 。"
 
-#: ../../source/example_gallery/poisson.rst:87 a7b9a76579d74a79bcce87ab4711740d
+#: ../../source/example_gallery/poisson.rst:91 a7b9a76579d74a79bcce87ab4711740d
 msgid ""
 "The :class:`~tensormesh.Condenser` shorthand ``K_, b_ = condenser(K, b)``"
 " applies the Dirichlet boundary mask and folds prescribed values into the"
@@ -136,7 +140,7 @@ msgstr ""
 ":class:`~tensormesh.Condenser` 的简写 ``K_, b_ = condenser(K, b)`` "
 "会施加狄利克雷边界掩码，并将给定值并入右端项。\\ ``recover(...)`` 在求解后将边界值重新拼接回去。"
 
-#: ../../source/example_gallery/poisson.rst:91 505507f7d5ec4de0bb45f06a46d6b2e9
+#: ../../source/example_gallery/poisson.rst:95 505507f7d5ec4de0bb45f06a46d6b2e9
 msgid ""
 "``K_.solve(b_)`` is inherited from ``torch-sla``'s ``SparseTensor``; it "
 "inspects the matrix and dispatches to the best available backend "
@@ -145,7 +149,7 @@ msgstr ""
 "``K_.solve(b_)`` 继承自 ``torch-sla`` 的 ``SparseTensor``\\ "
 "；它会检查矩阵并自动分派到可用的最佳后端。传入 ``verbose=True`` 会打印该决策，例如："
 
-#: ../../source/example_gallery/poisson.rst:100
+#: ../../source/example_gallery/poisson.rst:104
 #: 0b42be716f53448db0c239fe33053b80
 #, python-brace-format
 msgid ""
@@ -157,12 +161,12 @@ msgstr ""
 "这里 torch-sla 在 CUDA 上检测到一个对称（但非对称正定 SPD）系统，并通过 cuDSS 以 :math:`LDL^{T}` "
 "分解进行求解。在 CPU 上，或未安装 cuDSS 时，它会回退到其他后端；\\ ``backend=`` 字段总会告诉你实际运行的是哪个后端。"
 
-#: ../../source/example_gallery/poisson.rst:105
+#: ../../source/example_gallery/poisson.rst:109
 #: f483b64a52244a94b86d23383c6d89a4
 msgid "2D Poisson — source term, FEM solution, and analytical solution"
 msgstr "二维泊松——源项、有限元解和解析解"
 
-#: ../../source/example_gallery/poisson.rst:109
+#: ../../source/example_gallery/poisson.rst:113
 #: da801c4d4fad4810b699b3c61a5f04ce
 msgid ""
 "Output of ``poisson.py``: source ``f`` (left), FEM solution ``u_fem`` "
@@ -173,17 +177,17 @@ msgstr ""
 "``poisson.py`` 的输出：单位正方形上的源项 ``f``\\ （左）、有限元解 ``u_fem``\\ （中）和解析参考解 "
 "``u_analytical``\\ （右）。在该分辨率下，两幅解的图在视觉上无法区分——这正是收敛网格所应有的表现。"
 
-#: ../../source/example_gallery/poisson.rst:117
+#: ../../source/example_gallery/poisson.rst:121
 #: 1e83b92840564268b5597517cbbd8d79
 msgid "3D extension — ``poisson_3d.py``"
 msgstr "三维扩展——``poisson_3d.py``"
 
-#: ../../source/example_gallery/poisson.rst:119
+#: ../../source/example_gallery/poisson.rst:123
 #: 107733c744934c309212df5b1e4e9ef7
 msgid "Identical machinery, swapping in a tetrahedral cube:"
 msgstr "机制完全相同，只是换用了四面体剖分的立方体："
 
-#: ../../source/example_gallery/poisson.rst:126
+#: ../../source/example_gallery/poisson.rst:130
 #: cc2b514de4ba4b828ba6cda5072e4563
 msgid ""
 "The same :class:`~tensormesh.LaplaceElementAssembler` works because "
@@ -196,12 +200,12 @@ msgstr ""
 "与维度无关——被积函数没有硬编码空间维度。输出写为 ``poisson_3d.vtu`` 以便在 ParaView "
 "中打开；脚本还会生成一张半区域剖切的 PNG，供快速查看。"
 
-#: ../../source/example_gallery/poisson.rst:132
+#: ../../source/example_gallery/poisson.rst:136
 #: 58193a7fac3447efa5be1f89ecc4521a
 msgid "3D Poisson on the unit cube, half-domain cutaway"
 msgstr "单位立方体上的三维泊松，半区域剖切图"
 
-#: ../../source/example_gallery/poisson.rst:137
+#: ../../source/example_gallery/poisson.rst:141
 #: 524b639adf3647789c4a54f2d97b0e15
 #, python-brace-format
 msgid ""
@@ -215,12 +219,12 @@ msgstr ""
 "``chara_length=0.05`` 下，相对于解析傅里叶解的质量加权相对 :math:`L^2` 误差为 "
 ":math:`\\mathrm{rel\\_L2} = 1.059\\times10^{-2}`\\ 。"
 
-#: ../../source/example_gallery/poisson.rst:145
+#: ../../source/example_gallery/poisson.rst:149
 #: 6beb7b9d7e5d4f77a5ca00c4de127dd4
 msgid "h-adaptive refinement on the L-shape — ``poisson_h_adaptivity.py``"
 msgstr "L 形区域上的 h-自适应加密 — ``poisson_h_adaptivity.py``"
 
-#: ../../source/example_gallery/poisson.rst:147
+#: ../../source/example_gallery/poisson.rst:151
 #: 05e7e23639c541a2b05158a51676e4f3
 #, python-brace-format
 msgid ""
@@ -234,7 +238,7 @@ msgstr ""
 ":math:`u = r^{2/3}\\sin(2\\theta/3)`\\ 具有梯度奇异性。由于全局误差受该角点奇异性主导，均匀 "
 "h-加密收敛较慢。"
 
-#: ../../source/example_gallery/poisson.rst:154
+#: ../../source/example_gallery/poisson.rst:158
 #: 7cb95f311bd84e888e573996518c3ec1
 msgid ""
 "The script implements the classical *solve -> estimate -> mark -> remesh*"
@@ -247,7 +251,7 @@ msgstr ""
 "在每个单元上都是仿射函数，因此在这个 Laplace 问题中，每个单元内部都有\\ :math:`\\Delta u_h = 0`\\ "
 "。因此，残差估计器来自内部边上法向梯度的跳跃："
 
-#: ../../source/example_gallery/poisson.rst:160
+#: ../../source/example_gallery/poisson.rst:164
 #: 1127090aef8e4017b56a1a4f82f45a70
 #, python-brace-format
 msgid ""
@@ -265,7 +269,7 @@ msgstr ""
 "\\nabla u_h \\cdot n_e\n"
 "\\right]\\!\\right] \\right\\|^2_{L^2(e)}."
 
-#: ../../source/example_gallery/poisson.rst:169
+#: ../../source/example_gallery/poisson.rst:173
 #: 66f74945efff4b1b8fdf0f3852056fb0
 msgid ""
 "On a straight P1 edge the jump is constant, and the implementation uses "
@@ -278,17 +282,17 @@ msgstr ""
 "n_e]]^2`\\ 。TensorMesh 通过\\ :class:`~tensormesh.Transformation`\\ "
 "提供单元梯度，并通过\\ ``mesh.element_adjacency(\"triangle\")``\\ 提供内部相邻单元对。"
 
-#: ../../source/example_gallery/poisson.rst:175
+#: ../../source/example_gallery/poisson.rst:179
 #: 33ddc1a3de7e41d79c19bb15466bdb58
 msgid "examples/poisson/poisson_h_adaptivity.py (essence)"
 msgstr "examples/poisson/poisson_h_adaptivity.py（核心）"
 
-#: ../../source/example_gallery/poisson.rst:189
+#: ../../source/example_gallery/poisson.rst:193
 #: aa6f3542f47a4f079424763886eca7a7
 msgid "Three pieces are worth a closer look:"
 msgstr "有三处值得细看："
 
-#: ../../source/example_gallery/poisson.rst:191
+#: ../../source/example_gallery/poisson.rst:195
 #: c9f5c1f8e3bb41f3bef94cac811bdfe6
 msgid ""
 "**Non-homogeneous Dirichlet BC.** The exact solution is non-zero on the "
@@ -301,7 +305,7 @@ msgstr ""
 "``dirichlet_value=g`` 由奇异公式在每个边界节点上求值得到。静态凝聚将边界值并入右端项；参见 "
 ":doc:`../user_guide/boundary_conditions`\\ 。"
 
-#: ../../source/example_gallery/poisson.rst:198
+#: ../../source/example_gallery/poisson.rst:202
 #: 6d09e8957ff245a6891fa90415edcdf6
 msgid ""
 "**Mass-weighted reporting error.** "
@@ -316,7 +320,7 @@ msgstr ""
 ":math:`\\sqrt{u_\\text{exact}^T M u_\\text{exact}}`\\ "
 "以获得尺度不变性。这个诊断量只使用制造的奇异解来衡量收敛性；它不驱动加密。"
 
-#: ../../source/example_gallery/poisson.rst:205
+#: ../../source/example_gallery/poisson.rst:209
 #: 3f9fc1abbcab4a1ca9d067f840f49881
 msgid ""
 "**Dörfler marking.** Mark every element whose error indicator exceeds "
@@ -329,7 +333,7 @@ msgstr ""
 ":math:`\\theta=0.5`\\ ）的单元并将其尺寸减半；对（几乎）无误差的单元则进行粗化。新的尺寸场被传入 "
 "``gmsh.model.mesh.setSizeCallback``\\ ，并通过 OpenCASCADE 布尔运算对 L 形几何进行重剖分。"
 
-#: ../../source/example_gallery/poisson.rst:213
+#: ../../source/example_gallery/poisson.rst:217
 #: d62427f964cf47c6ac8b6d29b961ef6d
 msgid ""
 "The remesh step calls into ``gmsh`` directly via the Python API and "
@@ -339,12 +343,12 @@ msgstr ""
 "重剖分步骤通过 Python API 直接调用 ``gmsh``\\ ，并且 ``setSizeCallback`` 需要 ``gmsh >= "
 "4.8``\\ 。请使用 ``pip install gmsh`` 安装。"
 
-#: ../../source/example_gallery/poisson.rst:217
+#: ../../source/example_gallery/poisson.rst:221
 #: d2679d823ed049ec8f209b8359396638
 msgid "L-shape adaptive vs uniform convergence, final mesh, FEM solution"
 msgstr "L 形区域自适应与均匀收敛对比、最终网格、有限元解"
 
-#: ../../source/example_gallery/poisson.rst:221
+#: ../../source/example_gallery/poisson.rst:225
 #: 9358a09f81f74b63a463c9dc8edb83ad
 msgid ""
 "Output of ``poisson_h_adaptivity.py`` regenerated with the normal-"
@@ -355,24 +359,24 @@ msgstr ""
 "\\ ``poisson_h_adaptivity.py``\\ 采用法向梯度跳跃估计器重新生成的输出。左：相对\\ :math:`L^2`\\ "
 "误差随自由度数的变化。中：最终自适应网格，单元在凹角附近聚集。右：有限元解本身。"
 
-#: ../../source/example_gallery/poisson.rst:229
+#: ../../source/example_gallery/poisson.rst:233
 #: 3c0a5d7ebed545e386cdceb2e07c8f28
 msgid "Running the examples"
 msgstr "运行示例"
 
-#: ../../source/example_gallery/poisson.rst:240
+#: ../../source/example_gallery/poisson.rst:244
 #: c8da3f8dc38642238260692e38f779b4
 msgid "What's next"
 msgstr "接下来"
 
-#: ../../source/example_gallery/poisson.rst:242
+#: ../../source/example_gallery/poisson.rst:246
 #: 247d211cf1474b6e8500ab5586f0248c
 msgid ""
 ":doc:`../user_guide/forms` — the assembler base classes and the "
 "``forward`` argument-dispatch contract used in every script above."
 msgstr ":doc:`../user_guide/forms`——装配器基类，以及上面每个脚本所用的 ``forward`` 参数分派约定。"
 
-#: ../../source/example_gallery/poisson.rst:244
+#: ../../source/example_gallery/poisson.rst:248
 #: 7fa9e5f5f158437394a618cbbb48129f
 msgid ""
 ":doc:`../user_guide/boundary_conditions` — non-homogeneous Dirichlet via "
@@ -381,14 +385,14 @@ msgstr ""
 ":doc:`../user_guide/boundary_conditions`——通过 ``dirichlet_value`` "
 "实现非齐次狄利克雷边界条件（用于 L 形自适应示例）。"
 
-#: ../../source/example_gallery/poisson.rst:247
+#: ../../source/example_gallery/poisson.rst:251
 #: 64ca10a59c0847d6bff1761bda2befc1
 msgid ""
 ":doc:`dataset` — batched right-hand sides over many source terms, the "
 "natural ML data-generation extension of the basic 2D solve."
 msgstr ":doc:`dataset`——对众多源项进行批量右端项求解，是基础二维求解在机器学习数据生成方向上的自然延伸。"
 
-#: ../../source/example_gallery/poisson.rst:249
+#: ../../source/example_gallery/poisson.rst:253
 #: 2599b4cb4a994ff8840fa5d61eea7f4e
 msgid ":doc:`diffusion` — same machinery, plus time stepping."
 msgstr ":doc:`diffusion`——相同的机制，再加上时间步进。"
