@@ -1,6 +1,10 @@
 Inverse Design & Identification
 ===============================
 
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+   :target: https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/coefficient_identification.ipynb
+   :alt: Open in Colab
+
 TensorMesh is differentiable end to end: every step of
 ``Mesh → Assembler → SparseMatrix → Condenser → Solve`` is an
 ``nn.Module`` or a custom ``autograd.Function``, and the linear solve

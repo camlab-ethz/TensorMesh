@@ -1,6 +1,10 @@
 Basics & Visualization
 ======================
 
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+   :target: https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/basics.ipynb
+   :alt: Open in Colab
+
 Four short scripts in ``examples/basics/`` that visualize the building
 blocks of FEM in TensorMesh: where interpolation nodes sit on the
 reference element, what the shape functions look like, how internal

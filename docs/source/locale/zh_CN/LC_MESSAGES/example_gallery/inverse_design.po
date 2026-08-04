@@ -8,15 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-22 23:00+0200\n"
+"POT-Creation-Date: 2026-08-04 21:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: zh_CN <LL@li.org>\n"
 "Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
 "Generated-By: Babel 2.18.0\n"
 
 #: ../../source/example_gallery/inverse_design.rst:2
@@ -25,54 +25,59 @@ msgid "Inverse Design & Identification"
 msgstr "反问题设计与辨识"
 
 #: ../../source/example_gallery/inverse_design.rst:4
+#: d82d07096c4d471eb48a66a5b09bc461
+msgid "Open in Colab"
+msgstr "在 Colab 中打开"
+
+#: ../../source/example_gallery/inverse_design.rst:8
 #: e7cdb61bdd2249289fdc0a0aa7e32f14
 msgid ""
-"TensorMesh is differentiable end to end: every step of ``Mesh → Assembler → "
-"SparseMatrix → Condenser → Solve`` is an ``nn.Module`` or a custom "
-"``autograd.Function``, and the linear solve carries an analytic **adjoint "
-"backward** (inherited from ``torch-sla``). A loss computed on the FEM "
+"TensorMesh is differentiable end to end: every step of ``Mesh → Assembler"
+" → SparseMatrix → Condenser → Solve`` is an ``nn.Module`` or a custom "
+"``autograd.Function``, and the linear solve carries an analytic **adjoint"
+" backward** (inherited from ``torch-sla``). A loss computed on the FEM "
 "solution can therefore be back-propagated to *anything* upstream — a "
 "coefficient at every node, a per-element design density, a source term — "
 "without writing a single sensitivity equation by hand. The "
-":doc:`../user_guide/differentiability` chapter covers the mechanics; this "
-"gallery turns it into three runnable scripts in "
+":doc:`../user_guide/differentiability` chapter covers the mechanics; this"
+" gallery turns it into three runnable scripts in "
 "``examples/inverse_design/``."
 msgstr ""
 "TensorMesh 是端到端可微的：\\ ``Mesh → Assembler → SparseMatrix → Condenser → "
-"Solve`` 的每一步都是一个 ``nn.Module`` 或自定义的 ``autograd.Function``\\ ，而线性求解携带了解析的 "
-"**伴随反向传播**\\ （继承自 ``torch-sla``\\ ）。因此，在 FEM 解上计算的损失可以反向传播到上游的 *任意* "
+"Solve`` 的每一步都是一个 ``nn.Module`` 或自定义的 ``autograd.Function``\\ ，而线性求解携带了解析的"
+" **伴随反向传播**\\ （继承自 ``torch-sla``\\ ）。因此，在 FEM 解上计算的损失可以反向传播到上游的 *任意* "
 "量——每个节点上的系数、逐单元的设计密度、源项——而无需手写哪怕一个灵敏度方程。\\ "
 ":doc:`../user_guide/differentiability` 一章介绍了其原理；本示例库将其落地为 "
 "``examples/inverse_design/`` 中三个可运行的脚本。"
 
-#: ../../source/example_gallery/inverse_design.rst:15
+#: ../../source/example_gallery/inverse_design.rst:19
 #: 94390ac6e2654b00874ab0c58d3adc48
 msgid "They span the two flavours of \"gradient through the PDE\":"
 msgstr "它们涵盖了\"穿过 PDE 求梯度\"的两种类型："
 
-#: ../../source/example_gallery/inverse_design.rst:17
+#: ../../source/example_gallery/inverse_design.rst:21
 #: 46ec34ad075c4b1ab533ae258e1c67c5
 msgid ""
 "**Identification** — recover an unknown field from observations "
 "(``coefficient_identification.py``)."
 msgstr "**辨识** —— 从观测中恢复一个未知场（\\ ``coefficient_identification.py``\\ ）。"
 
-#: ../../source/example_gallery/inverse_design.rst:19
+#: ../../source/example_gallery/inverse_design.rst:23
 #: 5e7729931f144b5da0c6dd2c4f125025
 msgid ""
-"**Design** — choose a field that optimises an objective under constraints "
-"(``thermal_topology.py`` and ``compliance_topology.py``)."
+"**Design** — choose a field that optimises an objective under constraints"
+" (``thermal_topology.py`` and ``compliance_topology.py``)."
 msgstr ""
 "**设计** —— 在约束下选择一个使目标最优的场（\\ ``thermal_topology.py`` 与 "
 "``compliance_topology.py``\\ ）。"
 
-#: ../../source/example_gallery/inverse_design.rst:24
+#: ../../source/example_gallery/inverse_design.rst:28
 #: 4ddbba558bfc4973a4ccd1ffa3bd35e3
 #, python-brace-format
 msgid ""
 "All three obtain their gradients purely from ``autograd``. None of them "
-"implements an adjoint by hand — that is the whole point. The classical SIMP "
-"sensitivity :math:`\\partial C/\\partial \\rho_e = "
+"implements an adjoint by hand — that is the whole point. The classical "
+"SIMP sensitivity :math:`\\partial C/\\partial \\rho_e = "
 "-p\\,\\rho_e^{p-1}(E_{\\max}-E_{\\min})\\, "
 "\\mathbf{u}_e^{T}\\mathbf{K}_0^e\\mathbf{u}_e` falls out of "
 "``compliance.backward()`` automatically."
@@ -83,29 +88,31 @@ msgstr ""
 "\\mathbf{u}_e^{T}\\mathbf{K}_0^e\\mathbf{u}_e` 会自动地从 "
 "``compliance.backward()`` 中得出。"
 
-#: ../../source/example_gallery/inverse_design.rst:33
+#: ../../source/example_gallery/inverse_design.rst:37
 #: b71aae44862642399bd55fd020e78c8f
 msgid "Coefficient-field identification — ``coefficient_identification.py``"
 msgstr "系数场辨识 —— ``coefficient_identification.py``"
 
-#: ../../source/example_gallery/inverse_design.rst:35
+#: ../../source/example_gallery/inverse_design.rst:39
 #: 22c53b8b28df4248bf5ec4e8dfed0fc3
 msgid ""
 "Recover an unknown, spatially varying diffusion coefficient "
 ":math:`\\kappa(x)` in"
 msgstr "在下式中恢复一个未知的、随空间变化的扩散系数 :math:`\\kappa(x)`\\ ："
 
-#: ../../source/example_gallery/inverse_design.rst:38
+#: ../../source/example_gallery/inverse_design.rst:42
 #: f1f2f95d93464d098b19e3db7a5b393f
 #, python-brace-format
 msgid ""
-"-\\nabla\\!\\cdot\\!\\big(\\kappa(x)\\,\\nabla u\\big) = f \\quad\\text{in }(0,1)^2,\n"
+"-\\nabla\\!\\cdot\\!\\big(\\kappa(x)\\,\\nabla u\\big) = f "
+"\\quad\\text{in }(0,1)^2,\n"
 "\\qquad u = 0 \\text{ on }\\partial\\Omega,"
 msgstr ""
-"-\\nabla\\!\\cdot\\!\\big(\\kappa(x)\\,\\nabla u\\big) = f \\quad\\text{in }(0,1)^2,\n"
+"-\\nabla\\!\\cdot\\!\\big(\\kappa(x)\\,\\nabla u\\big) = f "
+"\\quad\\text{in }(0,1)^2,\n"
 "\\qquad u = 0 \\text{ on }\\partial\\Omega,"
 
-#: ../../source/example_gallery/inverse_design.rst:43
+#: ../../source/example_gallery/inverse_design.rst:47
 #: ddf99ca2807547d985deff321b50306f
 #, python-brace-format
 msgid ""
@@ -115,63 +122,64 @@ msgid ""
 "\\tanh\\theta` so :math:`\\kappa\\in(0,2)` stays strictly positive (the "
 "matrix is SPD every iteration) with :math:`\\theta` unconstrained."
 msgstr ""
-"仅从单个观测解 :math:`u_{\\rm obs}` 出发。前向映射是\"给定 :math:`\\kappa` 后求解 FEM\"；损失是到观测的 "
-"L² 距离；由 Adam 进行下降。我们将 :math:`\\kappa = 1 + \\tanh\\theta` 参数化，使得 "
-":math:`\\kappa\\in(0,2)` 始终严格为正（矩阵在每次迭代中都是 SPD 的），同时 :math:`\\theta` 不受约束。"
+"仅从单个观测解 :math:`u_{\\rm obs}` 出发。前向映射是\"给定 :math:`\\kappa` 后求解 "
+"FEM\"；损失是到观测的 L² 距离；由 Adam 进行下降。我们将 :math:`\\kappa = 1 + \\tanh\\theta` "
+"参数化，使得 :math:`\\kappa\\in(0,2)` 始终严格为正（矩阵在每次迭代中都是 SPD 的），同时 "
+":math:`\\theta` 不受约束。"
 
-#: ../../source/example_gallery/inverse_design.rst:71
+#: ../../source/example_gallery/inverse_design.rst:75
 #: 4ef85ac741a74e88b864799a25865bb9
 msgid ""
-"Over 5000 steps the data loss falls by more than seven orders of magnitude "
-"and the recovered field matches the four-lobe ground truth almost "
-"everywhere:"
+"Over 5000 steps the data loss falls by more than seven orders of "
+"magnitude and the recovered field matches the four-lobe ground truth "
+"almost everywhere:"
 msgstr "在 5000 步内，数据损失下降了七个数量级以上，恢复出的场几乎处处与四瓣状的真值相吻合："
 
-#: ../../source/example_gallery/inverse_design.rst:79
+#: ../../source/example_gallery/inverse_design.rst:83
 #: 413be6ca10a14eb7825bdcce6f9ae188
 #, python-brace-format
 msgid ""
 "Optimisation history: the data loss :math:`\\|u_\\theta - u_{\\rm "
-"obs}\\|_2^2` drops to :math:`\\sim 3\\times10^{-10}` (the periodic spikes "
-"are Adam overshooting in the ill-conditioned valley, recovered within a few "
-"steps); the relative max-norm error in :math:`u` reaches :math:`\\sim "
-"6\\times10^{-5}`."
+"obs}\\|_2^2` drops to :math:`\\sim 3\\times10^{-10}` (the periodic spikes"
+" are Adam overshooting in the ill-conditioned valley, recovered within a "
+"few steps); the relative max-norm error in :math:`u` reaches :math:`\\sim"
+" 6\\times10^{-5}`."
 msgstr ""
 "优化历史：数据损失 :math:`\\|u_\\theta - u_{\\rm obs}\\|_2^2` 降至 :math:`\\sim "
 "3\\times10^{-10}`\\ （周期性的尖峰是 Adam 在病态的谷底过冲所致，几步之内即可恢复）；\\ :math:`u` "
 "的相对最大范数误差达到 :math:`\\sim 6\\times10^{-5}`\\ 。"
 
-#: ../../source/example_gallery/inverse_design.rst:90
+#: ../../source/example_gallery/inverse_design.rst:94
 #: 40e648aa64c8469ea2f96b183788622c
 msgid ""
 "True (left), recovered (middle), and absolute-error (right) coefficient "
-"fields. The only visible residual is a faint blob at the centre, where the "
-"constant source makes :math:`\\nabla u` vanish: with no flux there the data "
-"barely constrains :math:`\\kappa`, so that region is recovered slowest. A "
-"smoothness penalty on :math:`\\theta` removes it."
+"fields. The only visible residual is a faint blob at the centre, where "
+"the constant source makes :math:`\\nabla u` vanish: with no flux there "
+"the data barely constrains :math:`\\kappa`, so that region is recovered "
+"slowest. A smoothness penalty on :math:`\\theta` removes it."
 msgstr ""
 "真值（左）、恢复值（中）以及绝对误差（右）的系数场。唯一可见的残差是中心处一个淡淡的斑点，那里常值源使 :math:`\\nabla u` "
 "消失：由于该处没有通量，数据几乎无法约束 :math:`\\kappa`\\ ，因此该区域恢复得最慢。对 :math:`\\theta` "
 "施加一个光滑性惩罚即可消除它。"
 
-#: ../../source/example_gallery/inverse_design.rst:99
+#: ../../source/example_gallery/inverse_design.rst:103
 #: 99209038cd5e404bac2e16416531ed8b
 msgid "Thermal-compliance topology optimization — ``thermal_topology.py``"
 msgstr "热柔顺度拓扑优化 —— ``thermal_topology.py``"
 
-#: ../../source/example_gallery/inverse_design.rst:101
+#: ../../source/example_gallery/inverse_design.rst:105
 #: debcc27b8b254fa1b55a886587c83361
 #, python-brace-format
 msgid ""
-"Distribute a fixed amount of conductive material on the unit square so as to"
-" drain heat from a central source to the cold boundary as efficiently as "
-"possible — minimise the thermal compliance :math:`J = "
+"Distribute a fixed amount of conductive material on the unit square so as"
+" to drain heat from a central source to the cold boundary as efficiently "
+"as possible — minimise the thermal compliance :math:`J = "
 "\\mathbf{b}^{T}\\mathbf{u}` under a hard volume cap:"
 msgstr ""
 "在单位正方形上分布固定数量的导热材料，使其尽可能高效地将热量从中心源排向冷边界——在硬体积上限约束下最小化热柔顺度 :math:`J = "
 "\\mathbf{b}^{T}\\mathbf{u}`\\ ："
 
-#: ../../source/example_gallery/inverse_design.rst:106
+#: ../../source/example_gallery/inverse_design.rst:110
 #: 5bec896c476c43ada4fdb3e74336e174
 #, python-brace-format
 msgid ""
@@ -187,14 +195,14 @@ msgstr ""
 "\\tfrac{1}{|\\Omega|}\\!\\int_\\Omega \\rho \\le V,\\;\\;\n"
 "\\rho_{\\min}\\le\\rho\\le 1,"
 
-#: ../../source/example_gallery/inverse_design.rst:114
+#: ../../source/example_gallery/inverse_design.rst:118
 #: b2269c5cef2c4b36b6d31e6bbf3101ff
 #, python-brace-format
 msgid ""
 "with a SIMP conductivity law "
-":math:`\\kappa(\\rho)=\\kappa_{\\min}+(1-\\kappa_{\\min})\\,\\rho^{p}` and a"
-" per-element density :math:`\\rho`. The compliance gradient comes from "
-"autograd; the density update is the built-in "
+":math:`\\kappa(\\rho)=\\kappa_{\\min}+(1-\\kappa_{\\min})\\,\\rho^{p}` "
+"and a per-element density :math:`\\rho`. The compliance gradient comes "
+"from autograd; the density update is the built-in "
 ":class:`~tensormesh.optimizer.OCOptimizer` (Optimality Criteria with a "
 "volume-bisection step)."
 msgstr ""
@@ -203,30 +211,30 @@ msgstr ""
 "以及逐单元密度 :math:`\\rho`\\ 。柔顺度梯度来自自动微分；密度更新使用内置的 "
 ":class:`~tensormesh.optimizer.OCOptimizer`\\ （带体积二分步的最优准则法）。"
 
-#: ../../source/example_gallery/inverse_design.rst:142
+#: ../../source/example_gallery/inverse_design.rst:146
 #: ef11c12d48ba4d9499287db8d47f072e
 #, python-brace-format
 msgid ""
-"The optimal layout is a \"thermal cross\" connecting the hot centre to the "
-"four cold mid-edges; compliance drops about :math:`8.6\\times` "
-"(:math:`5.9\\times10^{-3} \\to 6.9\\times10^{-4}`) while the volume fraction"
-" is held at :math:`0.4` exactly:"
+"The optimal layout is a \"thermal cross\" connecting the hot centre to "
+"the four cold mid-edges; compliance drops about :math:`8.6\\times` "
+"(:math:`5.9\\times10^{-3} \\to 6.9\\times10^{-4}`) while the volume "
+"fraction is held at :math:`0.4` exactly:"
 msgstr ""
 "最优布局是一个\"热十字\"，将炽热的中心与四条冷的边中点相连；柔顺度下降了约 :math:`8.6\\times`\\ （\\ "
 ":math:`5.9\\times10^{-3} \\to 6.9\\times10^{-4}`\\ ），同时体积分数被精确地保持在 "
 ":math:`0.4`\\ ："
 
-#: ../../source/example_gallery/inverse_design.rst:151
+#: ../../source/example_gallery/inverse_design.rst:155
 #: c24f51477c2a4ff2aea5f4493519bb55
 msgid ""
-"Density evolution over 60 OC steps (iteration 0 is the uniform :math:`\\rho "
-"= V` start) and the compliance history. The cross has emerged by iteration 5"
-" and sharpens into a near 0/1 design by the end."
+"Density evolution over 60 OC steps (iteration 0 is the uniform "
+":math:`\\rho = V` start) and the compliance history. The cross has "
+"emerged by iteration 5 and sharpens into a near 0/1 design by the end."
 msgstr ""
 "60 个 OC 步内的密度演化（第 0 次迭代是均匀的 :math:`\\rho = V` 初始值）以及柔顺度历史。十字结构在第 5 "
 "次迭代时已经显现，并在结尾处锐化为接近 0/1 的设计。"
 
-#: ../../source/example_gallery/inverse_design.rst:156
+#: ../../source/example_gallery/inverse_design.rst:160
 #: efccc60c8fd54e02b5ef64cf163d7b7b
 msgid ""
 "This is the scalar/heat counterpart of the structural problem below: "
@@ -234,47 +242,48 @@ msgid ""
 "physics and a different optimiser."
 msgstr "这是下面结构问题的标量/热学对应版本：相同的\"自动微分灵敏度 + 密度更新\"模式，不同的物理与不同的优化器。"
 
-#: ../../source/example_gallery/inverse_design.rst:162
+#: ../../source/example_gallery/inverse_design.rst:166
 #: b5610d65f490449e8d5f9f6b88e8ebba
-msgid ""
-"Structural compliance topology optimization — ``compliance_topology.py``"
+msgid "Structural compliance topology optimization — ``compliance_topology.py``"
 msgstr "结构柔顺度拓扑优化 —— ``compliance_topology.py``"
 
-#: ../../source/example_gallery/inverse_design.rst:164
+#: ../../source/example_gallery/inverse_design.rst:168
 #: b826ea018203488eaca2cee09bc47256
 msgid ""
-"The classical 2D cantilever: minimise structural compliance under a volume "
-"constraint, **SIMP** density interpolation, **MMA** (Method of Moving "
-"Asymptotes) updates with a density filter. It is set up to match a JAX-FEM "
-"reference problem for a head-to-head comparison."
+"The classical 2D cantilever: minimise structural compliance under a "
+"volume constraint, **SIMP** density interpolation, **MMA** (Method of "
+"Moving Asymptotes) updates with a density filter. It is set up to match a"
+" JAX-FEM reference problem for a head-to-head comparison."
 msgstr ""
 "经典的二维悬臂梁：在体积约束下最小化结构柔顺度，采用 **SIMP** 密度插值、带密度滤波的 **MMA**\\ "
 "（移动渐近线法）更新。它被配置为与一个 JAX-FEM 参考问题相匹配，以便进行正面对比。"
 
-#: ../../source/example_gallery/inverse_design.rst:173
+#: ../../source/example_gallery/inverse_design.rst:177
 #: b8b631bf7356426cacb71c2a2b8aebc0
 #, python-brace-format
 msgid ""
 "**Setup.** Domain :math:`60\\times30` with :math:`60\\times30` QUAD4 "
 "elements (1891 nodes, 1800 elements); left edge clamped "
 "(:math:`\\mathbf{u}=\\mathbf{0}` at :math:`x=0`); a downward traction "
-":math:`\\mathbf{t}=[0,-100]^{T}` on the bottom-right corner; plane-stress "
-"material with :math:`E_{\\max}=70\\,000`, :math:`E_{\\min}=70`, "
+":math:`\\mathbf{t}=[0,-100]^{T}` on the bottom-right corner; plane-stress"
+" material with :math:`E_{\\max}=70\\,000`, :math:`E_{\\min}=70`, "
 ":math:`\\nu=0.3`, SIMP penalty :math:`p=3`, target volume fraction "
 ":math:`\\bar v = 0.5`."
 msgstr ""
-"**设置。** 区域为 :math:`60\\times30`\\ ，剖分为 :math:`60\\times30` 个 QUAD4 单元（1891 "
-"个节点，1800 个单元）；左边固支（在 :math:`x=0` 处 :math:`\\mathbf{u}=\\mathbf{0}`\\ "
-"）；右下角施加向下的面力 :math:`\\mathbf{t}=[0,-100]^{T}`\\ ；平面应力材料，\\ "
+"**设置。** 区域为 :math:`60\\times30`\\ ，剖分为 :math:`60\\times30` 个 QUAD4 "
+"单元（1891 个节点，1800 个单元）；左边固支（在 :math:`x=0` 处 "
+":math:`\\mathbf{u}=\\mathbf{0}`\\ ）；右下角施加向下的面力 "
+":math:`\\mathbf{t}=[0,-100]^{T}`\\ ；平面应力材料，\\ "
 ":math:`E_{\\max}=70\\,000`\\ 、\\ :math:`E_{\\min}=70`\\ 、\\ "
-":math:`\\nu=0.3`\\ ，SIMP 惩罚系数 :math:`p=3`\\ ，目标体积分数 :math:`\\bar v = 0.5`\\ "
-"。"
+":math:`\\nu=0.3`\\ ，SIMP 惩罚系数 :math:`p=3`\\ ，目标体积分数 :math:`\\bar v = "
+"0.5`\\ 。"
 
-#: ../../source/example_gallery/inverse_design.rst:181
+#: ../../source/example_gallery/inverse_design.rst:185
 #: dc14c73eb4dc4dafa7d98f5988384446
 #, python-brace-format
 msgid ""
-"\\min_{\\rho}\\; C(\\rho) = \\mathbf{u}^{T}\\mathbf{K}(\\rho)\\,\\mathbf{u}\n"
+"\\min_{\\rho}\\; C(\\rho) = "
+"\\mathbf{u}^{T}\\mathbf{K}(\\rho)\\,\\mathbf{u}\n"
 "\\quad\\text{s.t.}\\quad\n"
 "\\mathbf{K}(\\rho)\\mathbf{u} = \\mathbf{F},\\;\\;\n"
 "\\tfrac{1}{|\\Omega|}\\!\\int_\\Omega\\rho \\le \\bar v,\\;\\;\n"
@@ -282,7 +291,8 @@ msgid ""
 "\\qquad\n"
 "E(\\rho) = E_{\\min} + \\rho^{p}\\,(E_{\\max}-E_{\\min})."
 msgstr ""
-"\\min_{\\rho}\\; C(\\rho) = \\mathbf{u}^{T}\\mathbf{K}(\\rho)\\,\\mathbf{u}\n"
+"\\min_{\\rho}\\; C(\\rho) = "
+"\\mathbf{u}^{T}\\mathbf{K}(\\rho)\\,\\mathbf{u}\n"
 "\\quad\\text{s.t.}\\quad\n"
 "\\mathbf{K}(\\rho)\\mathbf{u} = \\mathbf{F},\\;\\;\n"
 "\\tfrac{1}{|\\Omega|}\\!\\int_\\Omega\\rho \\le \\bar v,\\;\\;\n"
@@ -290,181 +300,182 @@ msgstr ""
 "\\qquad\n"
 "E(\\rho) = E_{\\min} + \\rho^{p}\\,(E_{\\max}-E_{\\min})."
 
-#: ../../source/example_gallery/inverse_design.rst:191
+#: ../../source/example_gallery/inverse_design.rst:195
 #: df16e16b44b64e819f052fd450688900
 msgid ""
-"The plane-stress stiffness integrand is written directly in the assembler's "
-"``forward``; ``rho`` enters per element via ``element_data``, and the "
-"compliance gradient is again just ``compliance.backward()``:"
+"The plane-stress stiffness integrand is written directly in the "
+"assembler's ``forward``; ``rho`` enters per element via ``element_data``,"
+" and the compliance gradient is again just ``compliance.backward()``:"
 msgstr ""
 "平面应力刚度的被积函数直接写在装配器的 ``forward`` 中；\\ ``rho`` 通过 ``element_data`` "
 "逐单元传入，而柔顺度梯度同样只是 ``compliance.backward()``\\ ："
 
-#: ../../source/example_gallery/inverse_design.rst:223
+#: ../../source/example_gallery/inverse_design.rst:227
 #: a762a38be05847e8bf06387b5420b54c
 msgid ""
-"The optimizer converges to the canonical cantilever truss, tracking the JAX-"
-"FEM reference closely:"
+"The optimizer converges to the canonical cantilever truss, tracking the "
+"JAX-FEM reference closely:"
 msgstr "优化器收敛到标准的悬臂桁架，并紧密跟踪 JAX-FEM 参考结果："
 
-#: ../../source/example_gallery/inverse_design.rst:230
+#: ../../source/example_gallery/inverse_design.rst:234
 #: 208246ec230a4e8da4471ea69efad9f5
 msgid "Iter"
 msgstr "迭代"
 
-#: ../../source/example_gallery/inverse_design.rst:231
-#: ../../source/example_gallery/inverse_design.rst:266
-#: 734f8ba304dc45209d12435634ede7d4 7a2bce30928f4e249241b00b4593d6ad
+#: ../../source/example_gallery/inverse_design.rst:235
+#: ../../source/example_gallery/inverse_design.rst:270
+#: 7a2bce30928f4e249241b00b4593d6ad
 msgid "JAX-FEM"
 msgstr "JAX-FEM"
 
-#: ../../source/example_gallery/inverse_design.rst:232
-#: ../../source/example_gallery/inverse_design.rst:267
-#: 75a3144e7b6e4ddf9d3d046773d47846 afd9fe35ab07447db9b0f305052e86d1
+#: ../../source/example_gallery/inverse_design.rst:236
+#: ../../source/example_gallery/inverse_design.rst:271
+#: afd9fe35ab07447db9b0f305052e86d1
 msgid "TensorMesh"
 msgstr "TensorMesh"
 
-#: ../../source/example_gallery/inverse_design.rst:233
+#: ../../source/example_gallery/inverse_design.rst:237
 #: 79ec40d754c9470e83cec695c7ba9d87
 msgid "0"
 msgstr "0"
 
-#: ../../source/example_gallery/inverse_design.rst:238
+#: ../../source/example_gallery/inverse_design.rst:242
 #: afdeda922e5640af9591f3c62eaf3421
 msgid "10"
 msgstr "10"
 
-#: ../../source/example_gallery/inverse_design.rst:243
+#: ../../source/example_gallery/inverse_design.rst:247
 #: 981061ce6cdb448f8e024fc4aad8f223
 msgid "25"
 msgstr "25"
 
-#: ../../source/example_gallery/inverse_design.rst:248
+#: ../../source/example_gallery/inverse_design.rst:252
 #: cf698ed7a87a481ab9f3ad7b0ffb3721
 msgid "50"
 msgstr "50"
 
-#: ../../source/example_gallery/inverse_design.rst:258
+#: ../../source/example_gallery/inverse_design.rst:262
 #: 0772604c5aa144d2829d39eb9642ff2e
 msgid ""
 "Compliance histories agree across the run; the final designs match to a "
 "fraction of a percent."
 msgstr "整个运行过程中柔顺度历史一致；最终设计的吻合度达到百分之几以内。"
 
-#: ../../source/example_gallery/inverse_design.rst:261
+#: ../../source/example_gallery/inverse_design.rst:265
 #: 8410a51ebf1b4deaa9f916293ecd6adc
 msgid "Accuracy and timing (51 iterations) vs. the JAX-FEM reference"
 msgstr "精度与耗时（51 次迭代）相对于 JAX-FEM 参考的对比"
 
-#: ../../source/example_gallery/inverse_design.rst:265
+#: ../../source/example_gallery/inverse_design.rst:269
 #: 2618800988c34d70b00297536fcea5dd
 msgid "Metric"
 msgstr "指标"
 
-#: ../../source/example_gallery/inverse_design.rst:268
+#: ../../source/example_gallery/inverse_design.rst:272
 #: 14ac7d490ed44d47962770476b33abcf
 msgid "Note"
 msgstr "说明"
 
-#: ../../source/example_gallery/inverse_design.rst:269
+#: ../../source/example_gallery/inverse_design.rst:273
 #: 086ac05ae9954737a98c231da389f021
 msgid "Final compliance"
 msgstr "最终柔顺度"
 
-#: ../../source/example_gallery/inverse_design.rst:270
+#: ../../source/example_gallery/inverse_design.rst:274
 #: 7d5c50f31c0d477eb25227894cdbb58b
 msgid "84.03"
 msgstr "84.03"
 
-#: ../../source/example_gallery/inverse_design.rst:271
+#: ../../source/example_gallery/inverse_design.rst:275
 #: 5bf6416e21d640eb8201d029c3cdd5bb
 msgid "83.75"
 msgstr "83.75"
 
-#: ../../source/example_gallery/inverse_design.rst:272
+#: ../../source/example_gallery/inverse_design.rst:276
 #: 021fd27f480542a3ad4d8ac4cb9209e0
-#, python-format, no-python-format
+#, no-python-format, python-format
 msgid "0.33 % difference"
 msgstr "相差 0.33 %"
 
-#: ../../source/example_gallery/inverse_design.rst:273
+#: ../../source/example_gallery/inverse_design.rst:277
 #: 6a062b9b080b47318f97c883785f6f96
 msgid "Volume fraction"
 msgstr "体积分数"
 
-#: ../../source/example_gallery/inverse_design.rst:274
-#: ../../source/example_gallery/inverse_design.rst:275
+#: ../../source/example_gallery/inverse_design.rst:278
+#: ../../source/example_gallery/inverse_design.rst:279
 #: a51795d5162b4af4a53cb6f6a9d67ccb cfaa3ffa6d38457ea7aff7ef354c212e
 msgid "0.500"
 msgstr "0.500"
 
-#: ../../source/example_gallery/inverse_design.rst:276
+#: ../../source/example_gallery/inverse_design.rst:280
 #: fae38041b0ca4f0e8610eeb6091522d3
 msgid "matched"
 msgstr "一致"
 
-#: ../../source/example_gallery/inverse_design.rst:277
+#: ../../source/example_gallery/inverse_design.rst:281
 #: cbbac1659e2c4461b71d42d1e38850f9
 msgid "Total time"
 msgstr "总耗时"
 
-#: ../../source/example_gallery/inverse_design.rst:278
+#: ../../source/example_gallery/inverse_design.rst:282
 #: 87366ef84f8b441f8eb584439bc52cfa
 msgid "31.13 s"
 msgstr "31.13 s"
 
-#: ../../source/example_gallery/inverse_design.rst:279
+#: ../../source/example_gallery/inverse_design.rst:283
 #: 1fe530b49fff43d1ba71e525c67fa691
 msgid "8.35 s"
 msgstr "8.35 s"
 
-#: ../../source/example_gallery/inverse_design.rst:280
+#: ../../source/example_gallery/inverse_design.rst:284
 #: 574c58900904486587ada1e0bc6a1a2b
 msgid "**3.7× faster**"
 msgstr "**快 3.7×**"
 
-#: ../../source/example_gallery/inverse_design.rst:284
+#: ../../source/example_gallery/inverse_design.rst:288
 #: 391ba504bb8541ef8a91f8b1d4d06a41
 msgid ""
 "This example depends on the local ``mma_optimizer.py`` (a small MMA "
-"implementation) and on ``meshio`` / ``tqdm`` for VTK export and the progress"
-" bar. The lighter ``thermal_topology.py`` above uses the built-in "
-":class:`~tensormesh.optimizer.OCOptimizer` and has no extra dependencies."
+"implementation) and on ``meshio`` / ``tqdm`` for VTK export and the "
+"progress bar. The lighter ``thermal_topology.py`` above uses the built-in"
+" :class:`~tensormesh.optimizer.OCOptimizer` and has no extra "
+"dependencies."
 msgstr ""
-"本示例依赖本地的 ``mma_optimizer.py``\\ （一个小型 MMA 实现），并依赖 ``meshio`` / ``tqdm`` 用于 "
-"VTK 导出和进度条。上面更轻量的 ``thermal_topology.py`` 使用内置的 "
+"本示例依赖本地的 ``mma_optimizer.py``\\ （一个小型 MMA 实现），并依赖 ``meshio`` / ``tqdm`` "
+"用于 VTK 导出和进度条。上面更轻量的 ``thermal_topology.py`` 使用内置的 "
 ":class:`~tensormesh.optimizer.OCOptimizer`\\ ，没有额外依赖。"
 
-#: ../../source/example_gallery/inverse_design.rst:292
+#: ../../source/example_gallery/inverse_design.rst:296
 #: f18d77ddde744838832f694cdfb40720
 msgid "Running the examples"
 msgstr "运行示例"
 
-#: ../../source/example_gallery/inverse_design.rst:302
+#: ../../source/example_gallery/inverse_design.rst:306
 #: 08a8f82e17c04ed899040dcfa5fec5e6
 msgid ""
-"Each accepts ``--device cuda`` and a few problem-size flags (``--n-iter``, "
-"``--chara-length``, ``--vf``); pass ``-h`` for the list."
+"Each accepts ``--device cuda`` and a few problem-size flags "
+"(``--n-iter``, ``--chara-length``, ``--vf``); pass ``-h`` for the list."
 msgstr ""
 "每个脚本都接受 ``--device cuda`` 以及若干控制问题规模的参数（\\ ``--n-iter``\\ 、\\ ``--chara-"
 "length``\\ 、\\ ``--vf``\\ ）；传入 ``-h`` 可查看完整列表。"
 
-#: ../../source/example_gallery/inverse_design.rst:307
+#: ../../source/example_gallery/inverse_design.rst:311
 #: 44c24914d1d74f05bcaa543da7f4f715
 msgid "What's next"
 msgstr "下一步"
 
-#: ../../source/example_gallery/inverse_design.rst:309
+#: ../../source/example_gallery/inverse_design.rst:313
 #: b45c0ade60aa4d51b0d9b387ddfe97bf
 msgid ""
 ":doc:`../user_guide/differentiability` — the adjoint backward, the full "
-"cost/correctness story, and how to wire a neural network into any of these "
-"loops."
+"cost/correctness story, and how to wire a neural network into any of "
+"these loops."
 msgstr ""
 ":doc:`../user_guide/differentiability` —— "
 "伴随反向传播、完整的开销/正确性论述，以及如何将神经网络接入上述任一循环。"
 
-#: ../../source/example_gallery/inverse_design.rst:312
+#: ../../source/example_gallery/inverse_design.rst:316
 #: 085d26abfac24ec9b1ec7755f89b44fa
 msgid ""
 ":doc:`../user_guide/linear_solvers` — the autograd-aware "
@@ -473,9 +484,10 @@ msgstr ""
 ":doc:`../user_guide/linear_solvers` —— 支撑这里每一次求解的、感知自动微分的 "
 "``SparseMatrix.solve`` 与 ``nonlinear_solve``\\ 。"
 
-#: ../../source/example_gallery/inverse_design.rst:314
+#: ../../source/example_gallery/inverse_design.rst:318
 #: 07041e76122549a0adc29389a2239a57
 msgid ""
-":doc:`dataset` — batched forward solves for ML training data, the other side"
-" of differentiable FEM."
+":doc:`dataset` — batched forward solves for ML training data, the other "
+"side of differentiable FEM."
 msgstr ":doc:`dataset` —— 用于机器学习训练数据的批量前向求解，可微 FEM 的另一面。"
+

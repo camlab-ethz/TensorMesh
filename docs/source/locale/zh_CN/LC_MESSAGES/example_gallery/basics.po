@@ -8,162 +8,166 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-19 14:04+0200\n"
+"POT-Creation-Date: 2026-08-04 21:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: zh_CN <LL@li.org>\n"
 "Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: ../../source/example_gallery/basics.rst:2 2f24e39cab1e48aaa740f4de7c9205c4
+#: ../../source/example_gallery/basics.rst:2 aca5249ba277455eaf7eb61ad0a9a08d
 msgid "Basics & Visualization"
 msgstr "基础与可视化"
 
-#: ../../source/example_gallery/basics.rst:4 4c34dcbdf51f41e58b0623faa5804022
+#: ../../source/example_gallery/basics.rst:4 1ae4e15a64ae4e00bade4bd633b3a91c
+msgid "Open in Colab"
+msgstr "在 Colab 中打开"
+
+#: ../../source/example_gallery/basics.rst:8 965826cd26fe4f88bf332cdd75d711e4
 msgid ""
 "Four short scripts in ``examples/basics/`` that visualize the building "
-"blocks of FEM in TensorMesh: where interpolation nodes sit on the reference "
-"element, what the shape functions look like, how internal node numbering "
-"compares to Gmsh / VTK, and what the mesh generators produce. None of these "
-"scripts solve a PDE — they exist to make the underlying objects tangible and"
-" to sanity-check the conventions used elsewhere in the library."
+"blocks of FEM in TensorMesh: where interpolation nodes sit on the "
+"reference element, what the shape functions look like, how internal node "
+"numbering compares to Gmsh / VTK, and what the mesh generators produce. "
+"None of these scripts solve a PDE — they exist to make the underlying "
+"objects tangible and to sanity-check the conventions used elsewhere in "
+"the library."
 msgstr ""
 "``examples/basics/`` 中有四个简短脚本，用于可视化 TensorMesh "
 "中有限元方法的基础构件：插值节点在参考单元上的分布位置、形函数的形态、内部节点编号与 Gmsh / VTK "
 "编号的对比，以及网格生成器的产物。这些脚本都不求解偏微分方程——它们的作用是让底层对象变得直观可见，并对库中其他地方使用的约定进行合理性检查。"
 
-#: ../../source/example_gallery/basics.rst:12 cf6854a0a2ec43db89b14cdf2dec55bc
+#: ../../source/example_gallery/basics.rst:16 2d5027986e284bdb8bd1d8a8e4156d9a
 msgid ""
 "If you are reading this page after the "
-":doc:`../user_guide/elements_and_quadrature` user-guide page, treat these "
-"scripts as the picture book that goes with it."
+":doc:`../user_guide/elements_and_quadrature` user-guide page, treat these"
+" scripts as the picture book that goes with it."
 msgstr ""
 "如果你是在阅读 :doc:`../user_guide/elements_and_quadrature` "
 "用户指南页面之后才来到本页，可以把这些脚本当作与之配套的图册。"
 
-#: ../../source/example_gallery/basics.rst:18 7af96709fffc49c08f968005966ddb06
+#: ../../source/example_gallery/basics.rst:22 1e25a46e2a274c9aaf6ff2ad8d1c647f
 msgid "Interpolation nodes"
 msgstr "插值节点"
 
-#: ../../source/example_gallery/basics.rst:20 669f63eedabf4f909354760464590506
+#: ../../source/example_gallery/basics.rst:24 37f34e11e38340ca8c3354b51f8a37f5
 msgid ""
-"``examples/basics/basis.py`` plots the spatial distribution of interpolation"
-" (Lagrange) nodes on the reference element for all seven element classes — "
-":class:`~tensormesh.Line`, :class:`~tensormesh.Triangle`, "
-":class:`~tensormesh.Quadrilateral`, :class:`~tensormesh.Tetrahedron`, "
-":class:`~tensormesh.Hexahedron`, :class:`~tensormesh.Pyramid`, "
-":class:`~tensormesh.Prism` — at orders 1 through 4. The driver is a one-"
-"liner per element class:"
+"``examples/basics/basis.py`` plots the spatial distribution of "
+"interpolation (Lagrange) nodes on the reference element for all seven "
+"element classes — :class:`~tensormesh.Line`, "
+":class:`~tensormesh.Triangle`, :class:`~tensormesh.Quadrilateral`, "
+":class:`~tensormesh.Tetrahedron`, :class:`~tensormesh.Hexahedron`, "
+":class:`~tensormesh.Pyramid`, :class:`~tensormesh.Prism` — at orders 1 "
+"through 4. The driver is a one-liner per element class:"
 msgstr ""
 "``examples/basics/basis.py`` 绘制全部七种单元类——:class:`~tensormesh.Line`\\ 、\\ "
-":class:`~tensormesh.Triangle`\\ 、\\ :class:`~tensormesh.Quadrilateral`\\ 、\\"
-" :class:`~tensormesh.Tetrahedron`\\ 、\\ :class:`~tensormesh.Hexahedron`\\ "
-"、\\ :class:`~tensormesh.Pyramid`\\ 、\\ :class:`~tensormesh.Prism`——在 1 至 4 "
+":class:`~tensormesh.Triangle`\\ 、\\ :class:`~tensormesh.Quadrilateral`\\ "
+"、\\ :class:`~tensormesh.Tetrahedron`\\ 、\\ "
+":class:`~tensormesh.Hexahedron`\\ 、\\ :class:`~tensormesh.Pyramid`\\ 、\\ "
+":class:`~tensormesh.Prism`——在 1 至 4 "
 "阶下，参考单元上插值（拉格朗日）节点的空间分布。每个单元类的驱动代码只有一行："
 
-#: ../../source/example_gallery/basics.rst:28 11ff53dc9cd44f639603f093ebbeae05
+#: ../../source/example_gallery/basics.rst:32 d7186df396c54d759a804d862995b91f
 msgid "examples/basics/basis.py (essence)"
 msgstr "examples/basics/basis.py（核心）"
 
-#: ../../source/example_gallery/basics.rst:42 3084a8d4f7a64b2d813abd6c32d93fe0
+#: ../../source/example_gallery/basics.rst:46 e8e59852a95348298c0294bbb419af97
 #, python-brace-format
 msgid ""
 "The number of basis points grows quickly with order: :math:`(p+1)^d` for "
-"tensor elements, :math:`\\binom{p+d}{d}` for simplex elements. Knowing where"
-" they sit is the first sanity check when something goes wrong with a higher-"
-"order solve."
+"tensor elements, :math:`\\binom{p+d}{d}` for simplex elements. Knowing "
+"where they sit is the first sanity check when something goes wrong with a"
+" higher-order solve."
 msgstr ""
-"基函数节点的数量随阶数迅速增长：张量单元为 :math:`(p+1)^d`\\ ，单纯形单元为 :math:`\\binom{p+d}{d}`\\ "
-"。当高阶求解出现问题时，了解这些节点的位置是首要的合理性检查。"
+"基函数节点的数量随阶数迅速增长：张量单元为 :math:`(p+1)^d`\\ ，单纯形单元为 :math:`\\binom{p+d}{d}`\\"
+" 。当高阶求解出现问题时，了解这些节点的位置是首要的合理性检查。"
 
-#: ../../source/example_gallery/basics.rst:48 418bcc35b15746d99b7b1ca0087de060
+#: ../../source/example_gallery/basics.rst:52 3d7baefe075941b99b8ef1f968709aa0
 msgid ""
 "The seven panels below show the Lagrange-node layout for every supported "
-"element class at orders 1–4. Each panel reads left-to-right by order; node "
-"indices match the internal ``element.get_basis(order)`` ordering."
+"element class at orders 1–4. Each panel reads left-to-right by order; "
+"node indices match the internal ``element.get_basis(order)`` ordering."
 msgstr ""
 "下面七幅图展示了每种受支持单元类在 1–4 阶下的拉格朗日节点布局。每幅图按阶数从左到右排列；节点索引与内部 "
 "``element.get_basis(order)`` 的编号一致。"
 
-#: ../../source/example_gallery/basics.rst:53 25d72062ed1944e2a9994839e5415838
+#: ../../source/example_gallery/basics.rst:57 7ac2b1f93c48423c8ff3d32c4a829d6e
 msgid "Line element interpolation nodes"
 msgstr "线单元插值节点"
 
-#: ../../source/example_gallery/basics.rst:57 5cdb0c47c76443789c5809f7b79edfb0
+#: ../../source/example_gallery/basics.rst:61 f589fcf92f644b5f9d18dd0d216d796a
 msgid "``Line`` element — lexicographic ordering on :math:`[0, 1]`."
 msgstr "``Line`` 单元——在 :math:`[0, 1]` 上的字典序编号。"
 
-#: ../../source/example_gallery/basics.rst:59 07ce9382839b4529b66023c5e7541c31
+#: ../../source/example_gallery/basics.rst:63 d879183742984b6c8a11f701b9eefbca
 msgid "Triangle element interpolation nodes"
 msgstr "三角形单元插值节点"
 
-#: ../../source/example_gallery/basics.rst:63 e4bd30952c404459a246a72e21299faa
+#: ../../source/example_gallery/basics.rst:67 64714b3facc140daa4cb7d47aa80a8fe
 msgid ""
-"``Triangle`` element — simplex ordering with vertex nodes first, then edge "
-"nodes, then interior nodes."
+"``Triangle`` element — simplex ordering with vertex nodes first, then "
+"edge nodes, then interior nodes."
 msgstr "``Triangle`` 单元——单纯形编号，先排顶点节点，再排边节点，最后排内部节点。"
 
-#: ../../source/example_gallery/basics.rst:66 117bf5a443964cb997490e6573bf6b53
+#: ../../source/example_gallery/basics.rst:70 4023f1e430bc4aa6a331683c7d4e7927
 msgid "Quadrilateral element interpolation nodes"
 msgstr "四边形单元插值节点"
 
-#: ../../source/example_gallery/basics.rst:70 beec064022d443869859217abb5e2cf0
+#: ../../source/example_gallery/basics.rst:74 d1731a20cbdc486e964b87b63114f692
 msgid "``Quadrilateral`` element — tensor-product Lagrange nodes."
 msgstr "``Quadrilateral`` 单元——张量积拉格朗日节点。"
 
-#: ../../source/example_gallery/basics.rst:72 4d8c1484662e48e2bc352c2cfa952ded
+#: ../../source/example_gallery/basics.rst:76 615942cae7b34cbbac8251a217a6bda8
 msgid "Tetrahedron element interpolation nodes"
 msgstr "四面体单元插值节点"
 
-#: ../../source/example_gallery/basics.rst:76 213411cdb20f445184c8c07414235046
+#: ../../source/example_gallery/basics.rst:80 1dd3891802bd4bd092a921ee78436362
 msgid "``Tetrahedron`` element — 3D simplex."
 msgstr "``Tetrahedron`` 单元——三维单纯形。"
 
-#: ../../source/example_gallery/basics.rst:78 22c1d04e65c945669e815bf425eee35c
+#: ../../source/example_gallery/basics.rst:82 39c749ea1f18418dbb6ee9fb22c94ef7
 msgid "Hexahedron element interpolation nodes"
 msgstr "六面体单元插值节点"
 
-#: ../../source/example_gallery/basics.rst:82 bdf7d6d398c54f5486cd98c9865d79c3
+#: ../../source/example_gallery/basics.rst:86 12ae2223bc884da1b94d339b4e3cdc3f
 msgid "``Hexahedron`` element — 3D tensor product."
 msgstr "``Hexahedron`` 单元——三维张量积。"
 
-#: ../../source/example_gallery/basics.rst:84 f4bf72081cf2496cbfe1e89d735fb3f3
+#: ../../source/example_gallery/basics.rst:88 295d62499f734657a467c897e086b983
 msgid "Prism element interpolation nodes"
 msgstr "三棱柱单元插值节点"
 
-#: ../../source/example_gallery/basics.rst:88 94f7b6919371471fac3b2477da8d57a5
+#: ../../source/example_gallery/basics.rst:92 002ba2bcd1474ed283dd0cf2a705c534
 msgid "``Prism`` (wedge) element — triangle :math:`\\times` line."
 msgstr "``Prism``\\ （楔形）单元——三角形 :math:`\\times` 线。"
 
-#: ../../source/example_gallery/basics.rst:90 7bb30257ddba428bbe8043a9df83f2aa
+#: ../../source/example_gallery/basics.rst:94 1a96d00e94ef4f33afc1a3172781eef1
 msgid "Pyramid element interpolation nodes"
 msgstr "四棱锥单元插值节点"
 
-#: ../../source/example_gallery/basics.rst:94 cff136b8874b4391beca13dfb2ccc29f
+#: ../../source/example_gallery/basics.rst:98 f560dfcba35846a3b831d86c0422a734
 msgid "``Pyramid`` element — square base, apex at the top."
 msgstr "``Pyramid`` 单元——方形底面，顶点在上方。"
 
-#: ../../source/example_gallery/basics.rst:98 5c54c58f0c92481db0df62e0195cd36e
+#: ../../source/example_gallery/basics.rst:102 bd5f9505514d4f15a55ba45544cbf084
 msgid "Shape functions"
 msgstr "形函数"
 
-#: ../../source/example_gallery/basics.rst:100
-#: a9dda4c3f2424a5cae979117ef0e9529
+#: ../../source/example_gallery/basics.rst:104 8a07a9b2fa4d4329aa88b15650390a4c
 msgid ""
 "``examples/basics/basis_fn.py`` plots the polynomial shape functions "
-"themselves. For 1D elements they appear as curves on :math:`[-1,1]`; for 2D "
-"elements as 3D surfaces on the reference triangle or square; for 3D elements"
-" one figure per order with a slice through the volume."
+"themselves. For 1D elements they appear as curves on :math:`[-1,1]`; for "
+"2D elements as 3D surfaces on the reference triangle or square; for 3D "
+"elements one figure per order with a slice through the volume."
 msgstr ""
 "``examples/basics/basis_fn.py`` 绘制多项式形函数本身。对于一维单元，它们表现为 :math:`[-1,1]` "
 "上的曲线；对于二维单元，表现为参考三角形或方形上的三维曲面；对于三维单元，每个阶数对应一幅图，并带有一个穿过体积的切片。"
 
-#: ../../source/example_gallery/basics.rst:106
-#: 65f36582f43046c68321c76b9a3a29f9
+#: ../../source/example_gallery/basics.rst:110 7e85fea877df4de390da32e4eabb91f8
 msgid ""
 "The script uses ``element.get_basis_fns(order)``, the same call "
 ":class:`~tensormesh.ElementAssembler` makes during assembly. If a shape "
@@ -173,264 +177,231 @@ msgstr ""
 ":class:`~tensormesh.ElementAssembler` "
 "在装配过程中所做的调用相同。如果某个形函数在这里看起来有误，那么它在你装配出的矩阵中同样有误。"
 
-#: ../../source/example_gallery/basics.rst:111
-#: 4ccfb55de7884ec597c53c39c8ccf0aa
+#: ../../source/example_gallery/basics.rst:115 50f82ff4416f448d8eddd83c37832fd4
 msgid ""
 "In principle ``get_basis_fns`` accepts **arbitrary** polynomial order — "
-"there is no hard cap baked into the API. The figures below show 1D and 2D "
-"shape functions at orders 1–3 (plus the full composite view) and 3D shape "
-"functions at order 1; higher 3D orders are equally available, they are "
-"simply omitted here for space."
+"there is no hard cap baked into the API. The figures below show 1D and 2D"
+" shape functions at orders 1–3 (plus the full composite view) and 3D "
+"shape functions at order 1; higher 3D orders are equally available, they "
+"are simply omitted here for space."
 msgstr ""
 "原则上 ``get_basis_fns`` 接受\\ **任意**\\ 多项式阶数——API 中并未内置硬性上限。下面的图展示了 1–3 "
 "阶的一维和二维形函数（外加完整的合成视图），以及 1 阶的三维形函数；更高阶的三维形函数同样可用，这里仅出于篇幅原因略去。"
 
-#: ../../source/example_gallery/basics.rst:120
-#: ab186ccd23164cad8270e540d353d19f
+#: ../../source/example_gallery/basics.rst:124 7f93fb12a6d84cfb997d8aa65d098e8d
 msgid ""
 "Although arbitrary orders are supported, very high orders (in practice "
 ":math:`\\geq 4` for some element classes) are evaluated through a "
-"Vandermonde matrix that becomes increasingly ill-conditioned with order. The"
-" script may print a numerical warning in that regime. The returned values "
-"are still usable — but if you see those warnings during a real solve, drop "
-"to a lower order or switch to a different element class. For most FEM "
-"workloads orders 1–3 are the sweet spot."
+"Vandermonde matrix that becomes increasingly ill-conditioned with order. "
+"The script may print a numerical warning in that regime. The returned "
+"values are still usable — but if you see those warnings during a real "
+"solve, drop to a lower order or switch to a different element class. For "
+"most FEM workloads orders 1–3 are the sweet spot."
 msgstr ""
 "虽然支持任意阶数，但很高的阶数（实际中某些单元类在 :math:`\\geq 4` "
 "时）是通过范德蒙德（Vandermonde）矩阵求值的，而该矩阵随阶数升高会变得越来越病态。在此情形下脚本可能会打印数值警告。返回的值仍然可用——但如果你在真实求解过程中看到这些警告，请降低阶数或改用其他单元类。对于大多数有限元方法工作负载，1–3"
 " 阶是最佳选择。"
 
-#: ../../source/example_gallery/basics.rst:131
-#: f081d9449e2841a783694cafe36cdd54
+#: ../../source/example_gallery/basics.rst:135 ea87e2e2f36944f892dbee7a20afc3e8
 msgid "1D and 2D shape functions"
 msgstr "一维与二维形函数"
 
-#: ../../source/example_gallery/basics.rst:133
-#: 84e2ddc07f7a43a19c1ce7c3ed9eac74
+#: ../../source/example_gallery/basics.rst:137 6ad8fa3a6c9e4a3a9e8b615e65bc7289
 msgid "1D Lagrange shape functions at orders 1, 2, 3 plus composite"
 msgstr "1、2、3 阶的一维拉格朗日形函数及合成视图"
 
-#: ../../source/example_gallery/basics.rst:137
-#: 02b152edb85c4362946c7c282e7659db
+#: ../../source/example_gallery/basics.rst:141 d56f127557154fc18a271c539796a798
 msgid ""
-"``Line`` shape functions at orders 1–3, plus a composite view of the highest"
-" order. Stars mark the interpolation nodes."
+"``Line`` shape functions at orders 1–3, plus a composite view of the "
+"highest order. Stars mark the interpolation nodes."
 msgstr "1–3 阶的 ``Line`` 形函数，以及最高阶的合成视图。星号标记插值节点。"
 
-#: ../../source/example_gallery/basics.rst:140
-#: cc1016ce91264da388b24a27572ce977
+#: ../../source/example_gallery/basics.rst:144 26849ad5928b4654a48b74e51d7995ae
 msgid "Triangle shape function surfaces at orders 1, 2, 3"
 msgstr "1、2、3 阶的三角形形函数曲面"
 
-#: ../../source/example_gallery/basics.rst:144
-#: 67f0e9fea4674be9bfc55e481a7c552e
+#: ../../source/example_gallery/basics.rst:148 a0793eea37a84c52bf55d7003d8842ed
 msgid ""
 "``Triangle`` shape functions plotted as 3D surfaces over the reference "
 "triangle."
 msgstr "``Triangle`` 形函数，以参考三角形上的三维曲面形式绘制。"
 
-#: ../../source/example_gallery/basics.rst:147
-#: 1935274ff3334d2688d8631c634867e4
+#: ../../source/example_gallery/basics.rst:151 3117cbb3c3d748df8fef14e13f8d74f0
 msgid "Quadrilateral shape function surfaces at orders 1, 2, 3"
 msgstr "1、2、3 阶的四边形形函数曲面"
 
-#: ../../source/example_gallery/basics.rst:151
-#: de52851e609f4b4789a0f0f93f0a39e2
+#: ../../source/example_gallery/basics.rst:155 913005baee2448afa0d80fb8da938bbd
 msgid "``Quadrilateral`` shape functions on the reference square."
 msgstr "参考方形上的 ``Quadrilateral`` 形函数。"
 
-#: ../../source/example_gallery/basics.rst:155
-#: 677e9521205b417cb52fc19d91e9c290
+#: ../../source/example_gallery/basics.rst:159 9f5871ac2f514f3f83c839de521cdbcb
 msgid "3D shape functions (order 1)"
 msgstr "三维形函数（1 阶）"
 
-#: ../../source/example_gallery/basics.rst:157
-#: e1f76bc2520041388fd0d9f76d784cad
+#: ../../source/example_gallery/basics.rst:161 c427b9a2866f4cc893ca1f6b9c075ab5
 msgid ""
-"For 3D elements the script renders one volumetric figure per element / order"
-" combination; only the order-1 panels are shown below. The full set "
+"For 3D elements the script renders one volumetric figure per element / "
+"order combination; only the order-1 panels are shown below. The full set "
 "(including orders 2–4) lands in "
-"``examples/basics/output/<element>/<order>.png`` after running the script."
+"``examples/basics/output/<element>/<order>.png`` after running the "
+"script."
 msgstr ""
 "对于三维单元，脚本为每个单元 / 阶数组合渲染一幅体绘制图；下面仅展示 1 阶的图。运行脚本后，完整集合（包括 2–4 阶）会保存到 "
 "``examples/basics/output/<element>/<order>.png``\\ 。"
 
-#: ../../source/example_gallery/basics.rst:163
-#: 474937e5fb9144f986b931fcfc7e763a
+#: ../../source/example_gallery/basics.rst:167 f3210458bcb241d8b0bc9b2cd8efadc4
 msgid "Hexahedron order-1 shape functions"
 msgstr "六面体 1 阶形函数"
 
-#: ../../source/example_gallery/basics.rst:167
-#: 5fb819b757ca4a8d9e3ff4739005a62d
+#: ../../source/example_gallery/basics.rst:171 5faddefc8e364ec685881788b39dbf11
 msgid ""
-"``Hexahedron`` order-1 shape functions — eight trilinear basis functions, "
-"one per vertex."
+"``Hexahedron`` order-1 shape functions — eight trilinear basis functions,"
+" one per vertex."
 msgstr "``Hexahedron`` 1 阶形函数——八个三线性基函数，每个顶点对应一个。"
 
-#: ../../source/example_gallery/basics.rst:170
-#: 7e8d7728f09d409dba34a8f07871883d
+#: ../../source/example_gallery/basics.rst:174 f299a8c3463a417c83f47882227a7eff
 msgid "Tetrahedron order-1 shape functions"
 msgstr "四面体 1 阶形函数"
 
-#: ../../source/example_gallery/basics.rst:174
-#: 517c1f9e743a4d619d0daf13a2f1bc31
-msgid ""
-"``Tetrahedron`` order-1 shape functions — four barycentric coordinates."
+#: ../../source/example_gallery/basics.rst:178 c245f29d07ac4b80bae61b69a018bdba
+msgid "``Tetrahedron`` order-1 shape functions — four barycentric coordinates."
 msgstr "``Tetrahedron`` 1 阶形函数——四个重心坐标。"
 
-#: ../../source/example_gallery/basics.rst:177
-#: 799d2df57d05433795ad941b10a264fe
+#: ../../source/example_gallery/basics.rst:181 633c094dfdcd4c688020927e91d97207
 msgid "Prism order-1 shape functions"
 msgstr "三棱柱 1 阶形函数"
 
-#: ../../source/example_gallery/basics.rst:181
-#: 07fa1d670f1e40a29ac54c9a6dbc3cb2
+#: ../../source/example_gallery/basics.rst:185 c09ff11929ba4bd3aaa0f3575e71ed27
 msgid ""
-"``Prism`` order-1 shape functions — six basis functions, one per vertex of "
-"the triangular prism."
+"``Prism`` order-1 shape functions — six basis functions, one per vertex "
+"of the triangular prism."
 msgstr "``Prism`` 1 阶形函数——六个基函数，三棱柱每个顶点对应一个。"
 
-#: ../../source/example_gallery/basics.rst:184
-#: 137d66794e2a4ea1a5585361adbddcab
+#: ../../source/example_gallery/basics.rst:188 5b81cf5faecf4b8fb942a2fc459a9588
 msgid "Pyramid order-1 shape functions"
 msgstr "四棱锥 1 阶形函数"
 
-#: ../../source/example_gallery/basics.rst:188
-#: c6a90022382a4479975f118da72b6f87
+#: ../../source/example_gallery/basics.rst:192 0c356e98a74a4d3aa4e8ba90475bb305
 msgid ""
-"``Pyramid`` order-1 shape functions — five basis functions, one per vertex."
+"``Pyramid`` order-1 shape functions — five basis functions, one per "
+"vertex."
 msgstr "``Pyramid`` 1 阶形函数——五个基函数，每个顶点对应一个。"
 
-#: ../../source/example_gallery/basics.rst:195
-#: 5d76a3f5bb0c467390f9e6d43059b028
+#: ../../source/example_gallery/basics.rst:199 ababcad1b7d74ae29f38558500216f56
 msgid "Gmsh / VTK ↔ TensorMesh node ordering"
 msgstr "Gmsh / VTK ↔ TensorMesh 节点编号"
 
-#: ../../source/example_gallery/basics.rst:197
-#: e1515a0d3b6b44dc8e10cf64aea718ff
+#: ../../source/example_gallery/basics.rst:201 95974407d8f647e494c9ae2f2f7f7a17
 msgid ""
 "``examples/basics/element_gallery.py`` puts TensorMesh's internal node "
 "numbering side-by-side with the Gmsh / VTK convention, for 2D and 3D "
-"elements at orders 2–4. The output is a two-row plot per element type: top "
-"row is the TensorMesh / FEniCS-style ordering; bottom row is the Gmsh / VTK "
-"ordering."
+"elements at orders 2–4. The output is a two-row plot per element type: "
+"top row is the TensorMesh / FEniCS-style ordering; bottom row is the Gmsh"
+" / VTK ordering."
 msgstr ""
 "``examples/basics/element_gallery.py`` 将 TensorMesh 的内部节点编号与 Gmsh / VTK "
-"约定并排展示，覆盖 2–4 阶的二维和三维单元。输出为每种单元类型一幅两行图：上一行是 TensorMesh / FEniCS 风格的编号；下一行是 "
-"Gmsh / VTK 编号。"
+"约定并排展示，覆盖 2–4 阶的二维和三维单元。输出为每种单元类型一幅两行图：上一行是 TensorMesh / FEniCS "
+"风格的编号；下一行是 Gmsh / VTK 编号。"
 
-#: ../../source/example_gallery/basics.rst:203
-#: 4710a902ff3f408b88275fd97559d772
+#: ../../source/example_gallery/basics.rst:207 d7d72d54e7e74cca8484b7e0db2c1493
 msgid ""
 "This is the visual companion to the ``reorder=True`` story in "
-":doc:`../user_guide/meshes`: when you load a Gmsh ``.msh`` or write a VTU "
-"through meshio, TensorMesh applies the inverse permutation returned by "
-"``element.get_gmsh_permutation(order)`` so internal connectivity always uses"
-" the same convention. If you ever question which numbering a particular "
-"array is in, this script makes it obvious."
+":doc:`../user_guide/meshes`: when you load a Gmsh ``.msh`` or write a VTU"
+" through meshio, TensorMesh applies the inverse permutation returned by "
+"``element.get_gmsh_permutation(order)`` so internal connectivity always "
+"uses the same convention. If you ever question which numbering a "
+"particular array is in, this script makes it obvious."
 msgstr ""
-":doc:`../user_guide/meshes` 中关于 ``reorder=True`` 的内容由本脚本提供可视化配套说明：当你加载 Gmsh "
-"的 ``.msh`` 文件或通过 meshio 写出 VTU 时，TensorMesh 会施加 "
+":doc:`../user_guide/meshes` 中关于 ``reorder=True`` 的内容由本脚本提供可视化配套说明：当你加载 "
+"Gmsh 的 ``.msh`` 文件或通过 meshio 写出 VTU 时，TensorMesh 会施加 "
 "``element.get_gmsh_permutation(order)`` "
 "返回的逆置换，从而使内部连接性始终采用同一约定。如果你不确定某个数组采用的是哪种编号，这个脚本能让答案一目了然。"
 
-#: ../../source/example_gallery/basics.rst:211
-#: 258c87e5576149b88434974af31a5ad6
+#: ../../source/example_gallery/basics.rst:215 ed6139f7257c4599ae68a30b519fe26f
 msgid ""
-"Four representative comparisons are shown below — one per element family. "
-"The remaining element types (line, prism, pyramid) follow the same two-row "
-"layout; the full set lives in ``examples/basics/output/element_gallery/``."
+"Four representative comparisons are shown below — one per element family."
+" The remaining element types (line, prism, pyramid) follow the same two-"
+"row layout; the full set lives in "
+"``examples/basics/output/element_gallery/``."
 msgstr ""
 "下面展示了四个代表性对比——每个单元族一个。其余单元类型（线、三棱柱、四棱锥）采用相同的两行布局；完整集合位于 "
 "``examples/basics/output/element_gallery/``\\ 。"
 
-#: ../../source/example_gallery/basics.rst:216
-#: 16a4d2cd96b54b5191001058fbbf7719
+#: ../../source/example_gallery/basics.rst:220 23ae3b665b164389a29fdeb60eacff1f
 msgid "Triangle node ordering, TensorMesh vs Gmsh/VTK, orders 2-4"
 msgstr "三角形节点编号，TensorMesh 与 Gmsh/VTK 对比，2-4 阶"
 
-#: ../../source/example_gallery/basics.rst:220
-#: 2e2addf927bf4eb097a998fdeec25efe
+#: ../../source/example_gallery/basics.rst:224 68c8d81143c24d8393b41d9a54339eee
 msgid ""
-"``Triangle`` — top row: TensorMesh / FEniCS ordering; bottom row: Gmsh / VTK"
-" ordering."
+"``Triangle`` — top row: TensorMesh / FEniCS ordering; bottom row: Gmsh / "
+"VTK ordering."
 msgstr "``Triangle``——上一行：TensorMesh / FEniCS 编号；下一行：Gmsh / VTK 编号。"
 
-#: ../../source/example_gallery/basics.rst:223
-#: 4ef5f8bbc6874bffad70f23800c5bdf9
+#: ../../source/example_gallery/basics.rst:227 72494100513246228ad67c7fffeeb450
 msgid "Quadrilateral node ordering, TensorMesh vs Gmsh/VTK, orders 2-4"
 msgstr "四边形节点编号，TensorMesh 与 Gmsh/VTK 对比，2-4 阶"
 
-#: ../../source/example_gallery/basics.rst:227
-#: 17c3cf2815084a2eaaa3176e7047fdd1
+#: ../../source/example_gallery/basics.rst:231 91409f44b27147819f485569d901d073
 msgid ""
-"``Quadrilateral`` — note that the TensorMesh layout is lexicographic, while "
-"Gmsh's order-3 / order-4 quad layouts spiral around the boundary."
+"``Quadrilateral`` — note that the TensorMesh layout is lexicographic, "
+"while Gmsh's order-3 / order-4 quad layouts spiral around the boundary."
 msgstr ""
-"``Quadrilateral``——注意 TensorMesh 的布局是字典序的，而 Gmsh 的 3 阶 / 4 阶四边形布局是沿边界螺旋排列的。"
+"``Quadrilateral``——注意 TensorMesh 的布局是字典序的，而 Gmsh 的 3 阶 / 4 "
+"阶四边形布局是沿边界螺旋排列的。"
 
-#: ../../source/example_gallery/basics.rst:231
-#: 157848663d4347ec84ce02145df3291e
+#: ../../source/example_gallery/basics.rst:235 162a09ab14ee451cab5bdf26ad7fa014
 msgid "Tetrahedron node ordering, TensorMesh vs Gmsh/VTK, orders 2-4"
 msgstr "四面体节点编号，TensorMesh 与 Gmsh/VTK 对比，2-4 阶"
 
-#: ../../source/example_gallery/basics.rst:235
-#: 6206563569ce41389a467715e690b7e8
+#: ../../source/example_gallery/basics.rst:239 c4e0fdbaa277439491eeae34849b45ea
 msgid ""
-"``Tetrahedron`` — vertex / edge / face / interior groupings are preserved "
-"across both orderings, only the indices within each group differ."
+"``Tetrahedron`` — vertex / edge / face / interior groupings are preserved"
+" across both orderings, only the indices within each group differ."
 msgstr "``Tetrahedron``——顶点 / 边 / 面 / 内部的分组在两种编号下都保持一致，仅各组内的索引有所不同。"
 
-#: ../../source/example_gallery/basics.rst:239
-#: 25fc1558f3344d96be7e4c6307564bf2
+#: ../../source/example_gallery/basics.rst:243 10dece500c8743c7a1e3a434238cb2a4
 msgid "Hexahedron node ordering, TensorMesh vs Gmsh/VTK, orders 2-4"
 msgstr "六面体节点编号，TensorMesh 与 Gmsh/VTK 对比，2-4 阶"
 
-#: ../../source/example_gallery/basics.rst:243
-#: 9a3b02c0222048ec8ad05a26b02ca7e9
+#: ../../source/example_gallery/basics.rst:247 168a4d3d1d2e47b99ba7ad5b80e98cd0
 msgid ""
-"``Hexahedron`` — the largest discrepancy in the gallery, since Gmsh's hex "
-"ordering walks along edges while TensorMesh's is plain lexicographic."
+"``Hexahedron`` — the largest discrepancy in the gallery, since Gmsh's hex"
+" ordering walks along edges while TensorMesh's is plain lexicographic."
 msgstr "``Hexahedron``——本画廊中差异最大的情形，因为 Gmsh 的六面体编号沿边游走，而 TensorMesh 的是单纯的字典序。"
 
-#: ../../source/example_gallery/basics.rst:251
-#: 3dcbc09e7be34e4db5e2d1b4e0de158b
+#: ../../source/example_gallery/basics.rst:255 67cff95869224440bfde07466bb671ce
 msgid "Mesh generation gallery"
 msgstr "网格生成画廊"
 
-#: ../../source/example_gallery/basics.rst:253
-#: f29eb8ffb10c4ad8af02d983237c8593
+#: ../../source/example_gallery/basics.rst:257 72839293dd6a4257900fa3fb15082d2b
 msgid ""
-"``examples/basics/plot_mesh.py`` is the picture catalog of what TensorMesh's"
-" mesh tools can produce, plus a few visualization helpers from "
-":mod:`tensormesh.visualization`:"
+"``examples/basics/plot_mesh.py`` is the picture catalog of what "
+"TensorMesh's mesh tools can produce, plus a few visualization helpers "
+"from :mod:`tensormesh.visualization`:"
 msgstr ""
 "``examples/basics/plot_mesh.py`` 是 TensorMesh 网格工具产物的图册，并附带 "
 ":mod:`tensormesh.visualization` 中的几个可视化辅助函数："
 
-#: ../../source/example_gallery/basics.rst:257
-#: 37d2472c7463400ca326ea5c7c612a17
+#: ../../source/example_gallery/basics.rst:261 b5ce15b4058340819abae4a5013c4d4a
 msgid ""
 "**Built-in primitives** — rectangle (triangle and quadrilateral), cube "
-"(tetrahedral and hexahedral, the latter with quadratic basis), and a unit "
-"disk via :class:`~tensormesh.MeshGen`."
+"(tetrahedral and hexahedral, the latter with quadratic basis), and a unit"
+" disk via :class:`~tensormesh.MeshGen`."
 msgstr ""
-"**内置基元**——矩形（三角形和四边形）、立方体（四面体和六面体，后者采用二次基），以及通过 :class:`~tensormesh.MeshGen`"
-" 生成的单位圆盘。"
+"**内置基元**——矩形（三角形和四边形）、立方体（四面体和六面体，后者采用二次基），以及通过 "
+":class:`~tensormesh.MeshGen` 生成的单位圆盘。"
 
-#: ../../source/example_gallery/basics.rst:260
-#: ce7bf494fd264e2ebf3dfee3f41cc284
+#: ../../source/example_gallery/basics.rst:264 2d9d7ff2ec3b47238478e339974cbde7
 msgid ""
-"**Hybrid meshes** — half the rectangle is meshed with triangles, the other "
-"half with quadrilaterals, and a circular hole is punched in the interface. "
-"``mesh.cells`` is a ``BufferDict`` keyed by element type, so all assemblers "
-"iterate over both element types automatically."
+"**Hybrid meshes** — half the rectangle is meshed with triangles, the "
+"other half with quadrilaterals, and a circular hole is punched in the "
+"interface. ``mesh.cells`` is a ``BufferDict`` keyed by element type, so "
+"all assemblers iterate over both element types automatically."
 msgstr ""
 "**混合网格**——矩形一半用三角形剖分，另一半用四边形剖分，并在交界处开了一个圆孔。\\ ``mesh.cells`` 是一个以单元类型为键的 "
 "``BufferDict``\\ ，因此所有装配器会自动遍历这两种单元类型。"
 
-#: ../../source/example_gallery/basics.rst:265
-#: aaeb18f2d40a4a96b5c6f1d2f7a7e7af
+#: ../../source/example_gallery/basics.rst:269 c5856005414a4f69800c0dc9866bf465
 msgid ""
 "**Adjacency graphs** — node-to-node and element-to-element connectivity "
 "drawn over the mesh, in 2D and 3D. Useful for debugging coloring and "
@@ -439,25 +410,21 @@ msgstr ""
 "**邻接图**——在二维和三维网格上绘制的节点到节点、单元到单元的连接性。可用于调试着色和划分算法（参见 "
 ":doc:`../user_guide/distributed`\\ ）。"
 
-#: ../../source/example_gallery/basics.rst:269
-#: 220cd86ccc6647548b6d1854e7cb4770
+#: ../../source/example_gallery/basics.rst:273 50cb9987a5b245f4a98546539da8e092
 msgid ""
 "**Field visualization** — scalar fields painted as nodal values "
 "(interpolated to the mesh) or as per-element constants."
 msgstr "**场可视化**——将标量场绘制为节点值（插值到网格上）或逐单元常量。"
 
-#: ../../source/example_gallery/basics.rst:272
-#: 6bb439c8757845e7a85e87f642a5a77f
+#: ../../source/example_gallery/basics.rst:276 b98de5751958489b9761f95013a0a9f0
 msgid "A representative snippet for the hybrid mesh:"
 msgstr "混合网格的一段代表性代码片段："
 
-#: ../../source/example_gallery/basics.rst:274
-#: 60978d06f1324926a456e33171f51347
+#: ../../source/example_gallery/basics.rst:278 47c5dcfc3c50432eb8c39484a2f9370d
 msgid "examples/basics/plot_mesh.py (essence)"
 msgstr "examples/basics/plot_mesh.py（核心）"
 
-#: ../../source/example_gallery/basics.rst:286
-#: ce5261a4ee5b4168a6c5d308d7d2a9d7
+#: ../../source/example_gallery/basics.rst:290 732ef95c89914859b630d3c7220066c5
 msgid ""
 "The corresponding 3D scripts use ``dimension=3`` plus ``add_cube`` / "
 "``remove_sphere`` for CSG."
@@ -465,64 +432,55 @@ msgstr ""
 "相应的三维脚本使用 ``dimension=3``\\ ，并配合 ``add_cube`` / ``remove_sphere`` 进行 "
 "CSG（构造实体几何）操作。"
 
-#: ../../source/example_gallery/basics.rst:289
-#: 31caf23e8c16480c827e813f9445a1f8
+#: ../../source/example_gallery/basics.rst:293 70fca55959244f6689ac564b1cd7a3fc
 msgid "Hybrid 2D mesh with triangles, quadrilaterals, and a circular hole"
 msgstr "包含三角形、四边形和一个圆孔的二维混合网格"
 
-#: ../../source/example_gallery/basics.rst:294
-#: 6148f27e426f4847abb7efe0c24940d6
+#: ../../source/example_gallery/basics.rst:298 e05a367b710f467d985c49b11dbc2051
 msgid ""
-"Hybrid 2D mesh produced by the snippet above: order-2 triangles on the left,"
-" order-2 quadrilaterals on the right, and a circular hole at the interface. "
-"Orange dots are the interpolation nodes (including mid-edge nodes from the "
-"order-2 elements)."
-msgstr ""
-"上面代码片段生成的二维混合网格：左侧为 2 阶三角形，右侧为 2 阶四边形，交界处有一个圆孔。橙色圆点为插值节点（包括 2 阶单元的边中点节点）。"
+"Hybrid 2D mesh produced by the snippet above: order-2 triangles on the "
+"left, order-2 quadrilaterals on the right, and a circular hole at the "
+"interface. Orange dots are the interpolation nodes (including mid-edge "
+"nodes from the order-2 elements)."
+msgstr "上面代码片段生成的二维混合网格：左侧为 2 阶三角形，右侧为 2 阶四边形，交界处有一个圆孔。橙色圆点为插值节点（包括 2 阶单元的边中点节点）。"
 
-#: ../../source/example_gallery/basics.rst:301
-#: 4e8cb9c0dc8b42818108cd8e428c4b38
+#: ../../source/example_gallery/basics.rst:305 dae0891efec642009e1bebfa438b1c4d
 msgid "Running the scripts"
 msgstr "运行脚本"
 
-#: ../../source/example_gallery/basics.rst:303
-#: d82411d7c77542b4983ed44b5286c493
+#: ../../source/example_gallery/basics.rst:307 ecfac2396a8847dab0fddcea019b564b
 msgid "All four are standalone:"
 msgstr "这四个脚本都可独立运行："
 
-#: ../../source/example_gallery/basics.rst:313
-#: 3223d55074f843978e74017534061b03
+#: ../../source/example_gallery/basics.rst:317 90518e608fca43058c79ed120e27e718
 msgid ""
-"Outputs land under ``examples/basics/output/`` — one PNG per script or, for "
-"the multi-element scripts, one PNG per (element, order) combination."
+"Outputs land under ``examples/basics/output/`` — one PNG per script or, "
+"for the multi-element scripts, one PNG per (element, order) combination."
 msgstr ""
-"输出保存在 ``examples/basics/output/`` 下——每个脚本生成一张 PNG，对于多单元脚本，则每个（单元，阶数）组合生成一张 "
-"PNG。"
+"输出保存在 ``examples/basics/output/`` 下——每个脚本生成一张 "
+"PNG，对于多单元脚本，则每个（单元，阶数）组合生成一张 PNG。"
 
-#: ../../source/example_gallery/basics.rst:319
-#: b79cd2c0d5494884a11804d00c4ff97c
+#: ../../source/example_gallery/basics.rst:323 0533a42cd50c4b5ca527be7ce084e93b
 msgid "What's next"
 msgstr "接下来"
 
-#: ../../source/example_gallery/basics.rst:321
-#: 513b310e5d3f47fd91e8aa26df8afb61
+#: ../../source/example_gallery/basics.rst:325 0f5e5108f6f24dfba8273dbd3ff37992
 msgid ""
-":doc:`../user_guide/elements_and_quadrature` — the element zoo and the basis"
-" / quadrature interface these scripts call into."
-msgstr ""
-":doc:`../user_guide/elements_and_quadrature`——单元大全，以及这些脚本所调用的基函数 / 求积接口。"
+":doc:`../user_guide/elements_and_quadrature` — the element zoo and the "
+"basis / quadrature interface these scripts call into."
+msgstr ":doc:`../user_guide/elements_and_quadrature`——单元大全，以及这些脚本所调用的基函数 / 求积接口。"
 
-#: ../../source/example_gallery/basics.rst:323
-#: d506ace0605947328d5f6857bee13466
+#: ../../source/example_gallery/basics.rst:327 bee22fe3968c4ed4b49083e3d7686c9e
 msgid ""
-":doc:`../user_guide/meshes` — meshing API, ``reorder=True``, and per-node / "
-"per-element data."
+":doc:`../user_guide/meshes` — meshing API, ``reorder=True``, and per-node"
+" / per-element data."
 msgstr ""
-":doc:`../user_guide/meshes`——网格剖分 API、\\ ``reorder=True``\\ ，以及逐节点 / 逐单元数据。"
+":doc:`../user_guide/meshes`——网格剖分 API、\\ ``reorder=True``\\ ，以及逐节点 / "
+"逐单元数据。"
 
-#: ../../source/example_gallery/basics.rst:325
-#: af02ee09296643cab0fcc1f9a6b301e5
+#: ../../source/example_gallery/basics.rst:329 784b266c7f3443f7a7f960c4ea0cb559
 msgid ""
-":doc:`poisson` — first PDE solve, using the same :class:`~tensormesh.Mesh` "
-"objects you just learned to build."
+":doc:`poisson` — first PDE solve, using the same "
+":class:`~tensormesh.Mesh` objects you just learned to build."
 msgstr ":doc:`poisson`——第一个偏微分方程求解，使用你刚学会构建的同款 :class:`~tensormesh.Mesh` 对象。"
+
