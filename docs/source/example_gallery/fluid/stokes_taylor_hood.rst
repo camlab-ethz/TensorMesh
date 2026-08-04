@@ -1,6 +1,10 @@
 Taylor-Hood Stokes
 ==================
 
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+   :target: https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/stokes_taylor_hood.ipynb
+   :alt: Open in Colab
+
 The entry point to mixed assembly: the script
 ``examples/fluid/stokes_taylor_hood/stokes_taylor_hood.py`` solves a
 **manufactured** incompressible Stokes problem on the unit square with

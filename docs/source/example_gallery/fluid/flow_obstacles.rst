@@ -1,6 +1,10 @@
 Flow Past Multiple Obstacles
 ============================
 
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+   :target: https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/flow_obstacles.ipynb
+   :alt: Open in Colab
+
 A **steady** Navier-Stokes example that highlights TensorMesh's
 mesh-generation capabilities as much as its FEM machinery. The
 script ``examples/fluid/flow_obstacles/flow_obstacles.py`` solves

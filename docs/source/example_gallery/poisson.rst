@@ -39,6 +39,10 @@ available.
 Basic 2D Poisson — ``poisson.py``
 ----------------------------------
 
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+   :target: https://colab.research.google.com/github/camlab-ethz/TensorMesh/blob/main/notebooks/poisson.ipynb
+   :alt: Open in Colab
+
 The shortest end-to-end driver in the repo. The full pipeline fits
 in 25 lines:
 

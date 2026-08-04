@@ -8,15 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-22 15:34+0200\n"
+"POT-Creation-Date: 2026-08-04 20:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: zh_CN <LL@li.org>\n"
 "Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
 "Generated-By: Babel 2.18.0\n"
 
 #: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:2
@@ -25,36 +25,42 @@ msgid "Taylor-Hood Stokes"
 msgstr "Taylor-Hood Stokes"
 
 #: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:4
+#: be52e589497e435c9138fc6f7fce01fd
+msgid "Open in Colab"
+msgstr "在 Colab 中打开"
+
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:8
 #: 7fa88d17ebca44229bce9d4f65777b23
 msgid ""
 "The entry point to mixed assembly: the script "
 "``examples/fluid/stokes_taylor_hood/stokes_taylor_hood.py`` solves a "
-"**manufactured** incompressible Stokes problem on the unit square with the "
-"classic Taylor-Hood P2-P1 pair, verifies the solution against the exact "
-"fields, and runs an h-refinement convergence study. If you are new to "
-":class:`~tensormesh.MixedElementAssembler`, start here — the :doc:`cavity "
-"<cavity>`, :doc:`cylinder <cylinder_flow>` and :doc:`Rayleigh-Bénard "
-"<rayleigh_benard>` examples all build on this pattern. The concepts are "
-"covered in :doc:`../../user_guide/mixed_assembly`."
+"**manufactured** incompressible Stokes problem on the unit square with "
+"the classic Taylor-Hood P2-P1 pair, verifies the solution against the "
+"exact fields, and runs an h-refinement convergence study. If you are new "
+"to :class:`~tensormesh.MixedElementAssembler`, start here — the "
+":doc:`cavity <cavity>`, :doc:`cylinder <cylinder_flow>` and :doc"
+":`Rayleigh-Bénard <rayleigh_benard>` examples all build on this pattern. "
+"The concepts are covered in :doc:`../../user_guide/mixed_assembly`."
 msgstr ""
 "混合装配的入口：脚本 ``examples/fluid/stokes_taylor_hood/stokes_taylor_hood.py`` "
-"在单位正方形上求解一个 **构造的** 不可压缩 Stokes 问题，采用经典的 Taylor-Hood P2-P1 元组，将解与精确场进行验证，并开展"
-" h 加密收敛性研究。如果您刚接触 :class:`~tensormesh.MixedElementAssembler`\\ ，请从这里开始 —— "
-":doc:`cavity <cavity>`\\ 、\\ :doc:`cylinder <cylinder_flow>` 和 "
-":doc:`Rayleigh-Bénard <rayleigh_benard>` 示例均基于这一模式构建。相关概念详见 "
+"在单位正方形上求解一个 **构造的** 不可压缩 Stokes 问题，采用经典的 Taylor-Hood P2-P1 "
+"元组，将解与精确场进行验证，并开展 h 加密收敛性研究。如果您刚接触 "
+":class:`~tensormesh.MixedElementAssembler`\\ ，请从这里开始 —— :doc:`cavity "
+"<cavity>`\\ 、\\ :doc:`cylinder <cylinder_flow>` 和 :doc:`Rayleigh-Bénard "
+"<rayleigh_benard>` 示例均基于这一模式构建。相关概念详见 "
 ":doc:`../../user_guide/mixed_assembly`\\ 。"
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:17
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:21
 #: ea21ce0a3ac4456f82fd86c5b7eae534
 msgid "Problem"
 msgstr "问题"
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:19
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:23
 #: c673ac81215d44c68f7dcff934ebfeba
 msgid "The Stokes equations with a body force,"
 msgstr "带体积力的 Stokes 方程，"
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:21
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:25
 #: accd23bb31b7465b99c1bd1d9f3ae27e
 #, python-brace-format
 msgid ""
@@ -66,88 +72,93 @@ msgstr ""
 "\\quad \\text{in } \\Omega = (0,1)^2,\n"
 "\\qquad \\nabla \\cdot \\mathbf{u} = 0,"
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:27
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:31
 #: b988f4f6816f42439615a277b2193086
 #, python-brace-format
 msgid ""
-"with :math:`\\mathbf{f}` manufactured from a divergence-free exact velocity "
-"(derived from the stream function :math:`\\psi = \\sin^2(\\pi "
+"with :math:`\\mathbf{f}` manufactured from a divergence-free exact "
+"velocity (derived from the stream function :math:`\\psi = \\sin^2(\\pi "
 "x)\\,\\sin^2(\\pi y)`) and the exact pressure :math:`p = \\sin(\\pi "
-"x)\\cos(\\pi y)`. Dirichlet data on the boundary is the exact velocity; one "
-"pressure DOF is pinned to the exact value to fix the constant null space."
+"x)\\cos(\\pi y)`. Dirichlet data on the boundary is the exact velocity; "
+"one pressure DOF is pinned to the exact value to fix the constant null "
+"space."
 msgstr ""
 "其中 :math:`\\mathbf{f}` 由一个无散度的精确速度（由流函数 :math:`\\psi = \\sin^2(\\pi "
 "x)\\,\\sin^2(\\pi y)` 导出）和精确压力 :math:`p = \\sin(\\pi x)\\cos(\\pi y)` "
 "构造而来。边界上的狄利克雷数据为精确速度；一个压力自由度被固定为精确值以消除常数零空间。"
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:34
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:38
 #: d9ca79715f6c4853b71447670ffd9b34
 msgid ""
-"Because the exact pressure is *not* in the P1 space and the exact velocity "
-"is not in the P2 space, the discrete errors are genuine approximation errors"
-" — ideal for measuring convergence rates."
+"Because the exact pressure is *not* in the P1 space and the exact "
+"velocity is not in the P2 space, the discrete errors are genuine "
+"approximation errors — ideal for measuring convergence rates."
 msgstr "由于精确压力 *不在* P1 空间中，且精确速度不在 P2 空间中，离散误差是真正的逼近误差 —— 非常适合测量收敛速率。"
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:40
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:44
 #: aa561c92a1d64a6aa942a65120baf215
 msgid "The mixed weak form"
 msgstr "混合弱形式"
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:42
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:46
 #: ef20ce1716224e60afb4dfd6da8ac934
 #, python-brace-format
 msgid ""
-"Multiply by test functions :math:`(\\mathbf{v}, q)` and integrate by parts:"
+"Multiply by test functions :math:`(\\mathbf{v}, q)` and integrate by "
+"parts:"
 msgstr "乘以测试函数 :math:`(\\mathbf{v}, q)` 并分部积分："
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:45
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:49
 #: 4a5765e9ed784a5287cc3b1924c1b504
 #, python-brace-format
 msgid ""
-"\\int_\\Omega \\mu\\,\\nabla\\mathbf{u} : \\nabla\\mathbf{v}\\,\\mathrm{d}x\n"
+"\\int_\\Omega \\mu\\,\\nabla\\mathbf{u} : "
+"\\nabla\\mathbf{v}\\,\\mathrm{d}x\n"
 "- \\int_\\Omega p\\,(\\nabla\\cdot\\mathbf{v})\\,\\mathrm{d}x\n"
 "- \\int_\\Omega q\\,(\\nabla\\cdot\\mathbf{u})\\,\\mathrm{d}x\n"
 "\\;=\\; \\int_\\Omega \\mathbf{f}\\cdot\\mathbf{v}\\,\\mathrm{d}x ."
 msgstr ""
-"\\int_\\Omega \\mu\\,\\nabla\\mathbf{u} : \\nabla\\mathbf{v}\\,\\mathrm{d}x\n"
+"\\int_\\Omega \\mu\\,\\nabla\\mathbf{u} : "
+"\\nabla\\mathbf{v}\\,\\mathrm{d}x\n"
 "- \\int_\\Omega p\\,(\\nabla\\cdot\\mathbf{v})\\,\\mathrm{d}x\n"
 "- \\int_\\Omega q\\,(\\nabla\\cdot\\mathbf{u})\\,\\mathrm{d}x\n"
 "\\;=\\; \\int_\\Omega \\mathbf{f}\\cdot\\mathbf{v}\\,\\mathrm{d}x ."
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:52
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:56
 #: 16e07588a7c843debe7fcae959543852
 msgid ""
-"In TensorMesh this *is* the code — two field declarations and a four-line "
-"integrand:"
+"In TensorMesh this *is* the code — two field declarations and a four-line"
+" integrand:"
 msgstr "在 TensorMesh 中这 *就是* 代码 —— 两个场声明和一个四行积分项："
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:55
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:59
 #: 2baf9ed3d3394d72b2328c61687cb347
 msgid "examples/fluid/stokes_taylor_hood/stokes_taylor_hood.py (essence)"
 msgstr "examples/fluid/stokes_taylor_hood/stokes_taylor_hood.py（核心部分）"
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:72
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:76
 #: abbb92587b404187bc7ec1e8e9338623
 #, python-brace-format
 msgid ""
 "``gradu`` is the :math:`2 \\times 2` velocity Jacobian, so ``(gradu * "
 "gradv).sum()`` is :math:`\\nabla\\mathbf{u}:\\nabla\\mathbf{v}` and "
-"``gradu.diagonal().sum()`` is :math:`\\nabla\\cdot\\mathbf{u}`. Trial fields"
-" ``(u, p)`` index matrix columns, test fields ``(v, q)`` rows. The P2-P1 "
-"pair satisfies the discrete inf-sup (LBB) condition, so no stabilization "
-"terms appear anywhere."
+"``gradu.diagonal().sum()`` is :math:`\\nabla\\cdot\\mathbf{u}`. Trial "
+"fields ``(u, p)`` index matrix columns, test fields ``(v, q)`` rows. The "
+"P2-P1 pair satisfies the discrete inf-sup (LBB) condition, so no "
+"stabilization terms appear anywhere."
 msgstr ""
 "``gradu`` 是 :math:`2 \\times 2` 速度雅可比矩阵，因此 ``(gradu * gradv).sum()`` 即 "
 ":math:`\\nabla\\mathbf{u}:\\nabla\\mathbf{v}`\\ ，\\ "
-"``gradu.diagonal().sum()`` 即 :math:`\\nabla\\cdot\\mathbf{u}`\\ 。试函数 ``(u, "
-"p)`` 索引矩阵列，测试函数 ``(v, q)`` 索引行。P2-P1 元组满足离散 inf-sup（LBB）条件，因此任何地方都不出现稳定化项。"
+"``gradu.diagonal().sum()`` 即 :math:`\\nabla\\cdot\\mathbf{u}`\\ 。试函数 "
+"``(u, p)`` 索引矩阵列，测试函数 ``(v, q)`` 索引行。P2-P1 元组满足离散 inf-"
+"sup（LBB）条件，因此任何地方都不出现稳定化项。"
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:81
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:85
 #: b47e1d01ba8e47e2abed764b14f50c86
 msgid "Boundary conditions via the layout"
 msgstr "通过 layout 施加边界条件"
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:83
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:87
 #: e03ecf1a567d4c4883dff3c6a417aa59
 msgid ""
 "``assembler.layout`` translates \"field, nodes, component\" into global "
@@ -155,51 +166,50 @@ msgid ""
 "code:"
 msgstr "``assembler.layout`` 将\"场、节点、分量\"翻译为全局块自由度索引，因此鞍点结构不会泄漏到边界条件代码中："
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:103
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:107
 #: fa03a26871eb445487f4dd5949dde595
 msgid ""
-"The body force is assembled with a plain :class:`~tensormesh.NodeAssembler` "
-"on the velocity space (the order-2 mesh points *are* the P2 nodes) and "
-"placed into the block vector with ``layout.cat``:"
+"The body force is assembled with a plain "
+":class:`~tensormesh.NodeAssembler` on the velocity space (the order-2 "
+"mesh points *are* the P2 nodes) and placed into the block vector with "
+"``layout.cat``:"
 msgstr ""
-"体积力采用普通的 :class:`~tensormesh.NodeAssembler` 在速度空间上装配（二阶网格点 *即* P2 节点），并通过 "
-"``layout.cat`` 放入块向量中："
+"体积力采用普通的 :class:`~tensormesh.NodeAssembler` 在速度空间上装配（二阶网格点 *即* P2 节点），并通过"
+" ``layout.cat`` 放入块向量中："
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:119
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:123
 #: b2e8d7bd49824495b16481f9b9993ba6
 msgid "Convergence study"
 msgstr "收敛性研究"
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:121
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:125
 #: 5ba7313c54c747d19842ddf228e6a9ff
 msgid ""
-"Taylor-Hood theory promises :math:`O(h^2)` in the velocity :math:`H^1` norm "
-"and :math:`O(h^2)` in the pressure :math:`L^2` norm. The script measures "
-"both with quadrature-accurate error integrals:"
+"Taylor-Hood theory promises :math:`O(h^2)` in the velocity :math:`H^1` "
+"norm and :math:`O(h^2)` in the pressure :math:`L^2` norm. The script "
+"measures both with quadrature-accurate error integrals:"
 msgstr ""
 "Taylor-Hood 理论保证速度 :math:`H^1` 范数为 :math:`O(h^2)`\\ 、压力 :math:`L^2` 范数为 "
 ":math:`O(h^2)`\\ 。脚本通过求积精确误差积分对两者进行测量："
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:134
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:138
 #: b66a18a97d7e449eb343f190ff05971c
-msgid ""
-"Taylor-Hood Stokes convergence: velocity H1 and pressure L2 errors vs h"
+msgid "Taylor-Hood Stokes convergence: velocity H1 and pressure L2 errors vs h"
 msgstr "Taylor-Hood Stokes 收敛性：速度 H1 与压力 L2 误差随 h 变化"
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:139
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:143
 #: a30cf0704f0e4d5ebb7a8ce1bc6e5f62
 msgid ""
 "Velocity :math:`H^1` and pressure :math:`L^2` errors under uniform "
 "h-refinement, both tracking the :math:`O(h^2)` reference slope."
 msgstr "均匀 h 加密下速度 :math:`H^1` 和压力 :math:`L^2` 误差，两者均跟随 :math:`O(h^2)` 参考斜率。"
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:142
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:146
 #: 6acb98d69a454619970dcab87a3620e1
-msgid ""
-"Taylor-Hood Stokes solution: speed, pressure, and pointwise velocity error"
+msgid "Taylor-Hood Stokes solution: speed, pressure, and pointwise velocity error"
 msgstr "Taylor-Hood Stokes 解：速度、压力及点态速度误差"
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:146
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:150
 #: a0ff72f5aa6d41359f5c9fc02bbe03e5
 msgid ""
 "Finest-level solution: speed magnitude, P1 pressure (prolonged to the P2 "
@@ -207,41 +217,41 @@ msgid ""
 "exact solution."
 msgstr "最细层级的解：速度大小、P1 压力（延拓至 P2 网格点用于绘图），以及相对于精确解的点态速度误差。"
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:152
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:156
 #: d29d8170f22b4f46b6247a46377d749d
 msgid "Running it"
 msgstr "运行"
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:159
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:163
 #: af4e68bc67014cbda0d09aacfd5ad23a
 msgid ""
-"The four-level study runs in a few minutes on CPU; the finest level has ~67k"
-" DOFs."
+"The four-level study runs in a few minutes on CPU; the finest level has "
+"~67k DOFs."
 msgstr "四层研究在 CPU 上数分钟即可完成；最细层级约有 67k 自由度。"
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:164
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:168
 #: fe7286b345b44ac2b2b90f9e3ef18992
 msgid "What's next"
 msgstr "下一步"
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:166
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:170
 #: 525bee39762349c0b6c48c8bd7101ca9
 msgid ""
 ":doc:`cavity` — add convection and Picard linearization to this exact "
 "assembler."
 msgstr ":doc:`cavity` —— 在此精确装配器基础上添加对流项与 Picard 线性化。"
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:168
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:172
 #: 0efff1c3235045ad8ec5f5fe23eeac18
 msgid ""
-":doc:`../../user_guide/mixed_assembly` — the full mixed-assembly contract "
-"(fields, layout, load vectors, generalized order pairs)."
-msgstr ""
-":doc:`../../user_guide/mixed_assembly` —— 混合装配的完整约定（场、layout、载荷向量、广义阶数配对）。"
+":doc:`../../user_guide/mixed_assembly` — the full mixed-assembly contract"
+" (fields, layout, load vectors, generalized order pairs)."
+msgstr ":doc:`../../user_guide/mixed_assembly` —— 混合装配的完整约定（场、layout、载荷向量、广义阶数配对）。"
 
-#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:170
+#: ../../source/example_gallery/fluid/stokes_taylor_hood.rst:174
 #: f96c618f14b44b659cad1b02e531a93b
 msgid ""
 ":doc:`../../user_guide/linear_solvers` — solver backends for the saddle-"
 "point system."
 msgstr ":doc:`../../user_guide/linear_solvers` —— 鞍点系统的求解器后端。"
+

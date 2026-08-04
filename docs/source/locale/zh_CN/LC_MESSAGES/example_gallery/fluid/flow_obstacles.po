@@ -8,15 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-22 15:34+0200\n"
+"POT-Creation-Date: 2026-08-04 20:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: zh_CN <LL@li.org>\n"
 "Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
 "Generated-By: Babel 2.18.0\n"
 
 #: ../../source/example_gallery/fluid/flow_obstacles.rst:2
@@ -25,40 +25,47 @@ msgid "Flow Past Multiple Obstacles"
 msgstr "绕多个障碍物的流动"
 
 #: ../../source/example_gallery/fluid/flow_obstacles.rst:4
+#: aa4f75bf3f894e0a9a4b1bd6401345aa
+msgid "Open in Colab"
+msgstr "在 Colab 中打开"
+
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:8
 #: d5528672a83044d49dc8a0bca178571d
 #, python-brace-format
 msgid ""
 "A **steady** Navier-Stokes example that highlights TensorMesh's mesh-"
 "generation capabilities as much as its FEM machinery. The script "
-"``examples/fluid/flow_obstacles/flow_obstacles.py`` solves incompressible "
-"flow at :math:`\\mathrm{Re} = 150` through a :math:`3 \\times 1` channel "
-"containing six circular obstacles of varying size and position. The mesh is "
-"generated programmatically via :class:`~tensormesh.MeshGen` using CSG "
-"(constructive solid geometry): start with a rectangle, subtract six discs."
+"``examples/fluid/flow_obstacles/flow_obstacles.py`` solves incompressible"
+" flow at :math:`\\mathrm{Re} = 150` through a :math:`3 \\times 1` channel"
+" containing six circular obstacles of varying size and position. The mesh"
+" is generated programmatically via :class:`~tensormesh.MeshGen` using CSG"
+" (constructive solid geometry): start with a rectangle, subtract six "
+"discs."
 msgstr ""
 "一个\\ **稳态**\\ 纳维-斯托克斯算例，既展示了 TensorMesh 的有限元机制，也同样突出了它的网格生成能力。脚本 "
-"``examples/fluid/flow_obstacles/flow_obstacles.py`` 求解 :math:`\\mathrm{Re} ="
-" 150` 下穿过一个 :math:`3 \\times 1` 通道的不可压缩流动，通道内含有六个大小与位置各异的圆形障碍物。网格通过 "
-":class:`~tensormesh.MeshGen` 借助 CSG（构造实体几何）以编程方式生成：从一个矩形出发，再减去六个圆盘。"
+"``examples/fluid/flow_obstacles/flow_obstacles.py`` 求解 "
+":math:`\\mathrm{Re} = 150` 下穿过一个 :math:`3 \\times 1` "
+"通道的不可压缩流动，通道内含有六个大小与位置各异的圆形障碍物。网格通过 :class:`~tensormesh.MeshGen` 借助 "
+"CSG（构造实体几何）以编程方式生成：从一个矩形出发，再减去六个圆盘。"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:13
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:17
 #: 7c51226265a14f0fa92cb7e437c93164
 msgid ""
 "The discretization is the same **Taylor-Hood P2-P1** mixed pair as "
-":doc:`cavity` — and like :doc:`cylinder_flow`, the MeshGen mesh is linear, "
-"so the quadratic velocity space is generated **topologically** on top of it "
-"by the :class:`~tensormesh.MixedElementAssembler`."
+":doc:`cavity` — and like :doc:`cylinder_flow`, the MeshGen mesh is "
+"linear, so the quadratic velocity space is generated **topologically** on"
+" top of it by the :class:`~tensormesh.MixedElementAssembler`."
 msgstr ""
-"离散化采用与 :doc:`cavity` 相同的 **Taylor-Hood P2-P1** 混合单元对——与 :doc:`cylinder_flow`"
-" 类似，MeshGen 网格是线性的，因此二次速度空间由 :class:`~tensormesh.MixedElementAssembler` "
-"在其上\\ **按拓扑方式**\\ 生成。"
+"离散化采用与 :doc:`cavity` 相同的 **Taylor-Hood P2-P1** 混合单元对——与 "
+":doc:`cylinder_flow` 类似，MeshGen 网格是线性的，因此二次速度空间由 "
+":class:`~tensormesh.MixedElementAssembler` 在其上\\ **按拓扑方式**\\ 生成。"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:21
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:25
 #: b60e820670cf4ba79c40bb26ff572e83
 msgid "Problem"
 msgstr "问题"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:23
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:27
 #: 6225203329fd43389b036288dc02c062
 #, python-brace-format
 msgid ""
@@ -72,12 +79,12 @@ msgstr ""
 "\\quad \\text{in } \\Omega,\n"
 "\\qquad \\nabla \\cdot \\mathbf{u} = 0,"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:30
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:34
 #: daee22b7c2944a849793be49bbc38db2
 msgid "with the channel :math:`(0, 3) \\times (0, 1)` minus six discs at"
 msgstr "其中通道 :math:`(0, 3) \\times (0, 1)` 减去位于以下位置的六个圆盘"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:32
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:36
 #: dae55832673d4f6187412e570ca12311
 msgid ""
 "(0.5, 0.5)\\!:\\,r\\!=\\!0.10, \\quad\n"
@@ -96,61 +103,62 @@ msgstr ""
 "(2.0, 0.4)\\!:\\,r\\!=\\!0.07, \\quad\n"
 "(2.0, 0.6)\\!:\\,r\\!=\\!0.07."
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:42
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:46
 #: 50de130913894ca692698dea787df782
 msgid "Boundary conditions:"
 msgstr "边界条件："
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:44
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:48
 #: eacc7c712d9b46f88dd452eb841334b0
 msgid ""
-"inlet (:math:`x = 0`): parabolic profile, :math:`u_x(y) = 4\\,y\\,(1 - y)`,"
+"inlet (:math:`x = 0`): parabolic profile, :math:`u_x(y) = 4\\,y\\,(1 - "
+"y)`,"
 msgstr "入口（\\ :math:`x = 0`\\ ）：抛物型分布，\\ :math:`u_x(y) = 4\\,y\\,(1 - y)`\\ ，"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:46
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:50
 #: ad1191957eb04bb9aaf155ec1c013267
 msgid "walls (:math:`y = 0`, :math:`y = 1`) and obstacle surfaces: no-slip,"
 msgstr "壁面（\\ :math:`y = 0`\\ 、\\ :math:`y = 1`\\ ）与障碍物表面：无滑移，"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:48
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:52
 #: 0557fe3a901a4061a8a16e824ac1eeac
 msgid ""
 "outlet (:math:`x = 3`): \"do-nothing\" (natural), which also fixes the "
 "pressure gauge — no pressure BC at all."
 msgstr "出口（\\ :math:`x = 3`\\ ）：\"do-nothing\"（自然边界条件），同时固定压力基准——完全不需要施加压力边界条件。"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:51
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:55
 #: e9f331dc69af437c8a4dc81e00081905
 #, python-brace-format
 msgid ""
-"At :math:`\\mathrm{Re} = 150` the flow is steady (no shedding), the wake of "
-"each obstacle interacts with the next, and the solution shows characteristic"
-" narrow jets between the closely- spaced cylinders."
+"At :math:`\\mathrm{Re} = 150` the flow is steady (no shedding), the wake "
+"of each obstacle interacts with the next, and the solution shows "
+"characteristic narrow jets between the closely- spaced cylinders."
 msgstr ""
 "在 :math:`\\mathrm{Re} = 150` "
 "时流动是稳态的（无脱落），每个障碍物的尾迹与下一个相互作用，解中呈现出靠得很近的圆柱之间特征性的狭窄射流。"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:58
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:62
 #: fa6c2dff99af4ebf8141e2cafc4294df
 msgid "Mesh generation via CSG"
 msgstr "通过 CSG 生成网格"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:60
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:64
 #: 31009fb8a3a146cdb08c9286a65e5d28
 msgid ""
-"The most interesting part of this script is the mesh-generation block — it "
-"is short, self-contained, and demonstrates the ``add_…`` / ``remove_…`` "
-"style of CSG that :class:`~tensormesh.MeshGen` exposes:"
+"The most interesting part of this script is the mesh-generation block — "
+"it is short, self-contained, and demonstrates the ``add_…`` / "
+"``remove_…`` style of CSG that :class:`~tensormesh.MeshGen` exposes:"
 msgstr ""
 "这个脚本最有意思的部分是网格生成代码块——它简短、自成体系，并展示了 :class:`~tensormesh.MeshGen` 所暴露的 "
 "``add_…`` / ``remove_…`` 风格的 CSG："
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:65
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:69
 #: 87c4740d46a248fd9008ea2c781d1a21
 msgid "examples/fluid/flow_obstacles/flow_obstacles.py (essence)"
 msgstr "examples/fluid/flow_obstacles/flow_obstacles.py（核心部分）"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:79
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:83
 #: 59d93328785f4ee8a125e9e73437b62e
 msgid ""
 "Under the hood, ``MeshGen`` defers to Gmsh's OpenCASCADE backend for the "
@@ -162,119 +170,119 @@ msgstr ""
 ":class:`~tensormesh.Mesh`\\ 。完整的 ``MeshGen`` API 参见 "
 ":doc:`../../user_guide/meshes`\\ 。"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:87
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:91
 #: 77bc43a33f514882a93a9c2d77e4e6bd
 msgid "Solver"
 msgstr "求解器"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:89
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:93
 #: 8877a5c979c84bd58d2bcf224f741938
 msgid ""
-"Identical to :doc:`cavity` — the same two-field ``NavierStokesAssembler`` "
-"(Picard-linearized convection, four-line scalar integrand) with richer "
-"boundary masks. Because the velocity DOFs include topologically generated "
-"edge nodes, the masks are built from the layout's own coordinates and "
+"Identical to :doc:`cavity` — the same two-field ``NavierStokesAssembler``"
+" (Picard-linearized convection, four-line scalar integrand) with richer "
+"boundary masks. Because the velocity DOFs include topologically generated"
+" edge nodes, the masks are built from the layout's own coordinates and "
 "boundary detection — no geometric distance tests against the obstacle "
 "circles needed:"
 msgstr ""
 "与 :doc:`cavity` 相同——使用相同的双场 ``NavierStokesAssembler``\\ （Picard "
 "线性化对流，四行标量被积函数），但具有更丰富的边界掩码。由于速度自由度包含按拓扑生成的边节点，掩码直接从布局自身的坐标和边界检测构建——无需对障碍圆进行几何距离测试："
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:112
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:116
 #: f3377767628a41d7b8571c49945bb281
 msgid ""
 "The obstacle surfaces fall out of the topological classification "
 "automatically: they are boundary nodes that are neither inlet nor outlet."
 msgstr "障碍物表面自动由拓扑分类得出：它们是既非入口也非出口的边界节点。"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:118
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:122
 #: 3c439d42949d4bc78a3c7f3cb54d02ad
 msgid "Output"
 msgstr "输出"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:120
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:124
 #: 2cdbbe3405ae4b2c99bbbff071aa9179
 msgid ""
 "``flow_obstacles.png`` is the final figure: speed magnitude and pressure "
-"contour overlaid on the obstacle silhouettes. Useful sanity checks on the "
-"picture:"
+"contour overlaid on the obstacle silhouettes. Useful sanity checks on the"
+" picture:"
 msgstr "``flow_obstacles.png`` 是最终图像：速度大小与压力等值线叠加在障碍物轮廓之上。图中可做的合理性检查包括："
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:124
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:128
 #: 49342531e9d64f899056646b544aec35
 msgid ""
-"a high-speed jet between the two upper-row obstacles at :math:`x \\approx "
-"1.0`,"
+"a high-speed jet between the two upper-row obstacles at :math:`x \\approx"
+" 1.0`,"
 msgstr ":math:`x \\approx 1.0` 处上排两个障碍物之间的高速射流，"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:126
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:130
 #: 1430755af32e4ee58ea054582b51074c
 msgid ""
 "a broad recirculation zone behind the largest obstacle at :math:`(1.5, "
 "0.5)`,"
 msgstr "位于 :math:`(1.5, 0.5)` 的最大障碍物后方的宽阔回流区，"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:128
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:132
 #: dfe50161d90f44638e79f5c0a23495c0
 msgid "near-uniform pressure drop across the channel."
 msgstr "沿通道近乎均匀的压降。"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:130
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:134
 #: fb40d7492fad4f528a5ab38d4a310703
 msgid ""
 "Speed magnitude and pressure for steady flow past 6 random circular "
 "obstacles"
 msgstr "绕 6 个随机圆形障碍物稳态流动的速度大小与压力"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:134
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:138
 #: 68e11b8283b04a16b0ff78ff1f18d49d
 msgid ""
-"Output of ``flow_obstacles.py`` at Re = 150 (Taylor-Hood P2-P1). Left: speed"
-" magnitude — high-velocity jets squeeze between obstacle pairs and broaden "
-"into wakes downstream. Right: pressure — stagnation upstream of each "
-"obstacle, low-pressure pockets in the wakes, and a near-uniform streamwise "
-"pressure drop across the channel."
+"Output of ``flow_obstacles.py`` at Re = 150 (Taylor-Hood P2-P1). Left: "
+"speed magnitude — high-velocity jets squeeze between obstacle pairs and "
+"broaden into wakes downstream. Right: pressure — stagnation upstream of "
+"each obstacle, low-pressure pockets in the wakes, and a near-uniform "
+"streamwise pressure drop across the channel."
 msgstr ""
 "``flow_obstacles.py`` 在 Re = 150 时的输出（Taylor-Hood "
 "P2-P1）。左：速度大小——高速射流在障碍对之间挤压，并在下游扩展为尾流。右：压力——每个障碍物上游形成滞止，尾流中出现低压区，通道内沿流向压力近乎均匀下降。"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:143
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:147
 #: a9795d4a8ec449f995c7ad4c3a157cb0
 msgid "Running it"
 msgstr "运行方式"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:150
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:154
 #: 39e0c9d932904e5b887728367e666ea1
 msgid ""
 "At the default resolution (51k DOFs) the Picard loop converges in 8 "
 "iterations."
 msgstr "在默认分辨率（51k 自由度）下，Picard 迭代在 8 次迭代内收敛。"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:155
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:159
 #: dfc769dc7f9f4bdc8ef3a15c66205375
 msgid "What's next"
 msgstr "下一步"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:157
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:161
 #: f588618d7a7f430f8a199594d1658ff9
 msgid ":doc:`cavity` — the simpler steady benchmark."
 msgstr ":doc:`cavity`——更简单的稳态基准。"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:158
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:162
 #: 4ab0555d1f9a49a699c0195b30b77558
 msgid ""
 ":doc:`cylinder_flow` — the *transient* version of \"flow past a body\", "
 "where shedding takes over."
 msgstr ":doc:`cylinder_flow`——“绕物体流动”的\\ *瞬态*\\ 版本，此时脱落占据主导。"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:160
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:164
 #: feb56b84224c4474ae4f7d1561f2df45
 msgid ""
 ":doc:`../../user_guide/meshes` — full ``MeshGen`` API including 3D "
 "primitives and hybrid meshes."
 msgstr ":doc:`../../user_guide/meshes`——完整的 ``MeshGen`` API，包括 3D 基本几何体与混合网格。"
 
-#: ../../source/example_gallery/fluid/flow_obstacles.rst:162
+#: ../../source/example_gallery/fluid/flow_obstacles.rst:166
 #: 0a769ee1527b44b2b775bf64c8649080
 msgid ""
 ":doc:`../../user_guide/mixed_assembly` — topological P2 spaces on linear "
@@ -285,29 +293,35 @@ msgstr ":doc:`../../user_guide/mixed_assembly` — 线性网格上的拓扑 P2 �
 #~ msgstr "出口（\\ :math:`x = 3`\\ ）：\\ :math:`p = 0`\\ 。"
 
 #~ msgid ""
-#~ "Identical to :doc:`cavity` — same custom ``NavierStokesAssembler``, same "
-#~ "SUPG/PSPG stabilization, same Picard linearization. The only real "
-#~ "differences are:"
+#~ "Identical to :doc:`cavity` — same custom"
+#~ " ``NavierStokesAssembler``, same SUPG/PSPG "
+#~ "stabilization, same Picard linearization. The"
+#~ " only real differences are:"
 #~ msgstr ""
-#~ "与 :doc:`cavity` 完全相同——同样的自定义 ``NavierStokesAssembler``\\ 、同样的 SUPG/PSPG "
-#~ "稳定化、同样的 Picard 线性化。真正的差别仅在于："
+#~ "与 :doc:`cavity` 完全相同——同样的自定义 "
+#~ "``NavierStokesAssembler``\\ 、同样的 SUPG/PSPG 稳定化、同样的"
+#~ " Picard 线性化。真正的差别仅在于："
 
 #~ msgid ""
-#~ "the boundary masks are richer (inlet, walls, obstacle surfaces, outlet),"
+#~ "the boundary masks are richer (inlet,"
+#~ " walls, obstacle surfaces, outlet),"
 #~ msgstr "边界掩码更为丰富（入口、壁面、障碍物表面、出口），"
 
 #~ msgid ""
-#~ "the inlet velocity is non-zero (parabolic), so the "
-#~ ":class:`~tensormesh.Condenser` is built with ``dirichlet_value`` containing "
-#~ "the prescribed inlet profile,"
+#~ "the inlet velocity is non-zero "
+#~ "(parabolic), so the :class:`~tensormesh.Condenser`"
+#~ " is built with ``dirichlet_value`` "
+#~ "containing the prescribed inlet profile,"
 #~ msgstr ""
-#~ "入口速度非零（抛物型），因此 :class:`~tensormesh.Condenser` 在构造时其 ``dirichlet_value`` "
-#~ "包含了给定的入口分布，"
+#~ "入口速度非零（抛物型），因此 :class:`~tensormesh.Condenser` 在构造时其 "
+#~ "``dirichlet_value`` 包含了给定的入口分布，"
 
 #~ msgid "the outlet has no velocity BC; only the pressure is pinned to zero."
 #~ msgstr "出口没有速度边界条件；只有压力被钉定为零。"
 
 #~ msgid ""
-#~ "The Picard loop converges in roughly 20 iterations at the default mesh "
+#~ "The Picard loop converges in roughly "
+#~ "20 iterations at the default mesh "
 #~ "resolution."
 #~ msgstr "在默认网格分辨率下，Picard 循环大约需 20 次迭代收敛。"
+
