@@ -358,7 +358,41 @@ class SparseMatrix(_FEMSparsityMixin, SparseTensor):
             f"[..., {edata.shape[1]}, {edata.shape[2]}]"
         )
 
-        edata_flat = edata.flatten()
+        row_final, col_final = SparseMatrix.expand_block_indices(row, col, block_size)
+        new_shape = (shape[0] * block_size, shape[1] * block_size)
+        return SparseMatrix(edata.flatten(), row_final, col_final, new_shape)
+
+    @staticmethod
+    def expand_block_indices(row: torch.Tensor, col: torch.Tensor,
+                             block_size: int) -> Tuple[torch.Tensor, torch.Tensor]:
+        """Expand coarse block ``(row, col)`` indices into flat COO indices.
+
+        Entry order matches ``edata.flatten()`` for block data of shape
+        ``[n_blocks, block_size, block_size]`` (block-major, row-major
+        within each block), so the result pairs with a flattened block
+        tensor to build the same matrix as :meth:`from_block_coo`.
+
+        Callers that assemble repeatedly on a fixed sparsity pattern
+        should call this once and cache the result: passing the *same*
+        index tensors to every :class:`SparseMatrix` keeps
+        :attr:`layout_signature` stable across assemblies (it is
+        sequence-identity, see :mod:`tensormesh.sparse.mixin`), so
+        layout-keyed consumers like
+        :class:`~tensormesh.operator.Condenser` hit their caches.
+
+        Parameters
+        ----------
+        row, col : torch.Tensor
+            Block indices of shape ``[n_blocks]`` in the coarse graph.
+        block_size : int
+            Rows (= columns) of each square block.
+
+        Returns
+        -------
+        Tuple[torch.Tensor, torch.Tensor]
+            ``(row, col)`` flat indices of shape
+            ``[n_blocks * block_size**2]``.
+        """
         row_exp = row[:, None].repeat(1, block_size * block_size)
         col_exp = col[:, None].repeat(1, block_size * block_size)
 
@@ -370,9 +404,7 @@ class SparseMatrix(_FEMSparsityMixin, SparseTensor):
 
         row_final = (row_exp * block_size + i.flatten()).flatten()
         col_final = (col_exp * block_size + j.flatten()).flatten()
-
-        new_shape = (shape[0] * block_size, shape[1] * block_size)
-        return SparseMatrix(edata_flat, row_final, col_final, new_shape)
+        return row_final, col_final
 
     @staticmethod
     def random(m: int, n: int, density: float = 0.1,

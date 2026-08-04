@@ -165,6 +165,7 @@ class ElementAssembler(nn.Module):
         self.dimension          = dimension
         self.element_types      = list(elements.keys())
         self.n_points           = next(iter(self.transformation.values())).n_points # type: ignore
+        self._block_edges_cache = {}  # block_size -> (row, col) flat indices
         self.__post_init__(*args,**kwargs)
 
     @property
@@ -219,6 +220,26 @@ class ElementAssembler(nn.Module):
 
         return batch_integral
     
+    def _block_edges(self, block_size:int):
+        r"""Flat COO ``(row, col)`` indices for block (vector) output, cached
+        per block size.
+
+        Layout-keyed consumers (:class:`~tensormesh.operator.Condenser`,
+        AMG hierarchies) identify sparsity patterns by *sequence identity*
+        (:attr:`SparseMatrix.layout_signature`), so repeated assemblies
+        must wrap the **same** index tensors — expanding the block indices
+        afresh on every call would make each assembly look like a layout
+        change. Recomputed only if ``self.edges`` has moved device since
+        the cache entry was built.
+        """
+        cached = self._block_edges_cache.get(block_size)
+        if cached is None or cached[0].device != self.edges.device:
+            cached = SparseMatrix.expand_block_indices(
+                self.edges[0], self.edges[1], block_size,
+            )
+            self._block_edges_cache[block_size] = cached
+        return cached
+
     def _build_output(self, integral):
         r"""Wrap the per-edge integral tensor in a :class:`SparseMatrix`.
 
@@ -235,7 +256,15 @@ class ElementAssembler(nn.Module):
         if integral.dim() == 1:
             return SparseMatrix(integral, self.edges[0], self.edges[1], shape=(self.n_points, self.n_points))
         elif integral.dim() ==  3:
-            return SparseMatrix.from_block_coo(integral, self.edges[0], self.edges[1], shape=(self.n_points, self.n_points))
+            block_size = integral.shape[1]
+            assert integral.shape[2] == block_size, (
+                f"vector output expects square blocks, got [..., {integral.shape[1]}, {integral.shape[2]}]"
+            )
+            row, col = self._block_edges(block_size)
+            return SparseMatrix(
+                integral.flatten(), row, col,
+                shape=(self.n_points * block_size, self.n_points * block_size),
+            )
         else:
             raise Exception(f"the shape of integral is supposed to be  1D or 3D, but got {integral.shape}")
 

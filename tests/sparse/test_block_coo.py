@@ -42,3 +42,20 @@ def test_block_coo_random(n_times=4):
             label[i*block_size:(i+1)*block_size, j*block_size:(j+1)*block_size] += v
         
         assert torch.allclose(mat.to_dense(), label)
+
+
+def test_expand_block_indices_matches_from_block_coo():
+    block_size = 3
+    row   = torch.tensor([0, 2, 1, 2])
+    col   = torch.tensor([1, 0, 1, 2])
+    edata = torch.rand([4, block_size, block_size])
+    shape = (3, 3)
+
+    ref = SparseMatrix.from_block_coo(edata, row, col, shape)
+    r, c = SparseMatrix.expand_block_indices(row, col, block_size)
+    mat = SparseMatrix(
+        edata.flatten(), r, c,
+        (shape[0] * block_size, shape[1] * block_size),
+    )
+
+    assert torch.allclose(mat.to_dense(), ref.to_dense())
