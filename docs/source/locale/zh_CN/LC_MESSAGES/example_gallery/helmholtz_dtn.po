@@ -1,0 +1,1314 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, TensorMesh Contributors
+# This file is distributed under the same license as the TensorMesh package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: TensorMesh 0.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-16 22:52+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:2
+#: eeeff2d207a943969d8345d65d42ac2c
+msgid "Helmholtz Scattering (DtN Boundary Treatment)"
+msgstr "Helmholtz 散射（DtN 边界处理）"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:4
+#: 928a4526bb4e46c3bc20f44a6c7da8a6
+msgid ""
+"The two self-contained scripts in ``examples/wave/helmholtz_dtn`` treat "
+"full-space scattering and scattering by a horizontally periodic layer.  The "
+"same scalar formulation applies to electromagnetic TE/TM polarizations and "
+"to acoustic pressure waves."
+msgstr ""
+"``examples/wave/helmholtz_dtn`` 中的两个自包含脚本分别处理全空间散射和水平周期层散射。同一标量形式同时适用于电磁 "
+"TE/TM 极化和声压波。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:9
+#: 1580a374f281457197ae7d23395fb567
+#, python-brace-format
+msgid "We use the time convention :math:`e^{-i\\omega t}` and write"
+msgstr "采用时间约定 :math:`e^{-i\\omega t}`，并将方程写成"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:11
+#: 21beb4615c4c42f1a95c9e6225895fd7
+msgid "\\nabla\\!\\cdot\\!\\bigl(a(x)\\nabla u\\bigr)+\\omega^2b(x)u=0."
+msgstr "\\nabla\\!\\cdot\\!\\bigl(a(x)\\nabla u\\bigr)+\\omega^2b(x)u=0."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:15
+#: ea750c1c5cd642429154a5a17aead1e8
+msgid ""
+"Here :math:`a,b\\in L^\\infty` are real-valued, uniformly positive scalar "
+"functions.  Both coefficients may vary in space; the piecewise-constant "
+"materials used by the analytical examples below are a special case."
+msgstr ""
+"这里 :math:`a,b\\in L^\\infty` "
+"是实值、一致正的标量函数。两个系数都可以随空间变化；下文解析示例采用的分片常数材料只是其中一种特殊情形。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:19
+#: 7e4da84c89974392be868bc08ba39b73
+msgid "Physical meaning of the scalar coefficients"
+msgstr "标量系数的物理含义"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:23
+#: 36b7d2b7c58c4a4e937f1f5c5437501f
+msgid "Model"
+msgstr "模型"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:24
+#: 88890647e9124173904362b1e11dfe05
+msgid "Scalar field"
+msgstr "标量场"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:25
+#: c3218a5fefcc4925a34b97e3745f6de0
+msgid ":math:`a(x)`"
+msgstr ":math:`a(x)`"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:26
+#: c430a083cbe344849494b7e5a34904ef
+msgid ":math:`b(x)`"
+msgstr ":math:`b(x)`"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:27
+#: 44e888cb78f841089b52e1d8be773d00
+msgid "``TM_EZ``"
+msgstr "``TM_EZ``"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:28
+#: 19a8120e6c0d4b3aaf97cdc76f814365
+msgid ":math:`u=E_z`"
+msgstr ":math:`u=E_z`"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:29
+#: 0c27c1569f9640d9bcfe51bcada10722
+#, python-brace-format
+msgid ":math:`\\mu(x)^{-1}`"
+msgstr ":math:`\\mu(x)^{-1}`"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:30
+#: a0e16c1c2d5b44a4bfb2143ed4df898a
+msgid ":math:`\\varepsilon(x)`"
+msgstr ":math:`\\varepsilon(x)`"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:31
+#: f41db48ca4ce4c0c8fd810d78ab4b4e4
+msgid "``TE_HZ``"
+msgstr "``TE_HZ``"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:32
+#: c341b67677eb4536892c2be9fd328506
+msgid ":math:`u=H_z`"
+msgstr ":math:`u=H_z`"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:33
+#: c362bb2b7b5443fb8ce72251c47b0069
+#, python-brace-format
+msgid ":math:`\\varepsilon(x)^{-1}`"
+msgstr ":math:`\\varepsilon(x)^{-1}`"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:34
+#: 48b4cedfca91475bafaf36ce52180cd2
+msgid ":math:`\\mu(x)`"
+msgstr ":math:`\\mu(x)`"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:35
+#: fa63bce5a9294836b4358968006b14f6
+msgid "Acoustic pressure"
+msgstr "声压"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:36
+#: 2cd2f21e1e41422c852071840c3aaf04
+msgid ":math:`u=p`"
+msgstr ":math:`u=p`"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:37
+#: e09645ce02b84836afd1b3764df668ca
+#, python-brace-format
+msgid ":math:`\\rho(x)^{-1}`"
+msgstr ":math:`\\rho(x)^{-1}`"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:38
+#: 196a8b04a22b4153b405265948f9fbe3
+#, python-brace-format
+msgid ":math:`K(x)^{-1}=1/[\\rho(x)c(x)^2]`"
+msgstr ":math:`K(x)^{-1}=1/[\\rho(x)c(x)^2]`"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:40
+#: bf933e3163524794a1483043dbc8f86f
+#, python-brace-format
+msgid ""
+"The electromagnetic rows use the project convention that ``TM_EZ`` names the"
+" out-of-plane electric field and ``TE_HZ`` the out-of-plane magnetic field. "
+"The demos use normalized units.  With relative material parameters, their "
+"coefficient pairs are :math:`(a,b)=(\\mu_r^{-1},\\varepsilon_r)` for "
+"``TM_EZ`` and :math:`(a,b)=(\\varepsilon_r^{-1},\\mu_r)` for ``TE_HZ``.  In "
+"any homogeneous region :math:`j`, the corresponding wavenumber is"
+msgstr ""
+"电磁模型沿用本项目约定：``TM_EZ`` 表示面外电场，``TE_HZ`` 表示面外磁场。示例采用归一化单位。使用相对材料参数时，``TM_EZ`` "
+"的系数为 :math:`(a,b)=(\\mu_r^{-1},\\varepsilon_r)`，``TE_HZ`` 的系数为 "
+":math:`(a,b)=(\\varepsilon_r^{-1},\\mu_r)`。在任一均匀区域 :math:`j` 中，相应波数为"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:47
+#: 4a32099adb2b47f2a4a55a9f18d7037b
+#, python-brace-format
+msgid "k_j=\\omega\\sqrt{b_j/a_j}."
+msgstr "k_j=\\omega\\sqrt{b_j/a_j}."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:52
+#: c4633a25b0064e50bde94d2c61cde995
+msgid "Run the examples"
+msgstr "运行示例"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:60
+#: 80068236ce0845a58e4bad59ea68e116
+msgid "Full-space scattering"
+msgstr "全空间散射"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:64
+#: 2c628a7466fa44c8b9b49bfa6f3ee710
+msgid "General scattering problem"
+msgstr "一般散射问题"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:66
+#: b21d44c6957544d0add211732482c37b
+#, python-brace-format
+msgid ""
+"Let :math:`D\\Subset\\mathbb R^2` be a bounded obstacle or penetrable "
+"inclusion with boundary :math:`\\Gamma`.  Outside a bounded region the "
+"material is homogeneous, with constants :math:`a_0,b_0>0` and exterior "
+"wavenumber :math:`k_0=\\omega\\sqrt{b_0/a_0}`."
+msgstr ""
+"设 :math:`D\\Subset\\mathbb R^2` 是边界为 :math:`\\Gamma` "
+"的有界障碍物或可穿透夹杂。在某个有界区域之外，材料为常数 :math:`a_0,b_0>0` 的均匀介质，外部波数为 "
+":math:`k_0=\\omega\\sqrt{b_0/a_0}`。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:71
+#: 7918334c7a7545beaa7913e4ded556fd
+#, python-brace-format
+msgid ""
+"Before choosing a particular incident wave, let :math:`u^{\\rm inc}` be any "
+"entire solution of the exterior equation"
+msgstr "在选定具体入射波之前，令 :math:`u^{\\rm inc}` 是外部方程的任意整解"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:74
+#: b44a17165114432b961280a7a591226c
+#, python-brace-format
+msgid "\\Delta u^{\\rm inc}+k_0^2u^{\\rm inc}=0."
+msgstr "\\Delta u^{\\rm inc}+k_0^2u^{\\rm inc}=0."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:78
+#: 62f4d145b0624f9ea614b2c02faeb733
+#, python-brace-format
+msgid ""
+"The scatterer generates an outgoing field :math:`u^{\\rm sc}`.  In the "
+"exterior, the total field is"
+msgstr "散射体产生出射场 :math:`u^{\\rm sc}`。在外部区域中，总场为"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:81
+#: ../../source/example_gallery/helmholtz_dtn.rst:392
+#: 92a103c9b3ec4df2b40c491c91be9bdd f83028a201a44136bc6c7bcf3cba2461
+#, python-brace-format
+msgid "u=u^{\\rm inc}+u^{\\rm sc}."
+msgstr "u=u^{\\rm inc}+u^{\\rm sc}."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:85
+#: 613ba5ed17ad483ba35656ef3b71437a
+msgid ""
+"The coefficients themselves are not compactly supported: waves must "
+"propagate through the exterior medium.  It is the material contrast that is "
+"compactly supported,"
+msgstr "系数本身并非紧支，因为波必须在外部介质中传播；具有紧支集的是材料反差，"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:89
+#: 2d988d5d2c7342f0903f91831d353743
+#, python-brace-format
+msgid ""
+"\\operatorname{supp}(a-a_0)\\cup\\operatorname{supp}(b-b_0)\n"
+"\\Subset\\mathbb R^2."
+msgstr ""
+"\\operatorname{supp}(a-a_0)\\cup\\operatorname{supp}(b-b_0)\n"
+"\\Subset\\mathbb R^2."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:94
+#: b17f4e0dcbfd47ff8fa5b8125cecaea5
+msgid ""
+"For an obstacle, the unknown total field is defined in the exterior of "
+":math:`D`.  For a penetrable inclusion, it is defined across the whole "
+"plane; the coefficients may vary inside the compact contrast region.  The "
+"circular verification case later specializes the inclusion to constants "
+":math:`(a_1,b_1)`."
+msgstr ""
+"对于障碍物，总场未知量定义在 :math:`D` "
+"的外部。对于可穿透夹杂，总场定义在整个平面上，且系数可以在紧支反差区域内变化。后面的圆形验证算例进一步将夹杂内部取为常数 "
+":math:`(a_1,b_1)`。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:102
+#: 23baf11bcbdb422581ee41278f40f393
+msgid "Physical boundary and interface conditions"
+msgstr "物理边界与界面条件"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:104
+#: 7959c913322d4247a322b47b2b4df861
+msgid ""
+"The three cases differ only at the physical circle.  With :math:`\\nu` "
+"pointing from :math:`D` into the exterior, they impose"
+msgstr "三个算例只在物理圆周上的条件不同。令 :math:`\\nu` 从 :math:`D` 指向外部，它们分别满足"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:107
+#: cb2378cc3fcf4575a998bcdfa0149263
+#, python-brace-format
+msgid ""
+"\\begin{aligned}\n"
+"u&=0 &&\\text{on }\\Gamma &&\\text{(Dirichlet obstacle)},\\\\\n"
+"a_0\\partial_\\nu u&=0 &&\\text{on }\\Gamma &&\\text{(Neumann "
+"obstacle)},\\\\\n"
+"[u]&=0,\\qquad [a\\partial_\\nu u]=0\n"
+"   &&\\text{on }\\Gamma &&\\text{(penetrable inclusion)}.\n"
+"\\end{aligned}"
+msgstr ""
+"\\begin{aligned}\n"
+"u&=0 &&\\text{on }\\Gamma &&\\text{(Dirichlet obstacle)},\\\\\n"
+"a_0\\partial_\\nu u&=0 &&\\text{on }\\Gamma &&\\text{(Neumann "
+"obstacle)},\\\\\n"
+"[u]&=0,\\qquad [a\\partial_\\nu u]=0\n"
+"   &&\\text{on }\\Gamma &&\\text{(penetrable inclusion)}.\n"
+"\\end{aligned}"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:116
+#: 8a74bbe15cbd423ca22cf5771083040b
+msgid ""
+"For the transmission case the jump is the interior trace minus the exterior "
+"trace.  Thus both the field and the weighted normal flux are continuous."
+msgstr "透射算例中的跳跃定义为内侧迹减去外侧迹。因此，场和加权法向通量均连续。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:120
+#: 3e6421ba78be43e5b27e4f8e3d158ac2
+msgid "Full-space radiation condition"
+msgstr "全空间辐射条件"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:122
+#: bf7f55644a9b49bf9c6b43858fcb6c30
+#, python-brace-format
+msgid ""
+"The scattered field is outgoing.  For the :math:`e^{-i\\omega t}` convention"
+" it satisfies the two-dimensional Sommerfeld condition"
+msgstr "散射场满足出射条件。对于 :math:`e^{-i\\omega t}` 时间约定，它满足二维 Sommerfeld 条件"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:125
+#: a135cec47a1446aeaad0d962e1442774
+#, python-brace-format
+msgid ""
+"\\lim_{r\\to\\infty}\\sqrt r\\,\n"
+"\\left(\\partial_ru^{\\rm sc}-ik_0u^{\\rm sc}\\right)=0"
+msgstr ""
+"\\lim_{r\\to\\infty}\\sqrt r\\,\n"
+"\\left(\\partial_ru^{\\rm sc}-ik_0u^{\\rm sc}\\right)=0"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:130
+#: 22291112e5f247afb39ff6f75f19a8f7
+msgid ""
+"uniformly in direction.  This condition selects Hankel functions of the "
+"first kind and, under the stated positive-material assumptions, singles out "
+"the outgoing solution."
+msgstr "且关于方向一致成立。该条件选取第一类 Hankel 函数；在上述材料一致正的假设下，它唯一确定出射解。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:134
+#: 192e81870f284d3fb1e393e27defc054
+msgid "Circular DtN truncation"
+msgstr "圆周 DtN 截断"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:136
+#: 7aa4267f7be24f028319fdbf0cdc6488
+#, python-brace-format
+msgid ""
+"Choose an artificial circle :math:`\\Gamma_R=\\{r=R\\}` enclosing the "
+"physical scatterer and every material contrast.  If"
+msgstr "选择人工圆周 :math:`\\Gamma_R=\\{r=R\\}`，使其包围物理散射体和全部材料反差。若"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:139
+#: d8bbedd775504647b05a269765667a88
+#, python-brace-format
+msgid ""
+"\\widehat\\phi_m=\\frac{1}{2\\pi}\\int_0^{2\\pi}\n"
+"\\phi(\\theta)e^{-im\\theta}\\,d\\theta,"
+msgstr ""
+"\\widehat\\phi_m=\\frac{1}{2\\pi}\\int_0^{2\\pi}\n"
+"\\phi(\\theta)e^{-im\\theta}\\,d\\theta,"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:144
+#: f1e6b2b311224387b2ba66fd41314f60
+msgid "then the exact exterior Fourier--Hankel DtN map is"
+msgstr "则精确的外部 Fourier--Hankel DtN 映射为"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:146
+#: 2005630763e041a09fbcf141070b3a14
+msgid ""
+"T_R\\phi\n"
+"=\\sum_{m\\in\\mathbb Z}\\tau_m\\widehat\\phi_m e^{im\\theta},\n"
+"\\qquad\n"
+"\\tau_m=k_0\\frac{H_m^{(1)\\prime}(k_0R)}{H_m^{(1)}(k_0R)}."
+msgstr ""
+"T_R\\phi\n"
+"=\\sum_{m\\in\\mathbb Z}\\tau_m\\widehat\\phi_m e^{im\\theta},\n"
+"\\qquad\n"
+"\\tau_m=k_0\\frac{H_m^{(1)\\prime}(k_0R)}{H_m^{(1)}(k_0R)}."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:153
+#: 305f68c475f64229be93837179f8e5da
+msgid ""
+"Because :math:`\\partial_n-T_R` annihilates every outgoing Hankel mode, the "
+"unbounded radiation condition is equivalent to the total-field boundary "
+"condition"
+msgstr "由于 :math:`\\partial_n-T_R` 消去每个出射 Hankel 模态，无界域辐射条件等价于如下总场边界条件"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:157
+#: a17f9d25ace148858f3c5c62afbb69e9
+#, python-brace-format
+msgid ""
+"\\partial_nu-T_Ru=g_R,\n"
+"\\qquad\n"
+"g_R=\\partial_nu^{\\rm inc}-T_Ru^{\\rm inc}\n"
+"\\quad\\text{on }\\Gamma_R,"
+msgstr ""
+"\\partial_nu-T_Ru=g_R,\n"
+"\\qquad\n"
+"g_R=\\partial_nu^{\\rm inc}-T_Ru^{\\rm inc}\n"
+"\\quad\\text{on }\\Gamma_R,"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:164
+#: d7ce76284bfe48acbd2d20373d211bfc
+msgid "where :math:`n=e_r` is the outward normal of the truncated domain."
+msgstr "其中 :math:`n=e_r` 是截断区域的外法向。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:167
+#: 33a829d54ce44bada4282c8991710d19
+msgid "Full-space weak form"
+msgstr "全空间弱形式"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:169
+#: d781338e8abe4940b1b80ab1b383de05
+msgid ""
+"Let :math:`\\Omega_R=B_R\\setminus\\overline D` for an obstacle and "
+":math:`\\Omega_R=B_R` for transmission.  The trial and test space is"
+msgstr ""
+"对障碍物令 :math:`\\Omega_R=B_R\\setminus\\overline D`，对透射问题令 "
+":math:`\\Omega_R=B_R`。Dirichlet 障碍物的试验空间为"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:172
+#: 576b4f0d2ee545c0b2e489207556b535
+#, python-brace-format
+msgid "V_D=\\{v\\in H^1(\\Omega_R):v|_\\Gamma=0\\}"
+msgstr "V_D=\\{v\\in H^1(\\Omega_R):v|_\\Gamma=0\\}"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:176
+#: 9a2ed721b8af4263bfb870765a0abc65
+msgid ""
+"for the Dirichlet obstacle, and :math:`V=H^1(\\Omega_R)` for the Neumann and"
+" transmission cases.  Find :math:`u` in the appropriate affine trial space "
+"such that, for every test function :math:`v` in its homogeneous counterpart,"
+msgstr ""
+"Neumann 和透射算例采用 :math:`V=H^1(\\Omega_R)`。在相应仿射试探空间中求 "
+":math:`u`，使得对其齐次对应空间内任意试验函数 :math:`v`，都有"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:180
+#: 365080b349204d6089fa99d3e8a97cc0
+#, python-brace-format
+msgid ""
+"\\int_{\\Omega_R}a\\nabla u\\cdot\\nabla\\overline v\n"
+"-\\omega^2\\int_{\\Omega_R}bu\\overline v\n"
+"-a_0\\langle T_Ru,v\\rangle_{\\Gamma_R}\n"
+"=a_0\\langle g_R,v\\rangle_{\\Gamma_R}."
+msgstr ""
+"\\int_{\\Omega_R}a\\nabla u\\cdot\\nabla\\overline v\n"
+"-\\omega^2\\int_{\\Omega_R}bu\\overline v\n"
+"-a_0\\langle T_Ru,v\\rangle_{\\Gamma_R}\n"
+"=a_0\\langle g_R,v\\rangle_{\\Gamma_R}."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:187
+#: 53f5c93110f94790b7f7b3c29dad8d00
+msgid ""
+"The Dirichlet trace is imposed strongly with ``Condenser``.  The homogeneous"
+" Neumann condition is natural, so it contributes no boundary integral. For "
+"transmission, a conforming mesh and element-wise :math:`a,b` enforce "
+":math:`[u]=[a\\partial_\\nu u]=0` through the weak form."
+msgstr ""
+"Dirichlet 迹通过 ``Condenser`` 强制施加。齐次 Neumann "
+"条件是自然边界条件，因而不产生边界积分。对透射问题，共形网格和逐单元材料系数 :math:`a,b` 通过弱形式自然满足 "
+":math:`[u]=[a\\partial_\\nu u]=0`。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:193
+#: daf362b839a6424ea84fd2fc229f53ef
+msgid "Circular modal exact solutions for verification"
+msgstr "用于验证的圆模态精确解"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:195
+#: 2b0db37d7fc34739ab934ca8683f79c1
+msgid ""
+"The general scattering formulation does not require a cylindrical incident "
+"wave.  To verify the code against a closed-form solution, the circular demo "
+"chooses one Fourier--Bessel mode,"
+msgstr "一般散射形式并不要求柱面入射波。为了用闭式解验证代码，圆形示例选择一个 Fourier--Bessel 模态，"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:199
+#: f486757b887e434486fa8dec37b487e1
+#, python-brace-format
+msgid "u^{\\rm inc}(r,\\theta)=J_n(k_0r)e^{in\\theta}."
+msgstr "u^{\\rm inc}(r,\\theta)=J_n(k_0r)e^{in\\theta}."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:203
+#: 6d1513cd2b264de0b0e997790c695c0f
+msgid ""
+"For both obstacle cases, and in the exterior of the penetrable circle, the "
+"outgoing scattered field and exterior total field are"
+msgstr "对于两个障碍物算例以及可穿透圆的外部，出射散射场和外部总场分别为"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:206
+#: 9c190d3d07684e07a4e2ee1597957f1f
+#, python-brace-format
+msgid ""
+"u^{\\rm sc}(r,\\theta)\n"
+"=c_nH_n^{(1)}(k_0r)e^{in\\theta},"
+msgstr ""
+"u^{\\rm sc}(r,\\theta)\n"
+"=c_nH_n^{(1)}(k_0r)e^{in\\theta},"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:211
+#: 0474506894954932b82f3bf7a9101ce3
+#, python-brace-format
+msgid ""
+"u_{\\rm ext}=u^{\\rm inc}+u^{\\rm sc}\n"
+"=e^{in\\theta}\n"
+" \\left[J_n(k_0r)+c_nH_n^{(1)}(k_0r)\\right]."
+msgstr ""
+"u_{\\rm ext}=u^{\\rm inc}+u^{\\rm sc}\n"
+"=e^{in\\theta}\n"
+" \\left[J_n(k_0r)+c_nH_n^{(1)}(k_0r)\\right]."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:217
+#: 77e823933c244275bbb5b7a97e2d8804
+msgid "For the Dirichlet and Neumann obstacles, respectively,"
+msgstr "对于 Dirichlet 和 Neumann 障碍物，系数分别为"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:219
+#: fb368b7179d748dc8665477e72019e1f
+msgid ""
+"c_n^D=-\\frac{J_n(k_0R_c)}{H_n^{(1)}(k_0R_c)},\n"
+"\\qquad\n"
+"c_n^N=-\\frac{J_n'(k_0R_c)}{H_n^{(1)\\prime}(k_0R_c)}."
+msgstr ""
+"c_n^D=-\\frac{J_n(k_0R_c)}{H_n^{(1)}(k_0R_c)},\n"
+"\\qquad\n"
+"c_n^N=-\\frac{J_n'(k_0R_c)}{H_n^{(1)\\prime}(k_0R_c)}."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:225
+#: db791c404e4d412f8e932367eec9c8b8
+msgid "For transmission, the complete total field is"
+msgstr "对于透射问题，完整总场为"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:227
+#: 350d17bc9366442c8d18883b506bbc95
+#, python-brace-format
+msgid ""
+"u(r,\\theta)=\n"
+"\\begin{cases}\n"
+"d_nJ_n(k_1r)e^{in\\theta}, & 0\\leq r<R_c,\\\\\n"
+"u^{\\rm inc}(r,\\theta)+u^{\\rm sc}(r,\\theta), & r>R_c.\n"
+"\\end{cases}"
+msgstr ""
+"u(r,\\theta)=\n"
+"\\begin{cases}\n"
+"d_nJ_n(k_1r)e^{in\\theta}, & 0\\leq r<R_c,\\\\\n"
+"u^{\\rm inc}(r,\\theta)+u^{\\rm sc}(r,\\theta), & r>R_c.\n"
+"\\end{cases}"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:235
+#: 9e5553e07e754ea6b0339589ad263002
+msgid ""
+"Continuity of the total field and weighted flux gives the transmission "
+"coefficients :math:`c_n,d_n`:"
+msgstr "总场与加权通量的连续性给出透射系数 :math:`c_n,d_n`："
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:238
+#: 20638f2e5aa043da8423dadc17a0b5ef
+#, python-brace-format
+msgid ""
+"\\begin{bmatrix}\n"
+"H_n^{(1)}(z_0) & -J_n(z_1)\\\\\n"
+"a_0k_0H_n^{(1)\\prime}(z_0) & -a_1k_1J_n'(z_1)\n"
+"\\end{bmatrix}\n"
+"\\begin{bmatrix}c_n\\\\d_n\\end{bmatrix}\n"
+"=-\n"
+"\\begin{bmatrix}J_n(z_0)\\\\a_0k_0J_n'(z_0)\\end{bmatrix},\n"
+"\\qquad z_j=k_jR_c."
+msgstr ""
+"\\begin{bmatrix}\n"
+"H_n^{(1)}(z_0) & -J_n(z_1)\\\\\n"
+"a_0k_0H_n^{(1)\\prime}(z_0) & -a_1k_1J_n'(z_1)\n"
+"\\end{bmatrix}\n"
+"\\begin{bmatrix}c_n\\\\d_n\\end{bmatrix}\n"
+"=-\n"
+"\\begin{bmatrix}J_n(z_0)\\\\a_0k_0J_n'(z_0)\\end{bmatrix},\n"
+"\\qquad z_j=k_jR_c."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:249
+#: 78cdf5549a7d4197a340342bfd521be9
+msgid ""
+"These fields independently verify the strong Dirichlet trace, the natural "
+"Neumann condition, both transmission conditions, and the DtN load on "
+":math:`\\Gamma_R`."
+msgstr "这些场分别检验强 Dirichlet 迹、自然 Neumann 条件、两个透射条件以及 :math:`\\Gamma_R` 上的 DtN 载荷。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:255
+#: 2ce6835a8401458b94e42cfa3f4b90c4
+msgid "The implementation keeps the four DtN steps visible:"
+msgstr "实现中清楚保留了 DtN 的四个步骤："
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:257
+#: a42b277a8bc84c0192343608689aa336
+msgid "examples/wave/helmholtz_dtn/circular_dtn.py (DtN essence)"
+msgstr "examples/wave/helmholtz_dtn/circular_dtn.py（DtN 核心代码）"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:285
+#: 785a80f0ba264bc0b0959545031b9f67
+msgid "Numerical, exact, and error fields for the Dirichlet circle."
+msgstr "Dirichlet 圆问题的数值场、精确场与误差场。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:289
+#: 4bf6479ee03d4dec941d37ebf81f7408
+msgid "Dirichlet circle."
+msgstr "Dirichlet 圆形障碍物。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:293
+#: 955d88777be24e4391dd6d40475cbf23
+msgid "Numerical, exact, and error fields for the Neumann circle."
+msgstr "Neumann 圆问题的数值场、精确场与误差场。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:297
+#: c8bf748aeac74bfa868643472fab0cc0
+msgid "Neumann circle."
+msgstr "Neumann 圆形障碍物。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:301
+#: d008befe1d8e48c0bb1841b1a899eaf8
+msgid "Numerical, exact, and error fields for the penetrable circle."
+msgstr "可穿透圆问题的数值场、精确场与误差场。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:305
+#: a3fb2ed877054f83ac641b24afd7bd00
+msgid "Penetrable circle."
+msgstr "可穿透圆。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:308
+#: b6e3aa851de24212ba4172ec1f73ee38
+msgid "Periodic scattering"
+msgstr "周期散射"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:311
+#: 803aa7e6c291425bafaf811ded1de828
+msgid "Periodic material and vertical compactness"
+msgstr "周期材料与竖直方向紧支性"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:313
+#: 4f91c5aba095445698c073abd5ae25f6
+msgid "Let :math:`x_1` be periodic with period :math:`L`.  The coefficients satisfy"
+msgstr "设 :math:`x_1` 方向的周期为 :math:`L`。系数满足"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:315
+#: 9ca761287bb0414bb257c5e5021b0a9c
+msgid ""
+"a(x_1+L,x_2)=a(x_1,x_2),\n"
+"\\qquad\n"
+"b(x_1+L,x_2)=b(x_1,x_2)."
+msgstr ""
+"a(x_1+L,x_2)=a(x_1,x_2),\n"
+"\\qquad\n"
+"b(x_1+L,x_2)=b(x_1,x_2)."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:321
+#: ae8963058e2943aba50d213e1f2bdecf
+msgid ""
+"A nontrivial periodic coefficient cannot be compactly supported in the full "
+"plane.  The correct open-domain assumption is compactness in the vertical "
+"direction within one periodic cell: the coefficients become constant above "
+"and below a bounded strip.  In the present demos,"
+msgstr "非平凡周期系数不可能在整个平面内紧支。正确的开放域假设是：在一个周期胞内，材料反差沿竖直方向紧支，即在某个有界水平带的上方和下方，系数均变为常数。在本示例中，"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:326
+#: 1c95dfc45a12493baa1a896f7b8a8d0f
+#, python-brace-format
+msgid ""
+"\\exists\\,y_-<y_+:\\qquad\n"
+"a(x_1,x_2)=a_0,\\quad b(x_1,x_2)=b_0\n"
+"\\quad\\text{for }x_2\\notin[y_-,y_+],\\ 0<x_1<L."
+msgstr ""
+"\\exists\\,y_-<y_+:\\qquad\n"
+"a(x_1,x_2)=a_0,\\quad b(x_1,x_2)=b_0\n"
+"\\quad\\text{for }x_2\\notin[y_-,y_+],\\ 0<x_1<L."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:332
+#: b5a6231194744df78e14a6ae7ec50c6a
+msgid ""
+"The slab has material :math:`(a_1,b_1)` in :math:`0<x_2<h` and material "
+":math:`(a_0,b_0)` in both exterior half-spaces.  The wall problems retain "
+"only :math:`x_2>0`: the same finite layer is backed by a physical boundary "
+"at :math:`x_2=0` and is open above."
+msgstr ""
+"slab 算例在 :math:`0<x_2<h` 内采用材料 :math:`(a_1,b_1)`，上下外部半空间均采用材料 "
+":math:`(a_0,b_0)`。wall 算例只保留 :math:`x_2>0`：同一有限层在 :math:`x_2=0` "
+"处由物理边界封闭，并在上方开放。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:338
+#: 3c7d569e25f044d484be9b221e37661d
+msgid "Bloch condition"
+msgstr "Bloch 条件"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:340
+#: 165a40d71f0c429daf2121e7056aafd0
+msgid ""
+"For a prescribed horizontal Bloch wavenumber :math:`\\alpha`, the total "
+"field satisfies"
+msgstr "给定水平 Bloch 波数 :math:`\\alpha`，总场满足"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:343
+#: e97366a842db4c91b6722de830ae9116
+#, python-brace-format
+msgid ""
+"u(L,x_2)=e^{i\\alpha L}u(0,x_2),\n"
+"\\qquad\n"
+"\\partial_{x_1}u(L,x_2)\n"
+"=e^{i\\alpha L}\\partial_{x_1}u(0,x_2)."
+msgstr ""
+"u(L,x_2)=e^{i\\alpha L}u(0,x_2),\n"
+"\\qquad\n"
+"\\partial_{x_1}u(L,x_2)\n"
+"=e^{i\\alpha L}\\partial_{x_1}u(0,x_2)."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:350
+#: 65cb5a7adbac4b699e2abbf52006fe1e
+msgid ""
+"Since :math:`a` is periodic, the horizontal material flux carries the same "
+"phase.  Trial and test functions use this quasi-periodicity; consequently "
+":math:`\\overline v` carries the conjugate phase and the two lateral weak-"
+"form boundary terms cancel."
+msgstr ""
+"由于 :math:`a` 具有周期性，水平方向材料通量也具有相同相位。试探和试验函数均满足这一拟周期性，因此 :math:`\\overline v` "
+"带有共轭相位，弱形式中左右边界项相互抵消。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:356
+#: 5ed1964f13894c27b63191e6bf2146ec
+msgid "General incident, scattered, and total fields"
+msgstr "一般入射场、散射场与总场"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:358
+#: 9052429d1c304167a6aa38a3e3a2d4ed
+#, python-brace-format
+msgid ""
+"A downward plane wave enters from the top reference line "
+":math:`\\Gamma_+=\\{x_2=y_t\\}`:"
+msgstr "向下传播的平面波从顶部参考线 :math:`\\Gamma_+=\\{x_2=y_t\\}` 入射："
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:361
+#: a30beb6dae034b34b67bac3afa256c15
+msgid ""
+"u^{\\rm inc}\n"
+"=Ae^{i\\alpha x_1-i\\beta_{0,0}(x_2-y_t)}."
+msgstr ""
+"u^{\\rm inc}\n"
+"=Ae^{i\\alpha x_1-i\\beta_{0,0}(x_2-y_t)}."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:366
+#: 880fd3bc4a984ef19c53deca2b8c07bd
+msgid "For :math:`m\\in\\mathbb Z`, define"
+msgstr "对 :math:`m\\in\\mathbb Z`，定义"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:368
+#: 1e8b606d03714df893f444585fec1100
+#, python-brace-format
+msgid ""
+"\\alpha_m=\\alpha+\\frac{2\\pi m}{L},\n"
+"\\qquad\n"
+"\\beta_{j,m}=\\sqrt{k_j^2-\\alpha_m^2}."
+msgstr ""
+"\\alpha_m=\\alpha+\\frac{2\\pi m}{L},\n"
+"\\qquad\n"
+"\\beta_{j,m}=\\sqrt{k_j^2-\\alpha_m^2}."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:374
+#: 2eaeeb5baea3406981c95c3fa459b028
+#, python-brace-format
+msgid ""
+"The incident order is assumed to propagate, :math:`|\\alpha|<k_0`, so that "
+":math:`\\beta_{0,0}>0` and its incoming power is nonzero.  For every "
+"retained order, the outgoing branch has :math:`\\beta_{j,m}>0` for a "
+"propagating mode and :math:`\\operatorname{Im}\\beta_{j,m}>0` for an "
+"evanescent mode; a grazing mode has :math:`\\beta_{j,m}=0`.  The demo "
+"parameters avoid Wood anomalies, where a retained :math:`\\alpha_m^2=k_j^2`;"
+" such cutoffs require separate treatment in the Rayleigh expansion and power"
+" normalization.  The scattered field above the structure has the outgoing "
+"Rayleigh expansion"
+msgstr ""
+"假设入射阶为传播模态，即 :math:`|\\alpha|<k_0`，因此 "
+":math:`\\beta_{0,0}>0` 且入射功率非零。对于每个保留阶，传播模态的出射分支满足 "
+":math:`\\beta_{j,m}>0`，倏逝模态满足 "
+":math:`\\operatorname{Im}\\beta_{j,m}>0`；掠射模态则有 "
+":math:`\\beta_{j,m}=0`。示例参数避开了保留模态满足 "
+":math:`\\alpha_m^2=k_j^2` 的 Wood 异常；在这类截止频率处，Rayleigh 展开和功率归一化需要单独处理。"
+"结构上方的散射场采用如下出射 Rayleigh 展开"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:383
+#: e0d7729e758d49d9a7086817ad0f431d
+msgid ""
+"u^{\\rm sc}\n"
+"=\\sum_{m\\in\\mathbb Z}r_m\n"
+"   e^{i\\alpha_mx_1+i\\beta_{t,m}(x_2-y_t)},\n"
+"\\qquad x_2\\geq y_t."
+msgstr ""
+"u^{\\rm sc}\n"
+"=\\sum_{m\\in\\mathbb Z}r_m\n"
+"   e^{i\\alpha_mx_1+i\\beta_{t,m}(x_2-y_t)},\n"
+"\\qquad x_2\\geq y_t."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:390
+#: 6649eb21cbfd4815b9b42d9089af6e84
+msgid "Thus the total field at the top is"
+msgstr "因此，顶部总场为"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:396
+#: f818182a565248429b168c02de4d2c1a
+msgid ""
+"For a two-port slab there is no incident wave from below, so the lower total"
+" field is the transmitted outgoing field"
+msgstr "对于双端口 slab，底部没有入射波，因此底部总场就是透射出射场"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:399
+#: 25e9084834934703960a9961c0ec42f3
+msgid ""
+"u=u^{\\rm tr}\n"
+"=\\sum_{m\\in\\mathbb Z}t_m\n"
+"   e^{i\\alpha_mx_1-i\\beta_{b,m}(x_2-y_b)},\n"
+"\\qquad x_2\\leq y_b."
+msgstr ""
+"u=u^{\\rm tr}\n"
+"=\\sum_{m\\in\\mathbb Z}t_m\n"
+"   e^{i\\alpha_mx_1-i\\beta_{b,m}(x_2-y_b)},\n"
+"\\qquad x_2\\leq y_b."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:406
+#: be38989686994b4c8f64d345e9108a87
+msgid ""
+"These Rayleigh expansions are the periodic counterparts of the Sommerfeld "
+"radiation condition."
+msgstr "这些 Rayleigh 展开是 Sommerfeld 辐射条件在周期问题中的对应形式。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:412
+#: 95e6a103353149df8f41bcc34d144fb2
+msgid "Physical interfaces and wall conditions"
+msgstr "物理界面与墙面边界条件"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:414
+#: 643365a8026f43ec898a87fee8663fdc
+msgid "The three configurations are:"
+msgstr "三个配置分别为："
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:416
+#: 267f4dc8fab84825b7702cdc4264123a
+msgid ""
+"``slab``: field and weighted flux are continuous at both flat material "
+"interfaces, :math:`[u]=0` and :math:`[a\\partial_\\nu u]=0` at "
+":math:`x_2=0,h`, with open ports above and below;"
+msgstr ""
+"``slab``：两个平面材料界面上的场和加权通量连续，即在 :math:`x_2=0,h` 上满足 :math:`[u]=0` 和 "
+":math:`[a\\partial_\\nu u]=0`，且上下端口均开放；"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:420
+#: ea92b6bc88974111a2b1c954c21f09f5
+msgid ""
+"``dirichlet``: the layer interface at :math:`x_2=h` satisfies the same two "
+"transmission conditions and :math:`u=0` at the wall :math:`x_2=0`;"
+msgstr ""
+"``dirichlet``：:math:`x_2=h` 处的材料界面满足相同的两个透射条件，墙面 :math:`x_2=0` 上满足 "
+":math:`u=0`；"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:422
+#: cfcd5ce5b92a4cdc85a9b359e26c6b8e
+msgid ""
+"``neumann``: the interface conditions hold at :math:`x_2=h` and "
+":math:`a\\partial_\\nu u=0` at :math:`x_2=0`."
+msgstr ""
+"``neumann``：:math:`x_2=h` 处满足界面条件，:math:`x_2=0` 上满足 :math:`a\\partial_\\nu "
+"u=0`。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:426
+#: 69fc6900f2064b8f9aa343cefc878559
+msgid "Rayleigh DtN truncation"
+msgstr "Rayleigh DtN 截断"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:428
+#: f8e7809f46644bbeb39a89a1a8aad1bf
+#, python-brace-format
+msgid ""
+"Let :math:`\\Gamma_-` denote the bottom reference line of the slab.  With "
+"modal coefficients taken in the quasi-periodic basis "
+":math:`e^{i\\alpha_mx_1}`, define"
+msgstr "令 :math:`\\Gamma_-` 表示 slab 的底部参考线。以拟周期基 :math:`e^{i\\alpha_mx_1}` 表示模态系数，定义"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:431
+#: d1f3d078ecc944b8a869130de76a2ed1
+#, python-brace-format
+msgid ""
+"T_\\pm\\phi\n"
+"=\\sum_{m\\in\\mathbb Z}i\\beta_{\\pm,m}\\widehat\\phi_m\n"
+"   e^{i\\alpha_mx_1}."
+msgstr ""
+"T_\\pm\\phi\n"
+"=\\sum_{m\\in\\mathbb Z}i\\beta_{\\pm,m}\\widehat\\phi_m\n"
+"   e^{i\\alpha_mx_1}."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:437
+#: b003f2d610d547d59621ce390f720608
+#, python-brace-format
+msgid ""
+"Both symbols are :math:`i\\beta_{\\pm,m}` because each operator uses the "
+"outward normal of the truncated cell: :math:`n=+e_2` at the top and "
+":math:`n=-e_2` at the bottom.  The top total-field condition is"
+msgstr ""
+"两个算子的符号都是 :math:`i\\beta_{\\pm,m}`，因为它们分别使用截断周期胞的外法向：顶部为 :math:`n=+e_2`，底部为 "
+":math:`n=-e_2`。顶部总场条件为"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:441
+#: 5d239cc5db37459bb7c41c42f63b25b5
+#, python-brace-format
+msgid ""
+"\\partial_nu-T_+u=g_+,\n"
+"\\qquad\n"
+"g_+=-2i\\beta_{0,0}Ae^{i\\alpha x_1}\n"
+"\\quad\\text{on }\\Gamma_+."
+msgstr ""
+"\\partial_nu-T_+u=g_+,\n"
+"\\qquad\n"
+"g_+=-2i\\beta_{0,0}Ae^{i\\alpha x_1}\n"
+"\\quad\\text{on }\\Gamma_+."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:448
+#: a0ddd6b063f644a285e40d3ea2b7c704
+msgid "For the slab, the lower field is purely outgoing, hence"
+msgstr "对 slab，底部场只含出射波，因此"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:450
+#: 07da339e35cd437f88acd1412204b715
+#, python-brace-format
+msgid ""
+"\\partial_nu-T_-u=0\n"
+"\\quad\\text{on }\\Gamma_-."
+msgstr ""
+"\\partial_nu-T_-u=0\n"
+"\\quad\\text{on }\\Gamma_-."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:456
+#: 19aae7ca8eec4039954acee53d2832c3
+msgid "Periodic weak form"
+msgstr "周期弱形式"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:458
+#: 7c5e172570b049d889bd2e2556b64438
+msgid "Let :math:`\\Omega_L` be one truncated period cell and define"
+msgstr "令 :math:`\\Omega_L` 为一个截断周期胞，并定义"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:460
+#: 7d89e21c0f624293b5b1e86991565a37
+#, python-brace-format
+msgid ""
+"V_\\alpha=\\left\\{v\\in H^1(\\Omega_L):\n"
+"v(L,x_2)=e^{i\\alpha L}v(0,x_2)\\right\\}."
+msgstr ""
+"V_\\alpha=\\left\\{v\\in H^1(\\Omega_L):\n"
+"v(L,x_2)=e^{i\\alpha L}v(0,x_2)\\right\\}."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:465
+#: 21f5319114254fe4b4375056d8414a8b
+#, python-brace-format
+msgid ""
+"For the Dirichlet wall use :math:`V_{\\alpha,D}=\\{v\\in "
+"V_\\alpha:v=0\\text{ on }x_2=0\\}`; the slab and Neumann wall use "
+":math:`V_\\alpha`.  With :math:`\\delta_{\\rm slab}=1` for the slab and zero"
+" for a wall, find :math:`u` in the corresponding trial space such that"
+msgstr ""
+"Dirichlet 墙面采用 :math:`V_{\\alpha,D}=\\{v\\in V_\\alpha:v=0\\text{ on "
+"}x_2=0\\}`；slab 和 Neumann 墙面采用 :math:`V_\\alpha`。对 slab 令 "
+":math:`\\delta_{\\rm slab}=1`，对 wall 令其为零。在相应试探空间中求 :math:`u`，使得"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:471
+#: ec91e4ffe89d46a6b95e9fe7a6879ebd
+#, python-brace-format
+msgid ""
+"\\int_{\\Omega_L}a\\nabla u\\cdot\\nabla\\overline v\n"
+"-\\omega^2\\int_{\\Omega_L}bu\\overline v\n"
+"-a_t\\langle T_+u,v\\rangle_{\\Gamma_+}\n"
+"-\\delta_{\\rm slab}a_b\\langle T_-u,v\\rangle_{\\Gamma_-}\n"
+"=a_t\\langle g_+,v\\rangle_{\\Gamma_+}"
+msgstr ""
+"\\int_{\\Omega_L}a\\nabla u\\cdot\\nabla\\overline v\n"
+"-\\omega^2\\int_{\\Omega_L}bu\\overline v\n"
+"-a_t\\langle T_+u,v\\rangle_{\\Gamma_+}\n"
+"-\\delta_{\\rm slab}a_b\\langle T_-u,v\\rangle_{\\Gamma_-}\n"
+"=a_t\\langle g_+,v\\rangle_{\\Gamma_+}"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:479
+#: ad123e977b634a81ae3b3110f23e8e2a
+msgid ""
+"for every homogeneous test function :math:`v`.  In the present slab "
+":math:`a_t=a_b=a_0`.  A Neumann wall is natural and contributes no lower "
+"boundary term.  This form fixes the implementation order: assemble the "
+"volume and DtN operators, apply ``BlochReducer`` to form :math:`T^HAT` and "
+":math:`T^Hb`, then apply ``Condenser`` only for the Dirichlet wall."
+msgstr ""
+"对任意齐次试验函数 :math:`v` 均成立。当前 slab 中 :math:`a_t=a_b=a_0`。Neumann "
+"墙面是自然边界，不产生底部边界项。该弱形式确定实现顺序：先装配体积和 DtN 算子，再用 ``BlochReducer`` 形成 "
+":math:`T^HAT` 和 :math:`T^Hb`，最后只对 Dirichlet 墙面应用 ``Condenser``。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:486
+#: 3972116b7f1c481e944514f12ac54b13
+msgid "Layered exact solutions for verification"
+msgstr "用于验证的分层精确解"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:488
+#: 81c80fb4be7a4c089ee228c1db4c4a86
+#, python-brace-format
+msgid ""
+"The general periodic problem may couple many Rayleigh orders.  For code "
+"verification, the flat interfaces preserve the incident order.  With "
+":math:`\\beta=\\beta_{0,0}` and :math:`\\gamma=\\beta_{1,0}`, the incident, "
+"scattered, and top total fields are"
+msgstr ""
+"一般周期问题可能耦合多个 Rayleigh 阶。为了验证代码，平界面保持入射模态的阶数不变。令 "
+":math:`\\beta=\\beta_{0,0}`、:math:`\\gamma=\\beta_{1,0}`，则入射场、散射场和顶部总场为"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:493
+#: 93ef7ebe95a54ff8899f77dc3689f7fe
+#, python-brace-format
+msgid ""
+"\\begin{aligned}\n"
+"u^{\\rm inc}&=Ae^{i\\alpha x_1-i\\beta(x_2-y_t)},\\\\\n"
+"u^{\\rm sc}&=re^{i\\alpha x_1+i\\beta(x_2-y_t)},\\\\\n"
+"u_{\\rm top}&=u^{\\rm inc}+u^{\\rm sc}.\n"
+"\\end{aligned}"
+msgstr ""
+"\\begin{aligned}\n"
+"u^{\\rm inc}&=Ae^{i\\alpha x_1-i\\beta(x_2-y_t)},\\\\\n"
+"u^{\\rm sc}&=re^{i\\alpha x_1+i\\beta(x_2-y_t)},\\\\\n"
+"u_{\\rm top}&=u^{\\rm inc}+u^{\\rm sc}.\n"
+"\\end{aligned}"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:501
+#: c2f85bc9042f4c60bb21b5a160ca846a
+msgid "The layer and lower transmitted total fields are"
+msgstr "介质层内总场和底部透射总场为"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:503
+#: 80debdf54659431d92fcb62e2258f3c6
+#, python-brace-format
+msgid ""
+"\\begin{aligned}\n"
+"u_{\\rm layer}&=e^{i\\alpha x_1}\n"
+"\\left[pe^{-i\\gamma x_2}+qe^{i\\gamma x_2}\\right],\\\\\n"
+"u_{\\rm bottom}&=u^{\\rm tr}\n"
+"=te^{i\\alpha x_1-i\\beta(x_2-y_b)}.\n"
+"\\end{aligned}"
+msgstr ""
+"\\begin{aligned}\n"
+"u_{\\rm layer}&=e^{i\\alpha x_1}\n"
+"\\left[pe^{-i\\gamma x_2}+qe^{i\\gamma x_2}\\right],\\\\\n"
+"u_{\\rm bottom}&=u^{\\rm tr}\n"
+"=te^{i\\alpha x_1-i\\beta(x_2-y_b)}.\n"
+"\\end{aligned}"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:512
+#: 648bf6c0540a4b74aa23a7be649a50ca
+#, python-brace-format
+msgid ""
+"Continuity of :math:`u` and :math:`a\\partial_{x_2}u` at :math:`x_2=h` and "
+":math:`x_2=0` gives the four-by-four system for :math:`(r,p,q,t)` used in "
+"the script.  A wall removes the lower port and uses the layer total fields"
+msgstr ""
+"在 :math:`x_2=h` 和 :math:`x_2=0` 处令 :math:`u` 与 :math:`a\\partial_{x_2}u` "
+"连续，可得到脚本中关于 :math:`(r,p,q,t)` 的四阶线性系统。wall 算例移除底部端口，并改用介质层内总场"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:516
+#: 7200be92094b4c77b7a7bcdf3517559f
+#, python-brace-format
+msgid ""
+"u_D=d\\,e^{i\\alpha x_1}\\sin(\\gamma x_2),\n"
+"\\qquad\n"
+"u_N=d\\,e^{i\\alpha x_1}\\cos(\\gamma x_2)."
+msgstr ""
+"u_D=d\\,e^{i\\alpha x_1}\\sin(\\gamma x_2),\n"
+"\\qquad\n"
+"u_N=d\\,e^{i\\alpha x_1}\\cos(\\gamma x_2)."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:522
+#: 826663169d0d4aebabed62a6d3e3da71
+msgid ""
+"The sine enforces the Dirichlet trace and the cosine has zero normal "
+"derivative at :math:`x_2=0`; matching at :math:`h` gives a two-by-two system"
+" for :math:`(r,d)`."
+msgstr ""
+"正弦函数满足 Dirichlet 迹，余弦函数在 :math:`x_2=0` 处法向导数为零；在 :math:`h` 处匹配可得到关于 "
+":math:`(r,d)` 的二阶线性系统。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:528
+#: 4072399e1b9642c7a6d3c44449169184
+msgid ""
+"The periodic solve uses TensorMesh's public constraint operators.  The right"
+" hand side is reduced separately because TensorMesh 0.2.0 exposes "
+"``BlochReducer.reduce`` for matrices but not yet for vectors:"
+msgstr ""
+"周期求解使用 TensorMesh 的公共约束算子。右端项单独缩减，因为 TensorMesh 0.2.0 已为矩阵提供 "
+"``BlochReducer.reduce``，但尚未为向量提供对应接口："
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:532
+#: 9030c380b48f49ea88a4fe8020045c40
+msgid "examples/wave/helmholtz_dtn/periodic_dtn.py (constraint essence)"
+msgstr "examples/wave/helmholtz_dtn/periodic_dtn.py（约束处理核心代码）"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:559
+#: 58a0516a08a14b2d9768c30a98ded520
+msgid "Numerical, exact, and error fields for the two-port periodic slab."
+msgstr "双端口周期介质层的数值场、精确场与误差场。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:563
+#: 917eedd13f1140ad8bfcacada41a58a8
+msgid "Two-port slab."
+msgstr "双端口介质层。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:567
+#: e9d4a67037c44d3a947ee8a6cfc6258f
+msgid "Numerical, exact, and error fields for the Dirichlet-backed layer."
+msgstr "Dirichlet 背衬介质层的数值场、精确场与误差场。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:571
+#: b64ed81c232c4f46ac0dc78b089c88c9
+msgid "Dirichlet-backed layer."
+msgstr "Dirichlet 背衬层。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:575
+#: a55310988544464982c32183f95e3a5a
+msgid "Numerical, exact, and error fields for the Neumann-backed layer."
+msgstr "Neumann 背衬介质层的数值场、精确场与误差场。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:579
+#: 6839ee99daef4306910aea0448cf1fff
+msgid "Neumann-backed layer."
+msgstr "Neumann 背衬层。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:581
+#: 115b68bafd1745718ec7d692bbc87967
+msgid ""
+"Lower-case :math:`r_m,t_m` denote complex amplitudes.  Reflectance and "
+"transmittance are power fractions:"
+msgstr "小写的 :math:`r_m,t_m` 表示复振幅。反射率与透射率是功率比例："
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:584
+#: f8c8b40c1b554fd183b525300852426a
+msgid ""
+"\\mathcal R_m=\n"
+"\\frac{\\operatorname{Re}(a_t\\beta_{t,m})}\n"
+"     {\\operatorname{Re}(a_t\\beta_{t,0})}\n"
+"\\left|\\frac{r_m}{A}\\right|^2,\n"
+"\\qquad\n"
+"\\mathcal T_m=\n"
+"\\frac{\\operatorname{Re}(a_b\\beta_{b,m})}\n"
+"     {\\operatorname{Re}(a_t\\beta_{t,0})}\n"
+"\\left|\\frac{t_m}{A}\\right|^2."
+msgstr ""
+"\\mathcal R_m=\n"
+"\\frac{\\operatorname{Re}(a_t\\beta_{t,m})}\n"
+"     {\\operatorname{Re}(a_t\\beta_{t,0})}\n"
+"\\left|\\frac{r_m}{A}\\right|^2,\n"
+"\\qquad\n"
+"\\mathcal T_m=\n"
+"\\frac{\\operatorname{Re}(a_b\\beta_{b,m})}\n"
+"     {\\operatorname{Re}(a_t\\beta_{t,0})}\n"
+"\\left|\\frac{t_m}{A}\\right|^2."
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:596
+#: 1a32e80750c54082a4b73c15ebd1e52e
+msgid ""
+"A wall has no lower radiation port, so the script reports only :math:`r` and"
+" :math:`\\mathcal R`; it does not invent zero transmission values."
+msgstr "壁面没有下方辐射端口，因此脚本只报告 :math:`r` 和 :math:`\\mathcal R`，不会人为给出零透射量。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:600
+#: f4e6cf93a5504445b8c3cc7d79938987
+msgid "TensorMesh assembly details"
+msgstr "TensorMesh 装配细节"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:601
+#: 596a602519b045b0b3f9126ed923efe7
+msgid "The reading order mirrors the official Helmholtz demo:"
+msgstr "阅读顺序与官方 Helmholtz 示例一致："
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:603
+#: 224ca69cdd4e4d8b9fb24daedc1a1bde
+msgid ""
+"keep mesh geometry, basis functions, Jacobians, and quadrature in "
+"``float64``;"
+msgstr "网格几何、基函数、Jacobian 和求积均保持为 ``float64``；"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:604
+#: 56967795169d475badb4108dc3d86fc8
+msgid ""
+"promote ``HelmholtzAssembler`` to ``complex128`` and assemble "
+":math:`a\\nabla u\\cdot\\nabla v-\\omega^2buv` with ``ElementAssembler``;"
+msgstr ""
+"将 ``HelmholtzAssembler`` 提升为 ``complex128``，并用 ``ElementAssembler`` 装配 "
+":math:`a\\nabla u\\cdot\\nabla v-\\omega^2buv`；"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:606
+#: f323ebb31bd5411796a29b0861ecd64a
+msgid "compute modal traces with ``FacetAssembler``;"
+msgstr "用 ``FacetAssembler`` 计算模态迹；"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:607
+#: afeefcf9793044078ee8b917aec73b4a
+msgid "add the nonlocal DtN block to the TensorMesh sparse COO matrix;"
+msgstr "将非局部 DtN 块加入 TensorMesh 稀疏 COO 矩阵；"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:608
+#: 7da5bca64c944d30a58312cb2e266fd2
+msgid ""
+"impose constraints, solve the general complex system, and compare with the "
+"exact field."
+msgstr "施加约束，求解一般复数系统，并与真解比较。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:611
+#: 793214739c734f00be614e19b6ba61c9
+msgid ""
+"The weighted volume form is the only problem-specific element assembler.  "
+"All basis evaluation, quadrature, Jacobian transformations, element "
+"indexing, and global sparse scatter remain inside TensorMesh:"
+msgstr "加权体积变分形式是唯一针对本问题定义的单元装配器。基函数计算、数值求积、Jacobian 变换、单元索引和全局稀疏散布均由 TensorMesh 完成："
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:615
+#: 5dfd4ccb66214de197dc7b3a96400797
+msgid "Weighted complex Helmholtz assembly (shared pattern)"
+msgstr "加权复 Helmholtz 装配（共享模式）"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:633
+#: f1aa81822901466db0da9c0cccc07e8d
+msgid ""
+"TensorMesh 0.2.0 also provides ``FacetBilinearAssembler`` for local Robin or"
+" impedance matrices.  A DtN map is nonlocal, however, so these demos "
+"intentionally use ``FacetAssembler`` for modal moments and form the low-rank"
+" boundary block only after integration."
+msgstr ""
+"TensorMesh 0.2.0 还提供 ``FacetBilinearAssembler`` 来装配局部 Robin 或阻抗矩阵。但 DtN "
+"映射是非局部的，因此这些示例有意使用 ``FacetAssembler`` 计算模态矩，并在积分完成后再形成低秩边界块。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:638
+#: 8f4a34aa7ae24321aa8e7da835ed5b32
+msgid ""
+"The facet path is real, so each exponential is integrated as cosine and "
+"negative-sine channels, then combined as ``complex128``.  If :math:`\\Psi` "
+"is the modal moment matrix, both demos use"
+msgstr ""
+"面装配路径为实数，因此每个指数模态先按余弦和负正弦两个通道积分，再组合为 ``complex128``。若 :math:`\\Psi` "
+"为模态矩矩阵，则两个示例都使用"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:646
+#: 24574c200a614f53ab3a758ea4dcad78
+msgid ""
+"The last factor is a plain transpose because :math:`\\Psi^Tu` gives modal "
+"coefficients.  The matrix is not assumed Hermitian or positive definite.  "
+"The scripts call TensorMesh ``SparseMatrix.solve`` with the SciPy LU backend"
+" selected explicitly instead of requesting an SPD solver."
+msgstr ""
+"最后一个因子采用普通转置，因为 :math:`\\Psi^Tu` 给出模态系数。这里不假设矩阵为 Hermitian 或正定。脚本调用 "
+"TensorMesh 的 ``SparseMatrix.solve``，并显式选择 SciPy LU 后端，而不是请求 SPD 求解器。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:651
+#: 3fd684370578473e94c65bdca19e413f
+msgid "For a periodic Dirichlet wall, the operation order is essential:"
+msgstr "对于带周期 Dirichlet 壁面的算例，操作顺序至关重要："
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:653
+#: c59e8012193d484ba1d5bdc8181db363
+msgid "assemble the full volume and DtN matrix;"
+msgstr "装配完整的体积矩阵和 DtN 矩阵；"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:654
+#: 22ca4cc47adc444da65f9af3bf8e1bc0
+msgid "form :math:`T^HAT` and :math:`T^Hb` with ``BlochReducer(sign=+1)``;"
+msgstr "使用 ``BlochReducer(sign=+1)`` 形成 :math:`T^HAT` 和 :math:`T^Hb`；"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:655
+#: 8b020bd6758a4aae993912cf54269df7
+msgid "map the complete bottom trace to unique Bloch master degrees of freedom;"
+msgstr "将完整底部迹映射到唯一的 Bloch 主自由度；"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:656
+#: af6a99d3382242e0b9702d845f378263
+msgid "apply ``Condenser`` and solve;"
+msgstr "应用 ``Condenser`` 并求解；"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:657
+#: c3de9f8df697405693abd792e6dc74ae
+msgid "recover through ``Condenser`` and then ``BlochReducer``."
+msgstr "先通过 ``Condenser`` 恢复，再通过 ``BlochReducer`` 恢复。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:659
+#: 207a06a16cb243668330cc188c906207
+msgid ""
+"The Neumann wall is a natural weak boundary and skips condensation.  The "
+"tests compare the Bloch reductions with an explicit matrix :math:`T`, "
+"substitute orders :math:`-2,0,3` into the circular boundary conditions, "
+"check P1 convergence, and verify amplitudes, powers, Bloch traces, and "
+"nonzero-mode leakage."
+msgstr ""
+"Neumann 壁面是自然弱边界，因此跳过凝聚。测试将 Bloch 缩减与显式矩阵 :math:`T` 比较，把阶数 :math:`-2,0,3` "
+"代回圆形边界条件，检验 P1 收敛性，并验证振幅、功率、Bloch 迹和非零模态泄漏。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:666
+#: 66f4598cd96a4c128440f377107b6b92
+msgid "Plots and analytical verification"
+msgstr "绘图与解析验证"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:667
+#: a9b5bd4b49e34aeaa87709a40b8ba0ae
+msgid ""
+"Both scripts use :meth:`~tensormesh.Mesh.plot` rather than constructing an "
+"independent plotting pipeline:"
+msgstr "两个脚本均使用 :meth:`~tensormesh.Mesh.plot`，没有另行搭建绘图流程："
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:670
+#: e46e49bbcff144aebbc73e7d268161ba
+msgid "Numerical field, exact field, and pointwise error"
+msgstr "数值场、真解场与逐点误差"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:682
+#: d4e76f3dd5184b8dabdba2899230a217
+#, python-brace-format
+msgid ""
+"With the default CPU ``complex128`` settings, the three circular cases have "
+"relative nodal errors below :math:`5.6\\times10^{-2}` and fitted P1 "
+"convergence orders between :math:`1.71` and :math:`1.74`.  For the periodic "
+"cases, the relative errors in the analytical amplitudes remain below "
+":math:`2.0\\times10^{-2}`, the energy-balance residual is below "
+":math:`2.0\\times10^{-15}`, and the recovered Bloch trace agrees to machine "
+"precision.  The committed figures show the numerical field, analytical "
+"field, and their pointwise error for every case."
+msgstr ""
+"在默认 CPU ``complex128`` 设置下，三个圆形算例的相对节点误差均小于 :math:`5.6\\times10^{-2}`，拟合得到的 "
+"P1 收敛阶位于 :math:`1.71` 到 :math:`1.74` 之间。对于周期算例，解析振幅的相对误差小于 "
+":math:`2.0\\times10^{-2}`，能量平衡残差小于 :math:`2.0\\times10^{-15}`，恢复后的 Bloch "
+"迹在机器精度范围内一致。提交的图片展示了每个算例的数值场、解析场及其逐点误差。"
