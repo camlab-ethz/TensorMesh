@@ -10,6 +10,7 @@ if __name__ == '__main__':
     from mesh import Mesh
 else:
     from ...mesh import Mesh
+    from ._boundary import boundary_tolerance, near, within, register_boundary_masks
 
 def gen_sphere(chara_length=0.1,
              order=1,
@@ -79,11 +80,11 @@ def gen_sphere(chara_length=0.1,
         # Finalize Gmsh
         gmsh.finalize()
 
-    mesh = Mesh.from_file(cache_path)
+    # reorder=True was missing here: at order=2 the tetra10 edge nodes
+    # came out in gmsh order and every cell was silently distorted.
+    mesh = Mesh.from_file(cache_path, reorder=True)
 
-    radius = torch.sqrt((mesh.points[:, 0] - cx)**2 + (mesh.points[:, 1] - cy)**2 + (mesh.points[:, 2] - cz)**2)
-    is_boundary = torch.isclose(radius, torch.ones_like(radius)*r)
-    mesh.register_point_data("is_boundary", is_boundary)
+    register_boundary_masks(mesh)
     return mesh
 
 
@@ -135,17 +136,18 @@ def gen_hollow_sphere(chara_length=0.1,
 
         gmsh.model.occ.synchronize()
 
-        _ = gmsh.model.occ.cut([(3, sphere_outer)], [(3, sphere_inner)])
-
+        # occ.cut CONSUMES both inputs; work with the cut result only.
+        cut, _ = gmsh.model.occ.cut([(3, sphere_outer)], [(3, sphere_inner)])
         gmsh.model.occ.synchronize()
+        volumes = [tag for dim, tag in cut if dim == 3]
 
         # Set the element order to 2 to generate second-order elements
         gmsh.option.setNumber("Mesh.ElementOrder", order)
 
         gmsh.model.mesh.setSize(gmsh.model.getEntities(0), chara_length)
 
-        gmsh.model.addPhysicalGroup(3, [sphere_outer])
-        gmsh.model.setPhysicalName(3, 1, "domain")
+        volume_group = gmsh.model.addPhysicalGroup(3, volumes)
+        gmsh.model.setPhysicalName(3, volume_group, "domain")
 
 
         # Generate the mesh
@@ -162,13 +164,13 @@ def gen_hollow_sphere(chara_length=0.1,
 
     mesh = Mesh.from_file(cache_path,  reorder=True)
 
+    tol = boundary_tolerance(chara_length)
     radius = torch.sqrt((mesh.points[:, 0] - cx)**2 + (mesh.points[:, 1] - cy)**2 + (mesh.points[:, 2] - cz)**2)
-    is_inner_boundary = torch.isclose(radius, torch.ones_like(radius) * r_inner)
-    is_outer_boundary = torch.isclose(radius, torch.ones_like(radius) * r_outer)
-    is_boundary = is_inner_boundary | is_outer_boundary
-    mesh.register_point_data("is_boundary", is_boundary)
-    mesh.register_point_data("is_inner_boundary", is_inner_boundary)
-    mesh.register_point_data("is_outer_boundary", is_outer_boundary)
+    register_boundary_masks(
+        mesh,
+        is_inner_boundary=near(radius, r_inner, tol),
+        is_outer_boundary=near(radius, r_outer, tol),
+    )
     return mesh
 
 if __name__ == '__main__':

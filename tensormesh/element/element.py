@@ -152,6 +152,62 @@ class Element:
         # Default: identity (meaning Gmsh/VTK ordering == TensorMesh ordering)
         return torch.arange(n_nodes, device=device, dtype=torch.long)
 
+    @classmethod
+    def classify_nodes(cls, order: int) -> Tuple[List[Tuple[str, int, int]], int]:
+        r"""Classify the reference nodes of the order-``order`` Lagrange space.
+
+        Each reference node (row of :meth:`get_basis`) is matched **by
+        coordinates** to a vertex, to an interior point of an edge, or to
+        a face/cell interior point — no assumption on the internal node
+        ordering is made. The topological DOF maps
+        (``tensormesh.assemble.topology.lagrange_dofmap``) and the
+        node-ordering check (:meth:`tensormesh.Mesh.check_node_ordering`)
+        are built on this classification.
+
+        Parameters
+        ----------
+        order : int
+            Polynomial order of the Lagrange space (``>= 1``).
+
+        Returns
+        -------
+        slots : List[Tuple[str, int, int]]
+            One entry per reference node, slot-aligned with :meth:`get_basis`:
+            ``("vertex", local_vertex, 0)``; ``("edge", local_edge, j)`` with
+            ``j in 1..order-1`` counted from ``edge[local_edge, 0]`` towards
+            ``edge[local_edge, 1]``; or ``("interior", running_index, 0)``.
+        n_interior : int
+            Number of interior (neither vertex nor edge) nodes.
+        """
+        ref = cls.get_basis(order, torch.float64)          # [nb, D]
+        verts = cls.points.to(torch.float64)               # [n_vertex, D]
+        edges = cls.edge.tolist()                          # [n_edge, 2]
+        slots, n_interior = [], 0
+        for x in ref:
+            dist = (verts - x).norm(dim=1)
+            if dist.min() < 1e-8:
+                slots.append(("vertex", int(dist.argmin()), 0))
+                continue
+            hit = None
+            for local_edge, (a, b) in enumerate(edges):
+                va, vb = verts[a], verts[b]
+                tv = vb - va
+                t = float(torch.dot(x - va, tv) / torch.dot(tv, tv))
+                if 1e-8 < t < 1 - 1e-8 and (va + t * tv - x).norm() < 1e-8:
+                    j = round(t * order)
+                    assert abs(t * order - j) < 1e-6 and 1 <= j <= order - 1, (
+                        f"{cls.__name__} order-{order} edge node at t={t} does "
+                        f"not sit on the uniform lattice"
+                    )
+                    hit = ("edge", local_edge, j)
+                    break
+            if hit is not None:
+                slots.append(hit)
+            else:
+                slots.append(("interior", n_interior, 0))
+                n_interior += 1
+        return slots, n_interior
+
     # @abstractmethod
     @classmethod
     def get_facet_type(cls)->Union[Type['Element'],Tuple[Type['Element'],Type['Element']]]:

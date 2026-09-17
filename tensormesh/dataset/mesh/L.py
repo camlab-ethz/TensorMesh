@@ -10,6 +10,7 @@ if __name__ == '__main__':
     from mesh import Mesh
 else:
     from ...mesh import Mesh
+    from ._boundary import boundary_tolerance, near, within, register_boundary_masks
 
 def gen_L(chara_length=0.1,
              order=1,
@@ -112,20 +113,18 @@ def gen_L(chara_length=0.1,
 
     mesh = Mesh.from_file(cache_path,  reorder=True)
 
-    is_left_boundary  = mesh.points[:, 0] == left
-    is_right_boundary = mesh.points[:, 0] == right
-    is_bottom_boundary= mesh.points[:, 1] == bottom
-    is_top_boundary   = mesh.points[:, 1] == top
-    is_L_top_boundary = mesh.points[:, 1] == top_inner
-    is_L_right_boundary = mesh.points[:, 0] == right_inner
-    is_boundary       = is_left_boundary | is_right_boundary | is_bottom_boundary | is_top_boundary | is_L_top_boundary | is_L_right_boundary
-    mesh.register_point_data("is_boundary", is_boundary)
-    mesh.register_point_data("is_left_boundary", is_left_boundary)
-    mesh.register_point_data("is_right_boundary", is_right_boundary)
-    mesh.register_point_data("is_bottom_boundary", is_bottom_boundary)
-    mesh.register_point_data("is_top_boundary", is_top_boundary)
-    mesh.register_point_data("is_L_top_boundary", is_L_top_boundary)
-    mesh.register_point_data("is_L_right_boundary", is_L_right_boundary)
+    tol = boundary_tolerance(chara_length)
+    x, y = mesh.points[:, 0], mesh.points[:, 1]
+    register_boundary_masks(
+        mesh,
+        is_left_boundary=near(x, left, tol),
+        is_right_boundary=near(x, right, tol),
+        is_bottom_boundary=near(y, bottom, tol),
+        is_top_boundary=near(y, top, tol),
+        # the re-entrant sides: only the segments bounding the cut-out corner
+        is_L_top_boundary=near(y, top_inner, tol) & (x >= right_inner - tol),
+        is_L_right_boundary=near(x, right_inner, tol) & (y >= top_inner - tol),
+    )
 
     return mesh
 
