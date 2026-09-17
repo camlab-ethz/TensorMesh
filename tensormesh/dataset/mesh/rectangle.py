@@ -10,6 +10,7 @@ if __name__ == '__main__':
     from mesh import Mesh
 else:
     from ...mesh import Mesh
+    from ._boundary import boundary_tolerance, near, within, register_boundary_masks
 
 def gen_rectangle(chara_length=0.1,
              order=1,
@@ -97,17 +98,16 @@ def gen_rectangle(chara_length=0.1,
         gmsh.finalize()
 
     mesh = Mesh.from_file(cache_path,  reorder=True)
-    
-    is_left_boundary  = mesh.points[:, 0] == left
-    is_right_boundary = mesh.points[:, 0] == right
-    is_bottom_boundary= mesh.points[:, 1] == bottom
-    is_top_boundary   = mesh.points[:, 1] == top
-    is_boundary       = is_left_boundary | is_right_boundary | is_bottom_boundary | is_top_boundary
-    mesh.register_point_data("is_boundary", is_boundary)
-    mesh.register_point_data("is_left_boundary", is_left_boundary)
-    mesh.register_point_data("is_right_boundary", is_right_boundary)
-    mesh.register_point_data("is_bottom_boundary", is_bottom_boundary)
-    mesh.register_point_data("is_top_boundary", is_top_boundary)
+
+    tol = boundary_tolerance(chara_length)
+    x, y = mesh.points[:, 0], mesh.points[:, 1]
+    register_boundary_masks(
+        mesh,
+        is_left_boundary=near(x, left, tol),
+        is_right_boundary=near(x, right, tol),
+        is_bottom_boundary=near(y, bottom, tol),
+        is_top_boundary=near(y, top, tol),
+    )
 
     return mesh
 
@@ -178,29 +178,30 @@ def gen_hollow_rectangle(chara_length=0.1,
 
         gmsh.model.occ.synchronize()
 
-        _ = gmsh.model.occ.cut([(2,rectangle_outer)], [(2,rectangle_inner)])
-
+        # occ.cut CONSUMES both inputs and returns the new entities: the
+        # tags ``rectangle_outer`` / ``rectangle_inner`` are stale after it
+        # (referring to them raised "Unknown model face"). Work with the
+        # cut result only; its boundary already holds the frame and the hole.
+        cut, _ = gmsh.model.occ.cut([(2, rectangle_outer)], [(2, rectangle_inner)])
         gmsh.model.occ.synchronize()
+        surfaces = [tag for dim, tag in cut if dim == 2]
 
         if element_type == "quad":
-            # Set transfinite meshing
-            # gmsh.model.mesh.setTransfiniteSurface(rectangle, "Right")
             # Apply the recombine algorithm to generate quad elements
-            gmsh.model.mesh.setRecombine(2, rectangle_outer)
+            for surface in surfaces:
+                gmsh.model.mesh.setRecombine(2, surface)
 
         # Set the element order to 2 to generate second-order elements
         gmsh.option.setNumber("Mesh.ElementOrder", order)
 
         gmsh.model.mesh.setSize(gmsh.model.getEntities(0), chara_length)
 
-        boundary_lines_outer = gmsh.model.getBoundary([(2, rectangle_outer)], oriented=False)
-        boundary_lines_inner = gmsh.model.getBoundary([(2, rectangle_inner)], oriented=False)
-        boundary_lines = boundary_lines_outer + boundary_lines_inner
-        line_group = gmsh.model.addPhysicalGroup(1, [line[1] for line in boundary_lines])
+        boundary_lines = gmsh.model.getBoundary([(2, s) for s in surfaces], oriented=False)
+        line_group = gmsh.model.addPhysicalGroup(1, [tag for dim, tag in boundary_lines if dim == 1])
         gmsh.model.setPhysicalName(1, line_group, "boundary")
 
-        gmsh.model.addPhysicalGroup(2, [rectangle_outer])
-        gmsh.model.setPhysicalName(2, 1, "domain")
+        surface_group = gmsh.model.addPhysicalGroup(2, surfaces)
+        gmsh.model.setPhysicalName(2, surface_group, "domain")
 
         # Generate the mesh
         gmsh.model.mesh.generate(2)
@@ -216,26 +217,27 @@ def gen_hollow_rectangle(chara_length=0.1,
 
     mesh = Mesh.from_file(cache_path,  reorder=True)
 
-    is_outer_left_boundary  = mesh.points[:, 0] == outer_left
-    is_outer_right_boundary = mesh.points[:, 0] == outer_right
-    is_outer_bottom_boundary= mesh.points[:, 1] == outer_bottom
-    is_outer_top_boundary   = mesh.points[:, 1] == outer_top
-    is_inner_left_boundary   = mesh.points[:,0] == inner_left
-    is_inner_right_boundary  = mesh.points[:,0] == inner_right 
-    is_inner_bottom_boundary = mesh.points[:,1] == inner_bottom
-    is_inner_top_boundary    = mesh.points[:,1] == inner_top
-    is_outer_boundary       = is_outer_left_boundary | is_outer_right_boundary | is_outer_bottom_boundary | is_outer_top_boundary
-    is_inner_boundary       = is_inner_left_boundary | is_inner_right_boundary | is_inner_bottom_boundary | is_inner_top_boundary
-    is_boundary             = is_inner_boundary | is_outer_boundary
-    mesh.register_point_data("is_boundary", is_boundary)
-    mesh.register_point_data("is_inner_left_boundary", is_inner_left_boundary)
-    mesh.register_point_data("is_outer_left_boundary", is_outer_left_boundary)
-    mesh.register_point_data("is_inner_right_boundary", is_inner_right_boundary)
-    mesh.register_point_data("is_outer_right_boundary", is_outer_right_boundary)
-    mesh.register_point_data("is_inner_bottom_boundary", is_inner_bottom_boundary)
-    mesh.register_point_data("is_outer_bottom_boundary", is_outer_bottom_boundary)
-    mesh.register_point_data("is_inner_top_boundary", is_inner_top_boundary)
-    mesh.register_point_data("is_outer_top_boundary", is_outer_top_boundary)
+    tol = boundary_tolerance(chara_length)
+    x, y = mesh.points[:, 0], mesh.points[:, 1]
+    # The hole's sides are the segments of the lines x = inner_* / y = inner_*
+    # that lie in the hole's extent (the same lines continue into the domain).
+    in_hole_x = within(x, inner_left, inner_right, tol)
+    in_hole_y = within(y, inner_bottom, inner_top, tol)
+    sides = dict(
+        is_inner_left_boundary=near(x, inner_left, tol) & in_hole_y,
+        is_outer_left_boundary=near(x, outer_left, tol),
+        is_inner_right_boundary=near(x, inner_right, tol) & in_hole_y,
+        is_outer_right_boundary=near(x, outer_right, tol),
+        is_inner_bottom_boundary=near(y, inner_bottom, tol) & in_hole_x,
+        is_outer_bottom_boundary=near(y, outer_bottom, tol),
+        is_inner_top_boundary=near(y, inner_top, tol) & in_hole_x,
+        is_outer_top_boundary=near(y, outer_top, tol),
+    )
+    is_inner = sides["is_inner_left_boundary"] | sides["is_inner_right_boundary"] \
+             | sides["is_inner_bottom_boundary"] | sides["is_inner_top_boundary"]
+    is_outer = sides["is_outer_left_boundary"] | sides["is_outer_right_boundary"] \
+             | sides["is_outer_bottom_boundary"] | sides["is_outer_top_boundary"]
+    register_boundary_masks(mesh, **sides, is_inner_boundary=is_inner, is_outer_boundary=is_outer)
 
     return mesh
 
