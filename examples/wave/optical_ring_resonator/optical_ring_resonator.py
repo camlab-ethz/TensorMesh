@@ -188,7 +188,9 @@ def build_mesh(problem: Coupler, msh_path: Optional[str] = None) -> Mesh:
         gmsh.write(msh_path)
     finally:
         gmsh.finalize()
-    return Mesh.from_file(msh_path, reorder=False)
+    # reorder=True: mesh_order=2 produces triangle6 cells, whose edge nodes
+    # gmsh numbers differently from TensorMesh (a no-op for linear triangles).
+    return Mesh.from_file(msh_path, reorder=True)
 
 
 # --------------------------------------------------------------------------- #
