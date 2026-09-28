@@ -265,3 +265,11 @@ msgstr "批量生成热方程与波动方程的快照，用于训练神经算子
 #~ msgid ""
 #~ "Graph coloring, spectral partitioning, and multi-GPU assembly benchmarks."
 #~ msgstr "图着色、谱划分，以及多 GPU 装配性能基准测试。"
+
+#: ../../source/example_gallery/index.rst:68
+msgid "Helmholtz Scattering (DtN Boundary Treatment)"
+msgstr "Helmholtz 散射（DtN 边界处理）"
+
+#: ../../source/example_gallery/index.rst:73
+msgid "Circular and periodic open-domain scattering with exact nonlocal boundaries."
+msgstr "采用精确非局部边界的圆形与周期开放域散射。"
