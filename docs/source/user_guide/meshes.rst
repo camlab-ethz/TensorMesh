@@ -375,6 +375,48 @@ needed. Such a file is therefore a regular VTK file: read it back with
 :meth:`~tensormesh.Mesh.to_meshio` returns the meshio object directly
 if you need custom write logic.
 
+.. _mesh-exodus:
+
+Exodus II meshes, node sets and side sets
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Exodus II (``.e``, ``.exo``) is the mesh format of MOOSE, Cubit and the
+SEACAS tools. Its boundaries are named regions: **node sets** (lists of
+nodes) and **side sets** (lists of element sides). ``Mesh.read`` keeps
+both, together with the element-block ids. It needs the ``netCDF4``
+package (``pip install "tensormesh-fem[exodus]"``):
+
+.. code-block:: python
+
+   mesh = Mesh.read("bracket.e")         # no reorder flag: always converted
+   mesh.point_sets.keys()                # node sets: point indices
+   mesh.side_sets.keys()                 # side sets: (cell, local facet) pairs
+   mesh.cell_data["block_id"]            # element-block id of every cell
+
+A side set selects facets, not nodes. Pass its name as the
+``boundary_mask`` of a :class:`~tensormesh.FacetAssembler` to integrate
+over exactly those facets. This matters on an interior side set: a node
+mask cannot tell the two sides of an interface apart and integrates it
+twice. For Dirichlet conditions, turn either kind of set into a node mask:
+
+.. code-block:: python
+
+   # FluxAssembler: any FacetAssembler subclass, see boundary_conditions
+   flux = FluxAssembler.from_mesh(mesh, boundary_mask="outlet")()   # side set
+   fixed = mesh.side_set_mask("inlet") | mesh.point_set_mask("pins")
+   condenser = Condenser(fixed, values[fixed])
+
+Supported Exodus elements are ``TRI3/6``, ``QUAD4/9``, ``TETRA4/10``,
+``HEX8/27``, ``WEDGE6/18``, ``PYRAMID5/14`` and ``EDGE2/3``. Serendipity
+(``QUAD8``, ``HEX20``, …) and bubble (``TRI7``, ``TET14``) elements raise
+``NotImplementedError``. Nodal and element variables are not read.
+
+``mesh.save("out.e")`` writes an Exodus II file with the point sets as
+node sets and the side sets as side sets, one element block per element
+type and ``block_id``. Point and cell data are not written. Sets can also
+be added by hand with :meth:`~tensormesh.Mesh.register_point_set` and
+:meth:`~tensormesh.Mesh.register_side_set`.
+
 
 Inspecting and visualizing
 --------------------------
