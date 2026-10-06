@@ -273,6 +273,7 @@ class ElementAssembler(nn.Module):
                        point_data:Optional[Mapping[str, torch.Tensor]] = None, 
                        element_data:Optional[Union[Mapping[str, Mapping[str,torch.Tensor]], Mapping[str,torch.Tensor]]] = None, 
                        scalar_data:Optional[Mapping[str, torch.Tensor]] = None,
+                       quadrature_data:Optional[Union[Mapping[str, Mapping[str,torch.Tensor]], Mapping[str,torch.Tensor]]] = None,
                        batch_size:int = -1):
         r"""Assemble the bilinear form into a global sparse matrix.
 
@@ -294,6 +295,11 @@ class ElementAssembler(nn.Module):
             element type is present.
         scalar_data : Mapping[str, scalar or torch.Tensor], optional
             Global scalars passed verbatim to ``forward`` (no broadcasting).
+        quadrature_data : Mapping[str, ...], optional
+            Per-element, per-quadrature-point data of shape
+            ``[n_elements, n_quadrature, ...]``: a coefficient sampled at the
+            quadrature points (e.g. a piecewise-constant field from another
+            mesh). Same nesting rules as ``element_data``.
         batch_size : int, optional
             Batch size for quadrature points. ``-1`` (default) processes all
             quadrature points at once; positive values split them into
@@ -335,6 +341,18 @@ class ElementAssembler(nn.Module):
             scalar_data = {k:torch.tensor(v) for k,v in scalar_data.items()}
 
 
+        # make sure quadrature data is Dict[str, Dict[str, torch.Tensor]]
+        if quadrature_data is None:
+            quadrature_data = {}
+        elif not isinstance(next(iter(quadrature_data.values())), dict):
+            assert len(self.element_types) == 1
+            quadrature_data = {key:{self.element_types[0]:value} for key, value in quadrature_data.items()} # type:ignore
+        for key in quadrature_data:
+            for element_type in self.element_types:
+                n_e = self.elements[element_type].shape[0]
+                n_q = self.transformation[element_type].n_quadrature
+                assert tuple(quadrature_data[key][element_type].shape[:2]) == (n_e, n_q), f"the shape of {key} should be [{n_e}, {n_q}, ...], but got {tuple(quadrature_data[key][element_type].shape)}"
+
         # make sure points is torch.Tensor
         if points is None:
             points = next(iter(self.transformation.values())).points # type: ignore
@@ -364,6 +382,8 @@ class ElementAssembler(nn.Module):
             (lambda x: x=="gradv" , InputBroadcast(True,  True, False,  True)), # [n_element, n_quadrature,         :, n_v_basis, n_dim]
             (lambda x: x in element_data.keys(),
                                     InputBroadcast(True, False, False, False)), # [n_element,            :,         :,         :]
+            (lambda x: x in quadrature_data.keys(),
+                                    InputBroadcast(True, True,  False, False)), # [n_element, n_quadrature,        :,         :]
             (lambda x: x in scalar_data.keys(),
                                     InputBroadcast(True, True,  True,  True )),
             (lambda x: x in point_data.keys(),
@@ -389,7 +409,7 @@ class ElementAssembler(nn.Module):
                     is_match = True
                     break
             if not is_match:
-                raise ValueError(f"{key} is not supported, please use `u`, `v`, `gradu`, `gradv` or more keys provided by point_data, element_data or scalar_data")
+                raise ValueError(f"{key} is not supported, please use `u`, `v`, `gradu`, `gradv` or more keys provided by point_data, element_data, quadrature_data or scalar_data")
             
 
         element_dims    = tuple(element_dims)
@@ -476,6 +496,8 @@ class ElementAssembler(nn.Module):
                         # grad point data : [element_batch, quadrature_batch, ..., dim]
                     elif key in element_data: # type:ignore
                         args.append(element_data[key][element_type]) # type:ignore
+                    elif key in quadrature_data: # type:ignore
+                        args.append(quadrature_data[key][element_type][:, i*n_batch_size:(i+1)*n_batch_size]) # type:ignore
                     elif key in scalar_data: # type:ignore
                         args.append(scalar_data[key])
                     else:
