@@ -517,7 +517,7 @@ class Transformation(nn.Module):
                 * :math:`D` = spatial dimension
         """
         if self.element.is_mix_facet:
-            tri_m, tri_q, quad_m, quad_q, tri_mask = self.element.get_facet_quadrature(self.quadrature_order, transform=True) # type:ignore
+            tri_m, tri_q, quad_m, quad_q = self.element.get_facet_quadrature(self.quadrature_order, transform=True) # type:ignore
             tri_m = tri_m.type(self.dtype).to(self.device)
             tri_q = tri_q.type(self.dtype).to(self.device)
             quad_m= quad_m.type(self.dtype).to(self.device)
@@ -587,11 +587,11 @@ class Transformation(nn.Module):
 
         if self.element.is_mix_facet:
             if "_facet_shape_val_tri" not in self._buffers: # type: ignore
-                tri_m, tri_p, quad_m, quad_p, tri_mask = self.facet_quadrature # type:ignore
+                tri_m, tri_p, quad_m, quad_p = self.facet_quadrature # type:ignore
                 n_tri_facet, n_quadrature_per_tri_facet, _   = tri_p.shape
                 n_quad_facet, n_quadrature_per_quad_facet, _ = quad_p.shape
-                tri_shape_val = self.element.eval_shape_val(tri_p, self.basis_order, self.quadrature_order)
-                quad_shape_val= self.element.eval_shape_val(quad_p, self.basis_order, self.quadrature_order)
+                tri_shape_val = self.element.eval_shape_val(tri_p.reshape(-1, self.element.dim), self.basis_order, self.quadrature_order)
+                quad_shape_val= self.element.eval_shape_val(quad_p.reshape(-1, self.element.dim), self.basis_order, self.quadrature_order)
                 tri_shape_val = tri_shape_val.reshape(n_tri_facet, n_quadrature_per_tri_facet, self.n_basis)
                 quad_shape_val= quad_shape_val.reshape(n_quad_facet, n_quadrature_per_quad_facet, self.n_basis)
 
@@ -673,7 +673,7 @@ class Transformation(nn.Module):
 
             if "_facet_shape_grad_tri" not in self._buffers: # type: ignore
 
-                tri_m, tri_q, quad_m, quad_q, tri_mask = self.facet_quadrature # type:ignore
+                tri_m, tri_q, quad_m, quad_q = self.facet_quadrature # type:ignore
                 n_tri_facet, n_quadrature_per_tri_facet, _   = tri_q.shape
                 n_quad_facet, n_quadrature_per_quad_facet, _ = quad_q.shape
 

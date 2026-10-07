@@ -1,6 +1,6 @@
 from abc import abstractmethod
 import inspect
-from typing import Callable, Optional, Dict, List
+from typing import Callable, Optional, Dict, List, Mapping, Tuple, Union
 
 import torch
 import torch.nn as nn
@@ -11,6 +11,7 @@ from .projector import ReduceProjector, SparseProjector
 from ..element import element_type2dimension, Transformation
 from ..nn import BufferList
 from ..mesh import Mesh
+from ..mesh.mesh import local_facets
 from ..vmap import vmap
 
 
@@ -363,10 +364,31 @@ class FacetAssembler(nn.Module):
                     *args,**kwargs
                 )
 
+    @staticmethod
+    def _side_set_selection(side_set:Mapping[str, torch.Tensor],
+                            element_type:str,
+                            n_element:int,
+                            device:torch.device)->Tuple[torch.Tensor, torch.Tensor]:
+        """Cells and facets of ``element_type`` selected by a side set.
+
+        Returns ``is_boundary_element [n_element]`` and
+        ``is_boundary_facet [n_boundary_element, n_facet]`` (facets in
+        :func:`~tensormesh.mesh.mesh.local_facets` order).
+        """
+        n_facet = len(local_facets(element_type))
+        pairs = side_set[element_type].to(device) if element_type in side_set else \
+            torch.zeros(0, 2, dtype=torch.long, device=device)
+        is_boundary_element = torch.zeros(n_element, dtype=torch.bool, device=device)
+        is_boundary_element[pairs[:, 0]] = True
+        row = torch.cumsum(is_boundary_element, 0) - 1                 # cell -> row among boundary cells
+        is_boundary_facet = torch.zeros(int(is_boundary_element.sum()), n_facet, dtype=torch.bool, device=device)
+        is_boundary_facet[row[pairs[:, 0]], pairs[:, 1]] = True
+        return is_boundary_element, is_boundary_facet
+
     @classmethod
     def from_elements(cls,  points:torch.Tensor,
                             elements:Dict[str,torch.Tensor],
-                            boundary_mask:torch.Tensor,
+                            boundary_mask:Union[torch.Tensor, Mapping[str, torch.Tensor]],
                             quadrature_order:int = 2,
                             device:str|torch.device="cpu",
                             dtype:torch.dtype=torch.float32,
@@ -384,10 +406,13 @@ class FacetAssembler(nn.Module):
         elements : dict[str, torch.Tensor]
             Connectivity keyed by element-type string, e.g.
             ``{"triangle": tensor([[0, 1, 2], [1, 2, 3]])}``.
-        boundary_mask : torch.Tensor
-            1D boolean tensor of shape :math:`[|\mathcal V|]` marking which
-            nodes lie on the boundary; a facet is selected iff *all* of its
-            corner nodes are flagged.
+        boundary_mask : torch.Tensor or Mapping[str, torch.Tensor]
+            Either a 1D boolean tensor of shape :math:`[|\mathcal V|]`
+            marking which nodes lie on the boundary — a facet is selected
+            iff *all* of its nodes are flagged — or a side set: a mapping
+            ``element_type -> [n, 2]`` long tensor of ``(cell index, local
+            facet index)`` pairs (see :attr:`tensormesh.Mesh.side_sets`),
+            which selects exactly those facets.
         quadrature_order : int, optional
             Positive integer; defaults to ``2``.
         device : torch.device or str, optional
@@ -407,11 +432,22 @@ class FacetAssembler(nn.Module):
         facet_mask         = {}
         trasnformations    = {}
         
+        side_set = None if isinstance(boundary_mask, torch.Tensor) else boundary_mask
+        if side_set is not None:
+            unknown = set(side_set.keys()).difference(elements.keys())
+            if unknown:
+                raise ValueError(f"the side set references {sorted(unknown)} cells, but the "
+                                 f"assembled element types are {list(elements.keys())}")
+
         # compute the facet_mask -> facet_quadrature
         for element_type, value in elements.items(): # type: ignore
             element = element_type2element(element_type)
-            if element.is_mix_facet:
+            if side_set is None:
                 is_boundary_element = boundary_mask[value].any(-1)
+            else:
+                is_boundary_element, is_selected_facet = cls._side_set_selection(
+                    side_set, element_type, value.shape[0], value.device)
+            if element.is_mix_facet:
                 boundary_elements   = value[is_boundary_element]                          # [n_boundary_element, n_basis_per_cell]
 
                 trans               = Transformation(
@@ -423,8 +459,13 @@ class FacetAssembler(nn.Module):
                 tri_boundary_facet_candidate, quad_boundary_facet_candidate = trans.facets
                 # tri_boundary_facet_candidate  [n_boundary_element, n_tri_facet, n_basis_per_tri_facet]
                 # quad_boundary_facet_candidate [n_boundary_element, n_quad_facet, n_basis_per_quad_facet]
-                is_tri_boundary_facet = boundary_mask[tri_boundary_facet_candidate].all(-1)     # [n_boundary_element, n_tri_facet]
-                is_quad_boundary_facet= boundary_mask[quad_boundary_facet_candidate].all(-1)    # [n_boundary_element, n_quad_facet]
+                if side_set is None:
+                    is_tri_boundary_facet = boundary_mask[tri_boundary_facet_candidate].all(-1)     # [n_boundary_element, n_tri_facet]
+                    is_quad_boundary_facet= boundary_mask[quad_boundary_facet_candidate].all(-1)    # [n_boundary_element, n_quad_facet]
+                else:
+                    n_tri_facet           = tri_boundary_facet_candidate.shape[1]
+                    is_tri_boundary_facet = is_selected_facet[:, :n_tri_facet]
+                    is_quad_boundary_facet= is_selected_facet[:, n_tri_facet:]
                 n_selected_tri_facet  = int(is_tri_boundary_facet.sum().item())
                 n_selected_quad_facet = int(is_quad_boundary_facet.sum().item())
                 n_basis               = trans.n_basis                                            # n_basis_per_cell
@@ -459,7 +500,6 @@ class FacetAssembler(nn.Module):
                 facet_mask[element_type]        = BufferList([is_tri_boundary_facet, is_quad_boundary_facet])
             
             else: # same facet type
-                is_boundary_element = boundary_mask[value].any(-1)
                 boundary_elements   = value[is_boundary_element]                          # [n_boundary_element, n_basis_per_cell]
                 
                 trans               = Transformation(
@@ -469,7 +509,10 @@ class FacetAssembler(nn.Module):
                                                     quadrature_order)
                 
                 boundary_facet_candidate = trans.facets                                   # [n_boundary_element, n_facet, n_basis_per_facet]
-                is_boundary_facet   = boundary_mask[boundary_facet_candidate].all(-1)     # [n_boundary_element, n_facet]
+                if side_set is None:
+                    is_boundary_facet = boundary_mask[boundary_facet_candidate].all(-1)   # [n_boundary_element, n_facet]
+                else:
+                    is_boundary_facet = is_selected_facet
                 n_selected_facet    = int(is_boundary_facet.sum().item())
                 n_basis             = trans.n_basis                                       # n_basis_per_cell
 
@@ -515,7 +558,7 @@ class FacetAssembler(nn.Module):
 
     @classmethod
     def from_mesh(cls, mesh:Mesh,
-                       boundary_mask:Optional[str|torch.Tensor]=None,
+                       boundary_mask:Optional[str|torch.Tensor|Mapping[str, torch.Tensor]]=None,
                        quadrature_order:int=2,
                        project:str = "reduce",
                        *args,**kwargs):
@@ -529,10 +572,14 @@ class FacetAssembler(nn.Module):
         mesh : tensormesh.Mesh
             Source mesh; connectivity, points, and (default) boundary mask
             are read from it.
-        boundary_mask : str, torch.Tensor, or None, optional
+        boundary_mask : str, torch.Tensor, Mapping, or None, optional
             Boundary selector. ``None`` (default) uses ``mesh.boundary_mask``;
-            ``str`` keys into ``mesh.point_data``; a tensor is used verbatim
-            and must be 1D boolean of length ``n_points``.
+            a tensor is used verbatim and must be 1D boolean of length
+            ``n_points``; a mapping is a side set (see
+            :meth:`from_elements`). A ``str`` is looked up in
+            ``mesh.point_data``, then in ``mesh.side_sets`` — which selects
+            exactly the facets of that side set, so an interior side set is
+            integrated once — then in ``mesh.point_sets``.
         quadrature_order : int, optional
             Positive integer; defaults to ``2``.
         project : {'reduce', 'sparse'}, optional
@@ -552,8 +599,17 @@ class FacetAssembler(nn.Module):
         if boundary_mask is None:
             boundary_mask = mesh.boundary_mask
         elif isinstance(boundary_mask, str):
-            boundary_mask = mesh.point_data[boundary_mask]
-        assert boundary_mask.dim() == 1 and boundary_mask.shape[0] == n_points
+            if boundary_mask in mesh.point_data:
+                boundary_mask = mesh.point_data[boundary_mask]
+            elif boundary_mask in mesh.side_sets:
+                boundary_mask = dict(mesh.side_sets[boundary_mask].items())
+            elif boundary_mask in mesh.point_sets:
+                boundary_mask = mesh.point_set_mask(boundary_mask)
+            else:
+                raise KeyError(f"'{boundary_mask}' is neither a point_data mask, a side set "
+                               f"nor a point set of the mesh")
+        if isinstance(boundary_mask, torch.Tensor):
+            assert boundary_mask.dim() == 1 and boundary_mask.shape[0] == n_points
 
         return cls.from_elements(points, 
                                  elements, # type:ignore 

@@ -67,10 +67,13 @@ cudss = ["torch-sla[cudss]>=0.3.0"]
 pyamg = ["torch-sla[pyamg]>=0.3.0"]
 gpu = ["torch-sla[all]>=0.3.0"]
 example = ["plotly"]
+# Exodus II mesh I/O (Mesh.read / Mesh.save on .e / .exo files)
+exodus = ["netCDF4"]
 test = [
     "pytest",
     "pytest-cov",
     "scikit-fem",
+    "netCDF4",
 ]
 
 [project.urls]
