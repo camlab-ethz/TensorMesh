@@ -16,8 +16,8 @@ def test_shape(n:int):
 
 @pytest.mark.parametrize("n", range(1, 7))
 def test_sum(n:int):
-    """
+    r"""
         \int_0^1 \int_0^{1-x} 1 dx dy = 1/2
     """
-    weights, points = Triangle.get_quadrature(n)
-    np.testing.assert_allclose( weights.sum().item() , 0.5)
+    weights, points = Triangle.get_quadrature(n, dtype=torch.float64)
+    np.testing.assert_allclose(weights.sum().item(), 0.5, rtol=1e-12)

@@ -13,5 +13,5 @@ def test_shape(n:int):
     
 @pytest.mark.parametrize("n", range(1, 7))
 def test_sum(n:int):
-    weights, points = Line.get_quadrature(n)
-    np.testing.assert_allclose(weights.sum().item(),1.0), f"weights.sum() = {weights.sum().item()} at n = {n}"
+    weights, points = Line.get_quadrature(n, dtype=torch.float64)
+    np.testing.assert_allclose(weights.sum().item(), 1.0, rtol=1e-12)
