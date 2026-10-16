@@ -6,6 +6,7 @@ Internal helpers wired into :meth:`~tensormesh.Element.get_quadrature` and
 """
 import torch
 from typing import Tuple
+from scipy.special import roots_jacobi
 from .polynomial import Polynomials
 from .types import Tensorx2, Tensorx4, Tensorx5
 
@@ -241,15 +242,23 @@ def pyr_quadrature(order: int = 1,
                    dtype: torch.dtype = torch.float32,
                    device: torch.device = torch.device('cpu'),
                    ) -> Tensorx2:
-    """Quadrature rule on the reference pyramid.
+    r"""Quadrature rule on the reference pyramid.
 
-    Implemented by shrinking a tensor-product hex rule with the ``(1 - z)``
-    height scaling so that the rule conforms to the pyramid.
+    Conical product rule: the collapse :math:`(x, y, z) = ((1 - t)u, (1 - t)v, t)`
+    maps the unit cube onto the pyramid with Jacobian :math:`(1 - t)^2`.
+    ``order`` Gauss-Legendre points are used in :math:`u` and :math:`v`, and
+    ``order`` Gauss-Jacobi points for the weight :math:`(1 - t)^2` in
+    :math:`t`. The rule is exact for every integrand that is a polynomial of
+    degree at most ``2 * order - 1`` in each of :math:`u, v, t`: in particular
+    for :math:`x^a y^b z^c` with :math:`a + b + c \le 2\,\mathrm{order} - 1`,
+    and for the mass and stiffness integrands of the order ``order - 1``
+    pyramid basis (:class:`~tensormesh.element.PyramidBasisFns`) on affine
+    pyramids.
 
     Parameters
     ----------
     order : int, optional
-        Quadrature order between 1 and 7. Defaults to 1.
+        Number of points per direction, between 1 and 7. Defaults to 1.
     dtype : torch.dtype, optional
         Output dtype.
     device : torch.device, optional
@@ -262,18 +271,19 @@ def pyr_quadrature(order: int = 1,
     points : torch.Tensor
         2D tensor of shape ``[n_quadrature, 3]``.
     """
-    # TODO: check the logic correctness of this quadrature
-    volume = 1/ 3
     lin_weights, lin_points = lin_quadrature(order, dtype,device)
+    t, w_t = roots_jacobi(order, 2, 0)                              # weight (1 - s)^2 on [-1, 1]
+    t      = torch.tensor((1 + t) / 2, dtype=dtype, device=device)  # s -> t on [0, 1]
+    w_t    = torch.tensor(w_t / 8, dtype=dtype, device=device)      # (1 - s)^2 ds = 8 (1 - t)^2 dt
 
-    w_x, w_y, w_z = torch.meshgrid(lin_weights, lin_weights, lin_weights, indexing='xy')
+    w_x, w_y, w_z = torch.meshgrid(lin_weights, lin_weights, w_t, indexing='xy')
     w_x, w_y, w_z = w_x.flatten(), w_y.flatten(), w_z.flatten()
-    p_x, p_y, p_z = torch.meshgrid(lin_points[:,0], lin_points[:,0], lin_points[:,0], indexing='xy')
+    p_x, p_y, p_z = torch.meshgrid(lin_points[:,0], lin_points[:,0], t, indexing='xy')
     p_x, p_y, p_z = p_x.flatten(), p_y.flatten(), p_z.flatten()
-    scaling       = 1 - p_z 
+    scaling       = 1 - p_z
     p_x, p_y      = scaling * p_x, scaling * p_y
 
-    weights       = w_x * w_y * w_z * volume
+    weights       = w_x * w_y * w_z   # the Jacobian (1 - t)^2 is in w_z
     points        = torch.stack([p_x, p_y, p_z], -1)
 
     return weights, points

@@ -7,6 +7,7 @@ from functools import wraps
 from typing import List, Tuple, Optional, Type, Sequence, Union
 from .polynomial import Polynomial, \
                         Polynomials
+from .pyramid_basis import PyramidBasisFns
 from .basis import  lin_basis,\
                     tri_basis,\
                     quad_basis,\
@@ -2284,6 +2285,16 @@ class Pyramid(Element):
     Mixed-facet element: one quadrilateral base + four triangular sides
     (see :attr:`Element.is_mix_facet`). Type strings: ``"pyramid"``
     (linear), ``"pyramid14"``.
+
+    The shape functions are rational, not polynomial: no polynomial space
+    restricts to :math:`P_k` on the triangular faces and to :math:`Q_k` on
+    the base, which conformity with neighbouring tetrahedra and hexahedra
+    requires. :meth:`get_basis_fns` returns a
+    :class:`~tensormesh.element.PyramidBasisFns`, and
+    :meth:`~tensormesh.Element.get_polynomial` is not used for the basis.
+    The quadrature rule (:meth:`~tensormesh.Element.get_quadrature`)
+    collapses the unit cube onto the pyramid, which integrates these
+    functions exactly.
     """
 
     points = torch.tensor([[0.0, 0.0, 0.0],[1.0, 0.0, 0.0],[0.0, 1.0, 0.0],[1.0, 1.0, 0.0],[0.0, 0.0, 1.0]]) # 5x3
@@ -2306,16 +2317,36 @@ class Pyramid(Element):
                   dtype:torch.dtype = torch.float32,
                   device:torch.device = torch.device('cpu')
                   )->Tensorx1:
-        return pyr_basis(cls.points.type(dtype).to(device), 
-                         cls.vertex, 
-                         cls.edge, 
+        return pyr_basis(cls.points.type(dtype).to(device),
+                         cls.vertex,
+                         cls.edge,
                          cls.face, # type: ignore
                          cls.cell, # type: ignore
-                         order) 
+                         order)
 
-    @classmethod 
+    @classmethod
     @lru_cache()
-    def get_polynomial(cls, 
+    def get_basis_fns(cls,
+                      order:int = 1,
+                      dtype:torch.dtype = torch.float32,
+                      device:torch.device = torch.device('cpu')
+                      )->PyramidBasisFns:
+        """Nodal basis of the conforming rational space :math:`B_r`.
+
+        Overrides the polynomial construction of
+        :meth:`tensormesh.Element.get_basis_fns`; see
+        :class:`~tensormesh.element.PyramidBasisFns` for the space. The
+        result has the same ``map`` / ``grad`` interface as
+        :class:`~tensormesh.element.Polynomials`, so
+        :meth:`~tensormesh.Element.get_basis_grad_fns`, ``eval_shape_val``
+        and ``eval_shape_grad`` work unchanged.
+        """
+        nodes = cls.get_basis(order, torch.float64)
+        return PyramidBasisFns.from_nodes(nodes, order).to(dtype=dtype, device=device)
+
+    @classmethod
+    @lru_cache()
+    def get_polynomial(cls,
                        order:int = 1, 
                        dtype:torch.dtype = torch.float32,  
                        device:torch.device= torch.device('cpu')
