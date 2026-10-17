@@ -38,7 +38,7 @@ conditions, and time integration.
 - **GPU-native & differentiable.** Built on PyTorch from the ground up. Moving an entire FEM workflow to the GPU takes a single line of code — every downstream assembly, solve, and gradient inherits the device automatically, with no separate backend or data-marshalling step. Native autograd flows seamlessly through assembly and solve, enabling end-to-end differentiable PDE pipelines.
 - **High-performance tensorized assembly.** A fully tensorized Map-Reduce algorithm powered by [TensorGalerkin](https://arxiv.org/abs/2602.05052), which fuses element-wise operations into monolithic GPU kernels, eliminating Python-level loops and delivering order-of-magnitude speedups over CPU-based FEM stacks.
 - **JIT-free & debugging-friendly.** Eager execution with no compilation overhead. Dynamic meshes, adaptive refinement, and interactive workflows just work — no recompilation latency, no opaque traces.
-- **Comprehensive element & mesh support.** Triangular, tetrahedral, pyramid, and prismatic elements with automated mesh generation for common geometries and seamless Gmsh / VTKHDF5 I/O. Multi-field mixed assembly (e.g. LBB-stable Taylor-Hood Stokes) declares each field's order independently of the mesh — quadratic spaces are generated topologically even on linear meshes.
+- **Comprehensive element & mesh support.** Triangular, tetrahedral, pyramid, and prismatic elements with automated mesh generation for common geometries and seamless Gmsh / VTKHDF5 / Exodus II I/O (with node sets and side sets). Multi-field mixed assembly (e.g. LBB-stable Taylor-Hood Stokes) declares each field's order independently of the mesh — quadratic spaces are generated topologically even on linear meshes.
 - **Flexible Solvers.** Powered by [torch-sla](https://www.torchsla.com/), our companion library for differentiable sparse linear algebra. Linear, nonlinear, and eigenvalue solvers run across multiple backends on CPU and GPU, with full autograd support, batched solves, and distributed multi-GPU scaling.
 - **Pythonic API.** Custom weak forms in pure Python — no separate DSL, no form compiler. If you can write PyTorch, you can write FEM.
 
@@ -285,7 +285,7 @@ The core workflow: **Mesh → Assembler → SparseMatrix → Condenser → Solve
 
 | Module                       | Description |
 | ---                          | --- |
-| `tensormesh.mesh`            | Mesh data structure; built-in generators (`gen_rectangle`, `gen_circle`, `gen_cube`, `gen_L`, …); Gmsh / VTK-HDF5 I/O |
+| `tensormesh.mesh`            | Mesh data structure; built-in generators (`gen_rectangle`, `gen_circle`, `gen_cube`, `gen_L`, …); Gmsh / VTK-HDF5 / Exodus II I/O |
 | `tensormesh.element`         | Shape functions, quadrature rules, element transformations (geometric order 1–4) |
 | `tensormesh.assemble`        | `ElementAssembler`, `NodeAssembler`, `FacetAssembler`, `FacetBilinearAssembler` for matrix, vector, and boundary-matrix assembly; `MixedElementAssembler` for multi-field block systems (Taylor-Hood, generalized order pairs) |
 | `tensormesh.sparse`          | `SparseMatrix` (subclass of `torch_sla.SparseTensor`); linear & nonlinear sparse solves via torch-sla backends (SciPy / native PyTorch Krylov / cuDSS / STRUMPACK / PyAMG / AmgX) |

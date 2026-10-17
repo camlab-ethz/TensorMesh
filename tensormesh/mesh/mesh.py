@@ -1,4 +1,4 @@
-from typing import Optional, Union, Iterable, Dict, List
+from typing import Optional, Union, Iterable, Dict, List, Mapping
 import warnings
 import numpy as np
 import torch
@@ -21,6 +21,23 @@ def _get_visualization():
         from .. import visualization as _V
         V = _V
     return V
+
+
+def local_facets(element_type:str)->List[torch.Tensor]:
+    """Local node indices of every facet of an ``element_type`` cell.
+
+    Facets are listed in :meth:`tensormesh.Element.get_facet` order —
+    triangular facets first, then quadrilateral ones, for mixed-facet cells
+    (prisms, pyramids). This is the numbering of the local facet index in
+    :attr:`tensormesh.Mesh.side_sets`. The two facets of a line cell are its end nodes.
+    """
+    element = E.element_type2element(element_type)
+    if element is E.Line:
+        return [torch.tensor([0]), torch.tensor([1])]
+    facets = element.get_facet(E.element_type2order[element_type])
+    if element.is_mix_facet:
+        return [f for group in facets for f in group]
+    return list(facets)
 
 
 class Mesh(nn.Module):
@@ -65,6 +82,18 @@ class Mesh(nn.Module):
         Global named fields.
     cell_sets: dict, optional
         Named subsets of cells, kept in meshio's native format.
+    point_sets: BufferDict[str, torch.Tensor]
+        Named sets of points (Exodus node sets, meshio ``point_sets``), each a
+        1D long tensor of point indices. See :meth:`point_set_mask`.
+    side_sets: ModuleDict[str, BufferDict[str, torch.Tensor]]
+        Named sets of element facets (Exodus side sets). The outer key is the
+        set name, the inner key an ``element_type``; the value is a long
+        tensor of shape :math:`[n, 2]` of ``(cell index, local facet index)``
+        pairs, where the local facet index follows
+        :meth:`tensormesh.Element.get_facet` (triangular facets first, then
+        quadrilateral ones, for prisms and pyramids). See
+        :meth:`side_set_mask` and
+        :meth:`tensormesh.FacetAssembler.from_mesh`.
     dim2eletyp: Dict[int, List[str]]
         Each key is a spatial dimension, and the value is a list of element
         types of that dimension present in the mesh.
@@ -80,6 +109,8 @@ class Mesh(nn.Module):
     cell_data:nn.ModuleDict # str->Dict[str,torch.Tensor[n_element,...]]
     field_data:BufferDict # str->torch.Tensor[n_field,...]
     cell_sets:Dict
+    point_sets:BufferDict # str->torch.Tensor[n_set_point]
+    side_sets:nn.ModuleDict # str->Dict[str,torch.Tensor[n_set_facet,2]]
     points:torch.Tensor # [n_point, n_dim]
     dim2eletyp:Dict[int, List[str]] 
     default_eletyp:Union[str,List[str]]
@@ -130,6 +161,13 @@ class Mesh(nn.Module):
 
         # cell setes useless
         self.cell_sets = mesh.cell_sets
+
+        # named point sets (e.g. Exodus node sets); side sets are registered
+        # afterwards by readers that carry them (see register_side_set)
+        self.point_sets = BufferDict({
+            k: torch.from_numpy(np.asarray(v, dtype=np.int64).reshape(-1)) for k, v in mesh.point_sets.items()
+        })
+        self.side_sets = nn.ModuleDict()
 
         self.dim2eletyp = defaultdict(list) # Dict[int, List[str]]
         for element_type in self.cells.keys():
@@ -195,6 +233,99 @@ class Mesh(nn.Module):
 
         return self
 
+    def register_point_set(self, name:str, points:torch.Tensor):
+        """Register a named set of points on :attr:`point_sets`.
+
+        Parameters
+        ----------
+        name: str
+            the name of the set
+        points: torch.Tensor
+            1D integer tensor of point indices
+
+        Returns
+        -------
+        tensormesh.Mesh
+            self will be returned
+        """
+        assert name not in self.point_sets, f"the point set {name} already exists"
+        points = torch.as_tensor(points).long().reshape(-1).to(self.device)
+        assert points.numel() == 0 or (0 <= int(points.min()) and int(points.max()) < self.n_points), \
+            f"point set {name} indexes outside [0, {self.n_points})"
+        self.point_sets[name] = points
+        return self
+
+    def register_side_set(self, name:str, facets:Mapping[str, torch.Tensor]):
+        """Register a named set of element facets on :attr:`side_sets`.
+
+        Parameters
+        ----------
+        name: str
+            the name of the set
+        facets: Mapping[str, torch.Tensor]
+            ``element_type`` -> long tensor of shape :math:`[n, 2]` holding
+            ``(cell index, local facet index)`` pairs, the local facet index
+            following :meth:`tensormesh.Element.get_facet`
+
+        Returns
+        -------
+        tensormesh.Mesh
+            self will be returned
+        """
+        assert name not in self.side_sets, f"the side set {name} already exists"
+        checked = {}
+        for element_type, pairs in facets.items():
+            assert element_type in self.cells.keys(), f"side set {name}: no '{element_type}' cells in the mesh"
+            pairs = torch.as_tensor(pairs).long().reshape(-1, 2).to(self.device)
+            n_cell, n_facet = self.cells[element_type].shape[0], len(local_facets(element_type))
+            assert pairs.numel() == 0 or (
+                0 <= int(pairs.min()) and int(pairs[:, 0].max()) < n_cell and int(pairs[:, 1].max()) < n_facet
+            ), f"side set {name}: '{element_type}' (cell, facet) pairs out of range"
+            checked[element_type] = pairs
+        self.side_sets[name] = BufferDict(checked)
+        return self
+
+    def point_set_mask(self, name:str)->torch.Tensor:
+        r"""Boolean mask of the points in the point set ``name``.
+
+        Parameters
+        ----------
+        name: str
+            a key of :attr:`point_sets`
+
+        Returns
+        -------
+        torch.Tensor
+            1D bool tensor of shape :math:`[|\mathcal V|]`
+        """
+        mask = torch.zeros(self.n_points, dtype=torch.bool, device=self.device)
+        mask[self.point_sets[name].to(self.device)] = True
+        return mask
+
+    def side_set_mask(self, name:str)->torch.Tensor:
+        r"""Boolean mask of every point on the facets of the side set ``name``.
+
+        Includes the edge/face nodes of higher-order facets, so the mask can
+        be handed to :class:`~tensormesh.Condenser` as a Dirichlet mask.
+
+        Parameters
+        ----------
+        name: str
+            a key of :attr:`side_sets`
+
+        Returns
+        -------
+        torch.Tensor
+            1D bool tensor of shape :math:`[|\mathcal V|]`
+        """
+        mask = torch.zeros(self.n_points, dtype=torch.bool, device=self.device)
+        for element_type, pairs in self.side_sets[name].items():
+            cells = self.cells[element_type]
+            for f, nodes in enumerate(local_facets(element_type)):
+                sel = pairs[pairs[:, 1] == f, 0]
+                mask[cells[sel][:, nodes.to(cells.device)].reshape(-1)] = True
+        return mask
+
     def __str__(self):
         return self.__repr__()
         # return f"Mesh(n_points={self.points.shape[0]}, cells=({','.join(f'{k}:{v.shape}' for k,v in self.cells.items())}))"
@@ -226,7 +357,9 @@ class Mesh(nn.Module):
             f"    point_data: {point_data_str}\n"
             f"    cell_data: {cell_data_str}\n"
             f"    field_data: {field_data_str}\n"
-            f")"
+            + (f"    point_sets: {','.join(self.point_sets.keys())}\n" if len(self.point_sets) else "")
+            + (f"    side_sets: {','.join(self.side_sets.keys())}\n" if len(self.side_sets) else "")
+            + f")"
         )
 
     def to_meshio(self, reorder: bool = False)->meshio.Mesh:
@@ -260,7 +393,8 @@ class Mesh(nn.Module):
             point_data = {k:v.detach().cpu().numpy() for k,v in self.point_data.items()},
             cell_data  = {k:[_v.detach().cpu().numpy() for _v in v.values()] for k,v in self.cell_data.items()},
             field_data = {k:v.detach().cpu().numpy() for k,v in self.field_data.items()},
-            cell_sets = self.cell_sets
+            cell_sets = self.cell_sets,
+            point_sets = {k:v.detach().cpu().numpy() for k,v in self.point_sets.items()},
         )  
         return mesh
 
@@ -277,12 +411,17 @@ class Mesh(nn.Module):
         2-D meshes are padded to 3-D and connectivity is reordered to the
         Gmsh/VTK convention.
 
+        Exodus II files (``.e``, ``.exo``, … or ``file_format="exodus"``)
+        are written by :func:`tensormesh.mesh.exodus.write_exodus` instead,
+        with :attr:`point_sets` as node sets and :attr:`side_sets` as side
+        sets; point/cell/field data are not written to them.
+
         Parameters
         ----------
         file_name: str
             the name of the file
         file_format: str
-            the format of the file, e.g., 'msh', 'vtk', 'obj'
+            the format of the file, e.g., 'msh', 'vtk', 'obj', 'exodus'
             default is the file extension
 
         Returns
@@ -290,6 +429,10 @@ class Mesh(nn.Module):
         tensormesh.Mesh
             self will be returned
         """
+        from .exodus import is_exodus, write_exodus
+        if is_exodus(file_name, file_format):
+            write_exodus(self, file_name)
+            return self
         do_reorder = file_name.endswith((".vtk", ".vtu"))
         mesh = self.to_meshio(reorder=do_reorder)
         # turn is_... or ..._mask to float
@@ -320,9 +463,10 @@ class Mesh(nn.Module):
             if "u" not in mesh.point_data.keys():
                 mesh.point_data["u"] = np.zeros((mesh.points.shape[0], )) 
 
-            # they don't support cell_sets either
+            # they don't support cell_sets or point_sets either
             for key in mesh.cell_sets.copy().keys():
                 mesh.cell_sets.pop(key)
+            mesh.point_sets = {}
          
         meshio.write(file_name, mesh, file_format)
         return self
@@ -504,7 +648,10 @@ class Mesh(nn.Module):
         tensormesh.Mesh
             The cloned mesh.
         """
-        return Mesh(self.to_meshio())
+        mesh = Mesh(self.to_meshio())
+        for name, facets in self.side_sets.items():
+            mesh.register_side_set(name, {k: v.clone() for k, v in facets.items()})
+        return mesh
 
     def plot(self, values:Optional[Dict[str,torch.Tensor] | Dict[str,Iterable[torch.Tensor]]]= None, 
                    save_path:Optional[str] = None, 
@@ -832,6 +979,14 @@ class Mesh(nn.Module):
              reorder:bool = False):
         """Read a mesh from disk via ``meshio.read``.
 
+        Exodus II files (``.e``, ``.exo``, ``.ex2``, ``.exii``, ``.gen``,
+        ``.g`` or ``file_format="exodus"``) are read by
+        :func:`tensormesh.mesh.exodus.read_exodus` instead, which keeps the
+        element blocks, node sets (:attr:`point_sets`) and side sets
+        (:attr:`side_sets`) and always converts the connectivity to
+        TensorMesh ordering, so ``reorder`` is ignored for them. This path
+        needs the ``netCDF4`` package.
+
         Parameters
         ----------
         file_name: str
@@ -849,6 +1004,9 @@ class Mesh(nn.Module):
         tensormesh.Mesh
             the mesh object
         """
+        from .exodus import is_exodus, read_exodus
+        if is_exodus(file_name, file_format):
+            return read_exodus(file_name)
         return cls(meshio.read(file_name, file_format), reorder)
     
     from_file = read
