@@ -65,6 +65,13 @@ a concrete TensorMesh script you can run.
 
       Generalized eigenproblems: dielectric waveguide modes and cantilever vibration.
 
+   .. grid-item-card:: Helmholtz Scattering (DtN Boundary Treatment)
+      :link: helmholtz_dtn
+      :link-type: doc
+      :img-top: /_static/wave/helmholtz_dtn/periodic_slab.png
+
+      Circular and periodic open-domain scattering with exact nonlocal boundaries.
+
    .. grid-item-card:: Solid Mechanics
       :link: solid/index
       :link-type: doc
@@ -120,6 +127,7 @@ a concrete TensorMesh script you can run.
    phononic_crystal
    open_domain_wave
    modal_analysis
+   helmholtz_dtn
    solid/index
    fluid/index
    maxwell
