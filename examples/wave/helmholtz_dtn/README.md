@@ -30,9 +30,10 @@ python examples/wave/helmholtz_dtn/periodic_dtn.py
 ```
 
 Each script runs three analytical-reference cases and writes its figures to
-`docs/source/_static/wave/helmholtz_dtn/`.  Edit the constants near the top of
-a script to change the material, geometry, incident field, mesh size, or modal
-cutoff.
+`output/` next to the script; the gallery figures in
+`docs/source/_static/wave/helmholtz_dtn/` are copies of these.  Edit the
+constants near the top of a script to change the material, geometry, incident
+field, mesh size, or modal cutoff.
 
 ## Reading the circular demo
 

@@ -154,6 +154,8 @@ What's next
 * :doc:`phononic_crystal` — the periodic counterpart (Bloch-Floquet
   boundary conditions instead of absorbing ones).
 * :doc:`modal_analysis` — eigenmodes instead of driven responses.
+* :doc:`helmholtz_dtn` — exact nonlocal Dirichlet-to-Neumann boundaries instead
+  of a PML, checked against analytical scattering solutions.
 * :class:`~tensormesh.FacetBilinearAssembler` in the
   :doc:`API reference <../api/assemble>` — write your own boundary
   bilinear forms (impedance, radiation damping, …).

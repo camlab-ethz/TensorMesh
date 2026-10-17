@@ -40,7 +40,7 @@ INCIDENT_ORDER = 0
 NUM_MODES = 50
 MESH_SIZE = 0.10
 CASES = ("dirichlet", "neumann", "transmission")
-OUTPUT_DIR = Path(__file__).parents[3] / "docs/source/_static/wave/helmholtz_dtn"
+OUTPUT_DIR = Path(__file__).parent / "output"  # the gallery figures are copies
 
 REAL = torch.float64
 COMPLEX = torch.complex128

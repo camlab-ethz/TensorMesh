@@ -10,9 +10,6 @@ import pytest
 from scipy.special import h1vp, hankel1, jv, jvp
 import torch
 
-from tensormesh import BlochReducer
-from tensormesh.sparse import SparseMatrix
-
 
 EXAMPLE_DIR = Path(__file__).resolve().parents[2] / "examples" / "wave" / "helmholtz_dtn"
 sys.path.insert(0, str(EXAMPLE_DIR))
@@ -110,30 +107,6 @@ def test_circular_exact_conditions(order: int) -> None:
     outside_flux = a0 * k0 * (jvp(order, z0, 1) + outgoing * h1vp(order, z0, 1))
     assert abs(outside_value - inside * jv(order, z1)) < 1.0e-12
     assert abs(outside_flux - a1 * inside * k1 * jvp(order, z1, 1)) < 1.0e-12
-
-
-def test_bloch_matrix_and_rhs_match_explicit_transform() -> None:
-    """Bloch reduction must form both ``T^H A T`` and ``T^H b``."""
-
-    points = np.asarray([[x, y] for y in (0.0, 0.5, 1.0) for x in (0.0, 0.5, 1.0)])
-    reducer = BlochReducer(points, [[1.0, 0.0]], sign=+1)
-    wavevector = torch.tensor([0.4, 0.0], dtype=torch.float64)
-    phase = torch.exp(1j * (reducer.node_R @ wavevector).to(periodic.COMPLEX))
-    transform = torch.zeros(reducer.n_dof, reducer.n_reduced_dof, dtype=periodic.COMPLEX)
-    transform[torch.arange(reducer.n_dof), reducer.master_dof] = phase
-
-    rhs = torch.arange(1, 10, dtype=torch.float64).to(periodic.COMPLEX)
-    assert torch.allclose(
-        periodic.reduce_rhs(reducer, rhs, wavevector),
-        transform.conj().T @ rhs,
-        atol=1.0e-12,
-    )
-    dense = torch.arange(81, dtype=torch.float64).reshape(9, 9)
-    dense = (dense + dense.T).to(periodic.COMPLEX)
-    row, column = torch.meshgrid(torch.arange(9), torch.arange(9), indexing="ij")
-    matrix = SparseMatrix(dense.ravel(), row.ravel(), column.ravel(), (9, 9))
-    reduced = reducer.reduce(matrix, wavevector).to_torch_sparse().to_dense()
-    assert torch.allclose(reduced, transform.conj().T @ dense @ transform, atol=1.0e-11)
 
 
 @pytest.mark.parametrize(

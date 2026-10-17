@@ -35,6 +35,12 @@ msgstr ""
 "TE/TM 极化和声压波。"
 
 #: ../../source/example_gallery/helmholtz_dtn.rst:9
+msgid ""
+"For absorbing layers and port boundaries instead of exact DtN maps, see "
+":doc:`open_domain_wave`."
+msgstr "如果需要吸收层（PML）或端口边界，而不是精确的 DtN 映射，请参见 :doc:`open_domain_wave`。"
+
+#: ../../source/example_gallery/helmholtz_dtn.rst:9
 #: 1580a374f281457197ae7d23395fb567
 #, python-brace-format
 msgid "We use the time convention :math:`e^{-i\\omega t}` and write"
@@ -1069,12 +1075,16 @@ msgstr ""
 #: ../../source/example_gallery/helmholtz_dtn.rst:528
 #: 4072399e1b9642c7a6d3c44449169184
 msgid ""
-"The periodic solve uses TensorMesh's public constraint operators.  The right"
-" hand side is reduced separately because TensorMesh 0.2.0 exposes "
-"``BlochReducer.reduce`` for matrices but not yet for vectors:"
+"The periodic solve uses TensorMesh's public constraint operators: "
+":meth:`~tensormesh.BlochReducer.reduce` forms :math:`T^H A T`, "
+":meth:`~tensormesh.BlochReducer.reduce_rhs` forms :math:`T^H b`, and "
+":meth:`~tensormesh.BlochReducer.reduce_mask` maps the wall DOFs onto the "
+"reduced DOFs for the :class:`~tensormesh.Condenser`:"
 msgstr ""
-"周期求解使用 TensorMesh 的公共约束算子。右端项单独缩减，因为 TensorMesh 0.2.0 已为矩阵提供 "
-"``BlochReducer.reduce``，但尚未为向量提供对应接口："
+"周期求解使用 TensorMesh 的公共约束算子：:meth:`~tensormesh.BlochReducer.reduce` "
+"构造 :math:`T^H A T`，:meth:`~tensormesh.BlochReducer.reduce_rhs` 构造 "
+":math:`T^H b`，:meth:`~tensormesh.BlochReducer.reduce_mask` 则把墙面自由度映射到约化后的自由度上，"
+"供 :class:`~tensormesh.Condenser` 使用："
 
 #: ../../source/example_gallery/helmholtz_dtn.rst:532
 #: 9030c380b48f49ea88a4fe8020045c40
