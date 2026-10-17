@@ -7,6 +7,7 @@ from functools import wraps
 from typing import List, Tuple, Optional, Type, Sequence, Union
 from .polynomial import Polynomial, \
                         Polynomials
+from .pyramid_basis import PyramidBasisFns
 from .basis import  lin_basis,\
                     tri_basis,\
                     quad_basis,\
@@ -151,6 +152,62 @@ class Element:
         """
         # Default: identity (meaning Gmsh/VTK ordering == TensorMesh ordering)
         return torch.arange(n_nodes, device=device, dtype=torch.long)
+
+    @classmethod
+    def classify_nodes(cls, order: int) -> Tuple[List[Tuple[str, int, int]], int]:
+        r"""Classify the reference nodes of the order-``order`` Lagrange space.
+
+        Each reference node (row of :meth:`get_basis`) is matched **by
+        coordinates** to a vertex, to an interior point of an edge, or to
+        a face/cell interior point — no assumption on the internal node
+        ordering is made. The topological DOF maps
+        (``tensormesh.assemble.topology.lagrange_dofmap``) and the
+        node-ordering check (:meth:`tensormesh.Mesh.check_node_ordering`)
+        are built on this classification.
+
+        Parameters
+        ----------
+        order : int
+            Polynomial order of the Lagrange space (``>= 1``).
+
+        Returns
+        -------
+        slots : List[Tuple[str, int, int]]
+            One entry per reference node, slot-aligned with :meth:`get_basis`:
+            ``("vertex", local_vertex, 0)``; ``("edge", local_edge, j)`` with
+            ``j in 1..order-1`` counted from ``edge[local_edge, 0]`` towards
+            ``edge[local_edge, 1]``; or ``("interior", running_index, 0)``.
+        n_interior : int
+            Number of interior (neither vertex nor edge) nodes.
+        """
+        ref = cls.get_basis(order, torch.float64)          # [nb, D]
+        verts = cls.points.to(torch.float64)               # [n_vertex, D]
+        edges = cls.edge.tolist()                          # [n_edge, 2]
+        slots, n_interior = [], 0
+        for x in ref:
+            dist = (verts - x).norm(dim=1)
+            if dist.min() < 1e-8:
+                slots.append(("vertex", int(dist.argmin()), 0))
+                continue
+            hit = None
+            for local_edge, (a, b) in enumerate(edges):
+                va, vb = verts[a], verts[b]
+                tv = vb - va
+                t = float(torch.dot(x - va, tv) / torch.dot(tv, tv))
+                if 1e-8 < t < 1 - 1e-8 and (va + t * tv - x).norm() < 1e-8:
+                    j = round(t * order)
+                    assert abs(t * order - j) < 1e-6 and 1 <= j <= order - 1, (
+                        f"{cls.__name__} order-{order} edge node at t={t} does "
+                        f"not sit on the uniform lattice"
+                    )
+                    hit = ("edge", local_edge, j)
+                    break
+            if hit is not None:
+                slots.append(hit)
+            else:
+                slots.append(("interior", n_interior, 0))
+                n_interior += 1
+        return slots, n_interior
 
     # @abstractmethod
     @classmethod
@@ -2228,6 +2285,16 @@ class Pyramid(Element):
     Mixed-facet element: one quadrilateral base + four triangular sides
     (see :attr:`Element.is_mix_facet`). Type strings: ``"pyramid"``
     (linear), ``"pyramid14"``.
+
+    The shape functions are rational, not polynomial: no polynomial space
+    restricts to :math:`P_k` on the triangular faces and to :math:`Q_k` on
+    the base, which conformity with neighbouring tetrahedra and hexahedra
+    requires. :meth:`get_basis_fns` returns a
+    :class:`~tensormesh.element.PyramidBasisFns`, and
+    :meth:`~tensormesh.Element.get_polynomial` is not used for the basis.
+    The quadrature rule (:meth:`~tensormesh.Element.get_quadrature`)
+    collapses the unit cube onto the pyramid, which integrates these
+    functions exactly.
     """
 
     points = torch.tensor([[0.0, 0.0, 0.0],[1.0, 0.0, 0.0],[0.0, 1.0, 0.0],[1.0, 1.0, 0.0],[0.0, 0.0, 1.0]]) # 5x3
@@ -2250,16 +2317,36 @@ class Pyramid(Element):
                   dtype:torch.dtype = torch.float32,
                   device:torch.device = torch.device('cpu')
                   )->Tensorx1:
-        return pyr_basis(cls.points.type(dtype).to(device), 
-                         cls.vertex, 
-                         cls.edge, 
+        return pyr_basis(cls.points.type(dtype).to(device),
+                         cls.vertex,
+                         cls.edge,
                          cls.face, # type: ignore
                          cls.cell, # type: ignore
-                         order) 
+                         order)
 
-    @classmethod 
+    @classmethod
     @lru_cache()
-    def get_polynomial(cls, 
+    def get_basis_fns(cls,
+                      order:int = 1,
+                      dtype:torch.dtype = torch.float32,
+                      device:torch.device = torch.device('cpu')
+                      )->PyramidBasisFns:
+        """Nodal basis of the conforming rational space :math:`B_r`.
+
+        Overrides the polynomial construction of
+        :meth:`tensormesh.Element.get_basis_fns`; see
+        :class:`~tensormesh.element.PyramidBasisFns` for the space. The
+        result has the same ``map`` / ``grad`` interface as
+        :class:`~tensormesh.element.Polynomials`, so
+        :meth:`~tensormesh.Element.get_basis_grad_fns`, ``eval_shape_val``
+        and ``eval_shape_grad`` work unchanged.
+        """
+        nodes = cls.get_basis(order, torch.float64)
+        return PyramidBasisFns.from_nodes(nodes, order).to(dtype=dtype, device=device)
+
+    @classmethod
+    @lru_cache()
+    def get_polynomial(cls,
                        order:int = 1, 
                        dtype:torch.dtype = torch.float32,  
                        device:torch.device= torch.device('cpu')

@@ -128,41 +128,12 @@ class LagrangeDofMap(NamedTuple):
 
 
 def _classify_reference_nodes(elem_cls, order: int):
-    """Match each reference Lagrange node to (vertex | edge slot | interior).
+    """Slot classification of the reference Lagrange nodes.
 
-    Returns a list of ``("vertex", local_vertex, 0)``, ``("edge", local_edge, j)``
-    with ``j in 1..order-1`` counted from edge endpoint 0 towards endpoint 1,
-    or ``("interior", running_index, 0)`` — derived purely by coordinate
-    matching, so no assumption on the internal node ordering is needed.
+    Thin alias of :meth:`tensormesh.Element.classify_nodes` (kept so the
+    DOF-map code reads locally); see there for the returned structure.
     """
-    ref = elem_cls.get_basis(order, torch.float64)          # [nb, D]
-    verts = elem_cls.points.to(torch.float64)               # [n_vertex, D]
-    edges = elem_cls.edge.tolist()                          # [n_le, 2]
-    slots, n_interior = [], 0
-    for x in ref:
-        dist = (verts - x).norm(dim=1)
-        if dist.min() < 1e-8:
-            slots.append(("vertex", int(dist.argmin()), 0))
-            continue
-        hit = None
-        for local_edge, (a, b) in enumerate(edges):
-            va, vb = verts[a], verts[b]
-            tv = vb - va
-            t = float(torch.dot(x - va, tv) / torch.dot(tv, tv))
-            if 1e-8 < t < 1 - 1e-8 and (va + t * tv - x).norm() < 1e-8:
-                j = round(t * order)
-                assert abs(t * order - j) < 1e-6 and 1 <= j <= order - 1, (
-                    f"{elem_cls.__name__} order-{order} edge node at t={t} does "
-                    f"not sit on the uniform lattice"
-                )
-                hit = ("edge", local_edge, j)
-                break
-        if hit is not None:
-            slots.append(hit)
-        else:
-            slots.append(("interior", n_interior, 0))
-            n_interior += 1
-    return slots, n_interior
+    return elem_cls.classify_nodes(order)
 
 
 def lagrange_dofmap(elements: Mapping[str, torch.Tensor],

@@ -10,6 +10,7 @@ if __name__ == '__main__':
     from mesh import Mesh
 else:
     from ...mesh import Mesh
+    from ._boundary import boundary_tolerance, near, within, register_boundary_masks
 
 def gen_circle(chara_length=0.1,
              order=1,
@@ -101,9 +102,9 @@ def gen_circle(chara_length=0.1,
 
     mesh = Mesh.from_file(cache_path, reorder=True)
 
-    radius = torch.sqrt((mesh.points[:, 0] - cx)**2 + (mesh.points[:, 1] - cy)**2)
-    is_boundary = radius == r
-    mesh.register_point_data("is_boundary", is_boundary)
+    # Topological detection: ``radius == r`` missed the boundary nodes that
+    # gmsh places one ulp off the circle (7 of 53 at chara_length=0.06).
+    register_boundary_masks(mesh)
 
     if verbose:
         print(f"Generated circle mesh with center ({cx}, {cy}), radius {r}, characteristic length {chara_length}, order {order}, element type {element_type}")
@@ -153,7 +154,7 @@ def gen_hollow_circle(chara_length=0.1,
     assert element_type in ["quad", "tri"], f"element_type must be 'quad' or 'tri', but got {element_type}"
    
     if cache_path is None:
-        cache_path = f".gmsh_cache/circle_{cx}_{cy}_{r_inner}_{r_outer}_{chara_length}_{order}_{element_type}.msh"
+        cache_path = f".gmsh_cache/hollow_circle_{cx}_{cy}_{r_inner}_{r_outer}_{chara_length}_{order}_{element_type}.msh"
 
     if not os.path.exists(os.path.dirname(cache_path)):
         os.makedirs(os.path.dirname(cache_path))
@@ -174,29 +175,28 @@ def gen_hollow_circle(chara_length=0.1,
 
         gmsh.model.occ.synchronize()
 
-        hollow_entity, _ = gmsh.model.occ.cut([(2, circle_outer)], [(2, circle_inner)])
-        hollow_circle = hollow_entity[0][-1]
+        # occ.cut CONSUMES both inputs; ``circle_outer`` / ``circle_inner``
+        # are stale after it. Work with the cut result only.
+        cut, _ = gmsh.model.occ.cut([(2, circle_outer)], [(2, circle_inner)])
         gmsh.model.occ.synchronize()
+        surfaces = [tag for dim, tag in cut if dim == 2]
 
         if element_type == "quad":
-            # Set transfinite meshing
-            # gmsh.model.mesh.setTransfiniteSurface(circle_outer, "Right")
             # Apply the recombine algorithm to generate quad elements
-            gmsh.model.mesh.setRecombine(2, circle_outer)
+            for surface in surfaces:
+                gmsh.model.mesh.setRecombine(2, surface)
 
         # Set the element order to 2 to generate second-order elements
         gmsh.option.setNumber("Mesh.ElementOrder", order)
 
         gmsh.model.mesh.setSize(gmsh.model.getEntities(0), chara_length)
 
-        boundary_lines_outer = gmsh.model.getBoundary([(2, circle_outer)], oriented=False)
-        boundary_lines_inner = gmsh.model.getBoundary([(2, circle_inner)], oriented=False)
-        boundary_lines = boundary_lines_outer + boundary_lines_inner
-        line_group = gmsh.model.addPhysicalGroup(1, [line[1] for line in boundary_lines])
+        boundary_lines = gmsh.model.getBoundary([(2, s) for s in surfaces], oriented=False)
+        line_group = gmsh.model.addPhysicalGroup(1, [tag for dim, tag in boundary_lines if dim == 1])
         gmsh.model.setPhysicalName(1, line_group, "boundary")
 
-        gmsh.model.addPhysicalGroup(2, [circle_inner])
-        gmsh.model.setPhysicalName(2, 1, "domain")
+        surface_group = gmsh.model.addPhysicalGroup(2, surfaces)
+        gmsh.model.setPhysicalName(2, surface_group, "domain")
 
         # Generate the mesh
         gmsh.model.mesh.generate(2)
@@ -212,13 +212,13 @@ def gen_hollow_circle(chara_length=0.1,
 
     mesh = Mesh.from_file(cache_path, reorder=True)
 
+    tol = boundary_tolerance(chara_length)
     radius = torch.sqrt((mesh.points[:, 0] - cx)**2 + (mesh.points[:, 1] - cy)**2)
-    is_inner_boundary = torch.isclose(radius, torch.ones_like(radius) * r_inner)
-    is_outer_boundary = torch.isclose(radius, torch.ones_like(radius) * r_outer)
-    is_boundary = is_inner_boundary | is_outer_boundary
-    mesh.register_point_data("is_inner_boundary", is_inner_boundary)
-    mesh.register_point_data("is_outer_boundary", is_outer_boundary)
-    mesh.register_point_data("is_boundary", is_boundary)
+    register_boundary_masks(
+        mesh,
+        is_inner_boundary=near(radius, r_inner, tol),
+        is_outer_boundary=near(radius, r_outer, tol),
+    )
 
     if verbose:
         print(f"Generated hollow circle mesh with center ({cx}, {cy}), inner radius {r_inner}, outer radius {r_outer}, characteristic length {chara_length}, order {order}, element type {element_type}")

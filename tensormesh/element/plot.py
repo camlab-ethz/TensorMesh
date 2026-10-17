@@ -175,8 +175,21 @@ def plot_2d(element:Union[Type[Element],Element],
 
     return ax
 
-def plot_3d(element:Union[Type[Element],Element], 
-            basis:torch.Tensor, 
+def _inside_reference(element:Union[Type[Element],Element], points:torch.Tensor, tol:float = 1e-6)->torch.Tensor:
+    """Mask of the ``points`` [n, 3] that lie in the (convex) 3D reference element."""
+    vertices = element.points.to(points.dtype)
+    centre = vertices.mean(0)
+    mask = torch.ones(points.shape[0], dtype=torch.bool)
+    for face in element.face:
+        a, b, c = vertices[list(face[:3])]
+        n = torch.linalg.cross(b - a, c - a)
+        if torch.dot(n, centre - a) > 0:  # make the normal point outwards
+            n = -n
+        mask &= (points - a) @ n <= tol
+    return mask
+
+def plot_3d(element:Union[Type[Element],Element],
+            basis:torch.Tensor,
             basis_fns:Polynomials, 
             resolution:int=15,
             legend:bool = True,
@@ -222,6 +235,10 @@ def plot_3d(element:Union[Type[Element],Element],
                             torch.linspace(0, 1, resolution), indexing='ij')
     x, y, z = x.flatten(), y.flatten(), z.flatten()
     xyz = torch.stack([x, y, z], -1)
+    # the basis functions live on the element only; the rational pyramid
+    # basis is singular outside it, near z = 1
+    xyz = xyz[_inside_reference(element, xyz)]
+    x, y, z = xyz.unbind(-1)
 
     cmap = plt.get_cmap('Spectral_r')
 

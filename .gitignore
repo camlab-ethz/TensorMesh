@@ -78,6 +78,7 @@ docs/_build/
 
 # Examples generated files
 examples/**/*.txt
+examples/**/*.log
 examples/**/*.jpg
 examples/**/*.stats
 examples/**/*.mp4

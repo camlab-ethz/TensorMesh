@@ -1,4 +1,5 @@
 from typing import Optional, Union, Iterable, Dict, List
+import warnings
 import numpy as np
 import torch
 import torch.nn as nn
@@ -143,6 +144,10 @@ class Mesh(nn.Module):
             "points",
             torch.from_numpy(mesh.points[:, :dimension])
         )
+
+        # A Gmsh/VTK mesh loaded without ``reorder=True`` is *valid-looking*
+        # but its higher-order geometry map is wrong; fail here, loudly.
+        self.check_node_ordering()
 
     def register_point_data(self, key:str, value:torch.Tensor):
         """Register a per-point field on :attr:`point_data`.
@@ -636,20 +641,129 @@ class Mesh(nn.Module):
 
         Looked up from :attr:`point_data` under the key ``"is_boundary"``
         (preferred) or ``"boundary_mask"``. Mesh generators in
-        :mod:`tensormesh.dataset` populate this automatically.
+        :mod:`tensormesh.dataset` populate this automatically. If neither
+        key exists the mask is computed once by
+        :meth:`topological_boundary_mask` and cached under ``"is_boundary"``,
+        so imported meshes work out of the box.
 
         Returns
         -------
         torch.Tensor
-            1D bool tensor of shape :math:`[|\mathcal V|]`, where  :math:`|\mathcal V|` is the number of interpolation nodes;
-            requires ``"is_boundary"`` or ``"boundary_mask"`` to live in :attr:`point_data`
+            1D bool tensor of shape :math:`[|\mathcal V|]`, where  :math:`|\mathcal V|` is the number of interpolation nodes
         """
         if "is_boundary" in self.point_data.keys():
             return self.point_data["is_boundary"]
         elif "boundary_mask" in self.point_data.keys():
             return self.point_data["boundary_mask"]
         else:
-            raise Exception("'boundary_mask' or 'is_boundary' is not found in point_data")
+            mask = self.topological_boundary_mask()
+            self.register_point_data("is_boundary", mask)
+            return mask
+
+    def topological_boundary_mask(self) -> torch.Tensor:
+        r"""Boundary points detected from the mesh **topology** alone.
+
+        A facet (edge in 2D, face in 3D) lies on the boundary iff exactly
+        one top-dimensional cell references it, and every node on such a
+        facet — including the edge/face nodes of higher-order cells — is a
+        boundary point. This is exact for any geometry (curved boundaries,
+        holes, …) and any element order, unlike coordinate tests such as
+        ``x == 0`` or ``r == R``, which miss nodes that are one ulp off the
+        boundary curve.
+
+        Returns
+        -------
+        torch.Tensor
+            1D bool tensor of shape :math:`[|\mathcal V|]` on the mesh device.
+        """
+        from ..assemble.topology import lagrange_boundary_mask   # lazy: assemble imports mesh
+        top_dim = max(self.dim2eletyp.keys())
+        elements = {k: self.cells[k].detach().cpu() for k in self.dim2eletyp[top_dim]}
+        orders = {E.element_type2order[k] for k in elements}
+        if len(orders) != 1:
+            raise NotImplementedError(
+                f"topological boundary detection needs a single element order, got "
+                f"{ {k: E.element_type2order[k] for k in elements} }"
+            )
+        mask = lagrange_boundary_mask(elements, orders.pop(), self.n_points)
+        return mask.to(self.points.device)
+
+    def check_node_ordering(self, raise_on_error: bool = True) -> Dict[str, int]:
+        r"""Verify that higher-order cells follow TensorMesh's node ordering.
+
+        Gmsh / VTK number the edge nodes of ``triangle6``, ``quad9``,
+        ``tetra10``, … differently from TensorMesh (see
+        :meth:`tensormesh.Element.reorder`). Loading such a mesh without
+        ``reorder=True`` yields a *valid-looking* connectivity whose
+        geometry map is wrong: every cell is silently distorted, all
+        downstream results are wrong, and nothing raises. This check —
+        run automatically by the constructor — catches it: for every
+        order-≥2 cell, each edge node must be closer to the chord position
+        of *its own* edge than to that of any other edge. Correctly ordered
+        cells satisfy this even on strongly curved geometry; a permuted
+        connectivity violates it in essentially every cell. Linear cells
+        carry no edge nodes and are not checked (a linear quad/hex in
+        Gmsh/VTK order is a twisted cell that this check cannot see).
+
+        Parameters
+        ----------
+        raise_on_error : bool, optional
+            If :obj:`True` (default), raise :class:`ValueError` when at least
+            half of the cells of some element type violate the ordering
+            (the signature of a wrong permutation) and emit a
+            :class:`RuntimeWarning` when only a few do (badly distorted
+            cells). If :obj:`False`, only return the counts.
+
+        Returns
+        -------
+        Dict[str, int]
+            Number of violating cells per checked element type.
+        """
+        violations: Dict[str, int] = {}
+        points = self.points.detach().cpu()
+        for element_type, cells in self.cells.items():
+            order = E.element_type2order.get(element_type, 1)
+            if order < 2 or E.element_type2dimension[element_type] < 2:
+                continue
+            elem_cls = E.element_type2element(element_type)
+            try:
+                slots, _ = elem_cls.classify_nodes(order)
+            except (NotImplementedError, AssertionError):
+                continue
+            if cells.shape[1] != len(slots):       # serendipity cells (quad8, hexahedron20)
+                continue
+            edge_slots = [(i, a, j) for i, (kind, a, j) in enumerate(slots) if kind == "edge"]
+            if len(edge_slots) < 2:
+                continue
+            cells = cells.detach().cpu()
+            verts = points[cells[:, :elem_cls.n_vertex]]                        # [E, nv, D]
+            ea = elem_cls.edge[[a for _, a, _ in edge_slots]]                   # [n_es, 2]
+            frac = torch.tensor([j / order for _, _, j in edge_slots], dtype=points.dtype)
+            expected = verts[:, ea[:, 0]] + frac[None, :, None] * (verts[:, ea[:, 1]] - verts[:, ea[:, 0]])
+            actual = points[cells[:, [i for i, _, _ in edge_slots]]]           # [E, n_es, D]
+            dist = torch.cdist(actual, expected)                                # [E, n_es, n_es]
+            own = dist.argmin(dim=2) == torch.arange(len(edge_slots))
+            n_bad = int((~own).any(dim=1).sum())
+            violations[element_type] = n_bad
+            if n_bad == 0 or not raise_on_error:
+                continue
+            n = cells.shape[0]
+            if 2 * n_bad >= n:
+                raise ValueError(
+                    f"'{element_type}' connectivity does not follow TensorMesh's node "
+                    f"ordering: in {n_bad}/{n} cells the edge nodes sit at other edges' "
+                    f"positions. This is what a Gmsh/VTK mesh looks like when it is "
+                    f"loaded without reordering — pass reorder=True to Mesh.read / "
+                    f"Mesh.from_meshio / Mesh(...), or convert the connectivity with "
+                    f"{elem_cls.__name__}.reorder(cells, to_gmsh=False)."
+                )
+            warnings.warn(
+                f"{n_bad}/{n} '{element_type}' cells have an edge node closer to "
+                f"another edge's chord than to its own — badly distorted cells or a "
+                f"partially mis-ordered connectivity; inspect the mesh.",
+                RuntimeWarning, stacklevel=2,
+            )
+        return violations
 
     @property
     def default_element_type(self)->str:

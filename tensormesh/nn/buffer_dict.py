@@ -147,9 +147,18 @@ class BufferDict(nn.Module):
 
     def __len__(self):
         return len(self._buffers) + len(self._parameters) + len(self._data)
-    
-    def __includes__(self, key):
-        return key in self.keys()
+
+    def __contains__(self, key) -> bool:
+        """``key in bd`` tests the *keys* (like a dict).
+
+        Without this, Python falls back to ``__getitem__(0)``, ``(1)``, …
+        and ``"line3" in mesh.cells`` raised ``KeyError('0 is not found …')``.
+        """
+        return key in self._buffers or key in self._parameters or key in self._data
+
+    def __iter__(self):
+        """Iterate over the keys (like a dict)."""
+        return iter(list(self.keys()))
 
     def is_floating_point(self)->bool:
         """Return ``True`` if any stored tensor has a floating-point dtype."""

@@ -244,8 +244,25 @@ tensor over points), which the convenience property exposes as:
    mesh.boundary_mask        # bool tensor, shape [n_points]
    mesh.boundary_mask.sum()  # number of boundary nodes
 
-Hand-rolled meshes can use either ``is_boundary`` or ``boundary_mask``
-as the key — the property accepts both.
+The mask is detected **topologically**: a facet (edge in 2D, face in
+3D) is on the boundary iff exactly one cell references it, and every
+node on such a facet — including the edge nodes of ``triangle6`` /
+``quad9`` / ``tetra10`` cells — is a boundary node. This is exact for any
+geometry and any order, whereas a coordinate test like ``r == R`` misses
+the nodes gmsh places one ulp off a curved boundary (and silently drops
+their Dirichlet condition). The same detection is available on any
+mesh, generated or imported:
+
+.. code-block:: python
+
+   mesh = Mesh.read("plate_with_hole.msh", reorder=True)
+   mask = mesh.topological_boundary_mask()   # outer frame + hole, nothing else
+   mesh.boundary_mask                        # same thing, computed on first
+                                             # access and cached as is_boundary
+
+Hand-rolled meshes can also store their own mask under either
+``is_boundary`` or ``boundary_mask`` — the property accepts both and
+only falls back to the topological detection when neither exists.
 
 **Per-side masks come for free.** The 2-D / 3-D rectangular and
 cuboidal generators (:meth:`~tensormesh.Mesh.gen_rectangle`,
@@ -274,16 +291,27 @@ geometry:
    masks set automatically by the generator, ready to feed into a
    region-aware :class:`~tensormesh.Condenser`.
 
+The per-side masks are coordinate predicates *restricted to the
+boundary nodes*, evaluated with a tolerance proportional to
+``chara_length`` rather than an exact comparison. The hollow generators
+(:meth:`~tensormesh.Mesh.gen_hollow_rectangle`,
+:meth:`~tensormesh.Mesh.gen_hollow_circle`, and the 3-D counterparts)
+additionally register ``is_inner_boundary`` / ``is_outer_boundary`` —
+the obstacle and the outer frame — which is what a "flow past a body"
+setup needs.
+
 For curved domains (:meth:`~tensormesh.Mesh.gen_circle`,
 :meth:`~tensormesh.Mesh.gen_sphere`, …) or hand-rolled meshes, derive
-your own masks from coordinates and store them as additional
+your own masks from coordinates, intersected with the boundary mask so
+that a tolerance can be used safely, and store them as additional
 ``point_data`` entries:
 
 .. code-block:: python
 
    x, y = mesh.points[:, 0], mesh.points[:, 1]
-   left   = (x == 0)
-   right  = (x == 1)
+   on_boundary = mesh.boundary_mask
+   left  = on_boundary & ((x - 0).abs() < 1e-8)
+   right = on_boundary & ((x - 1).abs() < 1e-8)
    mesh.register_point_data("left_mask",  left)
    mesh.register_point_data("right_mask", right)
 
@@ -317,9 +345,15 @@ Or from an in-memory meshio object:
 The ``reorder=True`` flag is **required when ingesting Gmsh or VTK**
 data: those formats use a different node-ordering convention for
 quads, hexes, and high-order elements than TensorMesh's internal
-lexicographic layout. Skipping it produces silently-broken
-basis-function evaluations. The built-in generators already handle
-this, so you only need ``reorder=True`` on external files.
+lexicographic layout. Skipping it produces a valid-looking mesh whose
+geometry map is wrong — every result downstream is silently wrong. For
+cells of order 2 and above the constructor now catches this
+(:meth:`~tensormesh.Mesh.check_node_ordering`: every edge node must sit
+nearest to its own edge) and raises ``ValueError`` telling you to pass
+``reorder=True``; *linear* quads and hexes carry no edge nodes, so a
+mis-ordered linear quad/hex mesh still goes undetected — pass the flag.
+The built-in generators already handle this, so you only need
+``reorder=True`` on external files.
 
 For a side-by-side visual of the two conventions — TensorMesh's
 internal numbering on top, Gmsh / VTK on the bottom, for triangles,
@@ -336,8 +370,10 @@ verify which convention a hand-rolled connectivity array is using.
 
 For ``.vtk`` and ``.vtu`` outputs, ``save`` automatically reorders
 back to VTK convention and pads 2D coordinates to 3D — no flag
-needed. The lower-level :meth:`~tensormesh.Mesh.to_meshio` returns the meshio
-object directly if you need custom write logic.
+needed. Such a file is therefore a regular VTK file: read it back with
+``reorder=True`` like any other external mesh. The lower-level
+:meth:`~tensormesh.Mesh.to_meshio` returns the meshio object directly
+if you need custom write logic.
 
 
 Inspecting and visualizing

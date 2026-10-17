@@ -10,6 +10,7 @@ if __name__ == '__main__':
     from mesh import Mesh
 else:
     from ...mesh import Mesh
+    from ._boundary import boundary_tolerance, near, within, register_boundary_masks
 
 def gen_cube(chara_length=0.1,
              order=1,
@@ -101,20 +102,17 @@ def gen_cube(chara_length=0.1,
 
     mesh = Mesh.from_file(cache_path, reorder=True)
 
-    is_left_boundary  = mesh.points[:, 0] == left
-    is_right_boundary = mesh.points[:, 0] == right
-    is_bottom_boundary= mesh.points[:, 1] == bottom
-    is_top_boundary   = mesh.points[:, 1] == top
-    is_front_boundary = mesh.points[:, 2] == front
-    is_back_boundary  = mesh.points[:, 2] == back
-    is_boundary       = is_left_boundary | is_right_boundary | is_bottom_boundary | is_top_boundary | is_front_boundary | is_back_boundary
-    mesh.register_point_data("is_boundary", is_boundary)
-    mesh.register_point_data("is_left_boundary", is_left_boundary)
-    mesh.register_point_data("is_right_boundary", is_right_boundary)
-    mesh.register_point_data("is_bottom_boundary", is_bottom_boundary)
-    mesh.register_point_data("is_top_boundary", is_top_boundary)
-    mesh.register_point_data("is_front_boundary", is_front_boundary)
-    mesh.register_point_data("is_back_boundary", is_back_boundary)
+    tol = boundary_tolerance(chara_length)
+    x, y, z = mesh.points[:, 0], mesh.points[:, 1], mesh.points[:, 2]
+    register_boundary_masks(
+        mesh,
+        is_left_boundary=near(x, left, tol),
+        is_right_boundary=near(x, right, tol),
+        is_bottom_boundary=near(y, bottom, tol),
+        is_top_boundary=near(y, top, tol),
+        is_front_boundary=near(z, front, tol),
+        is_back_boundary=near(z, back, tol),
+    )
     return mesh
 
 
@@ -127,7 +125,7 @@ def gen_hollow_cube(chara_length=0.1,
              inner_bottom=0.25, inner_top=0.75,
              inner_front=0.25, inner_back=0.75,
              visualize=False,
-             cache_path=".gmsh_cache/tmp.msh"):
+             cache_path=None):
     """
     Parameters
     ----------
@@ -190,7 +188,7 @@ def gen_hollow_cube(chara_length=0.1,
     assert outer_front < inner_front < inner_back < outer_back, f"outer_front < inner_front < inner_back < outer_back, but got {outer_front} < {inner_front} < {inner_back} < {outer_back}"
 
     if cache_path is None:
-        cache_path = f".gmsh_cache/cube_{outer_left}_{outer_right}_{outer_bottom}_{outer_top}_{outer_front}_{outer_back}_{inner_left}_{inner_right}_{inner_bottom}_{inner_top}_{inner_front}_{inner_back}_{chara_length}_{order}.msh"
+        cache_path = f".gmsh_cache/hollow_cube_{outer_left}_{outer_right}_{outer_bottom}_{outer_top}_{outer_front}_{outer_back}_{inner_left}_{inner_right}_{inner_bottom}_{inner_top}_{inner_front}_{inner_back}_{chara_length}_{order}.msh"
 
     if not os.path.exists(os.path.dirname(cache_path)):
         os.makedirs(os.path.dirname(cache_path))
@@ -209,17 +207,19 @@ def gen_hollow_cube(chara_length=0.1,
         
         gmsh.model.occ.synchronize()
 
-        _ = gmsh.model.occ.cut([(3, cube_outer)], [(3, cube_inner)])
-
+        # occ.cut CONSUMES both inputs; work with the cut result only (the
+        # stale ``cube_outer`` tag happened to be reused, but is not guaranteed).
+        cut, _ = gmsh.model.occ.cut([(3, cube_outer)], [(3, cube_inner)])
         gmsh.model.occ.synchronize()
+        volumes = [tag for dim, tag in cut if dim == 3]
 
         # Set the element order to 2 to generate second-order elements
         gmsh.option.setNumber("Mesh.ElementOrder", order)
 
         gmsh.model.mesh.setSize(gmsh.model.getEntities(0), chara_length)
 
-        gmsh.model.addPhysicalGroup(3, [cube_outer])
-        gmsh.model.setPhysicalName(3, 1, "domain")
+        volume_group = gmsh.model.addPhysicalGroup(3, volumes)
+        gmsh.model.setPhysicalName(3, volume_group, "domain")
 
         # Generate the mesh
         gmsh.model.mesh.generate(3)
@@ -235,36 +235,37 @@ def gen_hollow_cube(chara_length=0.1,
 
     mesh = Mesh.from_file(cache_path, reorder=True)
 
-    is_outer_left_boundary  = mesh.points[:, 0] == outer_left
-    is_outer_right_boundary = mesh.points[:, 0] == outer_right
-    is_outer_bottom_boundary= mesh.points[:, 1] == outer_bottom
-    is_outer_top_boundary   = mesh.points[:, 1] == outer_top
-    is_outer_front_boundary = mesh.points[:, 2] == outer_front 
-    is_outer_back_boundary  = mesh.points[:, 2] == outer_back
-    is_inner_left_boundary  = mesh.points[:, 0] == inner_left
-    is_inner_right_boundary = mesh.points[:, 0] == inner_right 
-    is_inner_bottom_boundary= mesh.points[:, 1] == inner_bottom
-    is_inner_top_boundary   = mesh.points[:, 1] == inner_top
-    is_inner_front_boundary = mesh.points[:, 2] == inner_front
-    is_inner_back_boundary  = mesh.points[:, 2] == inner_back
-    is_outer_boundary       = is_outer_left_boundary | is_outer_right_boundary | is_outer_bottom_boundary | is_outer_top_boundary | is_outer_front_boundary | is_outer_back_boundary
-    is_inner_boundary       = is_inner_left_boundary | is_inner_right_boundary | is_inner_bottom_boundary | is_inner_top_boundary | is_inner_front_boundary | is_inner_front_boundary
-    is_boundary             = is_inner_boundary | is_outer_boundary
-    mesh.register_point_data("is_boundary", is_boundary)
-    mesh.register_point_data("is_inner_left_boundary", is_inner_left_boundary)
-    mesh.register_point_data("is_outer_left_boundary", is_outer_left_boundary)
-    mesh.register_point_data("is_inner_right_boundary", is_inner_right_boundary)
-    mesh.register_point_data("is_outer_right_boundary", is_outer_right_boundary)
-    mesh.register_point_data("is_inner_bottom_boundary", is_inner_bottom_boundary)
-    mesh.register_point_data("is_outer_bottom_boundary", is_outer_bottom_boundary)
-    mesh.register_point_data("is_inner_top_boundary", is_inner_top_boundary)
-    mesh.register_point_data("is_outer_top_boundary", is_outer_top_boundary)
-    mesh.register_point_data("is_inner_front_boundary", is_inner_front_boundary)
-    mesh.register_point_data("is_outer_front_boundary", is_outer_front_boundary)
-    mesh.register_point_data("is_inner_back_boundary", is_inner_back_boundary)
-    mesh.register_point_data("is_outer_back_boundary", is_outer_back_boundary)
+    tol = boundary_tolerance(chara_length)
+    x, y, z = mesh.points[:, 0], mesh.points[:, 1], mesh.points[:, 2]
+    # The hole's faces are the parts of the planes x = inner_* / … that lie
+    # in the hole's extent (the same planes continue into the domain).
+    in_hole_x = within(x, inner_left, inner_right, tol)
+    in_hole_y = within(y, inner_bottom, inner_top, tol)
+    in_hole_z = within(z, inner_front, inner_back, tol)
+    sides = dict(
+        is_inner_left_boundary=near(x, inner_left, tol) & in_hole_y & in_hole_z,
+        is_outer_left_boundary=near(x, outer_left, tol),
+        is_inner_right_boundary=near(x, inner_right, tol) & in_hole_y & in_hole_z,
+        is_outer_right_boundary=near(x, outer_right, tol),
+        is_inner_bottom_boundary=near(y, inner_bottom, tol) & in_hole_x & in_hole_z,
+        is_outer_bottom_boundary=near(y, outer_bottom, tol),
+        is_inner_top_boundary=near(y, inner_top, tol) & in_hole_x & in_hole_z,
+        is_outer_top_boundary=near(y, outer_top, tol),
+        is_inner_front_boundary=near(z, inner_front, tol) & in_hole_x & in_hole_y,
+        is_outer_front_boundary=near(z, outer_front, tol),
+        is_inner_back_boundary=near(z, inner_back, tol) & in_hole_x & in_hole_y,
+        is_outer_back_boundary=near(z, outer_back, tol),
+    )
+    is_inner = torch.zeros_like(x, dtype=torch.bool)
+    is_outer = torch.zeros_like(x, dtype=torch.bool)
+    for key, mask in sides.items():
+        if key.startswith("is_inner"):
+            is_inner |= mask
+        else:
+            is_outer |= mask
+    register_boundary_masks(mesh, **sides, is_inner_boundary=is_inner, is_outer_boundary=is_outer)
 
-    return mesh 
+    return mesh
 
 if __name__ == '__main__':
     mesh = gen_hollow_cube(chara_length=0.1, order=2, visualize=False)

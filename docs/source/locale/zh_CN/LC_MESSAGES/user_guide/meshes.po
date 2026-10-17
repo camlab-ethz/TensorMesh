@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TensorMesh 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-19 14:04+0200\n"
+"POT-Creation-Date: 2026-09-17 18:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_CN <LL@li.org>\n"
@@ -19,11 +19,11 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: ../../source/user_guide/meshes.rst:2 ec04265c1e8d4267b3811fc322b0da70
+#: ../../source/user_guide/meshes.rst:2 72152afaa0d34a6f9d1b039247bcd4fc
 msgid "Meshes"
 msgstr "网格"
 
-#: ../../source/user_guide/meshes.rst:4 6623452f17a048b6afbec812f16f6092
+#: ../../source/user_guide/meshes.rst:4 89e9e130bab948dd83fd27e2a8cf923b
 msgid ""
 "A :class:`~tensormesh.Mesh` is the geometric and topological foundation of "
 "every problem in TensorMesh. It holds the points, the connectivity of one or"
@@ -39,35 +39,35 @@ msgstr ""
 "``mesh.to(\"cuda\")`` 将其移动到某个设备上，用 ``state_dict`` 序列化它，并让 autograd "
 "追踪通过其张量的一切梯度。"
 
-#: ../../source/user_guide/meshes.rst:14 f6c578f510f04c6d86c4d892e0075de3
+#: ../../source/user_guide/meshes.rst:14 a40c9a6318da4c7680b4d78d487eb1ed
 msgid "The Mesh data structure"
 msgstr "Mesh 数据结构"
 
-#: ../../source/user_guide/meshes.rst:16 32c02962f15c490983a684897b44172b
+#: ../../source/user_guide/meshes.rst:16 248b3fa88338477c997f712fe701de62
 msgid "Every mesh exposes the same six attributes:"
 msgstr "每个网格都公开相同的六个属性："
 
-#: ../../source/user_guide/meshes.rst:22 73703c794d104b00811ac7311b24dc83
+#: ../../source/user_guide/meshes.rst:22 c7cbc6e5c9724658a46c2d94649fad7e
 msgid "Attribute"
 msgstr "属性"
 
-#: ../../source/user_guide/meshes.rst:23 105dc70144624fb9a740bd2f55e0d7c2
+#: ../../source/user_guide/meshes.rst:23 34346aa1866d4b6ba4c72cc441a6be8a
 msgid "Type"
 msgstr "类型"
 
-#: ../../source/user_guide/meshes.rst:24 1c8e8491418443e1a7d769dbe852997f
+#: ../../source/user_guide/meshes.rst:24 7e8d6dbdae5e4d96ad1f662c22ff71c4
 msgid "Shape / contents"
 msgstr "形状 / 内容"
 
-#: ../../source/user_guide/meshes.rst:25 f01091a89185437ebdaa523da868f28d
+#: ../../source/user_guide/meshes.rst:25 7c3c5a118b81454687223c83a8249e47
 msgid "``points``"
 msgstr "``points``"
 
-#: ../../source/user_guide/meshes.rst:26 cf6e1f90f9444811b2e912314e8c8638
+#: ../../source/user_guide/meshes.rst:26 9a3d9ea022d140a7ba0d1f26a9840238
 msgid "``torch.Tensor``"
 msgstr "``torch.Tensor``"
 
-#: ../../source/user_guide/meshes.rst:27 16f67ce8660b481087c3db122d303c85
+#: ../../source/user_guide/meshes.rst:27 48e8ba34da6f408c9412828e8584cb8d
 msgid ""
 "``[n_points, dim]`` — coordinates of every **DOF / interpolation node** (= "
 "every degree of freedom of a scalar field). For ``order=1`` this is the same"
@@ -77,17 +77,17 @@ msgstr ""
 "``[n_points, dim]`` —— 每个 **自由度 / 插值节点** 的坐标（= 标量场的每个自由度）。对于 ``order=1``\\ "
 "，它与单元顶点相同；对于 ``order ≥ 2``\\ ，它还包括边中节点、面中节点和内部节点。"
 
-#: ../../source/user_guide/meshes.rst:31 20646a65b0b7475e9a61d871c64edc37
+#: ../../source/user_guide/meshes.rst:31 c7eea9e4ae15492bb680498fb22a47d8
 msgid "``cells``"
 msgstr "``cells``"
 
 #: ../../source/user_guide/meshes.rst:32 ../../source/user_guide/meshes.rst:36
-#: ../../source/user_guide/meshes.rst:43 184f0862118e40d78c3ca381f5a3c5c1
-#: bbd3919cff734287865efe8577004253 eaa1459af9b848b39595c12ad4ebb0be
+#: ../../source/user_guide/meshes.rst:43 076a4827f25748ee9890fea3d417b42b
+#: 39ac194442f74609aa8e6ada00e6d52a 56b0fd2c91144306b02f2e9bf1af5440
 msgid "``BufferDict[str, torch.Tensor]``"
 msgstr "``BufferDict[str, torch.Tensor]``"
 
-#: ../../source/user_guide/meshes.rst:33 bb987429f3bd443d859f63b1ddfcb4ae
+#: ../../source/user_guide/meshes.rst:33 5b2be55ca03a44f2a91615c0052fa4ad
 msgid ""
 "keyed by element type (e.g. ``\"triangle\"``, ``\"hexahedron27\"``); each "
 "value is ``[n_elements, n_basis]`` long-integer connectivity."
@@ -95,11 +95,11 @@ msgstr ""
 "以单元类型为键（例如 ``\"triangle\"``\\ 、\\ ``\"hexahedron27\"``\\ ）；每个值是 "
 "``[n_elements, n_basis]`` 的长整型连接性。"
 
-#: ../../source/user_guide/meshes.rst:35 c113a59215a64d65896d6eda3b97e19f
+#: ../../source/user_guide/meshes.rst:35 ada79c0854964f06be29fb0f62c83d8b
 msgid "``point_data``"
 msgstr "``point_data``"
 
-#: ../../source/user_guide/meshes.rst:37 5c7be2401b58405b9dbf0e2385c33c57
+#: ../../source/user_guide/meshes.rst:37 9e467243fdd34181971a51d081f2e7b7
 msgid ""
 "per-node fields. Keys starting with ``is_`` or ending in ``_mask`` are auto-"
 "cast to ``bool`` on load (e.g. ``is_boundary``)."
@@ -107,39 +107,39 @@ msgstr ""
 "逐节点字段。以 ``is_`` 开头或以 ``_mask`` 结尾的键在加载时会自动转换为 ``bool``\\ （例如 "
 "``is_boundary``\\ ）。"
 
-#: ../../source/user_guide/meshes.rst:39 2a5f0786849b47919a64277372e85926
+#: ../../source/user_guide/meshes.rst:39 81d2b7a577934442b087fe769e305459
 msgid "``cell_data``"
 msgstr "``cell_data``"
 
-#: ../../source/user_guide/meshes.rst:40 507535d1ca434abc9fc8fab069de5003
+#: ../../source/user_guide/meshes.rst:40 b1bffb30740745b8b5691cfb6cd6e6f7
 msgid "``ModuleDict[str, BufferDict[str, torch.Tensor]]``"
 msgstr "``ModuleDict[str, BufferDict[str, torch.Tensor]]``"
 
-#: ../../source/user_guide/meshes.rst:41 af483e03672946088409beeb3c576d69
+#: ../../source/user_guide/meshes.rst:41 8a4e9d0f81ab48a68caf8beb9573dffd
 msgid "per-element fields, nested by element type then field name."
 msgstr "逐单元字段，先按单元类型再按字段名嵌套。"
 
-#: ../../source/user_guide/meshes.rst:42 dbd3d0e863474a65bf30566c65ed03e6
+#: ../../source/user_guide/meshes.rst:42 57f473a2b9ec4c1a8ca6849c0413c111
 msgid "``field_data``"
 msgstr "``field_data``"
 
-#: ../../source/user_guide/meshes.rst:44 cfae952245014f75bb3c49fce390b407
+#: ../../source/user_guide/meshes.rst:44 d2e23fabed9e40b38c96a58dd8b16726
 msgid "mesh-global metadata (rare)."
 msgstr "网格全局元数据（少见）。"
 
-#: ../../source/user_guide/meshes.rst:45 932cae2bafc5452b9f13ff5542803949
+#: ../../source/user_guide/meshes.rst:45 03d7525cbc48421fb975e9cc11e053e0
 msgid "``cell_sets``"
 msgstr "``cell_sets``"
 
-#: ../../source/user_guide/meshes.rst:46 7987190e46e040d7b4ff5f4c2003825f
+#: ../../source/user_guide/meshes.rst:46 3018d17244e242bba521eb1184d07623
 msgid "``dict``"
 msgstr "``dict``"
 
-#: ../../source/user_guide/meshes.rst:47 1d67495064004dfd8b228280ec67d643
+#: ../../source/user_guide/meshes.rst:47 3f9bed318c2647829f135512df943d2b
 msgid "meshio-style named subsets, kept opaque on round-trip."
 msgstr "meshio 风格的命名子集，在往返读写时保持原样不作解析。"
 
-#: ../../source/user_guide/meshes.rst:49 8569d3385c8f4a33975eec5c8a95339e
+#: ../../source/user_guide/meshes.rst:49 b368a4172f86474e85f50e24669d723e
 msgid ""
 "Because ``cells`` is a dict, mixed-element meshes (triangles + quads, tets +"
 " hexes, …) are first-class. Iterating ``mesh.cells.items()`` gives you each "
@@ -148,7 +148,7 @@ msgstr ""
 "由于 ``cells`` 是一个字典，混合单元网格（三角形 + 四边形、四面体 + 六面体……）是一等公民。遍历 "
 "``mesh.cells.items()`` 会依次给出每个单元块。"
 
-#: ../../source/user_guide/meshes.rst:53 5fcc8bf9e809466285935f5981aa3504
+#: ../../source/user_guide/meshes.rst:53 e9ea33ca39a5491b9864b00ebc6cdb8d
 msgid ""
 "Useful properties: ``mesh.n_points``, ``mesh.n_elements``, ``mesh.dim`` (``="
 " mesh.points.shape[1]``), ``mesh.dtype``, ``mesh.device``, and "
@@ -159,7 +159,7 @@ msgstr ""
 "（\\ ``= mesh.points.shape[1]``\\ ）、\\ ``mesh.dtype``\\ 、\\ ``mesh.device`` "
 "以及 ``mesh.default_element_type``\\ （维度最高的类型，对于混合网格则退化为一个列表）。"
 
-#: ../../source/user_guide/meshes.rst:60 3ca95b943ce34cecade2b4e22de36740
+#: ../../source/user_guide/meshes.rst:60 958efc9bc3924092b94fad85ca17bc1c
 msgid ""
 "Throughout this guide and the API, **\"point\" means DOF / interpolation "
 "node**, not \"corner vertex of an element\". The two coincide for linear "
@@ -177,11 +177,11 @@ msgstr ""
 ":attr:`~tensormesh.Mesh.points` 的形状也与你放入 :attr:`~tensormesh.Mesh.point_data`"
 " 的任何一维场的长度相匹配。"
 
-#: ../../source/user_guide/meshes.rst:71 f39e4de625a842e184e6083e3b89a964
+#: ../../source/user_guide/meshes.rst:71 e3506df2632e494a9032a98e4a7414b3
 msgid "Built-in generators"
 msgstr "内置生成器"
 
-#: ../../source/user_guide/meshes.rst:73 115d7de3832b47cb89559e3edc30d788
+#: ../../source/user_guide/meshes.rst:73 819d8a48bff7428c8f095ec4f5abe012
 msgid ""
 "For domains with simple shapes, TensorMesh ships a Gmsh-backed generator "
 "family. All return a :class:`~tensormesh.Mesh` ready to use and accept "
@@ -192,121 +192,121 @@ msgstr ""
 ":class:`~tensormesh.Mesh`\\ ，并接受 ``chara_length``\\ （目标单元尺寸）和 ``order``\\ "
 "（多项式阶数）这两个通用调节参数："
 
-#: ../../source/user_guide/meshes.rst:82 ccf7b5b4383e4bebaaa6306deaa26c4e
+#: ../../source/user_guide/meshes.rst:82 e53cf7570fdf480fb52fb51e090eca21
 msgid "Generator"
 msgstr "生成器"
 
-#: ../../source/user_guide/meshes.rst:83 b7dbd28dfed4493cbb1b1bd630979de2
+#: ../../source/user_guide/meshes.rst:83 6d738047423043a8ba121b5ff19951c6
 msgid "Default element"
 msgstr "默认单元"
 
-#: ../../source/user_guide/meshes.rst:84 f1fbb3517ed142abb321e776dcb8177a
+#: ../../source/user_guide/meshes.rst:84 073573a6c56a4477925df600c86e2841
 msgid "Domain"
 msgstr "求解域"
 
-#: ../../source/user_guide/meshes.rst:85 260a22b4fde8435ca4f05c6ef3d52a95
+#: ../../source/user_guide/meshes.rst:85 7a828fb8e31e446cb7c97022a8779f05
 msgid ":meth:`~tensormesh.Mesh.gen_rectangle`"
 msgstr ":meth:`~tensormesh.Mesh.gen_rectangle`"
 
 #: ../../source/user_guide/meshes.rst:86 ../../source/user_guide/meshes.rst:92
-#: 34c9685892ce411da7e56c0aac10648c f43ae076f765438380f085032bc947ed
+#: 1f0b3f70ceac48b18a3f0ad7e936a7b0 a34c0e3f1c34421c94dc90fbc95a1df6
 msgid "``\"tri\"``"
 msgstr "``\"tri\"``"
 
-#: ../../source/user_guide/meshes.rst:87 5e1a757727e54b3c91b47ea0f4b1c5ad
+#: ../../source/user_guide/meshes.rst:87 7d74b4da5977448ea57a9c60ebf3ae06
 msgid "axis-aligned rectangle on ``[left, right] × [bottom, top]``"
 msgstr "在 ``[left, right] × [bottom, top]`` 上的轴对齐矩形"
 
-#: ../../source/user_guide/meshes.rst:88 d5759099612f46d29493170d2fdef001
+#: ../../source/user_guide/meshes.rst:88 914cd1d1467e4f38856eeec3d92fb399
 msgid ":meth:`~tensormesh.Mesh.gen_hollow_rectangle`"
 msgstr ":meth:`~tensormesh.Mesh.gen_hollow_rectangle`"
 
 #: ../../source/user_guide/meshes.rst:89 ../../source/user_guide/meshes.rst:95
-#: ../../source/user_guide/meshes.rst:98 273d1578a17f416d839375d60af4d169
-#: 67619487565b4af5a81775eb43898443 cbabe00163b04986b17596b98ebb60d3
+#: ../../source/user_guide/meshes.rst:98 070d5a12d0c6413f8f418e02fa2178ca
+#: 5d7870b207d545d7a0d25499debe3bd5 812f4243bb4b4359b47e3073c62d64e6
 msgid "``\"quad\"``"
 msgstr "``\"quad\"``"
 
-#: ../../source/user_guide/meshes.rst:90 dbace64523ef47bd9875226a6eae7769
+#: ../../source/user_guide/meshes.rst:90 1e7d13a1c8104b349ebdc222bc0af117
 msgid "rectangle with rectangular hole"
 msgstr "带矩形孔的矩形"
 
-#: ../../source/user_guide/meshes.rst:91 a94d7bdce68742908920c4bcb504ef15
+#: ../../source/user_guide/meshes.rst:91 a99040e4bca343beb15c5363990b44a9
 msgid ":meth:`~tensormesh.Mesh.gen_circle`"
 msgstr ":meth:`~tensormesh.Mesh.gen_circle`"
 
-#: ../../source/user_guide/meshes.rst:93 35124de97a4e409188626bf3aa7eae40
+#: ../../source/user_guide/meshes.rst:93 b856ad0757be48328ca793cc86059529
 msgid "disk of radius ``r`` centered at ``(cx, cy)``"
 msgstr "以 ``(cx, cy)`` 为圆心、半径为 ``r`` 的圆盘"
 
-#: ../../source/user_guide/meshes.rst:94 6e7576db844a49d7b8056cd9aa77b616
+#: ../../source/user_guide/meshes.rst:94 8cd6b20434f24d96bae0e76b32c50931
 msgid ":meth:`~tensormesh.Mesh.gen_hollow_circle`"
 msgstr ":meth:`~tensormesh.Mesh.gen_hollow_circle`"
 
-#: ../../source/user_guide/meshes.rst:96 fb71667688214b98b246119e5f9ef511
+#: ../../source/user_guide/meshes.rst:96 b482dce821cc40f988508fae9c606318
 msgid "annulus"
 msgstr "圆环"
 
-#: ../../source/user_guide/meshes.rst:97 38b5ec04ef1b4fe1a2dab792ed1452f2
+#: ../../source/user_guide/meshes.rst:97 fa93ce4e8a6648bdbec64cd2cc9a64a1
 msgid ":meth:`~tensormesh.Mesh.gen_L`"
 msgstr ":meth:`~tensormesh.Mesh.gen_L`"
 
-#: ../../source/user_guide/meshes.rst:99 add4e557c5374f7ea9b7492aac981272
+#: ../../source/user_guide/meshes.rst:99 3c30d45d02f74c1ebeec27102eb5bb52
 msgid "L-shaped 2D domain"
 msgstr "L 形二维求解域"
 
-#: ../../source/user_guide/meshes.rst:100 e1befafe839841e38257be46eca497e8
+#: ../../source/user_guide/meshes.rst:100 49e2a9c6c148449b8f4b8f59e040093d
 msgid ":meth:`~tensormesh.Mesh.gen_cube`"
 msgstr ":meth:`~tensormesh.Mesh.gen_cube`"
 
 #: ../../source/user_guide/meshes.rst:101
 #: ../../source/user_guide/meshes.rst:104
 #: ../../source/user_guide/meshes.rst:107
-#: ../../source/user_guide/meshes.rst:110 10a94e1ee35947259b887ba52717e8a4
-#: 6216fb027d7a4db0af56aceb449dd00d 68f3eeceda654aa880d13c99563c03a7
-#: 74df8d372b9b4b2780cef0c4c16fcdb7
+#: ../../source/user_guide/meshes.rst:110 6cd10978528e4cae8b07083d20a8b775
+#: 6edfa40c5b8b4aebb831d7368b0b0624 a6b4fdd26015439fa86b1e352623f90d
+#: f233514291dd40059f78b0502583f014
 msgid "``\"tet\"``"
 msgstr "``\"tet\"``"
 
-#: ../../source/user_guide/meshes.rst:102 bcd1824f49af47e1886615d9af5286fc
+#: ../../source/user_guide/meshes.rst:102 33ac3029a2254c85bb9bf44e1acf1be1
 msgid "axis-aligned 3D box"
 msgstr "轴对齐三维盒体"
 
-#: ../../source/user_guide/meshes.rst:103 c7e9e22d55cf43f7837e929d560093ca
+#: ../../source/user_guide/meshes.rst:103 90a0803107024d8f9c51f7b2adc7b3db
 msgid ":meth:`~tensormesh.Mesh.gen_hollow_cube`"
 msgstr ":meth:`~tensormesh.Mesh.gen_hollow_cube`"
 
-#: ../../source/user_guide/meshes.rst:105 7dec44343182479283e9a95f07effb37
+#: ../../source/user_guide/meshes.rst:105 6cb02149b8d54ed98fba7540afcba38b
 msgid "cube with cubic hole"
 msgstr "带立方孔的立方体"
 
-#: ../../source/user_guide/meshes.rst:106 dc732458072b495db6fdb4d2cfca74e9
+#: ../../source/user_guide/meshes.rst:106 e226054c3b3c48719985309ebfc7e438
 msgid ":meth:`~tensormesh.Mesh.gen_sphere`"
 msgstr ":meth:`~tensormesh.Mesh.gen_sphere`"
 
-#: ../../source/user_guide/meshes.rst:108 6caee2eff0904e888130cd200755df8d
+#: ../../source/user_guide/meshes.rst:108 a0b7a39aa6c242629d3da1c6cfe825b2
 msgid "solid ball of radius ``r``"
 msgstr "半径为 ``r`` 的实心球"
 
-#: ../../source/user_guide/meshes.rst:109 172dc6b5ab284d5295886c09988bc65a
+#: ../../source/user_guide/meshes.rst:109 1bf5ecb12fe24d44980d623722a7f000
 msgid ":meth:`~tensormesh.Mesh.gen_hollow_sphere`"
 msgstr ":meth:`~tensormesh.Mesh.gen_hollow_sphere`"
 
-#: ../../source/user_guide/meshes.rst:111 eac6810400c04703a5f367a3e98baf05
+#: ../../source/user_guide/meshes.rst:111 51a787c2cff048628e682e3470e3b017
 msgid "spherical shell"
 msgstr "球壳"
 
-#: ../../source/user_guide/meshes.rst:113 07ffbde6ba3d41fcbeb3cb1421711caf
+#: ../../source/user_guide/meshes.rst:113 b50d9601042d41db8bbd030c3b34c63c
 msgid "A typical call and the resulting mesh:"
 msgstr "一个典型的调用及其生成的网格："
 
-#: ../../source/user_guide/meshes.rst:132 ede570e0025048a79a4912ad53f80f48
+#: ../../source/user_guide/meshes.rst:132 eef68d0846fb47eb8e4f92d26f31bd55
 msgid ""
 "Notice three things in the real output that the table above does not hint "
 "at:"
 msgstr "请注意实际输出中上表未曾暗示的三点："
 
-#: ../../source/user_guide/meshes.rst:135 e8334719e87d40fabc66bd51fd595a8c
+#: ../../source/user_guide/meshes.rst:135 20195eac3a9e455f83fd88d52ddc1023
 msgid ""
 "``cells`` contains a ``line`` block alongside ``triangle`` — the generators "
 "retain the 1-D boundary facets so that :class:`~tensormesh.FacetAssembler` "
@@ -315,7 +315,7 @@ msgstr ""
 "``cells`` 在 ``triangle`` 之外还包含一个 ``line`` 块 —— 生成器保留了一维边界面，以便 "
 ":class:`~tensormesh.FacetAssembler` 可以直接在其上积分。"
 
-#: ../../source/user_guide/meshes.rst:139 9339b037801b42819ea22700b12d9f12
+#: ../../source/user_guide/meshes.rst:139 22cb3ed1bdd64d17bc620c60af59ab75
 msgid ""
 "``point_data`` already carries per-side boundary masks "
 "(``is_left_boundary``, ``is_right_boundary``, …) in addition to the union "
@@ -324,17 +324,17 @@ msgstr ""
 "除了并集 ``is_boundary`` 之外，\\ ``point_data`` 已经携带了逐边的边界掩码（\\ "
 "``is_left_boundary``\\ 、\\ ``is_right_boundary``……）。你可以免费获得区域感知的狄利克雷边界条件。"
 
-#: ../../source/user_guide/meshes.rst:142 64921561688646218389b9b2a7a3302d
+#: ../../source/user_guide/meshes.rst:142 419f88c7869544b185e9b9bfcf3cd7e0
 msgid ""
 "The ``gmsh:*`` keys and ``field_data`` are the underlying Gmsh physical-"
 "group metadata, preserved on round-trip but rarely needed in user code."
 msgstr "``gmsh:*`` 键和 ``field_data`` 是底层的 Gmsh 物理组元数据，在往返读写时会被保留，但在用户代码中很少需要。"
 
-#: ../../source/user_guide/meshes.rst:146 e891961a2e6043498ceb8d630a6068a0
+#: ../../source/user_guide/meshes.rst:146 999b7ec151cb4551a71fee4140c13483
 msgid "Triangle and quadrilateral discretizations of the unit square"
 msgstr "单位正方形的三角形和四边形离散化"
 
-#: ../../source/user_guide/meshes.rst:151 885a4dc92929431d9bab5333df49433d
+#: ../../source/user_guide/meshes.rst:151 b1ccf7e95e54447eb2db19279d430913
 msgid ""
 ":meth:`~tensormesh.Mesh.gen_rectangle` produces a tri (left) or quad (right)"
 " mesh of the rectangle. Mid-edge nodes (orange) are visible because this "
@@ -343,7 +343,7 @@ msgstr ""
 ":meth:`~tensormesh.Mesh.gen_rectangle` 生成矩形的三角形网格（左）或四边形网格（右）。由于本图使用了 "
 "``order=2``\\ ，因此边中节点（橙色）可见；若使用 ``order=1``\\ ，则只保留角顶点。"
 
-#: ../../source/user_guide/meshes.rst:156 45d3ccb447a34363b58858b7d35b5037
+#: ../../source/user_guide/meshes.rst:156 b4ddaa96f3a14fe9b719079b29db3b16
 msgid ""
 "Smaller ``chara_length`` → finer mesh (and finer means quadratically more "
 "points in 2D, cubically in 3D). Use ``order=2`` to get ``triangle6`` / "
@@ -353,11 +353,11 @@ msgstr ""
 "可以得到 ``triangle6`` / ``quad9`` / ``tetra10`` / ``hexahedron27``\\ "
 "，而非默认的线性单元。"
 
-#: ../../source/user_guide/meshes.rst:162 29d090d8ce79446ca785c6b36e3c52b8
+#: ../../source/user_guide/meshes.rst:162 56639adc631447ed936a8a607b0f2b26
 msgid "Composing custom geometries with ``MeshGen``"
 msgstr "用 ``MeshGen`` 构建自定义几何"
 
-#: ../../source/user_guide/meshes.rst:164 8e1fb9d514dd471b900d77614f5d6ad3
+#: ../../source/user_guide/meshes.rst:164 7bc673a770634b7bb1ca4dd01cbe0a37
 msgid ""
 "When the shape you need is not one of the built-ins but is still expressible"
 " as a Boolean combination of primitives — a plate with holes, a domain with "
@@ -370,11 +370,11 @@ msgstr ""
 "``.geo`` 文件，转而使用 :class:`~tensormesh.MeshGen`\\ 。它是围绕 Gmsh OCC "
 "内核的一个轻量、可脚本化的封装，直接返回一个 TensorMesh 的 :class:`~tensormesh.Mesh`\\ ："
 
-#: ../../source/user_guide/meshes.rst:181 1d17fabe72cc4e81a52c306c0614bcbe
+#: ../../source/user_guide/meshes.rst:181 b5af7cc979054606ac01a7ab6e6d1ef6
 msgid "Hybrid 2D mesh with triangles, quadrilaterals, and a circular hole"
 msgstr "包含三角形、四边形和一个圆孔的混合二维网格"
 
-#: ../../source/user_guide/meshes.rst:186 3186108496b04dc38168b6d5748cb90d
+#: ../../source/user_guide/meshes.rst:186 0a38909429444900b4a904a29963808f
 msgid ""
 "The mesh produced by the snippet above — order-2 triangles on the left, "
 "order-2 quadrilaterals on the right, fused along a shared interface, with a "
@@ -384,7 +384,7 @@ msgstr ""
 "上面代码片段生成的网格 —— 左侧为二阶三角形，右侧为二阶四边形，沿共享界面融合在一起，并挖出一个圆孔。橙色圆点是插值节点（因为使用了 "
 "``order=2``\\ ，所以存在边中节点）。"
 
-#: ../../source/user_guide/meshes.rst:191 00863121ecdc4d9b91e4abb2035589c9
+#: ../../source/user_guide/meshes.rst:191 4e8d924455f94f08b7e5d098267f227c
 msgid ""
 "The same API extends to 3-D (``dimension=3`` plus ``add_cube`` / "
 "``remove_sphere``), and ``element_type=None`` enables hybrid meshes where "
@@ -395,7 +395,7 @@ msgstr ""
 " ``element_type=None`` 则可启用混合网格，使不同区域使用不同的单元类型 —— 由于 "
 ":attr:`~tensormesh.Mesh.cells` 是一个以单元类型为键的字典，因此下游能完全支持这一点。"
 
-#: ../../source/user_guide/meshes.rst:197 c5ec80c72214480c86e654c17dfa05c7
+#: ../../source/user_guide/meshes.rst:197 c50173ca743344799378df2c783bc14e
 msgid ""
 "A picture catalogue of what :class:`~tensormesh.MeshGen` and the built-in "
 "generators can produce — primitives, hybrid meshes, adjacency overlays, "
@@ -405,7 +405,7 @@ msgstr ""
 "关于 :class:`~tensormesh.MeshGen` 和内置生成器能够生成什么内容的图片目录 —— "
 "基本图元、混合网格、邻接关系叠加图、场可视化 —— 收录在示例画廊的 :ref:`mesh-generation-gallery` 中。"
 
-#: ../../source/user_guide/meshes.rst:202 85e3f47c3e9146638e414d7e1cd25429
+#: ../../source/user_guide/meshes.rst:202 ae0320f837ec4c539546fd8c713e3474
 msgid ""
 "For geometries that go beyond CSG (CAD imports, named physical boundaries, "
 "anisotropic sizing fields), drive Gmsh directly and load the result via "
@@ -414,25 +414,25 @@ msgstr ""
 "对于超出 CSG 范畴的几何（CAD 导入、命名的物理边界、各向异性的尺寸场），可直接驱动 Gmsh，并通过 meshio 加载结果（参见下文 "
 ":ref:`mesh-io`\\ ）。"
 
-#: ../../source/user_guide/meshes.rst:208 83fcd113621146debd8b60a03e336745
+#: ../../source/user_guide/meshes.rst:208 bd3c670ab33f4bc2bfbfb0fa22909567
 msgid "Per-node and per-element data"
 msgstr "逐节点与逐单元数据"
 
-#: ../../source/user_guide/meshes.rst:210 51b41ae105ae457684719aca14a79eff
+#: ../../source/user_guide/meshes.rst:210 03414f3be99e40fd95efcc3d223c4587
 msgid "Attach a field to every node:"
 msgstr "为每个节点附加一个场："
 
-#: ../../source/user_guide/meshes.rst:219 81b62d9b15854b18a5729d49a66157c2
+#: ../../source/user_guide/meshes.rst:219 69c15564432748e4875f9ab601233d7e
 msgid ""
 "The chained form ``mesh.register_point_data(...)`` returns the mesh, which "
 "is convenient when building up a result before saving."
 msgstr "链式形式 ``mesh.register_point_data(...)`` 会返回该网格，这在保存前逐步构建结果时很方便。"
 
-#: ../../source/user_guide/meshes.rst:222 62b034bb4868462ca6432bc4bee04e3f
+#: ../../source/user_guide/meshes.rst:222 21fe4fdc33594f71adf570948341eb5e
 msgid "Per-element fields work the same way, keyed by element type:"
 msgstr "逐单元字段的工作方式相同，以单元类型为键："
 
-#: ../../source/user_guide/meshes.rst:230 084efcdd42c54a109d9fdb12636a200a
+#: ../../source/user_guide/meshes.rst:230 d27956a17f1443da817de5cc115511e4
 msgid ""
 "The lower-level :attr:`~tensormesh.Mesh.cells`, "
 ":attr:`~tensormesh.Mesh.point_data`, :attr:`~tensormesh.Mesh.cell_data` are "
@@ -444,23 +444,41 @@ msgstr ""
 " 都是完整的 :class:`~tensormesh.nn.BufferDict` 对象 —— 你可以用 ``[...]`` 读取它们、遍历它们，或用 "
 "``.to(device)`` 移动它们。"
 
-#: ../../source/user_guide/meshes.rst:237 f380f509d48445769743a1854edaaafe
+#: ../../source/user_guide/meshes.rst:237 3a48136af0f2415f89d5817893e8db4e
 msgid "Boundary identification"
 msgstr "边界识别"
 
-#: ../../source/user_guide/meshes.rst:239 4f8eb1b27de849ccadb89f5560ba1587
+#: ../../source/user_guide/meshes.rst:239 053fb294edf24c3388f3d801a819aab5
 msgid ""
 "The generators all populate ``point_data[\"is_boundary\"]`` (a bool tensor "
 "over points), which the convenience property exposes as:"
 msgstr "所有生成器都会填充 ``point_data[\"is_boundary\"]``\\ （一个定义在节点上的布尔张量），便捷属性将其公开为："
 
-#: ../../source/user_guide/meshes.rst:247 0ea4b60dfa08405e96601986103fe65d
+#: ../../source/user_guide/meshes.rst:247 8f8abdc7b0c34affa08c0d02a7e7fd4b
 msgid ""
-"Hand-rolled meshes can use either ``is_boundary`` or ``boundary_mask`` as "
-"the key — the property accepts both."
-msgstr "手工构建的网格可以使用 ``is_boundary`` 或 ``boundary_mask`` 作为键 —— 该属性两者都接受。"
+"The mask is detected **topologically**: a facet (edge in 2D, face in 3D) is "
+"on the boundary iff exactly one cell references it, and every node on such a"
+" facet — including the edge nodes of ``triangle6`` / ``quad9`` / ``tetra10``"
+" cells — is a boundary node. This is exact for any geometry and any order, "
+"whereas a coordinate test like ``r == R`` misses the nodes gmsh places one "
+"ulp off a curved boundary (and silently drops their Dirichlet condition). "
+"The same detection is available on any mesh, generated or imported:"
+msgstr ""
+"该掩码通过\\ **拓扑**\\ 方式检测：一个面（2D 中为边，3D 中为面）位于边界上，当且仅当恰好有一个单元引用它，且该面上所有节点——包括 "
+"``triangle6`` / ``quad9`` / ``tetra10`` 单元的边节点——均为边界节点。这对任意几何形状和任意阶数都是精确的，而像"
+" ``r == R`` 这样的坐标测试则会遗漏 gmsh 放置在弯曲边界一个 ulp "
+"之外的节点（并静默丢弃它们的狄利克雷边界条件）。同样的检测机制适用于任何网格，无论是生成还是导入的："
 
-#: ../../source/user_guide/meshes.rst:250 7d0b6aa74ec642aca197522a70aec37f
+#: ../../source/user_guide/meshes.rst:263 1ae606156c2d48c5aff66a8d9b74e8b9
+msgid ""
+"Hand-rolled meshes can also store their own mask under either "
+"``is_boundary`` or ``boundary_mask`` — the property accepts both and only "
+"falls back to the topological detection when neither exists."
+msgstr ""
+"手动构建的网格也可以将掩码存储在 ``is_boundary`` 或 ``boundary_mask`` "
+"下——该属性接受两者，且仅当两者都不存在时才回退到拓扑检测。"
+
+#: ../../source/user_guide/meshes.rst:267 430793383467428792414b8875e95939
 msgid ""
 "**Per-side masks come for free.** The 2-D / 3-D rectangular and cuboidal "
 "generators (:meth:`~tensormesh.Mesh.gen_rectangle`, "
@@ -475,11 +493,11 @@ msgstr ""
 ":meth:`~tensormesh.Mesh.gen_cube`……）还会为每个面注册一个 ``is_<side>_boundary`` "
 "掩码，这样你就可以在单条边或单个面上固定狄利克雷值，而无需重新计算几何："
 
-#: ../../source/user_guide/meshes.rst:267 1496634e40874114bce18473183aae18
+#: ../../source/user_guide/meshes.rst:284 ceaa72055f94459e801ca7c3a4a95310
 msgid "Boundary masks on a rectangle mesh — union and per-side"
 msgstr "矩形网格上的边界掩码 —— 并集与逐边"
 
-#: ../../source/user_guide/meshes.rst:272 4d599f6ddb85439094c64a8fcb57f778
+#: ../../source/user_guide/meshes.rst:289 b86900684b2d49a0b39d559bd24ad4d0
 msgid ""
 "Boundary points on ``Mesh.gen_rectangle(chara_length=0.08)``. Left: the "
 "union mask ``mesh.boundary_mask``. Right: the four per-side masks set "
@@ -490,18 +508,35 @@ msgstr ""
 "``mesh.boundary_mask``\\ 。右：由生成器自动设置的四个逐边掩码，可直接送入区域感知的 "
 ":class:`~tensormesh.Condenser`\\ 。"
 
-#: ../../source/user_guide/meshes.rst:277 4cc0d29cf8f2433fbf2b4be4ffe06b35
+#: ../../source/user_guide/meshes.rst:294 1629fa520f4a4a5d8c0e8c7fcb6af168
+msgid ""
+"The per-side masks are coordinate predicates *restricted to the boundary "
+"nodes*, evaluated with a tolerance proportional to ``chara_length`` rather "
+"than an exact comparison. The hollow generators "
+"(:meth:`~tensormesh.Mesh.gen_hollow_rectangle`, "
+":meth:`~tensormesh.Mesh.gen_hollow_circle`, and the 3-D counterparts) "
+"additionally register ``is_inner_boundary`` / ``is_outer_boundary`` — the "
+"obstacle and the outer frame — which is what a \"flow past a body\" setup "
+"needs."
+msgstr ""
+"各侧的掩码是\\ *限制在边界节点上的*\\ 坐标谓词，以与 ``chara_length`` 成比例的容差进行求值，而非精确比较。空心生成器（\\ "
+":meth:`~tensormesh.Mesh.gen_hollow_rectangle`\\ 、\\ "
+":meth:`~tensormesh.Mesh.gen_hollow_circle` 及其三维对应方法）额外注册 "
+"``is_inner_boundary`` / ``is_outer_boundary``——即障碍物和外框——这正是\"绕流物体\"设置所需的。"
+
+#: ../../source/user_guide/meshes.rst:303 6f20e38e86e34c69a624648e62ab4b00
 msgid ""
 "For curved domains (:meth:`~tensormesh.Mesh.gen_circle`, "
 ":meth:`~tensormesh.Mesh.gen_sphere`, …) or hand-rolled meshes, derive your "
-"own masks from coordinates and store them as additional ``point_data`` "
+"own masks from coordinates, intersected with the boundary mask so that a "
+"tolerance can be used safely, and store them as additional ``point_data`` "
 "entries:"
 msgstr ""
-"对于曲边求解域（\\ :meth:`~tensormesh.Mesh.gen_circle`\\ 、\\ "
-":meth:`~tensormesh.Mesh.gen_sphere`……）或手工构建的网格，可以从坐标推导出你自己的掩码，并将它们作为额外的 "
-"``point_data`` 条目存储："
+"对于弯曲域（\\ :meth:`~tensormesh.Mesh.gen_circle`\\ 、\\ "
+":meth:`~tensormesh.Mesh.gen_sphere`\\ "
+"、…）或手动构建的网格，从坐标派生你自己的掩码，并与边界掩码取交集，以便安全地使用容差，然后将其存储为额外的 ``point_data`` 条目："
 
-#: ../../source/user_guide/meshes.rst:290 83e2301954fc42499b3eccba0abcfd82
+#: ../../source/user_guide/meshes.rst:318 5eebb40d2ca048548bf5fb7ceb6fe76a
 msgid ""
 "These plug straight into a :class:`~tensormesh.Condenser` for non-"
 "homogeneous Dirichlet BCs (see :doc:`boundary_conditions`)."
@@ -509,11 +544,11 @@ msgstr ""
 "这些可以直接接入 :class:`~tensormesh.Condenser`\\ ，用于非齐次狄利克雷边界条件（参见 "
 ":doc:`boundary_conditions`\\ ）。"
 
-#: ../../source/user_guide/meshes.rst:297 a4d96e556375496fad29262e5eca4094
+#: ../../source/user_guide/meshes.rst:325 f489419bb19c4dbda4995a9a3e52a4d3
 msgid "I/O — loading and saving"
 msgstr "I/O —— 加载与保存"
 
-#: ../../source/user_guide/meshes.rst:299 85359ead9c154fe383f7730723aea927
+#: ../../source/user_guide/meshes.rst:327 99e8d855a44a47668e7ed7a5773ac43a
 msgid ""
 "TensorMesh round-trips through `meshio "
 "<https://github.com/nschloe/meshio>`_, so any format meshio understands "
@@ -523,28 +558,38 @@ msgstr ""
 " 能识别的任何格式（\\ ``.msh``\\ 、\\ ``.vtk``\\ 、\\ ``.vtu``\\ 、\\ ``.xdmf``\\ 、\\ "
 "``.obj``……）都可使用。"
 
-#: ../../source/user_guide/meshes.rst:303 b8dcb6cc6c14403e8e1e3af1b3b7fa9c
+#: ../../source/user_guide/meshes.rst:331 524accce3b9d4f9982e9544acd010849
 msgid "**Loading.** From a path:"
 msgstr "**加载。** 从路径加载："
 
-#: ../../source/user_guide/meshes.rst:309 3cb92e1852e44acb846508d27fe1a87c
+#: ../../source/user_guide/meshes.rst:337 1f995ff355d0454285ffad4f4ecc132b
 msgid "Or from an in-memory meshio object:"
 msgstr "或从内存中的 meshio 对象加载："
 
-#: ../../source/user_guide/meshes.rst:317 fed770f2fdc34cd8adfe752168ad8e92
+#: ../../source/user_guide/meshes.rst:345 8e996a21e30b4fb3bf8ac05d82c6ff14
 msgid ""
 "The ``reorder=True`` flag is **required when ingesting Gmsh or VTK** data: "
 "those formats use a different node-ordering convention for quads, hexes, and"
 " high-order elements than TensorMesh's internal lexicographic layout. "
-"Skipping it produces silently-broken basis-function evaluations. The built-"
-"in generators already handle this, so you only need ``reorder=True`` on "
-"external files."
+"Skipping it produces a valid-looking mesh whose geometry map is wrong — "
+"every result downstream is silently wrong. For cells of order 2 and above "
+"the constructor now catches this "
+"(:meth:`~tensormesh.Mesh.check_node_ordering`: every edge node must sit "
+"nearest to its own edge) and raises ``ValueError`` telling you to pass "
+"``reorder=True``; *linear* quads and hexes carry no edge nodes, so a mis-"
+"ordered linear quad/hex mesh still goes undetected — pass the flag. The "
+"built-in generators already handle this, so you only need ``reorder=True`` "
+"on external files."
 msgstr ""
-"在 **导入 Gmsh 或 VTK 数据时必须** 使用 ``reorder=True`` "
-"标志：对于四边形、六面体和高阶单元，这些格式所采用的节点排序约定与 TensorMesh "
-"内部的字典序布局不同。跳过它会导致基函数求值悄然出错。内置生成器已经处理了这一点，因此你只需在外部文件上使用 ``reorder=True``\\ 。"
+"``reorder=True`` 标志在\\ **导入 Gmsh 或 VTK 数据时是必需的**\\ "
+"：这些格式对四边形、六面体和高阶单元使用的节点排序约定与 TensorMesh "
+"内部的字典序布局不同。跳过此标志会产生一个看起来有效但几何映射错误的网格——下游所有结果都会静默出错。对于 2 "
+"阶及以上的单元，构造函数现在会捕获此问题（\\ :meth:`~tensormesh.Mesh.check_node_ordering`\\ "
+"：每个边节点必须位于其自身边附近）并引发 ``ValueError``\\ ，提示你传入 ``reorder=True``\\ ；\\ *线性*\\ "
+"四边形和六面体没有边节点，因此排序错误的线性四边形/六面体网格仍然无法被检测到——请传入该标志。内置生成器已自动处理此问题，因此你只需在外部文件上使用 "
+"``reorder=True``\\ 。"
 
-#: ../../source/user_guide/meshes.rst:324 2ca7f29e378846d695aac7b4aefeed54
+#: ../../source/user_guide/meshes.rst:358 8d01b6295df740bb9152f2ad00735a86
 msgid ""
 "For a side-by-side visual of the two conventions — TensorMesh's internal "
 "numbering on top, Gmsh / VTK on the bottom, for triangles, quads, tets, and "
@@ -555,29 +600,31 @@ msgstr ""
 "如需并排查看这两种约定 —— 上方为 TensorMesh 的内部编号，下方为 Gmsh / VTK，涵盖 2–4 阶的三角形、四边形、四面体和六面体 "
 "—— 请参见 :ref:`node-ordering-gallery`\\ 。该画廊是验证手工构建的连接性数组使用的是哪种约定的最简便方法。"
 
-#: ../../source/user_guide/meshes.rst:330 a4891142d51b48a898e948e5a2e58606
+#: ../../source/user_guide/meshes.rst:364 a7f343a32edb42e9ab099801080a5e45
 msgid "**Saving.** Whatever format meshio writes:"
 msgstr "**保存。** 凡是 meshio 能写出的格式皆可："
 
-#: ../../source/user_guide/meshes.rst:337 ee1ba5cea64c465c85fce7c94bfd891a
+#: ../../source/user_guide/meshes.rst:371 415d7b122f9c437cb42a0df4af23a51e
 msgid ""
 "For ``.vtk`` and ``.vtu`` outputs, ``save`` automatically reorders back to "
-"VTK convention and pads 2D coordinates to 3D — no flag needed. The lower-"
-"level :meth:`~tensormesh.Mesh.to_meshio` returns the meshio object directly "
-"if you need custom write logic."
+"VTK convention and pads 2D coordinates to 3D — no flag needed. Such a file "
+"is therefore a regular VTK file: read it back with ``reorder=True`` like any"
+" other external mesh. The lower-level :meth:`~tensormesh.Mesh.to_meshio` "
+"returns the meshio object directly if you need custom write logic."
 msgstr ""
-"对于 ``.vtk`` 和 ``.vtu`` 输出，\\ ``save`` 会自动重排回 VTK 约定，并将二维坐标补齐为三维 —— "
-"无需任何标志。如果你需要自定义写入逻辑，更底层的 :meth:`~tensormesh.Mesh.to_meshio` 会直接返回 meshio 对象。"
+"对于 ``.vtk`` 和 ``.vtu`` 输出，\\ ``save`` 会自动重新排序回 VTK 约定，并将 2D 坐标填充为 "
+"3D——无需任何标志。因此该文件是一个标准的 VTK 文件：像读取任何其他外部网格一样，使用 ``reorder=True`` 读回。底层的 "
+":meth:`~tensormesh.Mesh.to_meshio` 直接返回 meshio 对象，以便你需要自定义写入逻辑时使用。"
 
-#: ../../source/user_guide/meshes.rst:344 536f35aae3c14ed29dd30b1c9c014d46
+#: ../../source/user_guide/meshes.rst:380 e55ad8883cbe496892c48ebc551574ea
 msgid "Inspecting and visualizing"
 msgstr "检查与可视化"
 
-#: ../../source/user_guide/meshes.rst:346 dff1b531405443198608a890cfdb25f1
+#: ../../source/user_guide/meshes.rst:382 ccab002d4cd04f9d8e2e211c5e0584a0
 msgid "A quick visual check of a 2D mesh and its solution is a one-liner:"
 msgstr "对二维网格及其解进行快速可视化检查只需一行代码："
 
-#: ../../source/user_guide/meshes.rst:352 0f54847d546042fd984a3d83a5c58a80
+#: ../../source/user_guide/meshes.rst:388 1227ffd0148c4c59b5ccb21f55bf737c
 #, python-brace-format
 msgid ""
 "Pass a dict of ``{label: 1D tensor}`` for static side-by-side panels; pass "
@@ -587,18 +634,18 @@ msgstr ""
 "传入 ``{label: 1D tensor}`` 字典可得到静态的并排面板；传入 ``{label: list_of_tensors}`` 则可渲染出"
 " MP4/GIF 动画（需要 ``pyvista``\\ ）。"
 
-#: ../../source/user_guide/meshes.rst:366 2cf8b2ee359f4d70865665600cfab2ae
+#: ../../source/user_guide/meshes.rst:402 f64613b684114173b8b8feaf22b91d7b
 msgid "Two trigonometric fields rendered side by side on a rectangle mesh"
 msgstr "在矩形网格上并排渲染的两个三角函数场"
 
-#: ../../source/user_guide/meshes.rst:371 172d32abe2f24f7792c54ff0bc31100b
+#: ../../source/user_guide/meshes.rst:407 46d8549f0ca042c9913098a66a4d8a4e
 #, python-brace-format
 msgid ""
 "``mesh.plot({...})`` with a multi-key dict renders one panel per field; each"
 " panel inherits a colourbar scaled to its own data range."
 msgstr "用一个多键字典调用 ``mesh.plot({...})`` 时，会为每个场渲染一个面板；每个面板都会继承一个按其自身数据范围缩放的色条。"
 
-#: ../../source/user_guide/meshes.rst:375 89bcaf8e527a440daae08d2fede699a8
+#: ../../source/user_guide/meshes.rst:411 08b489d0c5664073ba895f650286784e
 msgid ""
 "By default :meth:`~tensormesh.Mesh.plot` only colour-fills the elements. "
 "Pass ``show_mesh=True`` to overlay the mesh wireframe (and, at ``order ≥ "
@@ -608,12 +655,12 @@ msgstr ""
 "默认情况下，\\ :meth:`~tensormesh.Mesh.plot` 只对单元进行颜色填充。传入 ``show_mesh=True`` "
 "可在场之上叠加网格线框（在 ``order ≥ 2`` 时还会叠加插值节点）—— 这对于检查刚刚求解完的问题是否合理很有用："
 
-#: ../../source/user_guide/meshes.rst:384 b08e011335f04326b20415e47c04aa77
+#: ../../source/user_guide/meshes.rst:420 55223efa450543f7b4a218fe0be88032
 msgid ""
 "Scalar nodal field rendered on a triangular mesh with wireframe overlay"
 msgstr "在三角形网格上叠加线框渲染的标量节点场"
 
-#: ../../source/user_guide/meshes.rst:389 a8fcd3bdeb514b2c82c88dc865e40a43
+#: ../../source/user_guide/meshes.rst:425 14a7b201452445b88ef11aeb11b53283
 #, python-brace-format
 msgid ""
 "``mesh.plot({\"u\": u}, show_mesh=True)`` on a tri mesh. Without "
@@ -623,30 +670,30 @@ msgstr ""
 "在三角形网格上调用 ``mesh.plot({\"u\": u}, show_mesh=True)``\\ 。若不加 "
 "``show_mesh=True``\\ ，同样的调用将只显示平滑的颜色填充，而不绘制任何三角形边或插值节点。"
 
-#: ../../source/user_guide/meshes.rst:393 bfbff8066ec54fbc9e358e4269ef6ab5
+#: ../../source/user_guide/meshes.rst:429 f1105246b691484195c39c0594e32317
 msgid ""
 "For a deep dive on visualization, including 3D deformation plots and "
 "animations, see the :doc:`../example_gallery/index`."
 msgstr "如需深入了解可视化，包括三维变形图和动画，请参见 :doc:`../example_gallery/index`\\ 。"
 
-#: ../../source/user_guide/meshes.rst:398 9598bd9ea53f484ca2a532a8789adc4b
+#: ../../source/user_guide/meshes.rst:434 c3a2103f04b84c028eceb76b9ca60047
 msgid "What's next"
 msgstr "下一步"
 
-#: ../../source/user_guide/meshes.rst:400 c4a83334c71f4dd9b8544283335e9ec8
+#: ../../source/user_guide/meshes.rst:436 5ec60f84685c464ba132f866e1c0b3e9
 msgid ""
 ":doc:`elements_and_quadrature` — the reference shapes, basis evaluation, and"
 " the ordering convention behind ``reorder=True``."
 msgstr ""
 ":doc:`elements_and_quadrature` —— 参考形状、基函数求值，以及 ``reorder=True`` 背后的排序约定。"
 
-#: ../../source/user_guide/meshes.rst:402 38f35e8d83d445f49fae71e4eee34711
+#: ../../source/user_guide/meshes.rst:438 ad05b7b8d1334988a2e272af186bdafa
 msgid ""
 ":doc:`forms` — turn a mesh into a stiffness matrix or load vector via the "
 "assembler base classes."
 msgstr ":doc:`forms` —— 通过装配器基类将网格转换为刚度矩阵或载荷向量。"
 
-#: ../../source/user_guide/meshes.rst:404 fef0d4a27bdc41ea9e4ba28a1aca80bf
+#: ../../source/user_guide/meshes.rst:440 585098debb9b46aabd4e749e8d2ad764
 msgid ""
 ":doc:`../getting_started/quickstart` — a complete worked Poisson problem "
 "that uses everything on this page."

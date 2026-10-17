@@ -90,7 +90,7 @@ shape, type-string family).
 
 .. autoclass:: tensormesh.Pyramid
     :show-inheritance:
-    :no-members:
+    :members: get_basis_fns
 
 
 Type-string registry
@@ -145,10 +145,15 @@ every shape-function set:
 :meth:`~tensormesh.Element.get_basis_fns` solves a small Vandermonde
 system to obtain the Lagrange-interpolation coefficients on top of a
 chosen polynomial space (full ``poly_exp``, tensor-product ``tens_exp``,
-or the pyramid / prism ad-hoc spaces). To add a new element you
+or the prism's ad-hoc space). To add a new element you
 typically override :meth:`~tensormesh.Element.get_polynomial` to return
 the right polynomial space and let the base class produce the basis
 functions for you.
+
+The pyramid is the exception: no polynomial space is conforming on it,
+so :meth:`tensormesh.Pyramid.get_basis_fns` returns the rational basis
+:class:`~tensormesh.element.PyramidBasisFns`, which offers the same
+``map`` / ``grad`` interface.
 
 .. autoclass:: tensormesh.element.Polynomial
     :members:
@@ -158,6 +163,10 @@ functions for you.
     :members:
     :show-inheritance:
     :exclude-members: device, dtype, n_polys, n_terms, n_vars, shape
+
+.. autoclass:: tensormesh.element.PyramidBasisFns
+    :members: from_nodes, map, forward, grad
+    :show-inheritance:
 
 **Basis-node and quadrature factories.** The reference-element
 interpolation-node coordinates and quadrature rules live in three
