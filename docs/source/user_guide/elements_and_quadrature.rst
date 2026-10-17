@@ -224,8 +224,10 @@ the shape functions live in, as a
 :class:`~tensormesh.element.Polynomial`. The space depends on the
 shape: simplex elements use the full :math:`P_k` (terms with total
 degree :math:`\le k`); tensor-product elements use :math:`Q_k` (each
-coordinate exponent :math:`\le k`); pyramid and prism use their own
-ad-hoc spaces.
+coordinate exponent :math:`\le k`); the prism uses its own ad-hoc space.
+The pyramid skips this step: no polynomial space is conforming on it, so
+:meth:`tensormesh.Pyramid.get_basis_fns` builds a rational basis
+directly (:class:`~tensormesh.element.PyramidBasisFns`).
 
 .. code-block:: python
 

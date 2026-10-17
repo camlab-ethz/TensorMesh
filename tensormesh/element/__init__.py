@@ -14,4 +14,5 @@ from .element_type import element_type2dimension,\
                           element_types
 from .transformation import Transformation
 from .polynomial import Polynomial, Polynomials
+from .pyramid_basis import PyramidBasisFns
 
