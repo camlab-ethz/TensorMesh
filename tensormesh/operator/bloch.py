@@ -224,7 +224,7 @@ class BlochReducer(nn.Module):
         -------
         SparseMatrix or torch.Tensor
             Reduced operator of shape ``[n_reduced_dof, n_reduced_dof]``
-            (complex).
+            (complex). Reduce a load vector with :meth:`reduce_rhs`.
         """
         assert matrix.shape[0] == self.n_dof, \
             f"matrix shape {tuple(matrix.shape)} != [{self.n_dof}, {self.n_dof}]"
@@ -261,6 +261,61 @@ class BlochReducer(nn.Module):
         Ar.index_add_(0, flat, W.reshape(-1))
         return Ar.view(n, n)
 
+    def reduce_rhs(self, rhs: torch.Tensor, k) -> torch.Tensor:
+        """Return the reduced right-hand side ``T(k)^H b``.
+
+        The load-vector counterpart of :meth:`reduce`: every DOF adds
+        ``conj(exp(sign i k·R_i)) * b[i]`` to its master, so
+        ``reduce(A, k) u_r = reduce_rhs(b, k)`` is the reduction of
+        ``A u = b`` and :meth:`recover` returns ``u``.
+
+        Parameters
+        ----------
+        rhs : torch.Tensor, shape ``[n_dof, ...]``
+            Assembled load vector (real or complex); trailing dimensions are
+            carried along, e.g. several right-hand sides as columns.
+        k : array-like, shape ``[dim]``
+            Wavevector.
+
+        Returns
+        -------
+        torch.Tensor
+            Shape ``[n_reduced_dof, ...]`` (complex).
+        """
+        assert rhs.shape[0] == self.n_dof, \
+            f"rhs shape {tuple(rhs.shape)} != [{self.n_dof}, ...]"
+        phase = self._phase(k).to(rhs.device)
+        shape = [self.n_dof] + [1] * (rhs.dim() - 1)
+        weighted = torch.conj(phase).reshape(shape) * rhs.to(torch.complex128)
+        reduced = torch.zeros((self.n_reduced_dof, *rhs.shape[1:]),
+                              dtype=torch.complex128, device=rhs.device)
+        reduced.index_add_(0, self.master_dof.to(rhs.device), weighted)
+        return reduced
+
+    def reduce_mask(self, mask: torch.Tensor) -> torch.Tensor:
+        """Map a DOF mask onto the reduced DOFs.
+
+        A reduced DOF is selected when any of the DOFs it stands for is
+        selected. This is what a Dirichlet wall that reaches the periodic
+        boundary needs: pass the result to :class:`~tensormesh.Condenser`
+        together with :meth:`reduce` and :meth:`reduce_rhs`.
+
+        Parameters
+        ----------
+        mask : torch.Tensor, shape ``[n_dof]``
+            Boolean mask over the full DOFs.
+
+        Returns
+        -------
+        torch.Tensor
+            Boolean mask of shape ``[n_reduced_dof]``.
+        """
+        assert tuple(mask.shape) == (self.n_dof,), \
+            f"mask shape {tuple(mask.shape)} != [{self.n_dof}]"
+        reduced = torch.zeros(self.n_reduced_dof, dtype=torch.bool, device=mask.device)
+        reduced[self.master_dof.to(mask.device)[mask.bool()]] = True
+        return reduced
+
     def reduce_system(self, K: SparseMatrix, M: SparseMatrix, k):
         """Convenience: reduce a stiffness/mass pair, ``(K_r, M_r)``."""
         return self.reduce(K, k), self.reduce(M, k)
@@ -292,4 +347,4 @@ def _to_numpy(x):
     return np.asarray(x)
 
 
-BlochReducer.__autodoc__ = ["reduce", "reduce_system", "recover"]
+BlochReducer.__autodoc__ = ["reduce", "reduce_rhs", "reduce_mask", "reduce_system", "recover"]

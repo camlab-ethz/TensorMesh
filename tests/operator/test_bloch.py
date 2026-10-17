@@ -164,6 +164,66 @@ class TestVectorDOFs:
 
 
 # --------------------------------------------------------------------------- #
+class TestReduceRHS:
+    def test_matches_dense_transform(self):
+        pts = grid_points(5, 4)
+        g = torch.Generator().manual_seed(10)
+        for sign in (-1, +1):
+            bloch = BlochReducer(pts, [[1.0, 0.0], [0.0, 1.0]], sign=sign)
+            b = torch.randn(bloch.n_dof, generator=g, dtype=torch.float64).to(torch.complex128)
+            for k in ([0.4, -1.3], [0.0, 0.0]):
+                T = dense_T(bloch, k)
+                assert torch.allclose(bloch.reduce_rhs(b, k), T.conj().T @ b, atol=1e-12)
+
+    def test_vector_dofs_and_columns(self):
+        # node-major vector DOFs, and several right-hand sides as columns
+        pts = grid_points(4, 4)
+        bloch = BlochReducer(pts, [[1.0, 0.0], [0.0, 1.0]], dofs_per_node=2)
+        k = [0.7, 0.2]
+        B = torch.randn(bloch.n_dof, 3, generator=torch.Generator().manual_seed(11), dtype=torch.float64)
+        Br = bloch.reduce_rhs(B, k)
+        assert tuple(Br.shape) == (bloch.n_reduced_dof, 3)
+        assert torch.allclose(Br, dense_T(bloch, k).conj().T @ B.to(torch.complex128), atol=1e-12)
+
+    def test_reduced_solve(self):
+        # reduce(A) u_r = reduce_rhs(b) is the Galerkin system on span T(k)
+        pts = grid_points(5, 5)
+        bloch = BlochReducer(pts, [[1.0, 0.0], [0.0, 1.0]])
+        n = bloch.n_dof
+        A = random_sym_sparse(n, seed=12).to_dense() + n * torch.eye(n, dtype=torch.float64)
+        b = torch.randn(n, generator=torch.Generator().manual_seed(13), dtype=torch.float64)
+        k = [0.9, -0.6]
+        u = bloch.recover(torch.linalg.solve(bloch.reduce(A, k), bloch.reduce_rhs(b, k)), k)
+        T = dense_T(bloch, k)
+        Ac, bc = A.to(torch.complex128), b.to(torch.complex128)
+        assert torch.allclose(u, T @ torch.linalg.solve(T.conj().T @ Ac @ T, T.conj().T @ bc), atol=1e-10)
+
+
+# --------------------------------------------------------------------------- #
+class TestReduceMask:
+    def test_any_image_selects_master(self):
+        # periodic in x only: the bottom-right corner shares the bottom-left master
+        pts = grid_points(5, 4)
+        bloch = BlochReducer(pts, [[1.0, 0.0]])
+        bottom = torch.as_tensor(np.isclose(pts[:, 1], 0.0))
+        reduced = bloch.reduce_mask(bottom)
+        expected = torch.zeros(bloch.n_reduced_dof, dtype=torch.bool)
+        expected[bloch.master_dof[bottom]] = True
+        assert torch.equal(reduced, expected)
+        assert int(reduced.sum()) == 4
+
+    def test_vector_dofs(self):
+        # selecting only the x-component of the y = 0 nodes selects only x lanes
+        pts = grid_points(4, 4)
+        bloch = BlochReducer(pts, [[1.0, 0.0], [0.0, 1.0]], dofs_per_node=2)
+        mask = torch.zeros(bloch.n_dof, dtype=torch.bool)
+        mask[0::2] = torch.as_tensor(np.isclose(pts[:, 1], 0.0))
+        reduced = bloch.reduce_mask(mask)
+        assert not bool(reduced[1::2].any())
+        assert int(reduced.sum()) == 3
+
+
+# --------------------------------------------------------------------------- #
 class TestRecover:
     def test_recover_phase(self):
         pts = grid_points(5, 5)
