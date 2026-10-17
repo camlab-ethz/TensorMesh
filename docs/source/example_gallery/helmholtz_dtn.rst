@@ -6,6 +6,9 @@ full-space scattering and scattering by a horizontally periodic layer.  The
 same scalar formulation applies to electromagnetic TE/TM polarizations and to
 acoustic pressure waves.
 
+For absorbing layers and port boundaries instead of exact DtN maps, see
+:doc:`open_domain_wave`.
+
 We use the time convention :math:`e^{-i\omega t}` and write
 
 .. math::
@@ -525,9 +528,11 @@ at :math:`x_2=0`; matching at :math:`h` gives a two-by-two system for
 
 
 
-The periodic solve uses TensorMesh's public constraint operators.  The right
-hand side is reduced separately because TensorMesh 0.2.0 exposes
-``BlochReducer.reduce`` for matrices but not yet for vectors:
+The periodic solve uses TensorMesh's public constraint operators:
+:meth:`~tensormesh.BlochReducer.reduce` forms :math:`T^H A T`,
+:meth:`~tensormesh.BlochReducer.reduce_rhs` forms :math:`T^H b`, and
+:meth:`~tensormesh.BlochReducer.reduce_mask` maps the wall DOFs onto the
+reduced DOFs for the :class:`~tensormesh.Condenser`:
 
 .. code-block:: python
    :caption: examples/wave/helmholtz_dtn/periodic_dtn.py (constraint essence)
@@ -535,11 +540,10 @@ hand side is reduced separately because TensorMesh 0.2.0 exposes
    reducer = BlochReducer(mesh.points, [[period, 0.0]], sign=+1)
    wavevector = torch.tensor([alpha, 0.0], dtype=torch.float64)
    reduced_matrix = reducer.reduce(matrix, wavevector)       # T^H A T
-   reduced_rhs = reduce_rhs(reducer, rhs, wavevector)        # T^H b
+   reduced_rhs = reducer.reduce_rhs(rhs, wavevector)         # T^H b
 
    if case == "dirichlet":
-       master_mask = torch.zeros(reducer.n_reduced_dof, dtype=torch.bool)
-       master_mask[torch.unique(reducer.master_dof[bottom_mask])] = True
+       master_mask = reducer.reduce_mask(bottom_mask)
        zero_trace = torch.zeros(int(master_mask.sum()), dtype=torch.complex128)
        condenser = Condenser(master_mask, dirichlet_value=zero_trace)
        inner_matrix, inner_rhs = condenser(reduced_matrix, reduced_rhs)

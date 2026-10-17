@@ -37,7 +37,7 @@ NUM_MODES = 3
 MESH_SIZE = 0.06
 PADDING = 0.70
 CASES = ("slab", "dirichlet", "neumann")
-OUTPUT_DIR = Path(__file__).parents[3] / "docs/source/_static/wave/helmholtz_dtn"
+OUTPUT_DIR = Path(__file__).parent / "output"  # the gallery figures are copies
 
 REAL = torch.float64
 COMPLEX = torch.complex128
@@ -315,16 +315,6 @@ def exact_solution(points, case, omega, alpha, height, bottom, top, amplitude,
     )
 
 
-def reduce_rhs(reducer, rhs, wavevector):
-    """Form ``T^H rhs`` with the conjugated Bloch phase."""
-
-    # master_dof with the conjugate phase implements the test-side T^H.
-    phase = torch.exp(1j * (reducer.node_R @ wavevector).to(COMPLEX))
-    reduced = torch.zeros(reducer.n_reduced_dof, dtype=COMPLEX)
-    reduced.index_add_(0, reducer.master_dof, phase.conj() * rhs)
-    return reduced
-
-
 def scattering_coefficients(
     top_data, bottom_data, solution, period, incident, amplitude, exterior_a
 ):
@@ -456,12 +446,11 @@ def solve_periodic(
     # test/trial phases second, then condense wall master DOFs when required.
     reducer = BlochReducer(mesh.points.cpu().numpy(), [[period, 0.0]], sign=+1)
     wavevector = torch.tensor([alpha, 0.0], dtype=REAL)
-    reduced_matrix = reducer.reduce(matrix, wavevector)
-    reduced_rhs = reduce_rhs(reducer, rhs, wavevector)
+    reduced_matrix = reducer.reduce(matrix, wavevector)     # T^H A T
+    reduced_rhs = reducer.reduce_rhs(rhs, wavevector)       # T^H b
     if case == "dirichlet":
         # Map the full bottom trace, including both corners, to unique masters.
-        master_mask = torch.zeros(reducer.n_reduced_dof, dtype=torch.bool)
-        master_mask[torch.unique(reducer.master_dof[bottom_mask])] = True
+        master_mask = reducer.reduce_mask(bottom_mask)
         condenser = Condenser(
             master_mask,
             dirichlet_value=torch.zeros(int(master_mask.sum()), dtype=COMPLEX),

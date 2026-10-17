@@ -269,6 +269,14 @@ msgid ":doc:`modal_analysis` — eigenmodes instead of driven responses."
 msgstr ":doc:`modal_analysis` —— 本征模态而非受迫响应。"
 
 #: ../../source/example_gallery/open_domain_wave.rst:157
+msgid ""
+":doc:`helmholtz_dtn` — exact nonlocal Dirichlet-to-Neumann boundaries "
+"instead of a PML, checked against analytical scattering solutions."
+msgstr ""
+":doc:`helmholtz_dtn` —— 用精确的非局部 Dirichlet-to-Neumann 边界取代 "
+"PML，并与解析散射解对照验证。"
+
+#: ../../source/example_gallery/open_domain_wave.rst:157
 #: 0338e9184a9042d29343532083572f23
 msgid ""
 ":class:`~tensormesh.FacetBilinearAssembler` in the :doc:`API reference "
