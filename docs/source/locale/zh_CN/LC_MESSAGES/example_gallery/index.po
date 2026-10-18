@@ -115,9 +115,9 @@ msgstr "固体力学"
 
 #: ../../source/example_gallery/index.rst:73 0de9acb3afd044dfb3b988e6cb9c0278
 msgid ""
-"Linear elasticity, hyperelasticity, contact, and plasticity — a progressive "
-"solver ladder."
-msgstr "线弹性、超弹性、接触与塑性——一条循序渐进的求解器进阶之路。"
+"Linear elasticity, hyperelasticity, contact, plasticity, and phase-field "
+"fracture — a progressive solver ladder."
+msgstr "线弹性、超弹性、接触、塑性与相场断裂——一条循序渐进的求解器进阶之路。"
 
 #: ../../source/example_gallery/index.rst:75 90a4b8c27cdb4dae8141565f4a62df41
 msgid "Fluid Mechanics"
