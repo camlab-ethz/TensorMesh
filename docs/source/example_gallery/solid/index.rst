@@ -1,7 +1,7 @@
 Solid Mechanics
 ===============
 
-Seven worked solid-mechanics examples in ``examples/solid/``, built
+Eight worked solid-mechanics examples in ``examples/solid/``, built
 as a progressive ladder — each rung adds exactly one new concept on
 top of the previous one:
 
@@ -14,6 +14,9 @@ top of the previous one:
 #. **Plasticity (J2)** — adds path-dependence: per-quadrature
    history variables and a variational constitutive update, in 2D
    and 3D.
+#. **Phase-Field Fracture** — adds an inequality constraint: damage
+   cannot heal, so every load step is a bound-constrained minimization,
+   solved field by field with a bound-constrained Newton method.
 #. **Geomechanics (Drucker-Prager)** — adds pressure-dependent
    yield, reusing the J2 history-variable pattern through the public
    :class:`~tensormesh.assemble.DruckerPragerPlasticity` assembler for
@@ -25,7 +28,7 @@ top of the previous one:
    boundary-value setup with pressure-dependent plasticity, load
    stepping, and committed per-quadrature history variables.
 
-Together they cover the two solver patterns TensorMesh uses for
+Together they cover the three solver patterns TensorMesh uses for
 solid problems:
 
 * **Direct linear solve** for small-strain linear elasticity
@@ -34,6 +37,9 @@ solid problems:
   potential energy is well-defined — hyperelasticity, contact, and
   plasticity (``hyperelastic_beam``, ``hertzian_contact``,
   ``plasticity_strip``, ``drucker_prager_footing``).
+* **Bound-constrained Newton** (``torch_sla.vi_solve``) when unknowns
+  carry inequality constraints, here damage irreversibility
+  (``phase_field_fracture``).
 
 The order below mirrors solver complexity.
 
@@ -67,6 +73,13 @@ The order below mirrors solver complexity.
       :img-top: /_static/solid_mechanics/plasticity_strip.gif
 
       Plane-strain J2 plasticity with isotropic hardening, load / unload cycle, plus a 3D cube.
+
+   .. grid-item-card:: Phase-Field Fracture
+      :link: phase_field_fracture
+      :link-type: doc
+      :img-top: /_static/solid_mechanics/phase_field_fracture_crack.png
+
+      A crack through a notched plate: AT1/AT2 damage, irreversibility as bounds, alternate minimization.
 
 
 .. rubric:: Geomechanics (Drucker-Prager)
@@ -112,6 +125,7 @@ linear-elastic boundary-value problem, to the full nonlinear footing.
    hyperelastic_beam
    hertzian_contact
    plasticity_strip
+   phase_field_fracture
    drucker_prager_triaxial
    elastic_footing
    drucker_prager_footing

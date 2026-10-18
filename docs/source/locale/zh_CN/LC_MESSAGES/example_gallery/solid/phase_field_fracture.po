@@ -1,0 +1,585 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, TensorMesh Contributors
+# This file is distributed under the same license as the TensorMesh package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: TensorMesh 0.2.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-18 21:52+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:2
+#: a481444aec5745c6a40775ee57a3503b
+msgid "Phase-Field Fracture"
+msgstr "相场断裂"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:4
+#: f20e7c0f0d1d4a5aa660641a221ce37c
+msgid ""
+"Brittle fracture as energy minimization. A damage field :math:`\\alpha \\in "
+"[0, 1]` smears the crack over a length :math:`\\ell`. Where the crack "
+"starts, the path it takes and when it runs then all follow from minimizing "
+"one energy [Francfort1998]_ [Bourdin2000]_. The script "
+"``examples/solid/phase_field_fracture/phase_field_fracture.py`` runs the "
+"single-edge-notched tension (SENT) benchmark [Miehe2010]_ in plane strain."
+msgstr ""
+"把脆性断裂看作能量最小化问题。损伤场 :math:`\\alpha \\in [0, 1]` 把裂纹弥散在长度 :math:`\\ell` "
+"的范围内，于是裂纹在哪里萌生、沿哪条路径扩展、何时失稳扩展，都由同一个能量的最小化决定 [Francfort1998]_ "
+"[Bourdin2000]_。脚本 "
+"``examples/solid/phase_field_fracture/phase_field_fracture.py`` "
+"在平面应变下运行单边缺口拉伸（SENT）基准算例 [Miehe2010]_。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:11
+#: 7597c1caecaf4d0e9916ac3d1abec798
+#, python-brace-format
+msgid ""
+"The new ingredient over :doc:`plasticity_strip` is an **inequality "
+"constraint**: damage cannot heal, :math:`\\alpha_n \\ge \\alpha_{n-1}`. "
+"Every load step is therefore a bound-constrained minimization. The script "
+"solves it by alternate minimization, and both subproblems use ``vi_solve`` "
+"from `torch-sla <https://www.torchsla.com/>`_, a Newton solve with bounds."
+msgstr ""
+"与 :doc:`plasticity_strip` 相比，新增的要素是 **不等式约束**\\ ：损伤不可愈合，\\ :math:`\\alpha_n "
+"\\ge \\alpha_{n-1}`\\ 。因此每个载荷步都是一个带界约束的最小化问题。脚本用交替最小化求解它，两个子问题都使用 `torch-sla"
+" <https://www.torchsla.com/>`_ 中的 ``vi_solve``——一种带上下界的牛顿求解。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:19
+#: 23b38612775441afbab084d34a3c1051
+msgid "Model"
+msgstr "模型"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:21
+#: 3788be0860864cafa25e69db2a515027
+#, python-brace-format
+msgid ""
+"The energy of a displacement :math:`\\mathbf{u}` and a damage field "
+":math:`\\alpha` is"
+msgstr "位移 :math:`\\mathbf{u}` 与损伤场 :math:`\\alpha` 的能量为"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:24
+#: 1404ce4d32894ee48052af0cceffe272
+#, python-brace-format
+msgid ""
+"\\mathcal{E}(\\mathbf{u}, \\alpha)\n"
+"= \\int_\\Omega \\Bigl[ g(\\alpha)\\, \\psi_D(\\boldsymbol{\\varepsilon})\n"
+"  + \\psi_R(\\boldsymbol{\\varepsilon}) \\Bigr] \\mathrm{d}\\Omega\n"
+"+ \\frac{G_c}{c_w} \\int_\\Omega \\Bigl[ \\frac{w(\\alpha)}{\\ell}\n"
+"  + \\ell\\, |\\nabla\\alpha|^2 \\Bigr] \\mathrm{d}\\Omega,\n"
+"\\qquad g(\\alpha) = (1 - \\alpha)^2 + g_0,"
+msgstr ""
+"\\mathcal{E}(\\mathbf{u}, \\alpha)\n"
+"= \\int_\\Omega \\Bigl[ g(\\alpha)\\, \\psi_D(\\boldsymbol{\\varepsilon})\n"
+"  + \\psi_R(\\boldsymbol{\\varepsilon}) \\Bigr] \\mathrm{d}\\Omega\n"
+"+ \\frac{G_c}{c_w} \\int_\\Omega \\Bigl[ \\frac{w(\\alpha)}{\\ell}\n"
+"  + \\ell\\, |\\nabla\\alpha|^2 \\Bigr] \\mathrm{d}\\Omega,\n"
+"\\qquad g(\\alpha) = (1 - \\alpha)^2 + g_0,"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:33
+#: bf7c174d4fd04535ab23227da6c6e457
+#, python-brace-format
+msgid ""
+"with :math:`\\boldsymbol{\\varepsilon} = \\tfrac12(\\nabla\\mathbf{u} + "
+"\\nabla\\mathbf{u}^T)` and a small residual stiffness :math:`g_0`."
+msgstr ""
+"其中 :math:`\\boldsymbol{\\varepsilon} = \\tfrac12(\\nabla\\mathbf{u} + "
+"\\nabla\\mathbf{u}^T)`\\ ，\\ :math:`g_0` 是一个小的残余刚度。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:36
+#: 832c557c170f4f5a9db4d7cdeaa637d6
+msgid ""
+"**Crack model.** AT1 takes :math:`w(\\alpha) = \\alpha` and :math:`c_w = "
+"8/3`. It has an elastic phase: no damage forms below a critical stress "
+"[Pham2011]_. AT2 takes :math:`w(\\alpha) = \\alpha^2` and :math:`c_w = 2`, "
+"and damages at any load. Choose with ``--model``."
+msgstr ""
+"**裂纹模型。** AT1 取 :math:`w(\\alpha) = \\alpha`\\ 、\\ :math:`c_w = 8/3`\\ "
+"，它有一个弹性阶段：应力低于临界值时不产生损伤 [Pham2011]_。AT2 取 :math:`w(\\alpha) = \\alpha^2`\\ "
+"、\\ :math:`c_w = 2`\\ ，在任意载荷下都会产生损伤。用 ``--model`` 选择。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:40
+#: 32c4ae54d41e44d381ba39dc22a600c6
+msgid ""
+"**Energy split** [Amor2009]_. Only the tensile volumetric part and the "
+"deviatoric part are degraded, so compression does not crack:"
+msgstr "**能量分解** [Amor2009]_。只有受拉的体积部分和偏量部分会被退化，因此压缩不会产生裂纹："
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:43
+#: b46be10246a24d118b5db9caafc1a899
+#, python-brace-format
+msgid ""
+"\\psi_D = \\tfrac{\\kappa}{2} \\langle \\operatorname{tr}\\boldsymbol{\\varepsilon} \\rangle_+^2\n"
+"        + \\mu\\, |\\operatorname{dev}\\boldsymbol{\\varepsilon}|^2,\n"
+"\\qquad\n"
+"\\psi_R = \\tfrac{\\kappa}{2} \\langle \\operatorname{tr}\\boldsymbol{\\varepsilon} \\rangle_-^2."
+msgstr ""
+"\\psi_D = \\tfrac{\\kappa}{2} \\langle \\operatorname{tr}\\boldsymbol{\\varepsilon} \\rangle_+^2\n"
+"        + \\mu\\, |\\operatorname{dev}\\boldsymbol{\\varepsilon}|^2,\n"
+"\\qquad\n"
+"\\psi_R = \\tfrac{\\kappa}{2} \\langle \\operatorname{tr}\\boldsymbol{\\varepsilon} \\rangle_-^2."
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:50
+#: e5e627800f314c16ae77405eaa27de05
+#, python-brace-format
+msgid ""
+"The script writes the two energy densities once, in ``PhaseFieldModel``. "
+":meth:`~tensormesh.ElementAssembler.energy` integrates them, and autograd "
+"turns the integrals into the residuals "
+":math:`\\partial\\mathcal{E}/\\partial\\mathbf{u}` and "
+":math:`\\partial\\mathcal{E}/\\partial\\alpha`."
+msgstr ""
+"脚本只在 ``PhaseFieldModel`` 中写一次这两个能量密度。\\ "
+":meth:`~tensormesh.ElementAssembler.energy` 对它们积分，autograd 再把积分转换为残差 "
+":math:`\\partial\\mathcal{E}/\\partial\\mathbf{u}` 和 "
+":math:`\\partial\\mathcal{E}/\\partial\\alpha`\\ 。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:58
+#: 5e5aa6b2a3b940a48b0c0664969a5f63
+msgid "Irreversibility as bounds"
+msgstr "以界约束表达不可逆性"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:60
+#: a7f35e0c2a16411483070c4dbca257fa
+#, python-brace-format
+msgid ""
+"At load step :math:`n` the damage is sought in :math:`[\\alpha_{n-1}, 1]`. A"
+" minimizer under these bounds satisfies, node by node,"
+msgstr "在载荷步 :math:`n`\\ ，损伤在 :math:`[\\alpha_{n-1}, 1]` 中求解。在这些界约束下的极小点逐节点满足"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:63
+#: 70a4a8d3538345588463ee323f441378
+#, python-brace-format
+msgid ""
+"\\alpha_i = \\alpha_{n-1,i} \\;\\Rightarrow\\; \\partial_i \\mathcal{E} \\ge 0,\n"
+"\\qquad\n"
+"\\alpha_{n-1,i} < \\alpha_i < 1 \\;\\Rightarrow\\; \\partial_i \\mathcal{E} = 0,\n"
+"\\qquad\n"
+"\\alpha_i = 1 \\;\\Rightarrow\\; \\partial_i \\mathcal{E} \\le 0."
+msgstr ""
+"\\alpha_i = \\alpha_{n-1,i} \\;\\Rightarrow\\; \\partial_i \\mathcal{E} \\ge 0,\n"
+"\\qquad\n"
+"\\alpha_{n-1,i} < \\alpha_i < 1 \\;\\Rightarrow\\; \\partial_i \\mathcal{E} = 0,\n"
+"\\qquad\n"
+"\\alpha_i = 1 \\;\\Rightarrow\\; \\partial_i \\mathcal{E} \\le 0."
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:71
+#: 63ee0bb2178b420dabfdeb0402bdf7e0
+msgid ""
+"Either the residual vanishes, or the node rests on a bound that the residual"
+" pushes against. This is a variational inequality, and it is exactly what "
+"``torch_sla.vi_solve(residual, x0, lower=..., upper=..., jacobian_fn=...)`` "
+"solves. The method is reduced-space active-set Newton, the algorithm of "
+"PETSc's ``SNESVINEWTONRSLS`` [Benson2006]_. Each Newton step solves for the "
+"nodes off their bounds, then updates which nodes rest on a bound."
+msgstr ""
+"要么残差为零，要么该节点停在一个界上，且残差把它推向界外。这是一个变分不等式，正是 ``torch_sla.vi_solve(residual, x0,"
+" lower=..., upper=..., jacobian_fn=...)`` 所求解的问题。所用方法是降维空间的有效集牛顿法，即 PETSc 的 "
+"``SNESVINEWTONRSLS`` 所用的算法 [Benson2006]_。每个牛顿步先对不在界上的节点求解，再更新哪些节点停在界上。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:78
+#: 1824bdfe171c4fe9a326f304d4369d5e
+msgid ""
+"Prescribed values are bounds as well: ``lower == upper`` fixes a component. "
+"The displacement Dirichlet conditions are imposed this way, so the "
+"displacement solve needs no :class:`~tensormesh.Condenser`. A pre-crack can "
+"be prescribed the same way, as :math:`\\alpha = 1` held on a line of nodes "
+"(the ``alpha_fixed`` argument). The benchmark below uses a slit in the mesh "
+"instead, so the notch faces are free from the start."
+msgstr ""
+"给定值同样是界约束：\\ ``lower == upper`` 即固定该分量。位移的狄利克雷边界条件就是这样施加的，因此位移求解不需要 "
+":class:`~tensormesh.Condenser`\\ 。预制裂纹也可以用同样的方式给定，即在一条节点线上保持 :math:`\\alpha "
+"= 1`\\ （\\ ``alpha_fixed`` 参数）。下面的基准算例改为在网格中开一条狭缝，使缺口面从一开始就是自由的。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:87
+#: c9e8a2f163ef42b2acc570165237d7e7
+msgid "Alternate minimization"
+msgstr "交替最小化"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:89
+#: d6741796e8034d8580c949be50c10440
+msgid "Each load step alternates between the two fields until they agree:"
+msgstr "每个载荷步在两个场之间交替求解，直到二者相容："
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:91
+#: 24bc8f78dedc45f1bb764de11d371b55
+#, python-brace-format
+msgid ""
+"**Displacement**, with :math:`\\alpha` fixed. :math:`\\mathcal{E}` is convex"
+" in :math:`\\mathbf{u}` but only piecewise quadratic, since the split "
+"switches with the sign of "
+":math:`\\operatorname{tr}\\boldsymbol{\\varepsilon}`. Newton with a line "
+"search takes a few steps."
+msgstr ""
+"**位移**\\ ，固定 :math:`\\alpha`\\ 。\\ :math:`\\mathcal{E}` 关于 "
+":math:`\\mathbf{u}` 是凸的，但只是分片二次的，因为能量分解随 "
+":math:`\\operatorname{tr}\\boldsymbol{\\varepsilon}` 的符号切换。带线搜索的牛顿法只需几步。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:95
+#: f17d298ae98a4b81903039982cc06b93
+#, python-brace-format
+msgid ""
+"**Damage**, with :math:`\\mathbf{u}` fixed. For AT1 and AT2, "
+":math:`\\mathcal{E}` is quadratic in :math:`\\alpha`, so this is a bound-"
+"constrained quadratic program. Its Hessian does not depend on "
+":math:`\\alpha` and is assembled once."
+msgstr ""
+"**损伤**\\ ，固定 :math:`\\mathbf{u}`\\ 。对 AT1 和 AT2，\\ :math:`\\mathcal{E}` 关于 "
+":math:`\\alpha` 是二次的，因此这是一个带界约束的二次规划。它的 Hessian 不依赖于 :math:`\\alpha`\\ "
+"，只需装配一次。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:99
+#: 86cf6c6a22434fe9a7d8296fb6a469a4
+#, python-brace-format
+msgid ""
+"**Stop** when the displacement residual on the free degrees of freedom, "
+"evaluated with the new damage, is below :math:`10^{-4}` of the reaction "
+"forces."
+msgstr "**停止**\\ ：用新的损伤计算出的、未约束自由度上的位移残差小于反力的 :math:`10^{-4}` 倍时停止。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:107
+#: 4d7978f32e9a4284852020b969e42156
+msgid ""
+"The two Jacobians are bilinear forms. As in every TensorMesh form, "
+"``forward`` describes one quadrature point and one pair of basis functions. "
+"The point data ``disp`` and ``alpha`` arrive as ``graddisp`` and ``alpha``:"
+msgstr ""
+"两个雅可比矩阵都是双线性形式。与 TensorMesh 的所有形式一样，\\ ``forward`` 描述一个求积点和一对基函数。点数据 "
+"``disp`` 和 ``alpha`` 以 ``graddisp`` 和 ``alpha`` 的形式传入："
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:121
+#: acaeb3969e7242308b5ac80befbd3337
+msgid "Single-edge-notched tension"
+msgstr "单边缺口拉伸"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:123
+#: 2891ee5bae3c4658bfed144f6f25d845
+msgid ""
+"**Geometry**: the unit square :math:`[0, 1]^2` mm, with a slit along "
+":math:`y = 0.5` from the left edge to the centre. The elements above the "
+"slit have their own copies of its nodes, so its faces separate freely."
+msgstr ""
+"**几何**\\ ：单位正方形 :math:`[0, 1]^2` mm，沿 :math:`y = 0.5` "
+"从左边缘到中心开有一条狭缝。狭缝上方的单元拥有其节点的独立副本，因此两侧缝面可以自由分开。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:126
+#: ab3f2332eaf6471cb4a9539c3ac9a41d
+#, python-brace-format
+msgid ""
+"**Material**: :math:`E = 210` kN/mm², :math:`\\nu = 0.3`, :math:`G_c = 2.7 "
+"\\times 10^{-3}` kN/mm, :math:`\\ell = 0.015` mm, AT1, :math:`g_0 = "
+"10^{-6}`."
+msgstr ""
+"**材料**\\ ：\\ :math:`E = 210` kN/mm²，\\ :math:`\\nu = 0.3`\\ ，\\ :math:`G_c ="
+" 2.7 \\times 10^{-3}` kN/mm，\\ :math:`\\ell = 0.015` mm，AT1，\\ :math:`g_0 = "
+"10^{-6}`\\ 。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:129
+#: d9569cf230d54b57b9c8d3d48b5e1e0e
+#, python-brace-format
+msgid ""
+"**Loading**: bottom clamped; top :math:`u_x = 0`, :math:`u_y = \\delta`, in "
+"increments of :math:`10^{-4}` mm."
+msgstr ""
+"**加载**\\ ：底边固支；顶边 :math:`u_x = 0`\\ 、\\ :math:`u_y = \\delta`\\ ，增量为 "
+":math:`10^{-4}` mm。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:131
+#: 6c77cc27612d437a8eb74c6b5dcca74d
+msgid ""
+"**Mesh**: union-jack triangles, built with NumPy. The diagonals alternate "
+"like a checkerboard, so the mesh is mirror-symmetric about the crack line "
+"and favours no crack direction. :math:`h = \\ell / 2` in a band around the "
+"crack path, coarser above and below (about 6,400 nodes)."
+msgstr ""
+"**网格**\\ ：用 NumPy 生成的对角线交错（union-"
+"jack）三角形网格。相邻单元的对角线像棋盘一样交替，因此网格关于裂纹线镜像对称，不偏向任何裂纹方向。在裂纹路径附近的条带内 :math:`h = "
+"\\ell / 2`\\ ，其上下更粗（约 6,400 个节点）。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:136
+#: 572ae5f434e9402f94d45706e6721b51
+msgid ""
+"Damage at the slit tip at peak load, the broken specimen, and the load-"
+"displacement curve"
+msgstr "峰值载荷时狭缝尖端的损伤、断裂后的试样以及载荷-位移曲线"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:140
+#: 8f2199ff39b946d5acd5f5e1d2dc18ff
+msgid ""
+"Output of ``phase_field_fracture.py``. Left: the damage around the slit tip "
+"(white line) at peak load. Middle: the broken specimen, with displacements "
+"magnified. Right: the reaction force on the top edge."
+msgstr ""
+"``phase_field_fracture.py`` "
+"的输出。左：峰值载荷时狭缝尖端（白线）附近的损伤。中：断裂后的试样，位移经过放大。右：顶边上的反力。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:144
+#: 7cd794c140a7449d9b3f4271bcc5cc44
+#, python-brace-format
+msgid ""
+"The response is linear elastic until :math:`\\delta \\approx 3.9 \\times "
+"10^{-3}` mm (:math:`F \\approx 0.55` kN), when damage first appears at the "
+"slit tip: AT1 has an elastic phase. A process zone then grows at the tip "
+"while the load keeps rising, to a peak of 0.87 kN at :math:`\\delta = 6.2 "
+"\\times 10^{-3}` mm. In the next load step the crack runs straight through "
+"the ligament and the reaction drops to zero. Under displacement control this"
+" propagation is unstable, so it happens within a single step."
+msgstr ""
+"在 :math:`\\delta \\approx 3.9 \\times 10^{-3}` mm（\\ :math:`F \\approx 0.55`"
+" kN）之前，响应是线弹性的，此时狭缝尖端才首次出现损伤：AT1 有弹性阶段。随后尖端的过程区不断长大，而载荷继续上升，在 :math:`\\delta"
+" = 6.2 \\times 10^{-3}` mm 时达到 0.87 kN "
+"的峰值。在下一个载荷步中，裂纹笔直地贯穿韧带，反力降为零。在位移控制下这种扩展是不稳定的，因此在单个载荷步内完成。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:152
+#: 1c09409158b74e16b114aa1ce96ae900
+#, python-brace-format
+msgid ""
+"Elastic steps take one or two staggered iterations, and steps with a growing"
+" process zone up to about thirty. The step in which the crack runs takes "
+"138, out of about 320 for the whole run. With ``--model at2`` damage grows "
+"from the first step and the response softens before the peak (0.73 kN at "
+":math:`\\delta = 5.9 \\times 10^{-3}` mm), but the crack again runs through "
+"in one step."
+msgstr ""
+"弹性阶段每步只需一到两次交错迭代，过程区增长的步最多约三十次。裂纹扩展的那一步需要 138 次，整个计算共约 320 次。使用 ``--model "
+"at2`` 时，损伤从第一步就开始增长，响应在峰值之前就已软化（\\ :math:`\\delta = 5.9 \\times 10^{-3}` mm "
+"时为 0.73 kN），但裂纹同样在一个载荷步内贯穿。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:161
+#: 8df328877287443c8ea142aae96a377a
+msgid "Verification"
+msgstr "验证"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:163
+#: 86a474907b15457a9111393ff3ccc8a5
+msgid "``tests/assemble/test_phase_field_fracture_example.py`` checks:"
+msgstr "``tests/assemble/test_phase_field_fracture_example.py`` 检查以下内容："
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:165
+#: bf2238b8f71b43fc924d09a210e3212a
+msgid ""
+"**Hessians**: the assembled Hessians against central differences of the "
+"autograd residuals."
+msgstr "**Hessian**\\ ：将装配得到的 Hessian 与 autograd 残差的中心差分进行比较。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:167
+#: 4fcc22e67c7640bea35aee54a4d297ae
+#, python-brace-format
+msgid ""
+"**Homogeneous solution**: a strip in uniaxial tension with AT1 stays "
+"undamaged below the critical strain :math:`\\varepsilon_c = \\sqrt{3 G_c (1 "
+"- \\nu^2) / (8 E \\ell)}`. Above it, the damage is :math:`\\alpha = 1 - "
+"(\\varepsilon_c / \\varepsilon)^2`, and the reaction force is "
+":math:`g(\\alpha)\\, E \\varepsilon / (1 - \\nu^2)` times the width."
+msgstr ""
+"**均匀解**\\ ：AT1 下单轴拉伸的条带在临界应变 :math:`\\varepsilon_c = \\sqrt{3 G_c (1 - "
+"\\nu^2) / (8 E \\ell)}` 以下保持无损伤。超过临界应变后，损伤为 :math:`\\alpha = 1 - "
+"(\\varepsilon_c / \\varepsilon)^2`\\ ，反力为 :math:`g(\\alpha)\\, E "
+"\\varepsilon / (1 - \\nu^2)` 乘以宽度。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:173
+#: 1a78ffceb1e84e86ab11c68fa569e0b8
+msgid ""
+"**Irreversibility**: damage never decreases, including after an unloading "
+"step."
+msgstr "**不可逆性**\\ ：损伤从不减小，卸载步之后也是如此。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:175
+#: 7fa3ecfd1f204cc18b9f410751d30773
+msgid ""
+"**Prescribed damage**: nodes held at :math:`\\alpha = 1` through "
+"``alpha_fixed`` stay there exactly."
+msgstr "**给定损伤**\\ ：通过 ``alpha_fixed`` 保持在 :math:`\\alpha = 1` 的节点严格保持该值。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:177
+#: 3e944b423f0c459ca917ef325d29d1f7
+msgid ""
+"**Coarse SENT run**: the crack starts at the slit tip and runs straight "
+"along :math:`y = 0.5` to the right edge. It dissipates :math:`G_c` times its"
+" length, up to the effective-toughness factor of the mesh (see below)."
+msgstr ""
+"**粗网格 SENT 算例**\\ ：裂纹从狭缝尖端出发，沿 :math:`y = 0.5` 笔直扩展到右边缘。它耗散的能量为 :math:`G_c` "
+"乘以裂纹长度，相差一个与网格有关的有效韧性系数（见下文）。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:183
+#: c3fd8e113d35442396b571e6a6c26314
+msgid "Running it"
+msgstr "运行它"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:192
+#: 2a49efdd90674116b890210ef413782a
+msgid ""
+"The default run takes about a minute on one CPU node (AT2: about one and a "
+"half), and the coarse one a few seconds. ``--device cuda`` assembles on the "
+"GPU. The Newton systems then use cuDSS if torch-sla has it, and SciPy on the"
+" host otherwise."
+msgstr ""
+"默认算例在一个 CPU 节点上约需一分钟（AT2 约一分半），粗网格算例只需几秒。\\ ``--device cuda`` 在 GPU "
+"上装配，此时牛顿方程组在 torch-sla 支持 cuDSS 时用 cuDSS 求解，否则在主机上用 SciPy 求解。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:199
+#: 4beb09bfc3974bbdb3bf7e4a1d2d7b55
+msgid "Notes"
+msgstr "说明"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:201
+#: 9e9529ec73084937a2ada352dc8e6633
+msgid ""
+"**Resolution.** :math:`h` must resolve :math:`\\ell` (here :math:`h = "
+"\\ell/2`). The dissipated energy then exceeds :math:`G_c` times the crack "
+"length by a mesh-dependent factor, because a fully broken band is at least "
+"one element wide. Here the 0.5 mm crack dissipates :math:`0.61\\, G_c`, a "
+"factor of 1.22."
+msgstr ""
+"**分辨率。** :math:`h` 必须能分辨 :math:`\\ell`\\ （这里 :math:`h = \\ell/2`\\ ）。此时耗散能会比"
+" :math:`G_c` 乘以裂纹长度多出一个与网格有关的系数，因为完全断裂的带至少有一个单元宽。这里 0.5 mm 的裂纹耗散 "
+":math:`0.61\\, G_c`\\ ，系数为 1.22。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:206
+#: 99b1fc44d1e84b82b4339f4f9e16de12
+#, python-brace-format
+msgid ""
+"**The length scale is a material parameter.** With AT1, :math:`\\ell` also "
+"sets the strength, :math:`\\sigma_c = \\sqrt{3 G_c E' / (8 \\ell)}` with "
+":math:`E' = E / (1 - \\nu^2)` in plane strain [Tanne2018]_. Changing "
+":math:`\\ell` changes when a crack nucleates, not only how smooth it is."
+msgstr ""
+"**长度尺度是材料参数。** 对 AT1，\\ :math:`\\ell` 还决定了强度 :math:`\\sigma_c = \\sqrt{3 G_c"
+" E' / (8 \\ell)}`\\ ，平面应变下 :math:`E' = E / (1 - \\nu^2)` [Tanne2018]_。改变 "
+":math:`\\ell` 不仅改变裂纹的光滑程度，也改变裂纹何时萌生。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:210
+#: e9c9952ef6884267b54e881eff81e3c6
+#, python-format
+msgid ""
+"**Solver.** Alternate minimization is robust but slow while a crack runs. "
+"Over-relaxing the damage update [Farrell2017]_ helps: ``--relaxation 1.6`` "
+"gives the same result here with 15–20 % fewer iterations, and saves more "
+"when a crack grows over many load steps. Composite and monolithic Newton "
+"schemes can need fewer iterations still, and they impose the bounds with the"
+" same ``vi_solve`` call."
+msgstr ""
+"**求解器。** 交替最小化稳健，但在裂纹扩展时收敛较慢。对损伤更新做超松弛 [Farrell2017]_ 有帮助：这里 ``--relaxation "
+"1.6`` 得到相同的结果，迭代次数少 15–20 "
+"%；当裂纹在许多载荷步中逐步扩展时节省更多。复合牛顿法和整体（monolithic）牛顿法所需的迭代还可以更少，它们同样用 ``vi_solve`` "
+"施加界约束。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:219
+#: 4336b947617b4201b4eecd9404916662
+msgid "What's next"
+msgstr "下一步"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:221
+#: 22b34f6e2dfb4df5b85988f63d66579f
+msgid ""
+":doc:`plasticity_strip`: history variables updated once per step, the other "
+"way to make a solid model path-dependent."
+msgstr ":doc:`plasticity_strip`\\ ：每步更新一次的历史变量，这是让固体模型具有路径相关性的另一种方式。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:223
+#: 892b6790ecb64cc5ba584a6d9853ddc1
+msgid ""
+":doc:`../../user_guide/forms`: the dispatch-by-name rules behind ``forward``"
+" and :meth:`~tensormesh.ElementAssembler.energy`."
+msgstr ""
+":doc:`../../user_guide/forms`\\ ：\\ ``forward`` 与 "
+":meth:`~tensormesh.ElementAssembler.energy` 背后的按名称分派规则。"
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:227
+#: 40d4f2bfde2b4c028bcf86ee88e73820
+msgid ""
+"G. A. Francfort and J.-J. Marigo, *Revisiting brittle fracture as an energy "
+"minimization problem*, Journal of the Mechanics and Physics of Solids, "
+"46(8):1319–1342, 1998."
+msgstr ""
+"G. A. Francfort and J.-J. Marigo, *Revisiting brittle fracture as an energy "
+"minimization problem*, Journal of the Mechanics and Physics of Solids, "
+"46(8):1319–1342, 1998."
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:231
+#: f851aa3d8f6347f8b477c0adf28f00dc
+msgid ""
+"B. Bourdin, G. A. Francfort and J.-J. Marigo, *Numerical experiments in "
+"revisited brittle fracture*, Journal of the Mechanics and Physics of Solids,"
+" 48(4):797–826, 2000."
+msgstr ""
+"B. Bourdin, G. A. Francfort and J.-J. Marigo, *Numerical experiments in "
+"revisited brittle fracture*, Journal of the Mechanics and Physics of Solids,"
+" 48(4):797–826, 2000."
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:235
+#: 007c469a590e4666926724c7772958e7
+msgid ""
+"C. Miehe, M. Hofacker and F. Welschinger, *A phase field model for rate-"
+"independent crack propagation: Robust algorithmic implementation based on "
+"operator splits*, Computer Methods in Applied Mechanics and Engineering, "
+"199(45–48):2765–2778, 2010."
+msgstr ""
+"C. Miehe, M. Hofacker and F. Welschinger, *A phase field model for rate-"
+"independent crack propagation: Robust algorithmic implementation based on "
+"operator splits*, Computer Methods in Applied Mechanics and Engineering, "
+"199(45–48):2765–2778, 2010."
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:240
+#: 428dc7bf2aad4ca1b0429701ae42f0e0
+msgid ""
+"K. Pham, H. Amor, J.-J. Marigo and C. Maurini, *Gradient damage models and "
+"their use to approximate brittle fracture*, International Journal of Damage "
+"Mechanics, 20(4):618–652, 2011."
+msgstr ""
+"K. Pham, H. Amor, J.-J. Marigo and C. Maurini, *Gradient damage models and "
+"their use to approximate brittle fracture*, International Journal of Damage "
+"Mechanics, 20(4):618–652, 2011."
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:244
+#: e6919ce1bc5c41a683ff5bf91a94b6ff
+msgid ""
+"H. Amor, J.-J. Marigo and C. Maurini, *Regularized formulation of the "
+"variational brittle fracture with unilateral contact: Numerical "
+"experiments*, Journal of the Mechanics and Physics of Solids, "
+"57(8):1209–1229, 2009."
+msgstr ""
+"H. Amor, J.-J. Marigo and C. Maurini, *Regularized formulation of the "
+"variational brittle fracture with unilateral contact: Numerical "
+"experiments*, Journal of the Mechanics and Physics of Solids, "
+"57(8):1209–1229, 2009."
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:249
+#: 82c843f7687c481797948d3ee18ebfa8
+msgid ""
+"S. J. Benson and T. S. Munson, *Flexible complementarity solvers for large-"
+"scale applications*, Optimization Methods and Software, 21(1):155–168, 2006."
+msgstr ""
+"S. J. Benson and T. S. Munson, *Flexible complementarity solvers for large-"
+"scale applications*, Optimization Methods and Software, 21(1):155–168, 2006."
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:253
+#: 706abadc66614e60bb9be69d0157168b
+msgid ""
+"E. Tanné, T. Li, B. Bourdin, J.-J. Marigo and C. Maurini, *Crack nucleation "
+"in variational phase-field models of brittle fracture*, Journal of the "
+"Mechanics and Physics of Solids, 110:80–99, 2018."
+msgstr ""
+"E. Tanné, T. Li, B. Bourdin, J.-J. Marigo and C. Maurini, *Crack nucleation "
+"in variational phase-field models of brittle fracture*, Journal of the "
+"Mechanics and Physics of Solids, 110:80–99, 2018."
+
+#: ../../source/example_gallery/solid/phase_field_fracture.rst:257
+#: cf340bdb6d3e4a96b5fa775d244bd1c9
+msgid ""
+"P. E. Farrell and C. Maurini, *Linear and nonlinear solvers for variational "
+"phase-field models of brittle fracture*, International Journal for Numerical"
+" Methods in Engineering, 109(5):648–667, 2017."
+msgstr ""
+"P. E. Farrell and C. Maurini, *Linear and nonlinear solvers for variational "
+"phase-field models of brittle fracture*, International Journal for Numerical"
+" Methods in Engineering, 109(5):648–667, 2017."

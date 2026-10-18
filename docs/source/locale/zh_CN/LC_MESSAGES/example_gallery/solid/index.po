@@ -27,10 +27,10 @@ msgstr "固体力学"
 #: ../../source/example_gallery/solid/index.rst:4
 #: e68cf17c677b49a28e5b614c73833fb3
 msgid ""
-"Seven worked solid-mechanics examples in ``examples/solid/``, built as a "
+"Eight worked solid-mechanics examples in ``examples/solid/``, built as a "
 "progressive ladder — each rung adds exactly one new concept on top of the "
 "previous one:"
-msgstr "``examples/solid/`` 中七个完整的固体力学示例,搭建成一架递进的阶梯 —— 每一级恰好在前一级之上新增一个概念:"
+msgstr "``examples/solid/`` 中八个完整的固体力学示例,搭建成一架递进的阶梯 —— 每一级恰好在前一级之上新增一个概念:"
 
 #: ../../source/example_gallery/solid/index.rst:8
 #: e0fdfb7a49114a7e9486fdbcca1208a4
@@ -58,6 +58,13 @@ msgid ""
 "**Plasticity (J2)** — adds path-dependence: per-quadrature history variables"
 " and a variational constitutive update, in 2D and 3D."
 msgstr "**塑性（J2）** —— 增加了路径相关性：逐求积点的历史变量和变分本构更新，分别在二维和三维中实现。"
+
+#: ../../source/example_gallery/solid/index.rst:17
+msgid ""
+"**Phase-Field Fracture** — adds an inequality constraint: damage cannot "
+"heal, so every load step is a bound-constrained minimization, solved "
+"field by field with a bound-constrained Newton method."
+msgstr "**相场断裂** —— 增加了不等式约束：损伤不可愈合，因此每个载荷步都是一个带界约束的最小化问题，用带界约束的牛顿法逐场求解。"
 
 #: ../../source/example_gallery/solid/index.rst:17
 #: c40df2b55aac4b8e894f0cc7e565e3b2
@@ -89,9 +96,9 @@ msgstr ""
 #: ../../source/example_gallery/solid/index.rst:28
 #: 37ddee47191045aaa85a33a5050ea5f6
 msgid ""
-"Together they cover the two solver patterns TensorMesh uses for solid "
+"Together they cover the three solver patterns TensorMesh uses for solid "
 "problems:"
-msgstr "它们合在一起涵盖了 TensorMesh 用于固体问题的两种求解模式："
+msgstr "它们合在一起涵盖了 TensorMesh 用于固体问题的三种求解模式："
 
 #: ../../source/example_gallery/solid/index.rst:31
 #: 30b5eb9b03ca4e4bb2d74fc759690e65
@@ -111,6 +118,13 @@ msgstr ""
 "**L-BFGS 能量最小化** 用于势能定义良好的非线性问题 —— 超弹性、接触和塑性(``hyperelastic_beam``\\ 、\\ "
 "``hertzian_contact``\\ 、\\ ``plasticity_strip``\\ 、\\ "
 "``drucker_prager_footing``)。"
+
+#: ../../source/example_gallery/solid/index.rst:38
+msgid ""
+"**Bound-constrained Newton** (``torch_sla.vi_solve``) when unknowns carry"
+" inequality constraints, here damage irreversibility "
+"(``phase_field_fracture``)."
+msgstr "**带界约束的牛顿法** (``torch_sla.vi_solve``)用于未知量带有不等式约束的问题，这里是损伤的不可逆性(``phase_field_fracture``)。"
 
 #: ../../source/example_gallery/solid/index.rst:38
 #: e573fa8234c64a7ebb080754ec562e1a
@@ -163,6 +177,16 @@ msgid ""
 "Plane-strain J2 plasticity with isotropic hardening, load / unload cycle, "
 "plus a 3D cube."
 msgstr "带各向同性硬化的平面应变 J2 塑性，加载/卸载循环，外加一个三维立方体。"
+
+#: ../../source/example_gallery/solid/index.rst:77
+msgid "Phase-Field Fracture"
+msgstr "相场断裂"
+
+#: ../../source/example_gallery/solid/index.rst:82
+msgid ""
+"A crack through a notched plate: AT1/AT2 damage, irreversibility as "
+"bounds, alternate minimization."
+msgstr "缺口板中的一条裂纹：AT1/AT2 损伤模型、以界约束表达的不可逆性、交替最小化。"
 
 #: ../../source/example_gallery/solid/index.rst:73
 #: 5eb629297a6a4a0da86f63fdabe26c2d

@@ -77,7 +77,7 @@ a concrete TensorMesh script you can run.
       :link-type: doc
       :img-top: /_static/solid_mechanics/hyperelastic_rubber.png
 
-      Linear elasticity, hyperelasticity, contact, and plasticity — a progressive solver ladder.
+      Linear elasticity, hyperelasticity, contact, plasticity, and phase-field fracture — a progressive solver ladder.
 
    .. grid-item-card:: Fluid Mechanics
       :link: fluid/index
