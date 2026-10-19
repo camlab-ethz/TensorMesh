@@ -13,11 +13,6 @@ import pytest
 import torch
 
 
-torch_sla = pytest.importorskip("torch_sla")
-if not hasattr(torch_sla, "vi_solve"):
-    pytest.skip("the example needs torch_sla.vi_solve (torch-sla >= 0.4.0)", allow_module_level=True)
-
-
 def _load_example_module():
     repo_root = Path(__file__).resolve().parents[2]
     script = repo_root / "examples" / "solid" / "phase_field_fracture" / "phase_field_fracture.py"

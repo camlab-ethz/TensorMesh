@@ -61,11 +61,11 @@ msgstr "**PyTorch ≥ 2.0**\\ （若要运行 GPU 路径，则需带 CUDA）"
 #: ../../source/community/contributing.rst:22 98bf2048a9bc4519bb3f442f62dc8125
 msgid ""
 "Everything else installs from PyPI in the step below — including ``torch-"
-"sla`` (``>= 0.3.0``), the hard dependency that provides every sparse-solver "
+"sla`` (``>= 0.4.0``), the hard dependency that provides every sparse-solver "
 "backend. No C++ toolchain or manual build step is required."
 msgstr ""
 "其余所有依赖均会在下面的步骤中从 PyPI 安装 —— 包括 ``torch-sla`` (``>= "
-"0.3.0``)，这一硬性依赖提供了所有稀疏求解器后端。无需 C++ 工具链，也无需手动构建。"
+"0.4.0``)，这一硬性依赖提供了所有稀疏求解器后端。无需 C++ 工具链，也无需手动构建。"
 
 #: ../../source/community/contributing.rst:27 c96e93b5fec844d2bcd21b63f0148c8b
 msgid "Clone and install in editable mode:"
