@@ -263,7 +263,8 @@ class NodeAssembler(nn.Module):
         batch_size : int, optional
             Batch size for quadrature points. Defaults to ``1`` (process
             one quadrature point at a time); pass ``-1`` to process all
-            quadrature points at once.
+            quadrature points at once, which also caches the shape gradients
+            and ``JxW`` on the :class:`~tensormesh.Transformation` for later calls.
 
         Returns
         -------
@@ -297,7 +298,9 @@ class NodeAssembler(nn.Module):
             element_type = self.element_types[0]
             point_data_keys = sorted([k for k in point_data.keys() if k != "x"])
             scalar_data_keys = sorted(scalar_data.keys())
-            cache_key = f"call_{element_type}_{tuple(point_data_keys)}_{tuple(scalar_data_keys)}"
+            # the compiled function holds this geometry's shape gradients: rebuild when it changes
+            geometry = self.transformation[element_type]._geometry_version
+            cache_key = f"call_{element_type}_{tuple(point_data_keys)}_{tuple(scalar_data_keys)}_{geometry}"
             
             if self._compiled_call_fn is None or getattr(self, '_compiled_cache_key', None) != cache_key:
                 # Build fast call function (uses broadcast, not vmap)

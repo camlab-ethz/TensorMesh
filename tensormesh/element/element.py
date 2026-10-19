@@ -39,8 +39,50 @@ from .normal import outwards_normal_2d,\
 from .types import Tensorx1, Tensorx2, Tensorx3, Tensorx4, Tensorx5
 
 
+def small_inverse(matrices: torch.Tensor) -> torch.Tensor:
+    r"""Invert a batch of small square matrices, such as the Jacobians of a mesh.
 
+    For :math:`D \le 3` the inverse is the adjugate divided by the determinant,
+    written out elementwise. On many tiny matrices this is much faster than
+    :func:`torch.linalg.inv`, which factorizes each matrix separately (on the
+    CPU, one LAPACK call per matrix). Larger matrices use
+    :func:`torch.linalg.inv`.
 
+    Parameters
+    ----------
+    matrices : torch.Tensor
+        Tensor of shape :math:`[..., D, D]`.
+
+    Returns
+    -------
+    torch.Tensor
+        The inverses, of shape :math:`[..., D, D]`.
+
+    Raises
+    ------
+    ValueError
+        If a matrix is singular, i.e. an element is degenerate.
+    """
+    dim = matrices.shape[-1]
+    if dim > 3:
+        return torch.linalg.inv(matrices)
+    if dim == 1:
+        det = matrices[..., 0, 0]
+        adjugate = torch.ones_like(matrices)
+    elif dim == 2:
+        a, b = matrices[..., 0, 0], matrices[..., 0, 1]
+        c, d = matrices[..., 1, 0], matrices[..., 1, 1]
+        det = a * d - b * c
+        adjugate = torch.stack([torch.stack([d, -b], -1), torch.stack([-c, a], -1)], -2)
+    else:
+        r0, r1, r2 = matrices[..., 0, :], matrices[..., 1, :], matrices[..., 2, :]
+        # column j of the inverse is (r_{j+1} x r_{j+2}) / det
+        adjugate = torch.stack([torch.linalg.cross(r1, r2), torch.linalg.cross(r2, r0),
+                                torch.linalg.cross(r0, r1)], -1)
+        det = (r0 * adjugate[..., 0]).sum(-1)
+    if bool((det == 0).any()):
+        raise ValueError("singular matrix: an element has a zero Jacobian determinant")
+    return adjugate / det[..., None, None]
 
 
 class Element:
@@ -1018,7 +1060,7 @@ class Element:
 
         cell_jacobian  = torch.einsum("ebj,qib->eqij", element_coords, shape_grad) # TODO: check the order
         
-        inv_cell_jacobian = torch.inverse(cell_jacobian)
+        inv_cell_jacobian = small_inverse(cell_jacobian)
 
         shape_grad     = torch.einsum("qib, eqji->eqbj", shape_grad, inv_cell_jacobian) 
 

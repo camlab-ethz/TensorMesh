@@ -297,7 +297,10 @@ class ElementAssembler(nn.Module):
         batch_size : int, optional
             Batch size for quadrature points. ``-1`` (default) processes all
             quadrature points at once; positive values split them into
-            chunks for memory-bound problems.
+            chunks for memory-bound problems. With ``-1`` the shape
+            gradients and ``JxW`` are cached on the :class:`~tensormesh.Transformation`
+            and reused by later calls; chunked calls compute them per chunk
+            and cache nothing.
 
         Returns
         -------

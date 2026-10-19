@@ -2,8 +2,17 @@ import torch
 import torch.nn as nn
 from typing import Optional, Tuple, Type, Union
 from .types import Tensorx1, Tensorx2, Tensorx3, Tensorx4
-from .element import Element
+from .element import Element, small_inverse
 from .element_type import element_type2element, element_type2order
+
+
+def _version_counter(tensor: torch.Tensor) -> Optional[int]:
+    """In-place modification counter of ``tensor`` (None for inference tensors,
+    which do not track one)."""
+    try:
+        return tensor._version
+    except RuntimeError:
+        return None
 
 
 class Transformation(nn.Module):
@@ -14,6 +23,12 @@ class Transformation(nn.Module):
     geometric ingredients an assembler needs to integrate a weak form.
     Subclass of :class:`torch.nn.Module`, so every cached tensor is a buffer
     and follows the module's ``.to()``/``.cuda()``/``.double()``.
+
+    Geometric quantities (shape gradients, ``JxW``, facet Jacobians, ...) are
+    computed on first use and cached. :meth:`update_points` drops them when
+    the coordinates change. While the points require grad (and grad mode is
+    on) nothing geometric is cached, so every call builds its own autograd
+    graph.
 
     Examples
     --------
@@ -95,6 +110,17 @@ class Transformation(nn.Module):
     :no-index:
     """
 
+    # Cached buffers that depend on the node coordinates; the reference
+    # quadrature and shape values do not.
+    _GEOMETRY_BUFFERS = (
+        "_shape_grad", "_jacobian", "_jxw",
+        "_facet_shape_grad", "_facet_shape_grad_tri", "_facet_shape_grad_quad",
+        "_facet_cell_jacobian", "_facet_cell_jacobian_tri", "_facet_cell_jacobian_quad",
+        "_facet_jacobian", "_facet_jacobian_tri", "_facet_jacobian_quad",
+        "_nanson_scale", "_nanson_scale_tri", "_nanson_scale_quad",
+        "_jxf", "_jxf_tri", "_jxf_quad",
+    )
+
     def __init__(self, 
                  points:torch.Tensor,
                  elements:torch.Tensor,
@@ -139,7 +165,10 @@ class Transformation(nn.Module):
 
         Use this after deforming the mesh — e.g. in a moving-mesh or
         topology-optimization loop — when the connectivity does not change
-        but the geometry does.
+        but the geometry does. The cached geometry (shape gradients, ``JxW``,
+        facet quantities) is dropped unless ``points`` is the tensor already
+        held and has not been modified in place since, so passing the same
+        unchanged coordinates again keeps the cache.
 
         Examples
         --------
@@ -155,10 +184,41 @@ class Transformation(nn.Module):
             :math:`N_p` is the number of points and :math:`D` the spatial
             dimension.
         """
-        dtype, device            = points.dtype, points.device
+        version = _version_counter(points)
+        unchanged = (version is not None and points is self._buffers.get("points")
+                     and version == getattr(self, "_points_version", None))
         self.register_buffer("points", points)
         self.n_points            = points.shape[0] 
-        # self.element_coords      = self.points[self.elements]
+        self._points_version     = version
+        if not unchanged:
+            for name in self._GEOMETRY_BUFFERS:
+                self._buffers.pop(name, None)
+            # lets holders of geometry tensors (e.g. compiled assembly) notice
+            self._geometry_version = getattr(self, "_geometry_version", -1) + 1
+
+    def _is_cached(self, name:str)->bool:
+        """Whether the geometry buffer ``name`` may be served from the cache.
+
+        False when it is missing, and also while the points require grad with
+        grad mode on: such a buffer belongs to an earlier autograd graph, so
+        it is recomputed (and replaced) on every call.
+        """
+        return name in self._buffers and not (torch.is_grad_enabled() and self.points.requires_grad)
+
+    def _volume_geometry(self)->Tuple[torch.Tensor, torch.Tensor]:
+        """Shape gradients and ``JxW`` at the volume quadrature points.
+
+        Both come from one evaluation of the cell Jacobians and are cached
+        together. The Jacobians themselves are not kept: assembly does not
+        need them, and :attr:`jacobian` rebuilds them without an inverse.
+        """
+        if not (self._is_cached("_shape_grad") and self._is_cached("_jxw")):
+            w, q = self.quadrature
+            shape_grad, jacobian = self.element.eval_shape_grad(
+                self.element_coords, q, self.basis_order, self.quadrature_order)
+            self.register_buffer("_shape_grad", shape_grad)
+            self.register_buffer("_jxw", torch.einsum('q,eq->eq', w, torch.linalg.det(jacobian).abs()))
+        return self._shape_grad, self._jxw # type:ignore
 
 
     @property
@@ -375,13 +435,7 @@ class Transformation(nn.Module):
             * :math:`N_b` = number of basis functions
             * :math:`D` = spatial dimension
         """
-        if "_shape_grad" not in self._buffers: # type: ignore
-            _, q = self.quadrature
-            shape_grad, jacobian = self.element.eval_shape_grad(
-                self.element_coords, q, self.basis_order, self.quadrature_order)
-            self.register_buffer("_shape_grad", shape_grad)
-            self.register_buffer("_jacobian", jacobian)
-        return self._shape_grad 
+        return self._volume_geometry()[0]
     
     @property
     def jacobian(self)->Tensorx1:
@@ -415,8 +469,10 @@ class Transformation(nn.Module):
             * :math:`N_q` = number of quadrature points 
             * :math:`D` = spatial dimension
         """
-        if "_jacobian" not in self._buffers: # type: ignore
-            self.shape_grad
+        if not self._is_cached("_jacobian"):
+            _, q = self.quadrature
+            self.register_buffer("_jacobian", self.element.eval_cell_jacobian(
+                q, self.element_coords, self.basis_order))
         return self._jacobian # type:ignore [n_element, n_quadrature, dim, dim]
     
     @property 
@@ -671,7 +727,7 @@ class Transformation(nn.Module):
         """
         if self.element.is_mix_facet:
 
-            if "_facet_shape_grad_tri" not in self._buffers: # type: ignore
+            if not self._is_cached("_facet_shape_grad_tri"):
 
                 tri_m, tri_q, quad_m, quad_q, tri_mask = self.facet_quadrature # type:ignore
                 n_tri_facet, n_quadrature_per_tri_facet, _   = tri_q.shape
@@ -700,7 +756,7 @@ class Transformation(nn.Module):
         
         else:
 
-            if "_facet_shape_grad" not in self._buffers: # type:ignore
+            if not self._is_cached("_facet_shape_grad"):
                 w, q = self.facet_quadrature # type:ignore [n_facet, n_quadrature_per_facet], [n_facet, n_quadrature_per_facet, dim]
                 n_facet, n_quadrature_per_facet, _ = q.shape
                 
@@ -769,7 +825,7 @@ class Transformation(nn.Module):
 
         if self.element.is_mix_facet:
 
-            if "_facet_jacobian_tri" not in self._buffers: # type: ignore
+            if not self._is_cached("_facet_jacobian_tri"):
 
                 tri_facet_jacobian, quad_facet_jacobian = self.element.eval_facet_jacobian(
                     self.element_coords, self.basis_order, self.quadrature_order)
@@ -782,7 +838,7 @@ class Transformation(nn.Module):
 
         else:
 
-            if "_facet_jacobian" not in self._buffers: # type:ignore
+            if not self._is_cached("_facet_jacobian"):
                 facet_jacobian = self.element.eval_facet_jacobian(
                     self.element_coords, self.basis_order, self.quadrature_order)
                 
@@ -849,7 +905,7 @@ class Transformation(nn.Module):
       
        
         if self.element.is_mix_facet:
-            if "_nanson_scale_tri" not in self._buffers:
+            if not self._is_cached("_nanson_scale_tri"):
                 tri_w, tri_q, quad_w, quad_q = self.facet_quadrature # type:ignore
 
                 # compute the facet cell jacobian
@@ -858,8 +914,8 @@ class Transformation(nn.Module):
                     self.basis_order, 
                     self.quadrature_order)
             
-                tri_inv_j = torch.inverse(tri_j) # [n_element, n_tri_facet, n_quadrature_per_tri_facet, dim, dim]
-                quad_inv_j= torch.inverse(quad_j)# [n_element, n_quad_facet, n_quadrature_per_quad_facet, dim, dim]
+                tri_inv_j = small_inverse(tri_j) # [n_element, n_tri_facet, n_quadrature_per_tri_facet, dim, dim]
+                quad_inv_j= small_inverse(quad_j)# [n_element, n_quad_facet, n_quadrature_per_quad_facet, dim, dim]
                 # compute the nanson scale
                 normals = self.element.get_outwards_facet_normal() # [n_facet_per_element, dim]
                 tri_normals = normals[self.element.get_tri_mask()] # [n_tri_facet, dim]
@@ -886,14 +942,14 @@ class Transformation(nn.Module):
         
         else: # single facet shape 
 
-            if "_nanson_scale" not in self._buffers:
+            if not self._is_cached("_nanson_scale"):
 
                 j = self.element.eval_facet_cell_jacobian(
                         self.element_coords, 
                         self.basis_order, 
                         self.quadrature_order)
                 
-                inv_j = torch.inverse(j) # [n_element, n_facet, n_quadrature_per_facet, dim, dim]
+                inv_j = small_inverse(j) # [n_element, n_facet, n_quadrature_per_facet, dim, dim]
                 det_j = torch.linalg.det(j) # [n_element, n_facet, n_quadrature_per_facet]
 
                 normals = self.element.get_outwards_facet_normal() # [n_facet, dim]
@@ -977,11 +1033,7 @@ class Transformation(nn.Module):
             * :math:`N_e` = number of elements
             * :math:`N_q` = number of quadrature points
         """
-        if "_jxw" not in self._buffers: # type: ignore
-            w, _       = self.quadrature
-            jxw        = torch.einsum('q,eq->eq', w, self.detJ.abs())
-            self.register_buffer("_jxw", jxw)
-        return self._jxw # type:ignore [n_element, n_quadrature]
+        return self._volume_geometry()[1] # [n_element, n_quadrature]
 
     G     = J 
     detG  = detJ 
@@ -1096,7 +1148,7 @@ class Transformation(nn.Module):
                 * :math:`N_{qq}` = number of quadrature points per quadrilateral facet
         """
         if self.element.is_mix_facet:
-            if "_jxf_tri" not in self._buffers: # type: ignore
+            if not self._is_cached("_jxf_tri"):
                 tri_w, tri_q, quad_w, quad_q = self.facet_quadrature # type:ignore
                 tri_detF, quad_detF = self.detF
                 tri_jxf = torch.einsum('fq,efq->efq', tri_w, tri_detF.abs())
@@ -1105,7 +1157,7 @@ class Transformation(nn.Module):
                 self.register_buffer("_jxf_quad", quad_jxf)
             return self._jxf_tri, self._jxf_quad # type:ignore [n_element, n_facet, n_quadrature_per_facet]
         else:
-            if "_jxf" not in self._buffers: # type: ignore
+            if not self._is_cached("_jxf"):
                 w, q = self.facet_quadrature # type:ignore
                 detF = self.detF
                 jxf  = torch.einsum('fq,efq->efq', w, detF.abs()) 
@@ -1280,15 +1332,29 @@ class Transformation(nn.Module):
             * :math:`N_q` = number of quadrature points in batch
             * :math:`N_s` = shape functions per element
             * :math:`D` = spatial dimension
+
+        Notes
+        -----
+        A request for every element and every quadrature point (the default,
+        and what an assembler called with ``batch_size=-1`` asks for) fills the
+        cache behind :attr:`shape_grad` and :attr:`JxW`, so later calls skip
+        the Jacobians altogether. A partial request is served from that cache
+        when it exists and is otherwise computed for its batch alone, which
+        keeps chunked assembly within its memory budget.
         """
-        if "_shape_grad" not in self._buffers or "_jxw" not in self._buffers: # type: ignore
-            w, q = self.batch_quadrature(quadrature_start, quadrature_batch)
-            e    = self.batch_elements_coords(element_start, element_batch)
-            shape_grad, jacobian = self.element.eval_shape_grad(
-                e, q, self.basis_order, self.quadrature_order)
-            jxw  = torch.einsum('q,eq->eq', w, torch.linalg.det(jacobian).abs())
-            return shape_grad, jxw # [n_element, n_batch, n_basis, dim], [n_element, n_batch, dim, dim]
-        else:
-            return (self.shape_grad[:, quadrature_start:quadrature_start+quadrature_batch], 
-                    self.JxW[:, quadrature_start:quadrature_start+quadrature_batch]) #type:ignore [n_element, n_batch, n_basis, dim], [n_element, n_batch, dim, dim]
+        n_e, n_q = self.n_elements, self.n_quadrature
+        e0 = element_start + n_e if element_start < 0 else element_start
+        q0 = quadrature_start + n_q if quadrature_start < 0 else quadrature_start
+        e1 = n_e if element_batch == -1 else min(e0 + element_batch, n_e)
+        q1 = n_q if quadrature_batch == -1 else min(q0 + quadrature_batch, n_q)
+        full = e0 == 0 and e1 == n_e and q0 == 0 and q1 == n_q
+        if full or (self._is_cached("_shape_grad") and self._is_cached("_jxw")):
+            shape_grad, jxw = self._volume_geometry()
+            return shape_grad[e0:e1, q0:q1], jxw[e0:e1, q0:q1] # [n_element, n_batch, n_basis, dim], [n_element, n_batch]
+        w, q = self.batch_quadrature(q0, q1 - q0)
+        e    = self.batch_elements_coords(e0, e1 - e0)
+        shape_grad, jacobian = self.element.eval_shape_grad(
+            e, q, self.basis_order, self.quadrature_order)
+        jxw  = torch.einsum('q,eq->eq', w, torch.linalg.det(jacobian).abs())
+        return shape_grad, jxw # [n_element, n_batch, n_basis, dim], [n_element, n_batch]
         

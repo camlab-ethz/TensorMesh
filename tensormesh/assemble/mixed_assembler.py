@@ -86,6 +86,7 @@ from ..element import (
     element_type2element,
     element_type2order,
 )
+from ..element.element import small_inverse
 from ..sparse import SparseMatrix
 from ..mesh import Mesh
 from ..vmap import vmap
@@ -1096,7 +1097,7 @@ class MixedElementAssembler(nn.Module):
                 # geometry: isoparametric (mesh-order) jacobian, shared by all fields
                 ref_g_geom = self.geom_ref_grad[element_type][qs:qs + qb]  # [Qb, D, nb_mesh]
                 jacobian = torch.einsum("ebj,qib->eqij", element_coords, ref_g_geom)
-                inv_jacobian = torch.inverse(jacobian)
+                inv_jacobian = small_inverse(jacobian)
                 jxw = torch.einsum("q,eq->eq", w, torch.linalg.det(jacobian).abs())
 
                 tables_val, tables_grad = {}, {}
