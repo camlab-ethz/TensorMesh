@@ -655,11 +655,11 @@ msgstr "选择调用期参数的存放位置"
 
 #: ../../source/user_guide/forms.rst:392 4d59da58b29e4691b9cc1548e257bb0d
 msgid ""
-"Three dicts — ``point_data``, ``element_data``, ``scalar_data`` — cover "
-"every flavour of \"data that varies across the mesh and is not part of the "
-"basis itself\". The decision tree:"
+"Four dicts — ``point_data``, ``element_data``, ``quadrature_data``, "
+"``scalar_data`` — cover every flavour of \"data that varies across the mesh "
+"and is not part of the basis itself\". The decision tree:"
 msgstr ""
-"三个字典——``point_data``\\ 、\\ ``element_data``\\ 、\\ "
+"四个字典——``point_data``\\ 、\\ ``element_data``\\ 、\\ ``quadrature_data``\\ 、\\ "
 "``scalar_data``——涵盖了“在网格上变化、且本身不属于基函数的数据”的各种情形。决策树如下："
 
 #: ../../source/user_guide/forms.rst:400 1125bcf6e15f4e95b26d125f27453c3c
@@ -721,21 +721,21 @@ msgid ""
 msgstr "逐单元的杨氏模量、标记标签、任何在单元上为常量的物理量"
 
 #: ../../source/user_guide/forms.rst:412 3776a88710014573b5254a97d354011b
-msgid "per (element, quadrature point) — ``.energy()`` path only"
-msgstr "随（单元，求积点）变化——仅 ``.energy()`` 路径支持"
+msgid "per (element, quadrature point)"
+msgstr "随（单元，求积点）变化"
 
 #: ../../source/user_guide/forms.rst:413 df0a89f6af8a4d2db8220512f412a44c
 #, python-brace-format
-msgid "``element_data={\"eps_p\": eps_p}`` with shape ``[n_elem, n_quad, ...]``"
-msgstr "``element_data={\"eps_p\": eps_p}``\\ ，形状为 ``[n_elem, n_quad, ...]``"
+msgid "``quadrature_data={\"C\": C}`` with shape ``[n_elem, n_quad, ...]``"
+msgstr "``quadrature_data={\"C\": C}``\\ ，形状为 ``[n_elem, n_quad, ...]``"
 
 #: ../../source/user_guide/forms.rst:414 f891cb6ca2e14df883fd8d1466d2f4ad
 msgid "the value at the current quadrature point (shape ``[...]``)"
 msgstr "当前求积点处的值（形状 ``[...]``\\ ）"
 
 #: ../../source/user_guide/forms.rst:415 9d0a22157b6c42e2bb14e6dae4a1fa1b
-msgid "plastic strain history in :class:`~tensormesh.assemble.J2Plasticity`"
-msgstr ":class:`~tensormesh.assemble.J2Plasticity` 中的塑性应变历史"
+msgid "consistent tangent and stress of a plasticity model, history variables"
+msgstr "塑性模型的一致切线与应力、历史变量"
 
 #: ../../source/user_guide/forms.rst:417 a837d4a43c14437a8ddb4f704aaf2b24
 #, python-brace-format
@@ -764,19 +764,21 @@ msgstr ""
 
 #: ../../source/user_guide/forms.rst:429 c328976051344333be7aadaa572cb7c1
 msgid ""
-"Per-(element, quadrature) ``element_data`` is auto-detected only by "
-"``ElementAssembler.energy`` (see :ref:`forms-energy`), not by the matrix-"
-"assembling ``ElementAssembler.__call__`` path. If you pass a tensor of shape"
-" ``[n_elem, n_quad, ...]`` to ``__call__``, the *whole* ``[n_quad, ...]`` "
-"slice is handed to ``forward`` for each element — not the per-quadrature "
-"value. For matrix assembly today, keep ``element_data`` strictly per-"
-"element."
+"``element_data`` is per element in ``ElementAssembler.__call__``: a tensor "
+"of shape ``[n_elem, n_quad, ...]`` there hands the *whole* ``[n_quad, ...]``"
+" slice to ``forward``. Use ``quadrature_data`` for per-point values. "
+"``ElementAssembler.energy`` still recognises the per-point layout in "
+"``element_data`` by ``shape[1] == n_quad`` (see :ref:`forms-energy`, used by "
+":class:`~tensormesh.assemble.J2Plasticity`), which is ambiguous when a per-"
+"element dimension happens to equal the number of quadrature points; "
+"``quadrature_data`` is not."
 msgstr ""
-"随（单元，求积点）变化的 ``element_data`` 仅由 ``ElementAssembler.energy`` 自动识别（参见 "
-":ref:`forms-energy`\\ ），装配矩阵的 ``ElementAssembler.__call__`` 路径并不识别。如果你向 "
-"``__call__`` 传入形状为 ``[n_elem, n_quad, ...]`` 的张量，那么对每个单元交给 ``forward`` 的将是 "
-"*整个* ``[n_quad, ...]`` 切片——而非逐求积点的值。就目前的矩阵装配而言，请把 ``element_data`` "
-"严格保持为逐单元的形式。"
+"在 ``ElementAssembler.__call__`` 中，\\ ``element_data`` 是逐单元的：在那里传入形状为 "
+"``[n_elem, n_quad, ...]`` 的张量，交给 ``forward`` 的将是 *整个* ``[n_quad, ...]`` "
+"切片。逐求积点的值请使用 ``quadrature_data``\\ 。\\ ``ElementAssembler.energy`` 仍会通过 "
+"``shape[1] == n_quad`` 识别 ``element_data`` 中的逐求积点布局（参见 :ref:`forms-energy`\\ ，\\ "
+":class:`~tensormesh.assemble.J2Plasticity` 即依赖于此），但当某个逐单元维度恰好等于求积点个数时，这种识别会产生歧义；\\ "
+"``quadrature_data`` 则不会。"
 
 #: ../../source/user_guide/forms.rst:439 25b8013ff0364a3eb497c46a1a65db40
 msgid "Feature matrix"
@@ -883,6 +885,16 @@ msgstr "✓（通过 ``shape[1] == n_quad`` 自动识别）"
 #: ../../source/user_guide/forms.rst:488 bd2cca05c02e4650a64693d05e458606
 msgid "only ``.energy()`` recognises the per-quadrature layout"
 msgstr "只有 ``.energy()`` 能识别逐求积点的布局"
+
+#: ../../source/user_guide/forms.rst:489
+msgid "``quadrature_data``"
+msgstr "``quadrature_data``"
+
+#: ../../source/user_guide/forms.rst:494
+msgid ""
+"shape ``[n_elem, n_quad, ...]``; split along with the quadrature points by "
+"``batch_size``"
+msgstr "形状为 ``[n_elem, n_quad, ...]``\\ ；随求积点一起按 ``batch_size`` 分批"
 
 #: ../../source/user_guide/forms.rst:489 9e250ba7c4b744d58d69a88d0ceadbad
 msgid "``scalar_data``"
