@@ -118,6 +118,7 @@ class Transformation(nn.Module):
         "_facet_cell_jacobian", "_facet_cell_jacobian_tri", "_facet_cell_jacobian_quad",
         "_facet_jacobian", "_facet_jacobian_tri", "_facet_jacobian_quad",
         "_nanson_scale", "_nanson_scale_tri", "_nanson_scale_quad",
+        "_facet_normal", "_facet_normal_tri", "_facet_normal_quad",
         "_jxf", "_jxf_tri", "_jxf_quad",
     )
 
@@ -573,14 +574,16 @@ class Transformation(nn.Module):
                 * :math:`D` = spatial dimension
         """
         if self.element.is_mix_facet:
-            tri_m, tri_q, quad_m, quad_q, tri_mask = self.element.get_facet_quadrature(self.quadrature_order, transform=True) # type:ignore
+            tri_m, tri_q, quad_m, quad_q = self.element.get_facet_quadrature(
+                self.quadrature_order, transform=True, dtype=self.dtype, device=self.device) # type:ignore
             tri_m = tri_m.type(self.dtype).to(self.device)
             tri_q = tri_q.type(self.dtype).to(self.device)
             quad_m= quad_m.type(self.dtype).to(self.device)
             quad_q= quad_q.type(self.dtype).to(self.device)
             return (tri_m, tri_q, quad_m, quad_q)
         else:
-            m, q = self.element.get_facet_quadrature(self.quadrature_order, transform=True) # type:ignore [n_facet, n_quadrature_per_facet], [n_facet, n_quadrature_per_facet, dim]
+            m, q = self.element.get_facet_quadrature(
+                self.quadrature_order, transform=True, dtype=self.dtype, device=self.device) # type:ignore [n_facet, n_quadrature_per_facet], [n_facet, n_quadrature_per_facet, dim]
             m = m.type(self.dtype).to(self.device)
             q = q.type(self.dtype).to(self.device)
             return m, q
@@ -643,11 +646,11 @@ class Transformation(nn.Module):
 
         if self.element.is_mix_facet:
             if "_facet_shape_val_tri" not in self._buffers: # type: ignore
-                tri_m, tri_p, quad_m, quad_p, tri_mask = self.facet_quadrature # type:ignore
+                tri_m, tri_p, quad_m, quad_p = self.facet_quadrature # type:ignore
                 n_tri_facet, n_quadrature_per_tri_facet, _   = tri_p.shape
                 n_quad_facet, n_quadrature_per_quad_facet, _ = quad_p.shape
-                tri_shape_val = self.element.eval_shape_val(tri_p, self.basis_order, self.quadrature_order)
-                quad_shape_val= self.element.eval_shape_val(quad_p, self.basis_order, self.quadrature_order)
+                tri_shape_val = self.element.eval_shape_val(tri_p.reshape(-1, self.element.dim), self.basis_order, self.quadrature_order)
+                quad_shape_val= self.element.eval_shape_val(quad_p.reshape(-1, self.element.dim), self.basis_order, self.quadrature_order)
                 tri_shape_val = tri_shape_val.reshape(n_tri_facet, n_quadrature_per_tri_facet, self.n_basis)
                 quad_shape_val= quad_shape_val.reshape(n_quad_facet, n_quadrature_per_quad_facet, self.n_basis)
 
@@ -729,7 +732,7 @@ class Transformation(nn.Module):
 
             if not self._is_cached("_facet_shape_grad_tri"):
 
-                tri_m, tri_q, quad_m, quad_q, tri_mask = self.facet_quadrature # type:ignore
+                tri_m, tri_q, quad_m, quad_q = self.facet_quadrature # type:ignore
                 n_tri_facet, n_quadrature_per_tri_facet, _   = tri_q.shape
                 n_quad_facet, n_quadrature_per_quad_facet, _ = quad_q.shape
 
@@ -964,6 +967,68 @@ class Transformation(nn.Module):
 
             return self._nanson_scale # type:ignore [n_element, n_facet, n_quadrature_per_facet]
 
+    @property
+    def facet_normal(self)->Union[Tensorx1,Tensorx2]:
+        r"""Get outward unit normals at facet quadrature points.
+
+        The reference outward normal :math:`\hat{\mathbf{N}}` of a facet is
+        mapped to physical space as a covector and normalised:
+
+        .. math::
+
+            \mathbf{n} = \frac{\mathbf{J}^{-T}\hat{\mathbf{N}}}{\lVert\mathbf{J}^{-T}\hat{\mathbf{N}}\rVert}
+
+        where :math:`\mathbf{J} = \partial\mathbf{x}/\partial\boldsymbol{\xi}`
+        is the cell Jacobian at the facet quadrature point. The result points
+        out of the cell whatever the orientation of the cell, and follows
+        curved (higher-order) facets point by point.
+
+        Examples
+        --------
+        .. code-block:: python
+
+            transform = Transformation(points, elements, "tetra")
+            n = transform.facet_normal  # [n_element, 4, n_quadrature_per_facet, 3]
+
+        Returns
+        -------
+        If element has uniform facets:
+            torch.Tensor
+                Normal tensor of shape :math:`[N_e, N_f, N_q, D]` where:
+
+                * :math:`N_e` = number of elements
+                * :math:`N_f` = number of facets per element
+                * :math:`N_q` = number of quadrature points per facet
+                * :math:`D` = spatial dimension
+
+        If element has mixed facets:
+            Tuple[torch.Tensor, torch.Tensor]
+                * Triangular facet normals of shape :math:`[N_e, N_{tf}, N_{tq}, D]`
+                * Quadrilateral facet normals of shape :math:`[N_e, N_{qf}, N_{qq}, D]`
+        """
+        normals = self.element.get_outwards_facet_normal(self.dtype, self.device) # [n_facet, dim]
+
+        def unit_covector(reference_normals, cell_jacobian):
+            # the Jacobian is stored as d x_j / d xi_i, so its inverse is J^{-T}
+            n = torch.einsum('fi,efqji->efqj', reference_normals, small_inverse(cell_jacobian))
+            return n / torch.linalg.norm(n, dim=-1, keepdim=True)
+
+        if self.element.is_mix_facet:
+            if not self._is_cached("_facet_normal_tri"):
+                tri_j, quad_j = self.element.eval_facet_cell_jacobian(
+                    self.element_coords, self.basis_order, self.quadrature_order)
+                tri_mask = self.element.get_tri_mask().to(normals.device)
+                quad_mask = self.element.get_quad_mask().to(normals.device)
+                self.register_buffer("_facet_normal_tri", unit_covector(normals[tri_mask], tri_j))
+                self.register_buffer("_facet_normal_quad", unit_covector(normals[quad_mask], quad_j))
+            return self._facet_normal_tri, self._facet_normal_quad # type:ignore [n_element, n_tri_facet, n_quadrature_per_tri_facet, dim], [n_element, n_quad_facet, n_quadrature_per_quad_facet, dim]
+        else:
+            if not self._is_cached("_facet_normal"):
+                j = self.element.eval_facet_cell_jacobian(
+                    self.element_coords, self.basis_order, self.quadrature_order)
+                self.register_buffer("_facet_normal", unit_covector(normals, j))
+            return self._facet_normal # type:ignore [n_element, n_facet, n_quadrature_per_facet, dim]
+
 
         
       
@@ -1089,10 +1154,8 @@ class Transformation(nn.Module):
         """
         if self.element.is_mix_facet:
             tri_fj, quad_fj = self.facet_jacobian # type:ignore
-            tri_jac_det = torch.sqrt(torch.linalg.det(
-                torch.einsum('efqij,efqjk->efqik', tri_fj, tri_fj)))
-            quad_jac_det= torch.sqrt(torch.linalg.det(
-                torch.einsum('efqij,efqjk->efqik', quad_fj, quad_fj)))
+            tri_jac_det = torch.sqrt(torch.linalg.det(tri_fj @ tri_fj.mT))
+            quad_jac_det= torch.sqrt(torch.linalg.det(quad_fj @ quad_fj.mT))
             return tri_jac_det, quad_jac_det
         else:
             fj = self.facet_jacobian # type:ignore
