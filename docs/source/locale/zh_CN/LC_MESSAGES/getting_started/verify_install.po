@@ -257,12 +257,12 @@ msgstr ""
 #: 755f1354bb5a4e1a8e92eec50fda14a1
 msgid ""
 "**``ModuleNotFoundError: No module named 'torch_sla'``** — install it with "
-"``pip install \"torch-sla>=0.2.1\"``. torch-sla is a hard, import-time "
+"``pip install \"torch-sla>=0.4.0\"``. torch-sla is a hard, import-time "
 "dependency: :mod:`tensormesh.sparse` refuses to import without it, and every"
 " sparse-solver backend is provided through it."
 msgstr ""
 "**``ModuleNotFoundError: No module named 'torch_sla'``**——请通过 ``pip install "
-"\"torch-sla>=0.2.1\"`` 安装它。torch-sla 是一个硬性的、导入时即需满足的依赖：缺少它 "
+"\"torch-sla>=0.4.0\"`` 安装它。torch-sla 是一个硬性的、导入时即需满足的依赖：缺少它 "
 ":mod:`tensormesh.sparse` 将拒绝导入，并且每一个稀疏求解器后端都是通过它来提供的。"
 
 #: ../../source/getting_started/verify_install.rst:201

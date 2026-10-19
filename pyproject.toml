@@ -49,7 +49,7 @@ dependencies = [
     "numpy",
     "scipy",
     "torch>=2.0.0",
-    "torch-sla>=0.3.0",
+    "torch-sla>=0.4.0",
     "meshio",
     "matplotlib",
     "psutil",
@@ -63,9 +63,9 @@ dependencies = [
 # right stack in one step. The native strumpack / amgx backends ship as
 # ABI-specific wheels on torch-sla's GitHub Releases (not PyPI) — install
 # those per the torch-sla README.
-cudss = ["torch-sla[cudss]>=0.3.0"]
-pyamg = ["torch-sla[pyamg]>=0.3.0"]
-gpu = ["torch-sla[all]>=0.3.0"]
+cudss = ["torch-sla[cudss]>=0.4.0"]
+pyamg = ["torch-sla[pyamg]>=0.4.0"]
+gpu = ["torch-sla[all]>=0.4.0"]
 example = ["plotly"]
 test = [
     "pytest",

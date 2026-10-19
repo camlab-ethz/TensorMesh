@@ -194,7 +194,7 @@ isn't installed in the active Python environment. Re-check
 :doc:`installation`.
 
 **``ModuleNotFoundError: No module named 'torch_sla'``** — install it
-with ``pip install "torch-sla>=0.2.1"``. torch-sla is a hard,
+with ``pip install "torch-sla>=0.4.0"``. torch-sla is a hard,
 import-time dependency: :mod:`tensormesh.sparse` refuses to import
 without it, and every sparse-solver backend is provided through it.
 
