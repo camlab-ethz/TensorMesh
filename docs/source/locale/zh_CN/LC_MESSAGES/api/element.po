@@ -4785,8 +4785,9 @@ msgstr ""
 #: ../../source/api/element.rst:176 5d92a71c91a84e00a1ff4481a9ea7f2e
 msgid ""
 "``tensormesh/element/normal.py`` — ``outwards_normal_2d`` / "
-"``outwards_normal_3d``, used internally to compute the outward facet "
-"normals consumed by :attr:`~tensormesh.Transformation.nanson_scale`."
+"``outwards_normal_3d``, the outward facet normals of the reference element,"
+" which :attr:`~tensormesh.Transformation.facet_normal` maps to the physical"
+" cells."
 msgstr ""
 
 #: ../../source/api/element.rst:180 4481326328b74e56a7cf9b4dad4b5cd5

@@ -183,8 +183,9 @@ shape:
   ``hex_quadrature``, ``pyr_quadrature``, ``pri_quadrature`` plus the
   facet-quadrature variants.
 * ``tensormesh/element/normal.py`` — ``outwards_normal_2d`` /
-  ``outwards_normal_3d``, used internally to compute the outward facet
-  normals consumed by :attr:`~tensormesh.Transformation.nanson_scale`.
+  ``outwards_normal_3d``, the outward facet normals of the reference
+  element, which :attr:`~tensormesh.Transformation.facet_normal` maps to
+  the physical cells.
 
 The supported extension path is to subclass :class:`~tensormesh.Element`
 and override its basis / quadrature / facet hooks. Use the existing

@@ -638,6 +638,18 @@ msgstr ""
 "``mesh.boundary_mask`` 上积分；向 ``from_mesh`` 传入 ``boundary_mask=...`` "
 "可将其限制到带标记的子边界上。"
 
+#: ../../source/user_guide/forms.rst:375
+msgid ""
+"A facet is integrated when it lies on the boundary of the mesh (a single "
+"cell references it) and all of its nodes are in the mask, so an interior "
+"facet whose nodes all sit on the boundary, such as a chord between two "
+"nodes of a curved boundary, is never picked up. Besides the names above, "
+"``forward`` can take ``n``, the outward unit normal at the facet "
+"quadrature point, for loads that act along the normal:"
+msgstr ""
+"只有位于网格边界上（仅被一个单元引用）且全部节点都在掩码内的面才会参与积分，因此节点恰好都落在边界上的内部面（例如曲边界上两个节点之间的弦）不会被选中。除上述参数名外，\"
+" ``forward`` 还可以接收 ``n``，即该面求积点处的单位外法向，用于沿法向作用的载荷："
+
 #: ../../source/user_guide/forms.rst:381 c251c86536d44a8a8fd10ccfe48928ae
 msgid ""
 "(no ``element_data``, ``scalar_data``, or ``batch_size`` for facet forms.) A"

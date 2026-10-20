@@ -19,7 +19,9 @@ def _2d(element:Type[Element]):
     edge    = element.points[element.edge]   # [n_facet, n_ends, n_dim] 
     edge_vec = edge[:, 1] - edge[:, 0] # [n_facet, n_dim]
     assert (torch.vmap(torch.dot)(normals, edge_vec)).allclose(torch.zeros(normals.shape[0]))
-    # TODO: test the direction of the normal
+    # outward: from the edge midpoint, the centroid lies against the normal
+    inward = vertex.reshape(-1, vertex.shape[-1]).mean(dim=0) - edge.mean(dim=1) # [n_facet, n_dim]
+    assert bool(((normals * inward).sum(-1) < 0).all())
 
 def _3d(element:Type[Element]):
     normals = element.get_outwards_facet_normal() # [n_facet, n_dim]
@@ -34,8 +36,9 @@ def _3d(element:Type[Element]):
             for j in range(i+1, n_vertex_per_face):
                 vec = face[i] - face[j]
                 assert torch.dot(vec, normal).allclose(torch.zeros(1))
-
-    # TODO: test the direction of the normal
+        # outward: from the face centroid, the cell centroid lies against the normal
+        centroid = vertex.reshape(-1, vertex.shape[-1]).mean(dim=0)
+        assert float(torch.dot(centroid - face.mean(dim=0), normal)) < 0
 
 def test_tri():
     _2d(Triangle)
