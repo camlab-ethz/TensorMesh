@@ -403,9 +403,9 @@ assembler) lives in the :doc:`/example_gallery/index`.
 Choosing where call-time parameters live
 ----------------------------------------
 
-Three dicts — ``point_data``, ``element_data``, ``scalar_data`` — cover
-every flavour of "data that varies across the mesh and is not part of
-the basis itself". The decision tree:
+Four dicts — ``point_data``, ``element_data``, ``quadrature_data``,
+``scalar_data`` — cover every flavour of "data that varies across the
+mesh and is not part of the basis itself". The decision tree:
 
 .. list-table::
    :header-rows: 1
@@ -423,10 +423,10 @@ the basis itself". The decision tree:
      - ``element_data={"E": E}`` or ``element_data={"E": {"triangle": E_tri}}``
      - the whole per-element slice (shape ``[...]``); same value at every quadrature point inside that cell
      - per-cell Young's modulus, marker labels, any quantity constant on the element
-   * - per (element, quadrature point) — ``.energy()`` path only
-     - ``element_data={"eps_p": eps_p}`` with shape ``[n_elem, n_quad, ...]``
+   * - per (element, quadrature point)
+     - ``quadrature_data={"C": C}`` with shape ``[n_elem, n_quad, ...]``
      - the value at the current quadrature point (shape ``[...]``)
-     - plastic strain history in :class:`~tensormesh.assemble.J2Plasticity`
+     - consistent tangent and stress of a plasticity model, history variables
    * - global scalar
      - ``scalar_data={"dt": dt}``
      - the scalar value (no vmap broadcasting)
@@ -440,13 +440,14 @@ plumbing is needed.
 
 .. caution::
 
-   Per-(element, quadrature) ``element_data`` is auto-detected only by
-   ``ElementAssembler.energy`` (see :ref:`forms-energy`), not by the
-   matrix-assembling ``ElementAssembler.__call__`` path. If you pass a
-   tensor of shape ``[n_elem, n_quad, ...]`` to ``__call__``, the *whole*
-   ``[n_quad, ...]`` slice is handed to ``forward`` for each element —
-   not the per-quadrature value. For matrix assembly today, keep
-   ``element_data`` strictly per-element.
+   ``element_data`` is per element in ``ElementAssembler.__call__``: a
+   tensor of shape ``[n_elem, n_quad, ...]`` there hands the *whole*
+   ``[n_quad, ...]`` slice to ``forward``. Use ``quadrature_data`` for
+   per-point values. ``ElementAssembler.energy`` still recognises the
+   per-point layout in ``element_data`` by ``shape[1] == n_quad`` (see
+   :ref:`forms-energy`, used by :class:`~tensormesh.assemble.J2Plasticity`),
+   which is ambiguous when a per-element dimension happens to equal the
+   number of quadrature points; ``quadrature_data`` is not.
 
 
 Feature matrix
@@ -500,6 +501,12 @@ you have:
      - ✗
      - ✗
      - only ``.energy()`` recognises the per-quadrature layout
+   * - ``quadrature_data``
+     - ✓
+     - ✓
+     - ✓ (forces vmap path)
+     - ✗
+     - shape ``[n_elem, n_quad, ...]``; split along with the quadrature points by ``batch_size``
    * - ``scalar_data``
      - ✓
      - ✓

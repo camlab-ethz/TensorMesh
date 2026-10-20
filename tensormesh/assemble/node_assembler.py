@@ -7,6 +7,7 @@ import torch
 import torch.nn as nn
 
 from .projector import ReduceProjector, SparseProjector
+from .element_assembler import RESERVED_NAMES, normalize_quadrature_data
 from ..element import Transformation, element_type2dimension
 from ..nn import BufferDict
 from ..mesh import Mesh
@@ -244,7 +245,8 @@ class NodeAssembler(nn.Module):
                  func:Optional[Callable] = None,
                  point_data:Optional[Dict[str, torch.Tensor]]=None, 
                  scalar_data:Optional[Dict[str, torch.Tensor]]=None,
-                 batch_size:int=1)->torch.Tensor:
+                 batch_size:int=1,
+                 quadrature_data:Optional[Dict[str, torch.Tensor]]=None)->torch.Tensor:
         r"""Assemble the linear form into a global node vector.
 
         Parameters
@@ -265,6 +267,13 @@ class NodeAssembler(nn.Module):
             one quadrature point at a time); pass ``-1`` to process all
             quadrature points at once, which also caches the shape gradients
             and ``JxW`` on the :class:`~tensormesh.Transformation` for later calls.
+        quadrature_data : dict[str, torch.Tensor], optional
+            Data that varies per quadrature point, e.g. a stress, each of
+            shape :math:`[|\mathcal C|, N_q, ...]` (``{key: {element_type:
+            tensor}}`` on mixed-element meshes); ``forward`` receives the
+            trailing ``[...]`` of the current point. Keys must not repeat
+            other data keys. Such calls take the vmap path, also when the
+            assembler is compiled.
 
         Returns
         -------
@@ -286,6 +295,10 @@ class NodeAssembler(nn.Module):
                 trans:Transformation   = self.transformation[element_type] # type:ignore
                 trans.update_points(points) # type:ignore
 
+        quadrature_data = normalize_quadrature_data(
+            quadrature_data, self.transformation, # type:ignore
+            {**dict.fromkeys(RESERVED_NAMES), **point_data, **scalar_data})
+
         point_data["x"] = points # type:ignore
 
         self = self.type(points.dtype).to(points.device) # type:ignore
@@ -294,7 +307,7 @@ class NodeAssembler(nn.Module):
             assert value.shape[0] == points.shape[0], f"the shape of {key} should be [n_point, ...], but got {value.shape}"
  
         # Use fast path if enabled (bypasses vmap, uses direct broadcast)
-        if self._compile and len(self.element_types) == 1 and func is None:
+        if self._compile and len(self.element_types) == 1 and func is None and not quadrature_data:
             element_type = self.element_types[0]
             point_data_keys = sorted([k for k in point_data.keys() if k != "x"])
             scalar_data_keys = sorted(scalar_data.keys())
@@ -326,6 +339,8 @@ class NodeAssembler(nn.Module):
             (lambda x: x=="gradv" , InputBroadcast(True,  True,  True)), # [n_element, n_quadrature, n_v_basis, n_dim]
             (lambda x: x in scalar_data.keys(),
                                     InputBroadcast(True, True,  True)),
+            (lambda x: x in quadrature_data,
+                                    InputBroadcast(True, True,  False)),  # [n_element, n_quadrature,        :]
             (lambda x: x in point_data.keys(),
                                     InputBroadcast(True, True,  False)),  # [n_element, n_quadrature,        :]
             (lambda x: x in {"grad" + key for key in point_data.keys()},
@@ -347,7 +362,7 @@ class NodeAssembler(nn.Module):
                     is_match = True
                     break
             if not is_match:
-                raise ValueError(f"{key} is not supported, please use  `v`, `gradv` or more keys provided by point_data, element_data or scalar_data")
+                raise ValueError(f"{key} is not supported, please use  `v`, `gradv` or more keys provided by point_data, quadrature_data or scalar_data")
             
 
         element_dims    = tuple(element_dims)
@@ -394,6 +409,9 @@ class NodeAssembler(nn.Module):
                     elif key.startswith("grad") and key[4:] in ele_point_data: # grad point data
                         args.append(torch.einsum("eb...,eqbd->eq...d",ele_point_data[key[4:]], shape_grad)) 
                         # grad point data : [element_batch, quadrature_batch, ..., dim]
+                    elif key in quadrature_data:
+                        args.append(quadrature_data[key][element_type][:, i*n_batch_size:(i+1)*n_batch_size])
+                        # quadrature data : [element_batch, quadrature_batch, ...]
                     elif key in scalar_data: # type:ignore
                         args.append(scalar_data[key])
                     else:
