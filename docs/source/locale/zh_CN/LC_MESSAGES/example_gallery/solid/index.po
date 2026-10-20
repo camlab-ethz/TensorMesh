@@ -27,10 +27,10 @@ msgstr "固体力学"
 #: ../../source/example_gallery/solid/index.rst:4
 #: e68cf17c677b49a28e5b614c73833fb3
 msgid ""
-"Eight worked solid-mechanics examples in ``examples/solid/``, built as a "
+"Nine worked solid-mechanics examples in ``examples/solid/``, built as a "
 "progressive ladder — each rung adds exactly one new concept on top of the "
 "previous one:"
-msgstr "``examples/solid/`` 中八个完整的固体力学示例,搭建成一架递进的阶梯 —— 每一级恰好在前一级之上新增一个概念:"
+msgstr "``examples/solid/`` 中九个完整的固体力学示例,搭建成一架递进的阶梯 —— 每一级恰好在前一级之上新增一个概念:"
 
 #: ../../source/example_gallery/solid/index.rst:8
 #: e0fdfb7a49114a7e9486fdbcca1208a4
@@ -58,6 +58,18 @@ msgid ""
 "**Plasticity (J2)** — adds path-dependence: per-quadrature history variables"
 " and a variational constitutive update, in 2D and 3D."
 msgstr "**塑性（J2）** —— 增加了路径相关性：逐求积点的历史变量和变分本构更新，分别在二维和三维中实现。"
+
+#: ../../source/example_gallery/solid/index.rst:17
+#: b3a85fa5bccb4a64a5e90e03e9001910
+msgid ""
+"**Plasticity with Newton's method** — replaces L-BFGS by Newton's method "
+"with the consistent tangent of the return map, which converges "
+"quadratically; the plastic state reaches the assemblers as "
+"``quadrature_data``. Checked against the elastic and limit pressures of a "
+"thick-walled cylinder."
+msgstr ""
+"**牛顿法求解塑性问题** —— 用返回映射的一致切线和牛顿法取代 L-BFGS，迭代二次收敛；塑性状态以 ``quadrature_data`` "
+"的形式传入装配器。用厚壁圆筒的弹性压力和极限压力进行验证。"
 
 #: ../../source/example_gallery/solid/index.rst:17
 msgid ""
@@ -96,9 +108,9 @@ msgstr ""
 #: ../../source/example_gallery/solid/index.rst:28
 #: 37ddee47191045aaa85a33a5050ea5f6
 msgid ""
-"Together they cover the three solver patterns TensorMesh uses for solid "
+"Together they cover the four solver patterns TensorMesh uses for solid "
 "problems:"
-msgstr "它们合在一起涵盖了 TensorMesh 用于固体问题的三种求解模式："
+msgstr "它们合在一起涵盖了 TensorMesh 用于固体问题的四种求解模式："
 
 #: ../../source/example_gallery/solid/index.rst:31
 #: 30b5eb9b03ca4e4bb2d74fc759690e65
@@ -118,6 +130,13 @@ msgstr ""
 "**L-BFGS 能量最小化** 用于势能定义良好的非线性问题 —— 超弹性、接触和塑性(``hyperelastic_beam``\\ 、\\ "
 "``hertzian_contact``\\ 、\\ ``plasticity_strip``\\ 、\\ "
 "``drucker_prager_footing``)。"
+
+#: ../../source/example_gallery/solid/index.rst:44
+#: 4a5f1b46c14d470ea5715870e5438e35
+msgid ""
+"**Newton with a consistent tangent** when the tangent of a path-dependent "
+"material is known at the quadrature points (``plasticity_cylinder``)."
+msgstr "**基于一致切线的牛顿法** 用于路径相关材料、且其切线在求积点处已知的情形(``plasticity_cylinder``)。"
 
 #: ../../source/example_gallery/solid/index.rst:38
 msgid ""
@@ -177,6 +196,18 @@ msgid ""
 "Plane-strain J2 plasticity with isotropic hardening, load / unload cycle, "
 "plus a 3D cube."
 msgstr "带各向同性硬化的平面应变 J2 塑性，加载/卸载循环，外加一个三维立方体。"
+
+#: ../../source/example_gallery/solid/index.rst:79
+#: 9e2a79453f2c4b049e5b33cc9390b752
+msgid "Plasticity with Newton's Method"
+msgstr "牛顿法求解塑性问题"
+
+#: ../../source/example_gallery/solid/index.rst:84
+#: 3f0a9f0dd88741309ef018d15556c5bb
+msgid ""
+"A thick-walled cylinder pressed to collapse: J2 return map, consistent "
+"tangent, limit pressure."
+msgstr "厚壁圆筒加压直至塑性坍塌：J2 返回映射、一致切线、极限压力。"
 
 #: ../../source/example_gallery/solid/index.rst:77
 msgid "Phase-Field Fracture"

@@ -1,7 +1,7 @@
 Solid Mechanics
 ===============
 
-Eight worked solid-mechanics examples in ``examples/solid/``, built
+Nine worked solid-mechanics examples in ``examples/solid/``, built
 as a progressive ladder — each rung adds exactly one new concept on
 top of the previous one:
 
@@ -14,6 +14,11 @@ top of the previous one:
 #. **Plasticity (J2)** — adds path-dependence: per-quadrature
    history variables and a variational constitutive update, in 2D
    and 3D.
+#. **Plasticity with Newton's method** — replaces L-BFGS by Newton's
+   method with the consistent tangent of the return map, which
+   converges quadratically; the plastic state reaches the assemblers
+   as ``quadrature_data``. Checked against the elastic and limit
+   pressures of a thick-walled cylinder.
 #. **Phase-Field Fracture** — adds an inequality constraint: damage
    cannot heal, so every load step is a bound-constrained minimization,
    solved field by field with a bound-constrained Newton method.
@@ -28,7 +33,7 @@ top of the previous one:
    boundary-value setup with pressure-dependent plasticity, load
    stepping, and committed per-quadrature history variables.
 
-Together they cover the three solver patterns TensorMesh uses for
+Together they cover the four solver patterns TensorMesh uses for
 solid problems:
 
 * **Direct linear solve** for small-strain linear elasticity
@@ -37,6 +42,9 @@ solid problems:
   potential energy is well-defined — hyperelasticity, contact, and
   plasticity (``hyperelastic_beam``, ``hertzian_contact``,
   ``plasticity_strip``, ``drucker_prager_footing``).
+* **Newton with a consistent tangent** when the tangent of a
+  path-dependent material is known at the quadrature points
+  (``plasticity_cylinder``).
 * **Bound-constrained Newton** (``torch_sla.vi_solve``) when unknowns
   carry inequality constraints, here damage irreversibility
   (``phase_field_fracture``).
@@ -73,6 +81,13 @@ The order below mirrors solver complexity.
       :img-top: /_static/solid_mechanics/plasticity_strip.gif
 
       Plane-strain J2 plasticity with isotropic hardening, load / unload cycle, plus a 3D cube.
+
+   .. grid-item-card:: Plasticity with Newton's Method
+      :link: plasticity_cylinder
+      :link-type: doc
+      :img-top: /_static/solid_mechanics/plasticity_cylinder_field.png
+
+      A thick-walled cylinder pressed to collapse: J2 return map, consistent tangent, limit pressure.
 
    .. grid-item-card:: Phase-Field Fracture
       :link: phase_field_fracture
@@ -125,6 +140,7 @@ linear-elastic boundary-value problem, to the full nonlinear footing.
    hyperelastic_beam
    hertzian_contact
    plasticity_strip
+   plasticity_cylinder
    phase_field_fracture
    drucker_prager_triaxial
    elastic_footing
