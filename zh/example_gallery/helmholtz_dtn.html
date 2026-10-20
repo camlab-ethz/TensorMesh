@@ -1,0 +1,972 @@
+<!doctype html>
+<html class="no-js" lang="zh-CN" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="索引" href="../genindex.html"><link rel="search" title="搜索" href="../search.html"><link rel="next" title="固体力学" href="solid/index.html"><link rel="prev" title="模态分析" href="modal_analysis.html">
+        <link rel="prefetch" href="../_static/logo.png" as="image">
+        <link rel="prefetch" href="../_static/logo.png" as="image">
+
+    <link rel="shortcut icon" href="../_static/logo.png"><!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>Helmholtz 散射（DtN 边界处理） - TensorMesh</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=95a110e3" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #5B6EE8;
+  --color-brand-content: #149B8E;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">TensorMesh</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../_static/logo.png" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../_static/logo.png" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">TensorMesh</span>
+  
+</a><div class="sidebar-language-switcher">
+  <a href="../../example_gallery/helmholtz_dtn.html" rel="alternate" hreflang="en" title="English">English</a>
+  <span class="sep">·</span>
+  <span class="active">中文</span>
+</div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="搜索" name="q" aria-label="搜索">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">文档</span></p>
+<ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../getting_started/index.html">快速上手</a><input aria-label="Toggle navigation of 快速上手" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html">安装</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quickstart.html">快速开始</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/verify_install.html">验证安装</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../user_guide/index.html">用户指南</a><input aria-label="Toggle navigation of 用户指南" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/concepts.html">核心概念</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/meshes.html">网格</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/elements_and_quadrature.html">单元与求积</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/forms.html">形式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/mixed_assembly.html">混合装配</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/boundary_conditions.html">边界条件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/linear_solvers.html">稀疏求解器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/time_integration.html">时间积分</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/batched_workflows.html">批量化工作流</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/differentiability.html">可微性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/distributed.html">分布式有限元方法</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">示例画廊</a><input aria-label="Toggle navigation of 示例画廊" checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="basics.html">基础与可视化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poisson.html">泊松方程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diffusion.html">扩散</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wave.html">波动方程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="complex.html">复数值有限元方法 — Helmholtz</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phononic_crystal.html">声子晶体（布洛赫-弗洛凯）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="open_domain_wave.html">开放域波动（PML 与端口）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modal_analysis.html">模态分析</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Helmholtz 散射（DtN 边界处理）</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="solid/index.html">固体力学</a><input aria-label="Toggle navigation of 固体力学" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="solid/cantilever_beam.html">悬臂梁</a></li>
+<li class="toctree-l3"><a class="reference internal" href="solid/hyperelastic_beam.html">超弹性梁（新胡克）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="solid/hertzian_contact.html">赫兹接触</a></li>
+<li class="toctree-l3"><a class="reference internal" href="solid/plasticity_strip.html">塑性（带各向同性硬化的 J2）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="solid/plasticity_cylinder.html">牛顿法求解塑性问题</a></li>
+<li class="toctree-l3"><a class="reference internal" href="solid/phase_field_fracture.html">相场断裂</a></li>
+<li class="toctree-l3"><a class="reference internal" href="solid/drucker_prager_triaxial.html">岩土力学：Drucker-Prager 三轴压缩</a></li>
+<li class="toctree-l3"><a class="reference internal" href="solid/elastic_footing.html">岩土力学:弹性条形基础</a></li>
+<li class="toctree-l3"><a class="reference internal" href="solid/drucker_prager_footing.html">岩土力学:Drucker-Prager 条形基础</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="fluid/index.html">流体力学</a><input aria-label="Toggle navigation of 流体力学" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="fluid/stokes_taylor_hood.html">Taylor-Hood Stokes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fluid/cavity.html">顶盖驱动方腔</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fluid/cylinder_flow.html">圆柱绕流（涡脱落）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fluid/flow_obstacles.html">绕多个障碍物的流动</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fluid/rayleigh_benard.html">瑞利-贝纳德对流</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fluid/taylor_green.html">泰勒-格林涡（收敛性研究）</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="maxwell.html">静磁学（麦克斯韦方程）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inverse_design.html">反问题设计与辨识</a></li>
+<li class="toctree-l2"><a class="reference internal" href="physics_informed.html">物理信息学习</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataset.html">机器学习数据集</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/index.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/mesh.html">tensormesh.mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/element.html">tensormesh.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/assemble.html">tensormesh.assemble</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/operator.html">tensormesh.operator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/sparse.html">tensormesh.sparse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/ode.html">tensormesh.ode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/functional.html">tensormesh.functional</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/optimizer.html">tensormesh.optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/material.html">tensormesh.material</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/distributed.html">tensormesh.distributed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/nn.html">tensormesh.nn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/dataset.html">tensormesh.dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/visualization.html">tensormesh.visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../performance/index.html">性能</a><input aria-label="Toggle navigation of 性能" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../performance/benchmarks.html">基准测试</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../performance/scaling_guide.html">扩展性指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../performance/profiling.html">性能剖析</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../community/index.html">社区</a><input aria-label="Toggle navigation of 社区" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../community/discord.html">Discord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/github_discussions.html">GitHub Discussions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/github_issues.html">GitHub Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/contributing.html">贡献指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../community/citing.html">引用 TensorMesh</a></li>
+</ul>
+</li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/example_gallery/helmholtz_dtn.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="helmholtz-scattering-dtn-boundary-treatment">
+<h1>Helmholtz 散射（DtN 边界处理）<a class="headerlink" href="#helmholtz-scattering-dtn-boundary-treatment" title="Link to this heading">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">examples/wave/helmholtz_dtn</span></code> 中的两个自包含脚本分别处理全空间散射和水平周期层散射。同一标量形式同时适用于电磁 TE/TM 极化和声压波。</p>
+<p>如果需要吸收层（PML）或端口边界，而不是精确的 DtN 映射，请参见 <a class="reference internal" href="open_domain_wave.html"><span class="doc">开放域波动（PML 与端口）</span></a>。</p>
+<p>采用时间约定 <span class="math notranslate nohighlight">\(e^{-i\omega t}\)</span>，并将方程写成</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\nabla\!\cdot\!\bigl(a(x)\nabla u\bigr)+\omega^2b(x)u=0.\]</div>
+</div>
+<p>这里 <span class="math notranslate nohighlight">\(a,b\in L^\infty\)</span> 是实值、一致正的标量函数。两个系数都可以随空间变化；下文解析示例采用的分片常数材料只是其中一种特殊情形。</p>
+<div class="table-wrapper colwidths-given docutils container" id="id1">
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-number">表 1 </span><span class="caption-text">标量系数的物理含义</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 18.0%" />
+<col style="width: 25.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>模型</p></th>
+<th class="head"><p>标量场</p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(a(x)\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(b(x)\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">TM_EZ</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(u=E_z\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mu(x)^{-1}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\varepsilon(x)\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">TE_HZ</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(u=H_z\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\varepsilon(x)^{-1}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mu(x)\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>声压</p></td>
+<td><p><span class="math notranslate nohighlight">\(u=p\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\rho(x)^{-1}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(K(x)^{-1}=1/[\rho(x)c(x)^2]\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>电磁模型沿用本项目约定：<code class="docutils literal notranslate"><span class="pre">TM_EZ</span></code> 表示面外电场，<code class="docutils literal notranslate"><span class="pre">TE_HZ</span></code> 表示面外磁场。示例采用归一化单位。使用相对材料参数时，<code class="docutils literal notranslate"><span class="pre">TM_EZ</span></code> 的系数为 <span class="math notranslate nohighlight">\((a,b)=(\mu_r^{-1},\varepsilon_r)\)</span>，<code class="docutils literal notranslate"><span class="pre">TE_HZ</span></code> 的系数为 <span class="math notranslate nohighlight">\((a,b)=(\varepsilon_r^{-1},\mu_r)\)</span>。在任一均匀区域 <span class="math notranslate nohighlight">\(j\)</span> 中，相应波数为</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[k_j=\omega\sqrt{b_j/a_j}.\]</div>
+</div>
+<p class="rubric">运行示例</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python examples/wave/helmholtz_dtn/circular_dtn.py</span>
+<span class="go">python examples/wave/helmholtz_dtn/periodic_dtn.py</span>
+</pre></div>
+</div>
+<section id="full-space-scattering">
+<h2>全空间散射<a class="headerlink" href="#full-space-scattering" title="Link to this heading">¶</a></h2>
+<section id="general-scattering-problem">
+<h3>一般散射问题<a class="headerlink" href="#general-scattering-problem" title="Link to this heading">¶</a></h3>
+<p>设 <span class="math notranslate nohighlight">\(D\Subset\mathbb R^2\)</span> 是边界为 <span class="math notranslate nohighlight">\(\Gamma\)</span> 的有界障碍物或可穿透夹杂。在某个有界区域之外，材料为常数 <span class="math notranslate nohighlight">\(a_0,b_0&gt;0\)</span> 的均匀介质，外部波数为 <span class="math notranslate nohighlight">\(k_0=\omega\sqrt{b_0/a_0}\)</span>。</p>
+<p>在选定具体入射波之前，令 <span class="math notranslate nohighlight">\(u^{\rm inc}\)</span> 是外部方程的任意整解</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\Delta u^{\rm inc}+k_0^2u^{\rm inc}=0.\]</div>
+</div>
+<p>散射体产生出射场 <span class="math notranslate nohighlight">\(u^{\rm sc}\)</span>。在外部区域中，总场为</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[u=u^{\rm inc}+u^{\rm sc}.\]</div>
+</div>
+<p>系数本身并非紧支，因为波必须在外部介质中传播；具有紧支集的是材料反差，</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\operatorname{supp}(a-a_0)\cup\operatorname{supp}(b-b_0)
+\Subset\mathbb R^2.\]</div>
+</div>
+<p>对于障碍物，总场未知量定义在 <span class="math notranslate nohighlight">\(D\)</span> 的外部。对于可穿透夹杂，总场定义在整个平面上，且系数可以在紧支反差区域内变化。后面的圆形验证算例进一步将夹杂内部取为常数 <span class="math notranslate nohighlight">\((a_1,b_1)\)</span>。</p>
+</section>
+<section id="physical-boundary-and-interface-conditions">
+<h3>物理边界与界面条件<a class="headerlink" href="#physical-boundary-and-interface-conditions" title="Link to this heading">¶</a></h3>
+<p>三个算例只在物理圆周上的条件不同。令 <span class="math notranslate nohighlight">\(\nu\)</span> 从 <span class="math notranslate nohighlight">\(D\)</span> 指向外部，它们分别满足</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+u&amp;=0 &amp;&amp;\text{on }\Gamma &amp;&amp;\text{(Dirichlet obstacle)},\\
+a_0\partial_\nu u&amp;=0 &amp;&amp;\text{on }\Gamma &amp;&amp;\text{(Neumann obstacle)},\\
+[u]&amp;=0,\qquad [a\partial_\nu u]=0
+   &amp;&amp;\text{on }\Gamma &amp;&amp;\text{(penetrable inclusion)}.
+\end{aligned}\end{split}\]</div>
+</div>
+<p>透射算例中的跳跃定义为内侧迹减去外侧迹。因此，场和加权法向通量均连续。</p>
+</section>
+<section id="full-space-radiation-condition">
+<h3>全空间辐射条件<a class="headerlink" href="#full-space-radiation-condition" title="Link to this heading">¶</a></h3>
+<p>散射场满足出射条件。对于 <span class="math notranslate nohighlight">\(e^{-i\omega t}\)</span> 时间约定，它满足二维 Sommerfeld 条件</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\lim_{r\to\infty}\sqrt r\,
+\left(\partial_ru^{\rm sc}-ik_0u^{\rm sc}\right)=0\]</div>
+</div>
+<p>且关于方向一致成立。该条件选取第一类 Hankel 函数；在上述材料一致正的假设下，它唯一确定出射解。</p>
+</section>
+<section id="circular-dtn-truncation">
+<h3>圆周 DtN 截断<a class="headerlink" href="#circular-dtn-truncation" title="Link to this heading">¶</a></h3>
+<p>选择人工圆周 <span class="math notranslate nohighlight">\(\Gamma_R=\{r=R\}\)</span>，使其包围物理散射体和全部材料反差。若</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\widehat\phi_m=\frac{1}{2\pi}\int_0^{2\pi}
+\phi(\theta)e^{-im\theta}\,d\theta,\]</div>
+</div>
+<p>则精确的外部 Fourier--Hankel DtN 映射为</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[T_R\phi
+=\sum_{m\in\mathbb Z}\tau_m\widehat\phi_m e^{im\theta},
+\qquad
+\tau_m=k_0\frac{H_m^{(1)\prime}(k_0R)}{H_m^{(1)}(k_0R)}.\]</div>
+</div>
+<p>由于 <span class="math notranslate nohighlight">\(\partial_n-T_R\)</span> 消去每个出射 Hankel 模态，无界域辐射条件等价于如下总场边界条件</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\partial_nu-T_Ru=g_R,
+\qquad
+g_R=\partial_nu^{\rm inc}-T_Ru^{\rm inc}
+\quad\text{on }\Gamma_R,\]</div>
+</div>
+<p>其中 <span class="math notranslate nohighlight">\(n=e_r\)</span> 是截断区域的外法向。</p>
+</section>
+<section id="full-space-weak-form">
+<h3>全空间弱形式<a class="headerlink" href="#full-space-weak-form" title="Link to this heading">¶</a></h3>
+<p>对障碍物令 <span class="math notranslate nohighlight">\(\Omega_R=B_R\setminus\overline D\)</span>，对透射问题令 <span class="math notranslate nohighlight">\(\Omega_R=B_R\)</span>。Dirichlet 障碍物的试验空间为</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[V_D=\{v\in H^1(\Omega_R):v|_\Gamma=0\}\]</div>
+</div>
+<p>Neumann 和透射算例采用 <span class="math notranslate nohighlight">\(V=H^1(\Omega_R)\)</span>。在相应仿射试探空间中求 <span class="math notranslate nohighlight">\(u\)</span>，使得对其齐次对应空间内任意试验函数 <span class="math notranslate nohighlight">\(v\)</span>，都有</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\int_{\Omega_R}a\nabla u\cdot\nabla\overline v
+-\omega^2\int_{\Omega_R}bu\overline v
+-a_0\langle T_Ru,v\rangle_{\Gamma_R}
+=a_0\langle g_R,v\rangle_{\Gamma_R}.\]</div>
+</div>
+<p>Dirichlet 迹通过 <code class="docutils literal notranslate"><span class="pre">Condenser</span></code> 强制施加。齐次 Neumann 条件是自然边界条件，因而不产生边界积分。对透射问题，共形网格和逐单元材料系数 <span class="math notranslate nohighlight">\(a,b\)</span> 通过弱形式自然满足 <span class="math notranslate nohighlight">\([u]=[a\partial_\nu u]=0\)</span>。</p>
+</section>
+<section id="circular-modal-exact-solutions-for-verification">
+<h3>用于验证的圆模态精确解<a class="headerlink" href="#circular-modal-exact-solutions-for-verification" title="Link to this heading">¶</a></h3>
+<p>一般散射形式并不要求柱面入射波。为了用闭式解验证代码，圆形示例选择一个 Fourier--Bessel 模态，</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[u^{\rm inc}(r,\theta)=J_n(k_0r)e^{in\theta}.\]</div>
+</div>
+<p>对于两个障碍物算例以及可穿透圆的外部，出射散射场和外部总场分别为</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[u^{\rm sc}(r,\theta)
+=c_nH_n^{(1)}(k_0r)e^{in\theta},\]</div>
+</div>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[u_{\rm ext}=u^{\rm inc}+u^{\rm sc}
+=e^{in\theta}
+ \left[J_n(k_0r)+c_nH_n^{(1)}(k_0r)\right].\]</div>
+</div>
+<p>对于 Dirichlet 和 Neumann 障碍物，系数分别为</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[c_n^D=-\frac{J_n(k_0R_c)}{H_n^{(1)}(k_0R_c)},
+\qquad
+c_n^N=-\frac{J_n'(k_0R_c)}{H_n^{(1)\prime}(k_0R_c)}.\]</div>
+</div>
+<p>对于透射问题，完整总场为</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}u(r,\theta)=
+\begin{cases}
+d_nJ_n(k_1r)e^{in\theta}, &amp; 0\leq r&lt;R_c,\\
+u^{\rm inc}(r,\theta)+u^{\rm sc}(r,\theta), &amp; r&gt;R_c.
+\end{cases}\end{split}\]</div>
+</div>
+<p>总场与加权通量的连续性给出透射系数 <span class="math notranslate nohighlight">\(c_n,d_n\)</span>：</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{bmatrix}
+H_n^{(1)}(z_0) &amp; -J_n(z_1)\\
+a_0k_0H_n^{(1)\prime}(z_0) &amp; -a_1k_1J_n'(z_1)
+\end{bmatrix}
+\begin{bmatrix}c_n\\d_n\end{bmatrix}
+=-
+\begin{bmatrix}J_n(z_0)\\a_0k_0J_n'(z_0)\end{bmatrix},
+\qquad z_j=k_jR_c.\end{split}\]</div>
+</div>
+<p>这些场分别检验强 Dirichlet 迹、自然 Neumann 条件、两个透射条件以及 <span class="math notranslate nohighlight">\(\Gamma_R\)</span> 上的 DtN 载荷。</p>
+<p>实现中清楚保留了 DtN 的四个步骤：</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-number">列表 13 </span><span class="caption-text">examples/wave/helmholtz_dtn/circular_dtn.py（DtN 核心代码）</span><a class="headerlink" href="#id2" title="Link to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Fourier modes and outgoing Hankel symbols.</span>
+<span class="n">modes</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">num_modes</span><span class="p">,</span> <span class="n">num_modes</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="n">tau</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">hankel_symbol</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">k0</span><span class="p">,</span> <span class="n">dtn_radius</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">modes</span><span class="p">],</span>
+    <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># 2. TensorMesh integrates every FE trace against exp(-i*m*theta).</span>
+<span class="n">nodes</span><span class="p">,</span> <span class="n">Psi</span> <span class="o">=</span> <span class="n">modal_trace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">outer</span><span class="p">,</span> <span class="n">modes</span><span class="p">)</span>
+
+<span class="c1"># 3. Form the nonlocal boundary block.</span>
+<span class="n">block</span> <span class="o">=</span> <span class="n">Psi</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span> <span class="o">@</span> <span class="n">torch</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">tau</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">dtn_radius</span><span class="p">))</span> <span class="o">@</span> <span class="n">Psi</span><span class="o">.</span><span class="n">T</span>
+
+<span class="c1"># 4. Scatter the full boundary-by-boundary block into TensorMesh COO storage.</span>
+<span class="n">dtn</span> <span class="o">=</span> <span class="n">SparseMatrix</span><span class="p">(</span>
+    <span class="n">block</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">nodes</span><span class="o">.</span><span class="n">repeat_interleave</span><span class="p">(</span><span class="n">nodes</span><span class="o">.</span><span class="n">numel</span><span class="p">()),</span>
+    <span class="n">nodes</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">nodes</span><span class="o">.</span><span class="n">numel</span><span class="p">()),</span>
+    <span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">n_points</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">n_points</span><span class="p">),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-1 sd-row-cols-xs-1 sd-row-cols-sm-1 sd-row-cols-md-3 sd-row-cols-lg-3 docutils">
+<div class="sd-col sd-d-flex-column docutils">
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="../_images/circular_dirichlet.png"><img alt="Dirichlet 圆问题的数值场、精确场与误差场。" src="../_images/circular_dirichlet.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 53 </span><span class="caption-text">Dirichlet 圆形障碍物。</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</div>
+<div class="sd-col sd-d-flex-column docutils">
+<figure class="align-default" id="id4">
+<a class="reference internal image-reference" href="../_images/circular_neumann.png"><img alt="Neumann 圆问题的数值场、精确场与误差场。" src="../_images/circular_neumann.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 54 </span><span class="caption-text">Neumann 圆形障碍物。</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</div>
+<div class="sd-col sd-d-flex-column docutils">
+<figure class="align-default" id="id5">
+<a class="reference internal image-reference" href="../_images/circular_transmission.png"><img alt="可穿透圆问题的数值场、精确场与误差场。" src="../_images/circular_transmission.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 55 </span><span class="caption-text">可穿透圆。</span><a class="headerlink" href="#id5" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="periodic-scattering">
+<h2>周期散射<a class="headerlink" href="#periodic-scattering" title="Link to this heading">¶</a></h2>
+<section id="periodic-material-and-vertical-compactness">
+<h3>周期材料与竖直方向紧支性<a class="headerlink" href="#periodic-material-and-vertical-compactness" title="Link to this heading">¶</a></h3>
+<p>设 <span class="math notranslate nohighlight">\(x_1\)</span> 方向的周期为 <span class="math notranslate nohighlight">\(L\)</span>。系数满足</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[a(x_1+L,x_2)=a(x_1,x_2),
+\qquad
+b(x_1+L,x_2)=b(x_1,x_2).\]</div>
+</div>
+<p>非平凡周期系数不可能在整个平面内紧支。正确的开放域假设是：在一个周期胞内，材料反差沿竖直方向紧支，即在某个有界水平带的上方和下方，系数均变为常数。在本示例中，</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\exists\,y_-&lt;y_+:\qquad
+a(x_1,x_2)=a_0,\quad b(x_1,x_2)=b_0
+\quad\text{for }x_2\notin[y_-,y_+],\ 0&lt;x_1&lt;L.\]</div>
+</div>
+<p>slab 算例在 <span class="math notranslate nohighlight">\(0&lt;x_2&lt;h\)</span> 内采用材料 <span class="math notranslate nohighlight">\((a_1,b_1)\)</span>，上下外部半空间均采用材料 <span class="math notranslate nohighlight">\((a_0,b_0)\)</span>。wall 算例只保留 <span class="math notranslate nohighlight">\(x_2&gt;0\)</span>：同一有限层在 <span class="math notranslate nohighlight">\(x_2=0\)</span> 处由物理边界封闭，并在上方开放。</p>
+</section>
+<section id="bloch-condition">
+<h3>Bloch 条件<a class="headerlink" href="#bloch-condition" title="Link to this heading">¶</a></h3>
+<p>给定水平 Bloch 波数 <span class="math notranslate nohighlight">\(\alpha\)</span>，总场满足</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[u(L,x_2)=e^{i\alpha L}u(0,x_2),
+\qquad
+\partial_{x_1}u(L,x_2)
+=e^{i\alpha L}\partial_{x_1}u(0,x_2).\]</div>
+</div>
+<p>由于 <span class="math notranslate nohighlight">\(a\)</span> 具有周期性，水平方向材料通量也具有相同相位。试探和试验函数均满足这一拟周期性，因此 <span class="math notranslate nohighlight">\(\overline v\)</span> 带有共轭相位，弱形式中左右边界项相互抵消。</p>
+</section>
+<section id="general-incident-scattered-and-total-fields">
+<h3>一般入射场、散射场与总场<a class="headerlink" href="#general-incident-scattered-and-total-fields" title="Link to this heading">¶</a></h3>
+<p>向下传播的平面波从顶部参考线 <span class="math notranslate nohighlight">\(\Gamma_+=\{x_2=y_t\}\)</span> 入射：</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[u^{\rm inc}
+=Ae^{i\alpha x_1-i\beta_{0,0}(x_2-y_t)}.\]</div>
+</div>
+<p>对 <span class="math notranslate nohighlight">\(m\in\mathbb Z\)</span>，定义</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\alpha_m=\alpha+\frac{2\pi m}{L},
+\qquad
+\beta_{j,m}=\sqrt{k_j^2-\alpha_m^2}.\]</div>
+</div>
+<p>假设入射阶为传播模态，即 <span class="math notranslate nohighlight">\(|\alpha|&lt;k_0\)</span>，因此 <span class="math notranslate nohighlight">\(\beta_{0,0}&gt;0\)</span> 且入射功率非零。对于每个保留阶，传播模态的出射分支满足 <span class="math notranslate nohighlight">\(\beta_{j,m}&gt;0\)</span>，倏逝模态满足 <span class="math notranslate nohighlight">\(\operatorname{Im}\beta_{j,m}&gt;0\)</span>；掠射模态则有 <span class="math notranslate nohighlight">\(\beta_{j,m}=0\)</span>。示例参数避开了保留模态满足 <span class="math notranslate nohighlight">\(\alpha_m^2=k_j^2\)</span> 的 Wood 异常；在这类截止频率处，Rayleigh 展开和功率归一化需要单独处理。结构上方的散射场采用如下出射 Rayleigh 展开</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[u^{\rm sc}
+=\sum_{m\in\mathbb Z}r_m
+   e^{i\alpha_mx_1+i\beta_{t,m}(x_2-y_t)},
+\qquad x_2\geq y_t.\]</div>
+</div>
+<p>因此，顶部总场为</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[u=u^{\rm inc}+u^{\rm sc}.\]</div>
+</div>
+<p>对于双端口 slab，底部没有入射波，因此底部总场就是透射出射场</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[u=u^{\rm tr}
+=\sum_{m\in\mathbb Z}t_m
+   e^{i\alpha_mx_1-i\beta_{b,m}(x_2-y_b)},
+\qquad x_2\leq y_b.\]</div>
+</div>
+<p>这些 Rayleigh 展开是 Sommerfeld 辐射条件在周期问题中的对应形式。</p>
+</section>
+<section id="physical-interfaces-and-wall-conditions">
+<h3>物理界面与墙面边界条件<a class="headerlink" href="#physical-interfaces-and-wall-conditions" title="Link to this heading">¶</a></h3>
+<p>三个配置分别为：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">slab</span></code>：两个平面材料界面上的场和加权通量连续，即在 <span class="math notranslate nohighlight">\(x_2=0,h\)</span> 上满足 <span class="math notranslate nohighlight">\([u]=0\)</span> 和 <span class="math notranslate nohighlight">\([a\partial_\nu u]=0\)</span>，且上下端口均开放；</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dirichlet</span></code>：<span class="math notranslate nohighlight">\(x_2=h\)</span> 处的材料界面满足相同的两个透射条件，墙面 <span class="math notranslate nohighlight">\(x_2=0\)</span> 上满足 <span class="math notranslate nohighlight">\(u=0\)</span>；</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">neumann</span></code>：<span class="math notranslate nohighlight">\(x_2=h\)</span> 处满足界面条件，<span class="math notranslate nohighlight">\(x_2=0\)</span> 上满足 <span class="math notranslate nohighlight">\(a\partial_\nu u=0\)</span>。</p></li>
+</ul>
+</section>
+<section id="rayleigh-dtn-truncation">
+<h3>Rayleigh DtN 截断<a class="headerlink" href="#rayleigh-dtn-truncation" title="Link to this heading">¶</a></h3>
+<p>令 <span class="math notranslate nohighlight">\(\Gamma_-\)</span> 表示 slab 的底部参考线。以拟周期基 <span class="math notranslate nohighlight">\(e^{i\alpha_mx_1}\)</span> 表示模态系数，定义</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[T_\pm\phi
+=\sum_{m\in\mathbb Z}i\beta_{\pm,m}\widehat\phi_m
+   e^{i\alpha_mx_1}.\]</div>
+</div>
+<p>两个算子的符号都是 <span class="math notranslate nohighlight">\(i\beta_{\pm,m}\)</span>，因为它们分别使用截断周期胞的外法向：顶部为 <span class="math notranslate nohighlight">\(n=+e_2\)</span>，底部为 <span class="math notranslate nohighlight">\(n=-e_2\)</span>。顶部总场条件为</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\partial_nu-T_+u=g_+,
+\qquad
+g_+=-2i\beta_{0,0}Ae^{i\alpha x_1}
+\quad\text{on }\Gamma_+.\]</div>
+</div>
+<p>对 slab，底部场只含出射波，因此</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\partial_nu-T_-u=0
+\quad\text{on }\Gamma_-.\]</div>
+</div>
+</section>
+<section id="periodic-weak-form">
+<h3>周期弱形式<a class="headerlink" href="#periodic-weak-form" title="Link to this heading">¶</a></h3>
+<p>令 <span class="math notranslate nohighlight">\(\Omega_L\)</span> 为一个截断周期胞，并定义</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[V_\alpha=\left\{v\in H^1(\Omega_L):
+v(L,x_2)=e^{i\alpha L}v(0,x_2)\right\}.\]</div>
+</div>
+<p>Dirichlet 墙面采用 <span class="math notranslate nohighlight">\(V_{\alpha,D}=\{v\in V_\alpha:v=0\text{ on }x_2=0\}\)</span>；slab 和 Neumann 墙面采用 <span class="math notranslate nohighlight">\(V_\alpha\)</span>。对 slab 令 <span class="math notranslate nohighlight">\(\delta_{\rm slab}=1\)</span>，对 wall 令其为零。在相应试探空间中求 <span class="math notranslate nohighlight">\(u\)</span>，使得</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\int_{\Omega_L}a\nabla u\cdot\nabla\overline v
+-\omega^2\int_{\Omega_L}bu\overline v
+-a_t\langle T_+u,v\rangle_{\Gamma_+}
+-\delta_{\rm slab}a_b\langle T_-u,v\rangle_{\Gamma_-}
+=a_t\langle g_+,v\rangle_{\Gamma_+}\]</div>
+</div>
+<p>对任意齐次试验函数 <span class="math notranslate nohighlight">\(v\)</span> 均成立。当前 slab 中 <span class="math notranslate nohighlight">\(a_t=a_b=a_0\)</span>。Neumann 墙面是自然边界，不产生底部边界项。该弱形式确定实现顺序：先装配体积和 DtN 算子，再用 <code class="docutils literal notranslate"><span class="pre">BlochReducer</span></code> 形成 <span class="math notranslate nohighlight">\(T^HAT\)</span> 和 <span class="math notranslate nohighlight">\(T^Hb\)</span>，最后只对 Dirichlet 墙面应用 <code class="docutils literal notranslate"><span class="pre">Condenser</span></code>。</p>
+</section>
+<section id="layered-exact-solutions-for-verification">
+<h3>用于验证的分层精确解<a class="headerlink" href="#layered-exact-solutions-for-verification" title="Link to this heading">¶</a></h3>
+<p>一般周期问题可能耦合多个 Rayleigh 阶。为了验证代码，平界面保持入射模态的阶数不变。令 <span class="math notranslate nohighlight">\(\beta=\beta_{0,0}\)</span>、<span class="math notranslate nohighlight">\(\gamma=\beta_{1,0}\)</span>，则入射场、散射场和顶部总场为</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+u^{\rm inc}&amp;=Ae^{i\alpha x_1-i\beta(x_2-y_t)},\\
+u^{\rm sc}&amp;=re^{i\alpha x_1+i\beta(x_2-y_t)},\\
+u_{\rm top}&amp;=u^{\rm inc}+u^{\rm sc}.
+\end{aligned}\end{split}\]</div>
+</div>
+<p>介质层内总场和底部透射总场为</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+u_{\rm layer}&amp;=e^{i\alpha x_1}
+\left[pe^{-i\gamma x_2}+qe^{i\gamma x_2}\right],\\
+u_{\rm bottom}&amp;=u^{\rm tr}
+=te^{i\alpha x_1-i\beta(x_2-y_b)}.
+\end{aligned}\end{split}\]</div>
+</div>
+<p>在 <span class="math notranslate nohighlight">\(x_2=h\)</span> 和 <span class="math notranslate nohighlight">\(x_2=0\)</span> 处令 <span class="math notranslate nohighlight">\(u\)</span> 与 <span class="math notranslate nohighlight">\(a\partial_{x_2}u\)</span> 连续，可得到脚本中关于 <span class="math notranslate nohighlight">\((r,p,q,t)\)</span> 的四阶线性系统。wall 算例移除底部端口，并改用介质层内总场</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[u_D=d\,e^{i\alpha x_1}\sin(\gamma x_2),
+\qquad
+u_N=d\,e^{i\alpha x_1}\cos(\gamma x_2).\]</div>
+</div>
+<p>正弦函数满足 Dirichlet 迹，余弦函数在 <span class="math notranslate nohighlight">\(x_2=0\)</span> 处法向导数为零；在 <span class="math notranslate nohighlight">\(h\)</span> 处匹配可得到关于 <span class="math notranslate nohighlight">\((r,d)\)</span> 的二阶线性系统。</p>
+<p>周期求解使用 TensorMesh 的公共约束算子：<a class="reference internal" href="../api/operator.html#tensormesh.BlochReducer.reduce" title="tensormesh.BlochReducer.reduce"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reduce()</span></code></a> 构造 <span class="math notranslate nohighlight">\(T^H A T\)</span>，<a class="reference internal" href="../api/operator.html#tensormesh.BlochReducer.reduce_rhs" title="tensormesh.BlochReducer.reduce_rhs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reduce_rhs()</span></code></a> 构造 <span class="math notranslate nohighlight">\(T^H b\)</span>，<a class="reference internal" href="../api/operator.html#tensormesh.BlochReducer.reduce_mask" title="tensormesh.BlochReducer.reduce_mask"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reduce_mask()</span></code></a> 则把墙面自由度映射到约化后的自由度上，供 <a class="reference internal" href="../api/operator.html#tensormesh.Condenser" title="tensormesh.Condenser"><code class="xref py py-class docutils literal notranslate"><span class="pre">Condenser</span></code></a> 使用：</p>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-number">列表 14 </span><span class="caption-text">examples/wave/helmholtz_dtn/periodic_dtn.py（约束处理核心代码）</span><a class="headerlink" href="#id6" title="Link to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">reducer</span> <span class="o">=</span> <span class="n">BlochReducer</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="p">[[</span><span class="n">period</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]],</span> <span class="n">sign</span><span class="o">=+</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">wavevector</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">alpha</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="n">reduced_matrix</span> <span class="o">=</span> <span class="n">reducer</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">wavevector</span><span class="p">)</span>       <span class="c1"># T^H A T</span>
+<span class="n">reduced_rhs</span> <span class="o">=</span> <span class="n">reducer</span><span class="o">.</span><span class="n">reduce_rhs</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">wavevector</span><span class="p">)</span>         <span class="c1"># T^H b</span>
+
+<span class="k">if</span> <span class="n">case</span> <span class="o">==</span> <span class="s2">"dirichlet"</span><span class="p">:</span>
+    <span class="n">master_mask</span> <span class="o">=</span> <span class="n">reducer</span><span class="o">.</span><span class="n">reduce_mask</span><span class="p">(</span><span class="n">bottom_mask</span><span class="p">)</span>
+    <span class="n">zero_trace</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">master_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+    <span class="n">condenser</span> <span class="o">=</span> <span class="n">Condenser</span><span class="p">(</span><span class="n">master_mask</span><span class="p">,</span> <span class="n">dirichlet_value</span><span class="o">=</span><span class="n">zero_trace</span><span class="p">)</span>
+    <span class="n">inner_matrix</span><span class="p">,</span> <span class="n">inner_rhs</span> <span class="o">=</span> <span class="n">condenser</span><span class="p">(</span><span class="n">reduced_matrix</span><span class="p">,</span> <span class="n">reduced_rhs</span><span class="p">)</span>
+    <span class="n">inner_solution</span> <span class="o">=</span> <span class="n">inner_matrix</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">inner_rhs</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">"scipy"</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">"lu"</span><span class="p">)</span>
+    <span class="n">reduced_solution</span> <span class="o">=</span> <span class="n">condenser</span><span class="o">.</span><span class="n">recover</span><span class="p">(</span><span class="n">inner_solution</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>                                                     <span class="c1"># natural Neumann wall</span>
+    <span class="n">reduced_solution</span> <span class="o">=</span> <span class="n">reduced_matrix</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span>
+        <span class="n">reduced_rhs</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">"scipy"</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">"lu"</span>
+    <span class="p">)</span>
+
+<span class="n">solution</span> <span class="o">=</span> <span class="n">reducer</span><span class="o">.</span><span class="n">recover</span><span class="p">(</span><span class="n">reduced_solution</span><span class="p">,</span> <span class="n">wavevector</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-1 sd-row-cols-xs-1 sd-row-cols-sm-1 sd-row-cols-md-3 sd-row-cols-lg-3 docutils">
+<div class="sd-col sd-d-flex-column docutils">
+<figure class="align-default" id="id7">
+<a class="reference internal image-reference" href="../_images/periodic_slab.png"><img alt="双端口周期介质层的数值场、精确场与误差场。" src="../_images/periodic_slab.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 56 </span><span class="caption-text">双端口介质层。</span><a class="headerlink" href="#id7" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</div>
+<div class="sd-col sd-d-flex-column docutils">
+<figure class="align-default" id="id8">
+<a class="reference internal image-reference" href="../_images/periodic_dirichlet.png"><img alt="Dirichlet 背衬介质层的数值场、精确场与误差场。" src="../_images/periodic_dirichlet.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 57 </span><span class="caption-text">Dirichlet 背衬层。</span><a class="headerlink" href="#id8" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</div>
+<div class="sd-col sd-d-flex-column docutils">
+<figure class="align-default" id="id9">
+<a class="reference internal image-reference" href="../_images/periodic_neumann.png"><img alt="Neumann 背衬介质层的数值场、精确场与误差场。" src="../_images/periodic_neumann.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 58 </span><span class="caption-text">Neumann 背衬层。</span><a class="headerlink" href="#id9" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>小写的 <span class="math notranslate nohighlight">\(r_m,t_m\)</span> 表示复振幅。反射率与透射率是功率比例：</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\mathcal R_m=
+\frac{\operatorname{Re}(a_t\beta_{t,m})}
+     {\operatorname{Re}(a_t\beta_{t,0})}
+\left|\frac{r_m}{A}\right|^2,
+\qquad
+\mathcal T_m=
+\frac{\operatorname{Re}(a_b\beta_{b,m})}
+     {\operatorname{Re}(a_t\beta_{t,0})}
+\left|\frac{t_m}{A}\right|^2.\]</div>
+</div>
+<p>壁面没有下方辐射端口，因此脚本只报告 <span class="math notranslate nohighlight">\(r\)</span> 和 <span class="math notranslate nohighlight">\(\mathcal R\)</span>，不会人为给出零透射量。</p>
+<p class="rubric">TensorMesh 装配细节</p>
+<p>阅读顺序与官方 Helmholtz 示例一致：</p>
+<ol class="arabic simple">
+<li><p>网格几何、基函数、Jacobian 和求积均保持为 <code class="docutils literal notranslate"><span class="pre">float64</span></code>；</p></li>
+<li><p>将 <code class="docutils literal notranslate"><span class="pre">HelmholtzAssembler</span></code> 提升为 <code class="docutils literal notranslate"><span class="pre">complex128</span></code>，并用 <code class="docutils literal notranslate"><span class="pre">ElementAssembler</span></code> 装配 <span class="math notranslate nohighlight">\(a\nabla u\cdot\nabla v-\omega^2buv\)</span>；</p></li>
+<li><p>用 <code class="docutils literal notranslate"><span class="pre">FacetAssembler</span></code> 计算模态迹；</p></li>
+<li><p>将非局部 DtN 块加入 TensorMesh 稀疏 COO 矩阵；</p></li>
+<li><p>施加约束，求解一般复数系统，并与真解比较。</p></li>
+</ol>
+<p>加权体积变分形式是唯一针对本问题定义的单元装配器。基函数计算、数值求积、Jacobian 变换、单元索引和全局稀疏散布均由 TensorMesh 完成：</p>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-number">列表 15 </span><span class="caption-text">加权复 Helmholtz 装配（共享模式）</span><a class="headerlink" href="#id10" title="Link to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">HelmholtzAssembler</span><span class="p">(</span><span class="n">ElementAssembler</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradu</span><span class="p">,</span> <span class="n">gradv</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">omega_sq</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="n">gradu</span> <span class="o">@</span> <span class="n">gradv</span><span class="p">)</span> <span class="o">-</span> <span class="n">omega_sq</span> <span class="o">*</span> <span class="n">b</span> <span class="o">*</span> <span class="n">u</span> <span class="o">*</span> <span class="n">v</span>
+
+<span class="n">assembler</span> <span class="o">=</span> <span class="n">HelmholtzAssembler</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">quadrature_order</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">assembler</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+<span class="n">volume</span> <span class="o">=</span> <span class="n">assembler</span><span class="p">(</span>
+    <span class="n">points</span><span class="o">=</span><span class="n">mesh</span><span class="o">.</span><span class="n">points</span><span class="p">,</span>
+    <span class="n">element_data</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">"a"</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">complex128</span><span class="p">),</span>
+        <span class="s2">"b"</span><span class="p">:</span> <span class="n">b</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">complex128</span><span class="p">),</span>
+        <span class="s2">"omega_sq"</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">omega</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">complex128</span><span class="p">),</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>TensorMesh 0.2.0 还提供 <code class="docutils literal notranslate"><span class="pre">FacetBilinearAssembler</span></code> 来装配局部 Robin 或阻抗矩阵。但 DtN 映射是非局部的，因此这些示例有意使用 <code class="docutils literal notranslate"><span class="pre">FacetAssembler</span></code> 计算模态矩，并在积分完成后再形成低秩边界块。</p>
+<p>面装配路径为实数，因此每个指数模态先按余弦和负正弦两个通道积分，再组合为 <code class="docutils literal notranslate"><span class="pre">complex128</span></code>。若 <span class="math notranslate nohighlight">\(\Psi\)</span> 为模态矩矩阵，则两个示例都使用</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Psi</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span> <span class="o">@</span> <span class="n">torch</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">symbols</span><span class="p">)</span> <span class="o">@</span> <span class="n">Psi</span><span class="o">.</span><span class="n">T</span>
+</pre></div>
+</div>
+<p>最后一个因子采用普通转置，因为 <span class="math notranslate nohighlight">\(\Psi^Tu\)</span> 给出模态系数。这里不假设矩阵为 Hermitian 或正定。脚本调用 TensorMesh 的 <code class="docutils literal notranslate"><span class="pre">SparseMatrix.solve</span></code>，并显式选择 SciPy LU 后端，而不是请求 SPD 求解器。</p>
+<p>对于带周期 Dirichlet 壁面的算例，操作顺序至关重要：</p>
+<ol class="arabic simple">
+<li><p>装配完整的体积矩阵和 DtN 矩阵；</p></li>
+<li><p>使用 <code class="docutils literal notranslate"><span class="pre">BlochReducer(sign=+1)</span></code> 形成 <span class="math notranslate nohighlight">\(T^HAT\)</span> 和 <span class="math notranslate nohighlight">\(T^Hb\)</span>；</p></li>
+<li><p>将完整底部迹映射到唯一的 Bloch 主自由度；</p></li>
+<li><p>应用 <code class="docutils literal notranslate"><span class="pre">Condenser</span></code> 并求解；</p></li>
+<li><p>先通过 <code class="docutils literal notranslate"><span class="pre">Condenser</span></code> 恢复，再通过 <code class="docutils literal notranslate"><span class="pre">BlochReducer</span></code> 恢复。</p></li>
+</ol>
+<p>Neumann 壁面是自然弱边界，因此跳过凝聚。测试将 Bloch 缩减与显式矩阵 <span class="math notranslate nohighlight">\(T\)</span> 比较，把阶数 <span class="math notranslate nohighlight">\(-2,0,3\)</span> 代回圆形边界条件，检验 P1 收敛性，并验证振幅、功率、Bloch 迹和非零模态泄漏。</p>
+<p class="rubric">绘图与解析验证</p>
+<p>两个脚本均使用 <a class="reference internal" href="../api/mesh.html#tensormesh.Mesh.plot" title="tensormesh.Mesh.plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plot()</span></code></a>，没有另行搭建绘图流程：</p>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-number">列表 16 </span><span class="caption-text">数值场、真解场与逐点误差</span><a class="headerlink" href="#id11" title="Link to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">numerical</span> <span class="o">=</span> <span class="n">solution</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
+<span class="n">reference</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">exact</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+<span class="n">fields</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"Re(u_h)"</span><span class="p">:</span> <span class="n">numerical</span><span class="o">.</span><span class="n">real</span><span class="p">,</span>
+    <span class="s2">"Re(u_exact)"</span><span class="p">:</span> <span class="n">reference</span><span class="o">.</span><span class="n">real</span><span class="p">,</span>
+    <span class="s2">"error"</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">numerical</span> <span class="o">-</span> <span class="n">reference</span><span class="p">),</span>
+<span class="p">}</span>
+<span class="n">mesh</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">show_mesh</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>在默认 CPU <code class="docutils literal notranslate"><span class="pre">complex128</span></code> 设置下，三个圆形算例的相对节点误差均小于 <span class="math notranslate nohighlight">\(5.6\times10^{-2}\)</span>，拟合得到的 P1 收敛阶位于 <span class="math notranslate nohighlight">\(1.71\)</span> 到 <span class="math notranslate nohighlight">\(1.74\)</span> 之间。对于周期算例，解析振幅的相对误差小于 <span class="math notranslate nohighlight">\(2.0\times10^{-2}\)</span>，能量平衡残差小于 <span class="math notranslate nohighlight">\(2.0\times10^{-15}\)</span>，恢复后的 Bloch 迹在机器精度范围内一致。提交的图片展示了每个算例的数值场、解析场及其逐点误差。</p>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="solid/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">固体力学</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="modal_analysis.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">模态分析</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, TensorMesh Contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/camlab-ethz/TensorMesh" aria-label="GitHub"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+              <a class="muted-link " href="https://discord.gg/EC9kbHSnrx" aria-label="Discord"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.576-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.05.05 0 0 0-.021.019C.356 6.024-.213 9.047.066 12.032c.002.015.01.029.02.037a13.3 13.3 0 0 0 3.995 2.01.05.05 0 0 0 .056-.019c.308-.42.582-.86.818-1.329a.05.05 0 0 0-.027-.06 8.7 8.7 0 0 1-1.248-.595.05.05 0 0 1-.005-.085c.079-.053.16-.104.248-.152a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007c.08.048.16.1.248.152a.05.05 0 0 1-.004.085 8.2 8.2 0 0 1-1.249.594.05.05 0 0 0-.027.06c.24.465.514.906.817 1.329a.05.05 0 0 0 .056.02 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.036c.334-3.451-.559-6.449-2.366-9.106a.04.04 0 0 0-.021-.02zM5.68 10.77c-.789 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.45.73 1.438 1.61 0 .886-.637 1.61-1.438 1.61zm4.842 0c-.788 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.451.73 1.438 1.61 0 .886-.63 1.61-1.438 1.61z"></path></svg></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Helmholtz 散射（DtN 边界处理）</a><ul>
+<li><a class="reference internal" href="#full-space-scattering">全空间散射</a><ul>
+<li><a class="reference internal" href="#general-scattering-problem">一般散射问题</a></li>
+<li><a class="reference internal" href="#physical-boundary-and-interface-conditions">物理边界与界面条件</a></li>
+<li><a class="reference internal" href="#full-space-radiation-condition">全空间辐射条件</a></li>
+<li><a class="reference internal" href="#circular-dtn-truncation">圆周 DtN 截断</a></li>
+<li><a class="reference internal" href="#full-space-weak-form">全空间弱形式</a></li>
+<li><a class="reference internal" href="#circular-modal-exact-solutions-for-verification">用于验证的圆模态精确解</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#periodic-scattering">周期散射</a><ul>
+<li><a class="reference internal" href="#periodic-material-and-vertical-compactness">周期材料与竖直方向紧支性</a></li>
+<li><a class="reference internal" href="#bloch-condition">Bloch 条件</a></li>
+<li><a class="reference internal" href="#general-incident-scattered-and-total-fields">一般入射场、散射场与总场</a></li>
+<li><a class="reference internal" href="#physical-interfaces-and-wall-conditions">物理界面与墙面边界条件</a></li>
+<li><a class="reference internal" href="#rayleigh-dtn-truncation">Rayleigh DtN 截断</a></li>
+<li><a class="reference internal" href="#periodic-weak-form">周期弱形式</a></li>
+<li><a class="reference internal" href="#layered-exact-solutions-for-verification">用于验证的分层精确解</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=bff63ca9"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../_static/translations.js?v=beaddf03"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

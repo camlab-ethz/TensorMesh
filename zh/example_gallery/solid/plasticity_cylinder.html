@@ -1,0 +1,655 @@
+<!doctype html>
+<html class="no-js" lang="zh-CN" data-content_root="../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="索引" href="../../genindex.html"><link rel="search" title="搜索" href="../../search.html"><link rel="next" title="相场断裂" href="phase_field_fracture.html"><link rel="prev" title="塑性（带各向同性硬化的 J2）" href="plasticity_strip.html">
+        <link rel="prefetch" href="../../_static/logo.png" as="image">
+        <link rel="prefetch" href="../../_static/logo.png" as="image">
+
+    <link rel="shortcut icon" href="../../_static/logo.png"><!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>牛顿法求解塑性问题 - TensorMesh</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=95a110e3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #5B6EE8;
+  --color-brand-content: #149B8E;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #8B9AFF;
+  --color-brand-content: #2DC9B8;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">TensorMesh</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/logo.png" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/logo.png" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">TensorMesh</span>
+  
+</a><div class="sidebar-language-switcher">
+  <a href="../../../example_gallery/solid/plasticity_cylinder.html" rel="alternate" hreflang="en" title="English">English</a>
+  <span class="sep">·</span>
+  <span class="active">中文</span>
+</div><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="搜索" name="q" aria-label="搜索">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">文档</span></p>
+<ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../getting_started/index.html">快速上手</a><input aria-label="Toggle navigation of 快速上手" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/installation.html">安装</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/quickstart.html">快速开始</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/verify_install.html">验证安装</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../user_guide/index.html">用户指南</a><input aria-label="Toggle navigation of 用户指南" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/concepts.html">核心概念</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/meshes.html">网格</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/elements_and_quadrature.html">单元与求积</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/forms.html">形式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/mixed_assembly.html">混合装配</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/boundary_conditions.html">边界条件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/linear_solvers.html">稀疏求解器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/time_integration.html">时间积分</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/batched_workflows.html">批量化工作流</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/differentiability.html">可微性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/distributed.html">分布式有限元方法</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../index.html">示例画廊</a><input aria-label="Toggle navigation of 示例画廊" checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../basics.html">基础与可视化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../poisson.html">泊松方程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../diffusion.html">扩散</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../wave.html">波动方程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../complex.html">复数值有限元方法 — Helmholtz</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../phononic_crystal.html">声子晶体（布洛赫-弗洛凯）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../open_domain_wave.html">开放域波动（PML 与端口）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modal_analysis.html">模态分析</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../helmholtz_dtn.html">Helmholtz 散射（DtN 边界处理）</a></li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="index.html">固体力学</a><input aria-label="Toggle navigation of 固体力学" checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="cantilever_beam.html">悬臂梁</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hyperelastic_beam.html">超弹性梁（新胡克）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hertzian_contact.html">赫兹接触</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plasticity_strip.html">塑性（带各向同性硬化的 J2）</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">牛顿法求解塑性问题</a></li>
+<li class="toctree-l3"><a class="reference internal" href="phase_field_fracture.html">相场断裂</a></li>
+<li class="toctree-l3"><a class="reference internal" href="drucker_prager_triaxial.html">岩土力学：Drucker-Prager 三轴压缩</a></li>
+<li class="toctree-l3"><a class="reference internal" href="elastic_footing.html">岩土力学:弹性条形基础</a></li>
+<li class="toctree-l3"><a class="reference internal" href="drucker_prager_footing.html">岩土力学:Drucker-Prager 条形基础</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../fluid/index.html">流体力学</a><input aria-label="Toggle navigation of 流体力学" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../fluid/stokes_taylor_hood.html">Taylor-Hood Stokes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../fluid/cavity.html">顶盖驱动方腔</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../fluid/cylinder_flow.html">圆柱绕流（涡脱落）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../fluid/flow_obstacles.html">绕多个障碍物的流动</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../fluid/rayleigh_benard.html">瑞利-贝纳德对流</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../fluid/taylor_green.html">泰勒-格林涡（收敛性研究）</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../maxwell.html">静磁学（麦克斯韦方程）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inverse_design.html">反问题设计与辨识</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics_informed.html">物理信息学习</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dataset.html">机器学习数据集</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/index.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/mesh.html">tensormesh.mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/element.html">tensormesh.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/assemble.html">tensormesh.assemble</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/operator.html">tensormesh.operator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/sparse.html">tensormesh.sparse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ode.html">tensormesh.ode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/functional.html">tensormesh.functional</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/optimizer.html">tensormesh.optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/material.html">tensormesh.material</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/distributed.html">tensormesh.distributed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/nn.html">tensormesh.nn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/dataset.html">tensormesh.dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/visualization.html">tensormesh.visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../performance/index.html">性能</a><input aria-label="Toggle navigation of 性能" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../performance/benchmarks.html">基准测试</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../performance/scaling_guide.html">扩展性指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../performance/profiling.html">性能剖析</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../community/index.html">社区</a><input aria-label="Toggle navigation of 社区" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../community/discord.html">Discord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../community/github_discussions.html">GitHub Discussions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../community/github_issues.html">GitHub Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../community/contributing.html">贡献指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../community/citing.html">引用 TensorMesh</a></li>
+</ul>
+</li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../../_sources/example_gallery/solid/plasticity_cylinder.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="plasticity-with-newton-s-method">
+<h1>牛顿法求解塑性问题<a class="headerlink" href="#plasticity-with-newton-s-method" title="Link to this heading">¶</a></h1>
+<p>弹塑性厚壁圆筒 <a class="reference internal" href="#hill1950" id="id1"><span>[Hill1950]</span></a>：一根长管在内压作用下加载，直到整个管壁都发生塑性流动。脚本 <code class="docutils literal notranslate"><span class="pre">examples/solid/plasticity_cylinder/plasticity_cylinder.py</span></code> 在平面应变下用 von Mises（J2）塑性模型求解该问题，并把结果与弹性响应的闭式解以及极限压力进行对比。</p>
+<p>与 <a class="reference internal" href="plasticity_strip.html"><span class="doc">塑性（带各向同性硬化的 J2）</span></a> 相比，新增的要素是 <strong>一致切线</strong>。在那个示例中，每个载荷步都用 L-BFGS 最小化一个增量能量；而在这里，每个载荷步都用牛顿法求解，所用的正是应力更新本身的导数，因此迭代呈二次收敛：每个塑性载荷步只需三到五次迭代。塑性状态保存在求积点上，并以 <code class="docutils literal notranslate"><span class="pre">quadrature_data</span></code> 的形式传入装配器。</p>
+<section id="model">
+<h2>模型<a class="headerlink" href="#model" title="Link to this heading">¶</a></h2>
+<p>小应变 <span class="math notranslate nohighlight">\(\boldsymbol{\varepsilon} = \boldsymbol{\varepsilon}^e + \boldsymbol{\varepsilon}^p\)</span>，各向同性弹性（剪切模量 <span class="math notranslate nohighlight">\(\mu\)</span>，体积模量 <span class="math notranslate nohighlight">\(\kappa\)</span>），以及带线性各向同性硬化的 von Mises 屈服函数，</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[f(\boldsymbol{\sigma}, p) = q(\boldsymbol{\sigma}) - (\sigma_y + H p),
+\qquad q = \sqrt{\tfrac32\, \mathbf{s} : \mathbf{s}},\]</div>
+</div>
+<p>（<span class="math notranslate nohighlight">\(\mathbf{s}\)</span> 为偏应力，<span class="math notranslate nohighlight">\(p\)</span> 为等效塑性应变，<span class="math notranslate nohighlight">\(H = 0\)</span> 对应理想塑性），并采用关联流动法则。平面应变保持 <span class="math notranslate nohighlight">\(\varepsilon_{zz} = 0\)</span>，因此应变和应力都以 <span class="math notranslate nohighlight">\(3 \times 3\)</span> 张量的形式存储：<span class="math notranslate nohighlight">\(\sigma_{zz}\)</span> 不为零，<span class="math notranslate nohighlight">\(\varepsilon^p_{zz}\)</span> 也不为零。</p>
+<p><strong>径向返回。</strong> 在一个载荷步内，求积点处的总应变 <span class="math notranslate nohighlight">\(\boldsymbol{\varepsilon}\)</span> 是给定的，载荷步开始时的状态为 <span class="math notranslate nohighlight">\((\boldsymbol{\varepsilon}^p_n, p_n)\)</span>。试探应力 <span class="math notranslate nohighlight">\(\boldsymbol{\sigma}^{tr} = \mathbb{C} : (\boldsymbol{\varepsilon} - \boldsymbol{\varepsilon}^p_n)\)</span> 的偏量为 <span class="math notranslate nohighlight">\(\mathbf{s}^{tr}\)</span>，von Mises 应力为 <span class="math notranslate nohighlight">\(q^{tr}\)</span>。若 <span class="math notranslate nohighlight">\(f^{tr} = q^{tr} - (\sigma_y + H p_n) \le 0\)</span>，该步为弹性步；否则把偏应力按比例缩回到屈服面上：</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\Delta p = \frac{f^{tr}}{3\mu + H}, \qquad
+\boldsymbol{\sigma} = \boldsymbol{\sigma}^{tr} - 2\mu\, \Delta p\, \sqrt{\tfrac32}\, \mathbf{N},
+\qquad \mathbf{N} = \frac{\mathbf{s}^{tr}}{\|\mathbf{s}^{tr}\|}.\]</div>
+</div>
+<p><strong>一致切线</strong> <a class="reference internal" href="#simo1985" id="id2"><span>[Simo1985]</span></a> <a class="reference internal" href="#desouzaneto2008" id="id3"><span>[deSouzaNeto2008]</span></a>。对这一更新（而不是对连续介质的本构关系）求导，就得到牛顿法所需的模量：</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\frac{\partial \boldsymbol{\sigma}}{\partial \boldsymbol{\varepsilon}}
+= \kappa\, \mathbf{1} \otimes \mathbf{1}
++ 2\mu \Bigl(1 - \frac{3\mu\, \Delta p}{q^{tr}}\Bigr) \mathbb{I}_{dev}
++ 6\mu^2 \Bigl(\frac{\Delta p}{q^{tr}} - \frac{1}{3\mu + H}\Bigr) \mathbf{N} \otimes \mathbf{N}\]</div>
+</div>
+<p>以上用于塑性点，其余点取弹性模量。<code class="docutils literal notranslate"><span class="pre">radial_return</span></code> 一次性为所有求积点计算应力、更新后的状态以及这些模量：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">radial_return</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span> <span class="n">eps_p</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">mat</span><span class="p">:</span> <span class="n">J2Material</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Stress update of J2 plasticity at every quadrature point.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    eps : torch.Tensor</span>
+<span class="sd">        Total strain ``[..., 3, 3]`` at the end of the step (plane strain:</span>
+<span class="sd">        the third row and column are zero).</span>
+<span class="sd">    eps_p, p : torch.Tensor</span>
+<span class="sd">        Plastic strain ``[..., 3, 3]`` and equivalent plastic strain ``[...]``</span>
+<span class="sd">        at the start of the step.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sigma : torch.Tensor</span>
+<span class="sd">        Stress ``[..., 3, 3]``.</span>
+<span class="sd">    eps_p, p : torch.Tensor</span>
+<span class="sd">        Updated plastic state.</span>
+<span class="sd">    C : torch.Tensor</span>
+<span class="sd">        Consistent tangent d sigma / d eps ``[..., 3, 3, 3, 3]``:</span>
+<span class="sd">        kappa 1x1 + 2 mu (1 - 3 mu dp / q) I_dev + 6 mu^2 (dp / q - 1 / (3 mu + H)) N x N</span>
+<span class="sd">        on plastic points, kappa 1x1 + 2 mu I_dev on elastic ones, with q the</span>
+<span class="sd">        trial von Mises stress and N the unit trial deviator</span>
+<span class="sd">        (de Souza Neto, Peric and Owen, 2008, box 7.4).</span>
+<span class="sd">    """</span>
+    <span class="n">mu</span><span class="p">,</span> <span class="n">kappa</span><span class="p">,</span> <span class="n">H</span> <span class="o">=</span> <span class="n">mat</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span> <span class="n">mat</span><span class="o">.</span><span class="n">kappa</span><span class="p">,</span> <span class="n">mat</span><span class="o">.</span><span class="n">H</span>
+    <span class="n">one</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">eps</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">eps</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">ee</span> <span class="o">=</span> <span class="n">eps</span> <span class="o">-</span> <span class="n">eps_p</span>                                                <span class="c1"># trial elastic strain</span>
+    <span class="n">tr</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">dim1</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">dim2</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">mu</span> <span class="o">*</span> <span class="p">(</span><span class="n">ee</span> <span class="o">-</span> <span class="n">tr</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">/</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">one</span><span class="p">)</span>              <span class="c1"># trial deviatoric stress</span>
+    <span class="n">norm_s</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">s</span> <span class="o">*</span> <span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)))</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">norm_s</span>                                     <span class="c1"># trial von Mises stress</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">q</span> <span class="o">-</span> <span class="p">(</span><span class="n">mat</span><span class="o">.</span><span class="n">sigma_y</span> <span class="o">+</span> <span class="n">H</span> <span class="o">*</span> <span class="n">p</span><span class="p">)</span>
+    <span class="n">plastic</span> <span class="o">=</span> <span class="n">f</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="n">dp</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">plastic</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">f</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">mu</span> <span class="o">+</span> <span class="n">H</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">s</span> <span class="o">/</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">plastic</span><span class="p">,</span> <span class="n">norm_s</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">norm_s</span><span class="p">))[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
+    <span class="n">flow</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">dp</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span>                 <span class="c1"># plastic strain increment</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">kappa</span> <span class="o">*</span> <span class="n">tr</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">one</span> <span class="o">+</span> <span class="n">s</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">mu</span> <span class="o">*</span> <span class="n">flow</span>
+
+    <span class="n">q_safe</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">plastic</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">plastic</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">mu</span> <span class="o">*</span> <span class="n">dp</span> <span class="o">/</span> <span class="n">q_safe</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">plastic</span><span class="p">,</span> <span class="mi">6</span> <span class="o">*</span> <span class="n">mu</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">dp</span> <span class="o">/</span> <span class="n">q_safe</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">mu</span> <span class="o">+</span> <span class="n">H</span><span class="p">)),</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
+    <span class="n">ones</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">"ij,kl-&gt;ijkl"</span><span class="p">,</span> <span class="n">one</span><span class="p">,</span> <span class="n">one</span><span class="p">)</span>
+    <span class="n">sym</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">"ik,jl-&gt;ijkl"</span><span class="p">,</span> <span class="n">one</span><span class="p">,</span> <span class="n">one</span><span class="p">)</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">"il,jk-&gt;ijkl"</span><span class="p">,</span> <span class="n">one</span><span class="p">,</span> <span class="n">one</span><span class="p">))</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="p">(</span><span class="n">kappa</span> <span class="o">*</span> <span class="n">ones</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">mu</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">a</span><span class="p">))[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">sym</span> <span class="o">-</span> <span class="n">ones</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
+         <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">"...ij,...kl-&gt;...ijkl"</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">eps_p</span> <span class="o">+</span> <span class="n">flow</span><span class="p">,</span> <span class="n">p</span> <span class="o">+</span> <span class="n">dp</span><span class="p">,</span> <span class="n">C</span>
+</pre></div>
+</div>
+<p>测试集把这一切线与应力更新的前向模式自动微分导数 <code class="docutils literal notranslate"><span class="pre">torch.func.jvp</span></code> 进行比较。对于没有闭式切线的本构模型，这种导数也正是获得切线的途径。</p>
+</section>
+<section id="quadrature-point-data">
+<h2>求积点数据<a class="headerlink" href="#quadrature-point-data" title="Link to this heading">¶</a></h2>
+<p>应力和模量都是定义在求积点上的数组，形状为 <code class="docutils literal notranslate"><span class="pre">[n_elements,</span> <span class="pre">n_quadrature,</span> <span class="pre">...]</span></code>。以 <code class="docutils literal notranslate"><span class="pre">quadrature_data</span></code> 传入后，每一项都以它在当前求积点处的值、按自身的名称传给 <code class="docutils literal notranslate"><span class="pre">forward</span></code>：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">InternalForce</span><span class="p">(</span><span class="n">NodeAssembler</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""f_i = int sigma . grad N_i dx, sigma given at the quadrature points."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradv</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">sigma</span> <span class="o">@</span> <span class="n">gradv</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Tangent</span><span class="p">(</span><span class="n">ElementAssembler</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""K_ij = int grad N_i . C . grad N_j dx, C given at the quadrature points."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradu</span><span class="p">,</span> <span class="n">gradv</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">"j,ajbl,l-&gt;ab"</span><span class="p">,</span> <span class="n">gradu</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">gradv</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>内力向量为 <code class="docutils literal notranslate"><span class="pre">InternalForce(quadrature_data={&quot;sigma&quot;:</span> <span class="pre">sigma})</span></code>，刚度矩阵为 <code class="docutils literal notranslate"><span class="pre">Tangent(quadrature_data={&quot;C&quot;:</span> <span class="pre">C})</span></code>，二者使用 <span class="math notranslate nohighlight">\(3 \times 3\)</span> 张量的面内部分。压力沿内壁的单位外法向作用，<a class="reference internal" href="../../api/assemble.html#tensormesh.FacetAssembler" title="tensormesh.FacetAssembler"><code class="xref py py-class docutils literal notranslate"><span class="pre">FacetAssembler</span></code></a> 的 <code class="docutils literal notranslate"><span class="pre">forward</span></code> 以 <code class="docutils literal notranslate"><span class="pre">n</span></code> 接收该法向：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Pressure</span><span class="p">(</span><span class="n">FacetAssembler</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Nodal forces of a unit pressure, f_i = -int N_i n ds (n: outward normal)."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">v</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
+</pre></div>
+</div>
+</section>
+<section id="newton-s-method">
+<h2>牛顿法<a class="headerlink" href="#newton-s-method" title="Link to this heading">¶</a></h2>
+<p>每个载荷步迭代到非约束自由度上的残差低于外加力或反力的 <span class="math notranslate nohighlight">\(10^{-10}\)</span> 为止。第一次迭代从上一载荷步的收敛状态出发，把指定位移的变化传递到整个物体中（线性预测，借助 <a class="reference internal" href="../../api/operator.html#tensormesh.Condenser.update_dirichlet" title="tensormesh.Condenser.update_dirichlet"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update_dirichlet()</span></code></a>）；之后的迭代保持指定值不变。塑性状态在该步收敛后才提交，因此每次迭代都从同一个状态出发进行返回映射。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span><span class="w"> </span><span class="nf">solve_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f_ext</span><span class="p">,</span> <span class="n">prescribed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Equilibrium for the external forces ``f_ext`` [n_points * 2] and the</span>
+<span class="sd">        values ``prescribed`` on the fixed dofs (default: keep them).</span>
+
+<span class="sd">        The first Newton iteration starts from the converged state and carries</span>
+<span class="sd">        the change of the prescribed values into the whole body (the linear</span>
+<span class="sd">        predictor); the later ones keep them. Returns the relative residual</span>
+<span class="sd">        after every Newton update.</span>
+<span class="sd">        """</span>
+        <span class="n">jump</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">prescribed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">jump</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fixed</span><span class="p">,</span> <span class="n">prescribed</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">,</span> <span class="n">jump</span><span class="p">)</span>
+        <span class="n">history</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_iterations</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">R</span><span class="p">,</span> <span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="n">eps_p</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">,</span> <span class="n">f_ext</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">it</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">scale</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">(</span><span class="n">f_ext</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fixed</span><span class="p">])),</span>
+                            <span class="mf">1e-300</span><span class="p">)</span>
+                <span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">fixed</span><span class="p">]))</span> <span class="o">/</span> <span class="n">scale</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">:</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="n">it</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iterations</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Newton did not converge: relative residuals </span><span class="si">{</span><span class="n">history</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">K</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tangent</span><span class="p">(</span><span class="n">quadrature_data</span><span class="o">=</span><span class="p">{</span><span class="s2">"C"</span><span class="p">:</span> <span class="n">C</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]})</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">condenser</span><span class="o">.</span><span class="n">update_dirichlet</span><span class="p">(</span><span class="n">jump</span> <span class="k">if</span> <span class="n">it</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">jump</span><span class="p">))</span>
+            <span class="n">K_free</span><span class="p">,</span> <span class="n">rhs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">condenser</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="o">-</span><span class="n">R</span><span class="p">)</span>
+            <span class="n">du</span> <span class="o">=</span> <span class="n">K_free</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">linear_solver</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">rhs</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>   <span class="c1"># SciPy answers on the host</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">condenser</span><span class="o">.</span><span class="n">recover</span><span class="p">(</span><span class="n">du</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eps_p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span> <span class="o">=</span> <span class="n">eps_p</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">sigma</span>   <span class="c1"># commit the converged state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reaction</span> <span class="o">=</span> <span class="n">R</span>
+        <span class="k">return</span> <span class="n">history</span>
+</pre></div>
+</div>
+</section>
+<section id="the-thick-walled-cylinder">
+<h2>厚壁圆筒<a class="headerlink" href="#the-thick-walled-cylinder" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>几何</strong>：取圆管的四分之一，<span class="math notranslate nohighlight">\(a = 100\)</span> mm，<span class="math notranslate nohighlight">\(b = 200\)</span> mm，平面应变；在 <span class="math notranslate nohighlight">\(x\)</span> 轴上 <span class="math notranslate nohighlight">\(u_y = 0\)</span>，在 <span class="math notranslate nohighlight">\(y\)</span> 轴上 <span class="math notranslate nohighlight">\(u_x = 0\)</span>。</p></li>
+<li><p><strong>材料</strong>：<span class="math notranslate nohighlight">\(E = 200\)</span> GPa，<span class="math notranslate nohighlight">\(\nu = 0.3\)</span>，<span class="math notranslate nohighlight">\(\sigma_y = 250\)</span> MPa，理想塑性。</p></li>
+<li><p><strong>加载</strong>：内壁在 30 步内被向外推到初始屈服位移的六倍。在这种位移控制下，压力取为内壁反力在单位压力节点力上的投影。<code class="docutils literal notranslate"><span class="pre">--control</span> <span class="pre">pressure</span></code> 改为逐步提高压力，此时加载停在极限压力之前。</p></li>
+<li><p><strong>网格</strong>：用 NumPy 在极坐标网格上生成的六节点三角形单元。径向间距随 <span class="math notranslate nohighlight">\(r\)</span> 增大，圆弧边的中点节点位于圆周上（825 个节点）。</p></li>
+</ul>
+<figure class="align-default" id="id5">
+<a class="reference internal image-reference" href="../../_images/plasticity_cylinder.png"><img alt="四分之一圆管中的塑性应变、压力与内壁位移的关系，以及牛顿残差" src="../../_images/plasticity_cylinder.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">图 62 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">plasticity_cylinder.py</span></code> 的输出。左：加载结束时的等效塑性应变。中：压力与内壁位移的关系，并标出 Lamé 直线、初始屈服点和极限压力。右：一个弹性步、第一个塑性步、塑性区约占一半的载荷步以及最后一步的牛顿残差。</span><a class="headerlink" href="#id5" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>响应沿 Lamé 直线变化，直到内壁在 <span class="math notranslate nohighlight">\(p_e = 108.1\)</span> MPa 时屈服。随后塑性区向外扩展，压力增长得越来越慢。塑性区到达外壁后，圆筒在几乎恒定的压力下流动：最后一步的压力为 199.7 MPa，与极限压力 <span class="math notranslate nohighlight">\(\tfrac{2}{\sqrt3}\, \sigma_y \ln(b/a) = 200.1\)</span> MPa 相差不到 0.2%，并从下方逼近。弹性步只需一次牛顿更新，塑性步需要三到五次，每次更新后残差大致平方一次。</p>
+</section>
+<section id="verification">
+<h2>验证<a class="headerlink" href="#verification" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">tests/assemble/test_plasticity_cylinder_example.py</span></code> 检查以下内容：</p>
+<ul>
+<li><p><strong>返回映射</strong>：塑性点最终落在屈服面上，弹性点保持弹性应力，塑性流动为偏量，切线与应力更新的前向模式自动微分导数一致。</p></li>
+<li><p><strong>刚度矩阵</strong>：装配得到的切线刚度与残差的中心差分一致。</p></li>
+<li><p><strong>弹性阶段</strong>：内壁位移与 Lamé 解一致，</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\frac{p}{u_r(a)} = \frac{E\, (b^2 - a^2)}{(1 + \nu)\, a\, \bigl[(1 - 2\nu)\, a^2 + b^2\bigr]},\]</div>
+</div>
+<p>压力控制和位移控制下均如此。</p>
+</li>
+<li><p><strong>初始屈服</strong>：低于初始屈服位移时没有塑性点；略高于该位移时，塑性点只出现在最内层单元中。</p></li>
+<li><p><strong>塑性坍塌</strong>：理想塑性圆管的压力从下方逼近极限压力，误差在 1% 以内，并且每个载荷步的牛顿法最多六次更新即收敛。</p></li>
+<li><p><strong>设备</strong>：存在 GPU 时，比较 CUDA 与 CPU 的结果。</p></li>
+</ul>
+</section>
+<section id="running-it">
+<h2>运行它<a class="headerlink" href="#running-it" title="Link to this heading">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples/solid/plasticity_cylinder
+python<span class="w"> </span>plasticity_cylinder.py<span class="w">                       </span><span class="c1"># displacement control</span>
+python<span class="w"> </span>plasticity_cylinder.py<span class="w"> </span>--control<span class="w"> </span>pressure<span class="w">    </span><span class="c1"># up to 0.98 of the limit pressure</span>
+python<span class="w"> </span>plasticity_cylinder.py<span class="w"> </span>--hardening<span class="w"> </span><span class="m">2000</span><span class="w">      </span><span class="c1"># H = 2 GPa</span>
+</pre></div>
+</div>
+<p>默认运行在 CPU 上只需几秒钟。<code class="docutils literal notranslate"><span class="pre">--device</span> <span class="pre">cuda</span></code> 在 GPU 上装配；此时若 torch-sla 支持 cuDSS，牛顿方程组用 cuDSS 求解，否则在主机上用 SciPy 求解。</p>
+</section>
+<section id="notes">
+<h2>说明<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>为什么用位移控制。</strong> 在压力控制下，理想塑性圆管无法加载到极限压力以上，而且在接近极限压力时切线矩阵会变得奇异。指定内壁位移则可以沿着平台继续加载。</p></li>
+<li><p><strong>单元。</strong> 塑性流动保持体积不变，平面应变下线性（常应变）三角形单元在这一约束下会发生锁死，从而高估坍塌载荷 <a class="reference internal" href="#nagtegaal1974" id="id4"><span>[Nagtegaal1974]</span></a>。本例使用的二次三角形单元得到的极限压力误差在 0.2% 以内。</p></li>
+<li><p><strong>第一次迭代。</strong> 如果在第一次求解之前只把边界节点移到新的指定位置，就只有紧邻它们的那一层单元产生应变，可能使这层单元出现虚假的屈服。线性预测会先把这一变化传递到整个物体中。</p></li>
+</ul>
+</section>
+<section id="what-s-next">
+<h2>下一步<a class="headerlink" href="#what-s-next" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="plasticity_strip.html"><span class="doc">塑性（带各向同性硬化的 J2）</span></a>：同一个 J2 模型写成增量能量的形式，用 L-BFGS 最小化，使用 <a class="reference internal" href="../../api/assemble.html#tensormesh.assemble.J2Plasticity" title="tensormesh.assemble.J2Plasticity"><code class="xref py py-class docutils literal notranslate"><span class="pre">J2Plasticity</span></code></a>。</p></li>
+<li><p><a class="reference internal" href="../../user_guide/forms.html"><span class="doc">形式</span></a>：<code class="docutils literal notranslate"><span class="pre">quadrature_data</span></code>、<code class="docutils literal notranslate"><span class="pre">n</span></code> 以及 <code class="docutils literal notranslate"><span class="pre">forward</span></code> 可以接收的其他参数名。</p></li>
+</ul>
+<div role="list" class="citation-list">
+<div class="citation" id="hill1950" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">Hill1950</a><span class="fn-bracket">]</span></span>
+<p>R. Hill, <em>The Mathematical Theory of Plasticity</em>, Oxford
+University Press, 1950.</p>
+</div>
+<div class="citation" id="simo1985" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">Simo1985</a><span class="fn-bracket">]</span></span>
+<p>J. C. Simo and R. L. Taylor, <em>Consistent tangent operators for
+rate-independent elastoplasticity</em>, Computer Methods in Applied Mechanics
+and Engineering, 48(1):101–118, 1985.</p>
+</div>
+<div class="citation" id="desouzaneto2008" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">deSouzaNeto2008</a><span class="fn-bracket">]</span></span>
+<p>E. A. de Souza Neto, D. Perić and D. R. J. Owen,
+<em>Computational Methods for Plasticity: Theory and Applications</em>, Wiley,
+2008.</p>
+</div>
+<div class="citation" id="nagtegaal1974" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">Nagtegaal1974</a><span class="fn-bracket">]</span></span>
+<p>J. C. Nagtegaal, D. M. Parks and J. R. Rice, <em>On
+numerically accurate finite element solutions in the fully plastic range</em>,
+Computer Methods in Applied Mechanics and Engineering, 4(2):153–177, 1974.</p>
+</div>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="phase_field_fracture.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">相场断裂</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="plasticity_strip.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">塑性（带各向同性硬化的 J2）</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, TensorMesh Contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/camlab-ethz/TensorMesh" aria-label="GitHub"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+              <a class="muted-link " href="https://discord.gg/EC9kbHSnrx" aria-label="Discord"><svg stroke="currentColor" fill="currentColor" viewBox="0 0 16 16"><path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.576-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.05.05 0 0 0-.021.019C.356 6.024-.213 9.047.066 12.032c.002.015.01.029.02.037a13.3 13.3 0 0 0 3.995 2.01.05.05 0 0 0 .056-.019c.308-.42.582-.86.818-1.329a.05.05 0 0 0-.027-.06 8.7 8.7 0 0 1-1.248-.595.05.05 0 0 1-.005-.085c.079-.053.16-.104.248-.152a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007c.08.048.16.1.248.152a.05.05 0 0 1-.004.085 8.2 8.2 0 0 1-1.249.594.05.05 0 0 0-.027.06c.24.465.514.906.817 1.329a.05.05 0 0 0 .056.02 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.036c.334-3.451-.559-6.449-2.366-9.106a.04.04 0 0 0-.021-.02zM5.68 10.77c-.789 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.45.73 1.438 1.61 0 .886-.637 1.61-1.438 1.61zm4.842 0c-.788 0-1.438-.724-1.438-1.61 0-.886.637-1.61 1.438-1.61.807 0 1.451.73 1.438 1.61 0 .886-.63 1.61-1.438 1.61z"></path></svg></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">牛顿法求解塑性问题</a><ul>
+<li><a class="reference internal" href="#model">模型</a></li>
+<li><a class="reference internal" href="#quadrature-point-data">求积点数据</a></li>
+<li><a class="reference internal" href="#newton-s-method">牛顿法</a></li>
+<li><a class="reference internal" href="#the-thick-walled-cylinder">厚壁圆筒</a></li>
+<li><a class="reference internal" href="#verification">验证</a></li>
+<li><a class="reference internal" href="#running-it">运行它</a></li>
+<li><a class="reference internal" href="#notes">说明</a></li>
+<li><a class="reference internal" href="#what-s-next">下一步</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=bff63ca9"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../_static/translations.js?v=beaddf03"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>
