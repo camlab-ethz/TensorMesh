@@ -8,6 +8,7 @@ import torch.nn as nn
 from tensormesh.element.element_type import element_type2element
 
 from .projector import ReduceProjector, SparseProjector
+from .topology import boundary_facet_mask
 from ..element import element_type2dimension, Transformation
 from ..nn import BufferList
 from ..mesh import Mesh
@@ -186,8 +187,8 @@ class FacetAssembler(nn.Module):
                     if key in ["u", "v"]:
                         
                         tri_shape_val, quad_shape_val = trans.facet_shape_val 
-                        tri_shape_val = tri_shape_val.repeat(trans.n_elements, 1, 1, 1)[m] # [n_selected_tri_facet, n_quadrature_per_tri_facet, n_basis]
-                        quad_shape_val= quad_shape_val.repeat(trans.n_elements, 1, 1, 1)[m] # [n_selected_quad_facet, n_quadrature_per_quad_facet, n_basis] 
+                        tri_shape_val = tri_shape_val.repeat(trans.n_elements, 1, 1, 1)[tri_m] # [n_selected_tri_facet, n_quadrature_per_tri_facet, n_basis]
+                        quad_shape_val= quad_shape_val.repeat(trans.n_elements, 1, 1, 1)[quad_m] # [n_selected_quad_facet, n_quadrature_per_quad_facet, n_basis]
                         tri_args.append(tri_shape_val)
                         quad_args.append(quad_shape_val)
 
@@ -221,6 +222,12 @@ class FacetAssembler(nn.Module):
                         tri_args.append(tri_grad_data)
                         quad_args.append(quad_grad_data)
 
+                    elif key == "n":
+
+                        tri_normal, quad_normal = trans.facet_normal
+                        tri_args.append(tri_normal[tri_m])    # [n_selected_tri_facet, n_quadrature_per_tri_facet, n_dim]
+                        quad_args.append(quad_normal[quad_m]) # [n_selected_quad_facet, n_quadrature_per_quad_facet, n_dim]
+
                     else:
                         raise NotImplementedError(f"key {key} is not implemented")
 
@@ -230,9 +237,9 @@ class FacetAssembler(nn.Module):
                 # tri_integral [n_selected_tri_facet, n_quadrature_per_tri_facet, n_basis, ...]
                 # quad_integral [n_selected_quad_facet, n_quadrature_per_quad_facet, n_basis, ...]
 
-                tri_jxw, quad_jxw = trans.JxW 
-                tri_jxw = tri_jxw[m]
-                quad_jxw= quad_jxw[m]
+                tri_jxw, quad_jxw = trans.FxW
+                tri_jxw = tri_jxw[tri_m]
+                quad_jxw= quad_jxw[quad_m]
                 tri_integral = torch.einsum('fqb..., fq->fb...', tri_integral, tri_jxw) # [n_selected_tri_facet, n_basis, ...]
                 quad_integral= torch.einsum('fqb..., fq->fb...', quad_integral, quad_jxw) # [n_selected_quad_facet, n_basis, ...]
              
@@ -261,6 +268,9 @@ class FacetAssembler(nn.Module):
                     elif key.startswith("grad") and key[4:] in ele_point_data:  # "key" -> "gradkey"
                         _ele_grad_data = torch.einsum("eb...,efqbd->efq...d", ele_point_data[key[4:]], trans.facet_shape_grad)
                         args.append(_ele_grad_data[m])  # [n_selected_facet, n_quadrature_per_facet, ..., n_dim]
+
+                    elif key == "n":
+                        args.append(trans.facet_normal[m])  # [n_selected_facet, n_quadrature_per_facet, n_dim]
 
                     else:
                         raise NotImplementedError(f"key {key} is not implemented")
@@ -320,6 +330,11 @@ class FacetAssembler(nn.Module):
             Physical coordinate at the quadrature point — 1D tensor of shape ``[D]``.
         gradx : torch.Tensor, optional
             Gradient of ``x`` w.r.t. reference coordinates — 2D tensor of shape ``[D, D]``.
+        n : torch.Tensor, optional
+            Outward unit normal of the facet at the quadrature point — 1D
+            tensor of shape ``[D]`` (see
+            :attr:`~tensormesh.Transformation.facet_normal`). A ``point_data``
+            key named ``n`` takes precedence.
         **point_data : torch.Tensor
             Any key passed to ``__call__`` via ``point_data``: if the nodal
             tensor has shape :math:`[|\mathcal V|, ...]`, the value handed
@@ -386,8 +401,9 @@ class FacetAssembler(nn.Module):
             ``{"triangle": tensor([[0, 1, 2], [1, 2, 3]])}``.
         boundary_mask : torch.Tensor
             1D boolean tensor of shape :math:`[|\mathcal V|]` marking which
-            nodes lie on the boundary; a facet is selected iff *all* of its
-            corner nodes are flagged.
+            nodes lie on the boundary. A facet is selected iff it is a
+            boundary facet of ``elements`` (referenced by a single cell) and
+            *all* of its nodes are flagged.
         quadrature_order : int, optional
             Positive integer; defaults to ``2``.
         device : torch.device or str, optional
@@ -406,14 +422,20 @@ class FacetAssembler(nn.Module):
         projector          = {}
         facet_mask         = {}
         trasnformations    = {}
-        
+
+        # Only cells touching a flagged node can own a selected facet, and every cell
+        # sharing such a facet holds all of its nodes too, so facet incidence among
+        # these cells tells boundary facets from interior ones. A node mask alone
+        # cannot: an interior facet whose nodes all lie on the boundary would be
+        # selected once from each side.
+        candidate_elements = {element_type: value[boundary_mask[value].any(-1)]
+                              for element_type, value in elements.items()}
+        on_boundary        = boundary_facet_mask(candidate_elements)
+
         # compute the facet_mask -> facet_quadrature
-        for element_type, value in elements.items(): # type: ignore
+        for element_type, boundary_elements in candidate_elements.items(): # type: ignore
             element = element_type2element(element_type)
             if element.is_mix_facet:
-                is_boundary_element = boundary_mask[value].any(-1)
-                boundary_elements   = value[is_boundary_element]                          # [n_boundary_element, n_basis_per_cell]
-
                 trans               = Transformation(
                                         points,
                                         boundary_elements,
@@ -423,8 +445,9 @@ class FacetAssembler(nn.Module):
                 tri_boundary_facet_candidate, quad_boundary_facet_candidate = trans.facets
                 # tri_boundary_facet_candidate  [n_boundary_element, n_tri_facet, n_basis_per_tri_facet]
                 # quad_boundary_facet_candidate [n_boundary_element, n_quad_facet, n_basis_per_quad_facet]
-                is_tri_boundary_facet = boundary_mask[tri_boundary_facet_candidate].all(-1)     # [n_boundary_element, n_tri_facet]
-                is_quad_boundary_facet= boundary_mask[quad_boundary_facet_candidate].all(-1)    # [n_boundary_element, n_quad_facet]
+                tri_on_boundary, quad_on_boundary = on_boundary[element_type]
+                is_tri_boundary_facet = boundary_mask[tri_boundary_facet_candidate].all(-1) & tri_on_boundary    # [n_boundary_element, n_tri_facet]
+                is_quad_boundary_facet= boundary_mask[quad_boundary_facet_candidate].all(-1) & quad_on_boundary  # [n_boundary_element, n_quad_facet]
                 n_selected_tri_facet  = int(is_tri_boundary_facet.sum().item())
                 n_selected_quad_facet = int(is_quad_boundary_facet.sum().item())
                 n_basis               = trans.n_basis                                            # n_basis_per_cell
@@ -438,7 +461,6 @@ class FacetAssembler(nn.Module):
                 tri_cell_dofs         = boundary_elements[tri_elem_idx]                          # [n_selected_tri_facet,  n_basis_per_cell]
                 quad_cell_dofs        = boundary_elements[quad_elem_idx]                         # [n_selected_quad_facet, n_basis_per_cell]
 
-                elements[element_type]          = boundary_elements
                 trasnformations[element_type]   = trans
 
                 if project == "reduce":
@@ -459,9 +481,6 @@ class FacetAssembler(nn.Module):
                 facet_mask[element_type]        = BufferList([is_tri_boundary_facet, is_quad_boundary_facet])
             
             else: # same facet type
-                is_boundary_element = boundary_mask[value].any(-1)
-                boundary_elements   = value[is_boundary_element]                          # [n_boundary_element, n_basis_per_cell]
-                
                 trans               = Transformation(
                                                     points, 
                                                     boundary_elements,
@@ -469,7 +488,7 @@ class FacetAssembler(nn.Module):
                                                     quadrature_order)
                 
                 boundary_facet_candidate = trans.facets                                   # [n_boundary_element, n_facet, n_basis_per_facet]
-                is_boundary_facet   = boundary_mask[boundary_facet_candidate].all(-1)     # [n_boundary_element, n_facet]
+                is_boundary_facet   = boundary_mask[boundary_facet_candidate].all(-1) & on_boundary[element_type][0]  # [n_boundary_element, n_facet]
                 n_selected_facet    = int(is_boundary_facet.sum().item())
                 n_basis             = trans.n_basis                                       # n_basis_per_cell
 
@@ -480,7 +499,6 @@ class FacetAssembler(nn.Module):
                 selected_elem_idx   = is_boundary_facet.nonzero(as_tuple=True)[0]         # [n_selected_facet]
                 cell_dofs_per_facet = boundary_elements[selected_elem_idx]                # [n_selected_facet, n_basis_per_cell]
 
-                elements[element_type]          = boundary_elements
                 facet_mask[element_type]        = BufferList([is_boundary_facet])
                 trasnformations[element_type]   = trans
    

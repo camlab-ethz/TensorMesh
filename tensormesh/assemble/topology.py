@@ -21,9 +21,10 @@ import numpy as np
 import scipy.sparse
 import torch
 
-from ..element import element_type2element
+from ..element import element_type2element, element_type2order
 
-__all__ = ["build_edges", "lagrange_dofmap", "lagrange_boundary_mask", "LagrangeDofMap"]
+__all__ = ["build_edges", "lagrange_dofmap", "lagrange_boundary_mask", "boundary_facet_mask",
+           "LagrangeDofMap"]
 
 
 def build_edges(
@@ -281,3 +282,59 @@ def lagrange_boundary_mask(conn: Mapping[str, torch.Tensor],
     boundary_nodes = torch.cat(facet_nodes, dim=0)[is_boundary_facet].reshape(-1)
     mask[boundary_nodes] = True
     return mask
+
+
+def boundary_facet_mask(conn: Mapping[str, torch.Tensor]
+                        ) -> Dict[str, Tuple[torch.Tensor, ...]]:
+    r"""Which local facets of each cell lie on the boundary — by incidence.
+
+    A facet is on the boundary iff exactly one cell references it. Facets
+    are identified by their sorted corner nodes, so cells of different
+    types that share a facet (a tetrahedron and a pyramid, say) are
+    matched, and triangular facets are only compared with triangular ones.
+
+    The answer is relative to the cells in ``conn``: a facet shared with a
+    cell that is left out counts as a boundary facet.
+
+    Parameters
+    ----------
+    conn : Mapping[str, torch.Tensor]
+        Connectivity ``[E, B]`` per element type; the order of each type is
+        read from its name.
+
+    Returns
+    -------
+    Dict[str, Tuple[torch.Tensor, ...]]
+        Per element type, one boolean tensor ``[E, n_facet]`` per facet
+        shape, aligned with :meth:`~tensormesh.element.Element.element_to_facet`:
+        ``(mask,)`` for cells with a single facet shape, ``(tri_mask,
+        quad_mask)`` for prisms and pyramids.
+    """
+    groups: Dict[int, List[Tuple[str, int, torch.Tensor]]] = {}
+    n_slots: Dict[str, int] = {}
+    for element_type, value in conn.items():
+        elem_cls = element_type2element(element_type)
+        tables = elem_cls.get_facet(element_type2order[element_type])
+        tables = tables if isinstance(tables, tuple) else (tables,)
+        n_slots[element_type] = len(tables)
+        for slot, table in enumerate(tables):
+            table = torch.as_tensor(table)
+            is_corner = table < elem_cls.n_vertex                    # [n_facet, B_f]
+            n_corner = int(is_corner[0].sum())
+            assert (is_corner.sum(dim=1) == n_corner).all()
+            corners = table[is_corner].reshape(table.shape[0], n_corner)
+            keys = torch.sort(value[:, corners.to(value.device)], dim=-1).values   # [E, n_facet, w]
+            groups.setdefault(n_corner, []).append((element_type, slot, keys))
+
+    masks: Dict[str, List[torch.Tensor]] = {k: [None] * n for k, n in n_slots.items()}   # type: ignore
+    for n_corner, items in groups.items():
+        keys = torch.cat([k.reshape(-1, n_corner) for _, _, k in items], dim=0)
+        _, inverse, counts = torch.unique(keys, dim=0, return_inverse=True,
+                                          return_counts=True)
+        once = counts[inverse] == 1
+        offset = 0
+        for element_type, slot, k in items:
+            n = k.shape[0] * k.shape[1]
+            masks[element_type][slot] = once[offset:offset + n].reshape(k.shape[0], k.shape[1])
+            offset += n
+    return {k: tuple(v) for k, v in masks.items()}

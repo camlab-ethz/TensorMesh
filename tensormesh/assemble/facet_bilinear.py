@@ -36,7 +36,8 @@ class FacetBilinearAssembler(FacetAssembler):
     single facet-quadrature point and basis pair — e.g. ``u * v`` for a boundary
     mass matrix, or ``c * u * v`` with a nodal coefficient ``c`` (impedance,
     radiation).  ``gradu`` / ``gradv`` and any ``point_data`` key are available
-    just as in :class:`~tensormesh.ElementAssembler`.
+    just as in :class:`~tensormesh.ElementAssembler`, and ``n`` is the outward
+    unit normal (a ``point_data`` key of the same name takes precedence).
 
     Calling the assembler returns a :class:`~tensormesh.sparse.matrix.SparseMatrix`
     of shape ``[n_points, n_points]``.
@@ -89,7 +90,9 @@ class FacetBilinearAssembler(FacetAssembler):
                 return (0, 0, None, 0)
             if key in point_data or (key.startswith("grad") and key[4:] in point_data):
                 return (0, 0, None, None)             # coefficient: facet+quad only
-            raise ValueError(f"key {key} is not supported (use u/v/gradu/gradv "
+            if key == "n":
+                return (0, 0, None, None)             # outward unit normal
+            raise ValueError(f"key {key} is not supported (use u/v/gradu/gradv, n "
                              f"or a point_data key)")
         dims = [_dims(k) for k in signature.parameters]
         facet_d = tuple(d[0] for d in dims)
@@ -133,6 +136,8 @@ class FacetBilinearAssembler(FacetAssembler):
                         fsg = fsg.to(coeff.dtype)
                     gd = torch.einsum("eb...,efqbd->efq...d", coeff, fsg)[m]
                     args.append(gd)
+                elif key == "n":
+                    args.append(trans.facet_normal[m])                      # [F, Q, D]
                 else:
                     raise NotImplementedError(f"key {key} not implemented")
 

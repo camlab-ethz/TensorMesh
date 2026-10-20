@@ -372,6 +372,20 @@ or 2D ``[B, D]``):
    ``mesh.boundary_mask``; pass ``boundary_mask=...`` to ``from_mesh``
    to restrict to a labelled sub-boundary.
 
+A facet is integrated when it lies on the boundary of the mesh (a single
+cell references it) and all of its nodes are in the mask, so an interior
+facet whose nodes all sit on the boundary, such as a chord between two
+nodes of a curved boundary, is never picked up. Besides the names above,
+``forward`` can take ``n``, the outward unit normal at the facet
+quadrature point, for loads that act along the normal:
+
+.. code-block:: python
+
+   class Pressure(FacetAssembler):
+       r"""f_i = -∫_Γ p φ_i n dS — a uniform pressure p = 2."""
+       def forward(self, v, n):
+           return -2.0 * v[:, None] * n               # [B, D]
+
 Call signature:
 
 .. code-block:: text
