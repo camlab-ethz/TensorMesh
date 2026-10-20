@@ -1,0 +1,481 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, TensorMesh Contributors
+# This file is distributed under the same license as the TensorMesh package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: TensorMesh 0.2.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-20 16:46+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:2
+#: 731294fa98694ac0b056b36987190f3b
+msgid "Plasticity with Newton's Method"
+msgstr "牛顿法求解塑性问题"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:4
+#: 8612b740520c402a80eb56a974430885
+msgid ""
+"The elastic-plastic thick-walled cylinder [Hill1950]_: a long tube under "
+"internal pressure, loaded until the whole wall flows. The script "
+"``examples/solid/plasticity_cylinder/plasticity_cylinder.py`` solves it in "
+"plane strain with von Mises (J2) plasticity and checks the result against "
+"the closed-form elastic response and the limit pressure."
+msgstr ""
+"弹塑性厚壁圆筒 [Hill1950]_：一根长管在内压作用下加载，直到整个管壁都发生塑性流动。脚本 "
+"``examples/solid/plasticity_cylinder/plasticity_cylinder.py`` 在平面应变下用 von "
+"Mises（J2）塑性模型求解该问题，并把结果与弹性响应的闭式解以及极限压力进行对比。"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:10
+#: 929f8aacd1464dafa0c7fe860ea558e1
+msgid ""
+"The new ingredient over :doc:`plasticity_strip` is the **consistent "
+"tangent**. There, every load step minimizes an incremental energy with "
+"L-BFGS. Here, every load step is solved by Newton's method with the "
+"derivative of the stress update itself, so the iterations converge "
+"quadratically: three to five per plastic load step. The plastic state stays "
+"at the quadrature points and reaches the assemblers as ``quadrature_data``."
+msgstr ""
+"与 :doc:`plasticity_strip` 相比，新增的要素是 **一致切线**\\ 。在那个示例中，每个载荷步都用 L-BFGS "
+"最小化一个增量能量；而在这里，每个载荷步都用牛顿法求解，所用的正是应力更新本身的导数，因此迭代呈二次收敛：每个塑性载荷步只需三到五次迭代。塑性状态保存在求积点上，并以"
+" ``quadrature_data`` 的形式传入装配器。"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:19
+#: a8f95132838c438b9b54137ef45f37c0
+msgid "Model"
+msgstr "模型"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:21
+#: f0d15fa8c3c04642841a925c856dcb40
+#, python-brace-format
+msgid ""
+"Small strains, :math:`\\boldsymbol{\\varepsilon} = "
+"\\boldsymbol{\\varepsilon}^e + \\boldsymbol{\\varepsilon}^p`, isotropic "
+"elasticity with shear modulus :math:`\\mu` and bulk modulus :math:`\\kappa`,"
+" the von Mises yield function with linear isotropic hardening,"
+msgstr ""
+"小应变 :math:`\\boldsymbol{\\varepsilon} = \\boldsymbol{\\varepsilon}^e + "
+"\\boldsymbol{\\varepsilon}^p`\\ ，各向同性弹性（剪切模量 :math:`\\mu`\\ ，体积模量 "
+":math:`\\kappa`\\ ），以及带线性各向同性硬化的 von Mises 屈服函数，"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:25
+#: 3fe0efc0991d42b5b83b51c81706ab43
+msgid ""
+"f(\\boldsymbol{\\sigma}, p) = q(\\boldsymbol{\\sigma}) - (\\sigma_y + H p),\n"
+"\\qquad q = \\sqrt{\\tfrac32\\, \\mathbf{s} : \\mathbf{s}},"
+msgstr ""
+"f(\\boldsymbol{\\sigma}, p) = q(\\boldsymbol{\\sigma}) - (\\sigma_y + H p),\n"
+"\\qquad q = \\sqrt{\\tfrac32\\, \\mathbf{s} : \\mathbf{s}},"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:30
+#: 3f2cdf909421473c952b6f5f1f6c877b
+#, python-brace-format
+msgid ""
+"(:math:`\\mathbf{s}` the stress deviator, :math:`p` the equivalent plastic "
+"strain, :math:`H = 0` perfect plasticity) and associated flow. Plane strain "
+"keeps :math:`\\varepsilon_{zz} = 0`, so the strain and stress are carried as"
+" :math:`3 \\times 3` tensors: :math:`\\sigma_{zz}` is not zero, and neither "
+"is :math:`\\varepsilon^p_{zz}`."
+msgstr ""
+"（\\ :math:`\\mathbf{s}` 为偏应力，\\ :math:`p` 为等效塑性应变，\\ :math:`H = 0` "
+"对应理想塑性），并采用关联流动法则。平面应变保持 :math:`\\varepsilon_{zz} = 0`\\ ，因此应变和应力都以 :math:`3"
+" \\times 3` 张量的形式存储：\\ :math:`\\sigma_{zz}` 不为零，\\ "
+":math:`\\varepsilon^p_{zz}` 也不为零。"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:36
+#: 983b4829e2fb43f8b7efd41de1e5606e
+#, python-brace-format
+msgid ""
+"**Radial return.** In a load step the total strain "
+":math:`\\boldsymbol{\\varepsilon}` at a quadrature point is given, and the "
+"state at the start of the step is :math:`(\\boldsymbol{\\varepsilon}^p_n, "
+"p_n)`. The trial stress :math:`\\boldsymbol{\\sigma}^{tr} = \\mathbb{C} : "
+"(\\boldsymbol{\\varepsilon} - \\boldsymbol{\\varepsilon}^p_n)` has the "
+"deviator :math:`\\mathbf{s}^{tr}` and the von Mises stress :math:`q^{tr}`. "
+"If :math:`f^{tr} = q^{tr} - (\\sigma_y + H p_n) \\le 0` the step is elastic."
+" Otherwise the deviator is scaled back onto the yield surface:"
+msgstr ""
+"**径向返回。** 在一个载荷步内，求积点处的总应变 :math:`\\boldsymbol{\\varepsilon}` "
+"是给定的，载荷步开始时的状态为 :math:`(\\boldsymbol{\\varepsilon}^p_n, p_n)`\\ 。试探应力 "
+":math:`\\boldsymbol{\\sigma}^{tr} = \\mathbb{C} : "
+"(\\boldsymbol{\\varepsilon} - \\boldsymbol{\\varepsilon}^p_n)` 的偏量为 "
+":math:`\\mathbf{s}^{tr}`\\ ，von Mises 应力为 :math:`q^{tr}`\\ 。若 :math:`f^{tr} "
+"= q^{tr} - (\\sigma_y + H p_n) \\le 0`\\ ，该步为弹性步；否则把偏应力按比例缩回到屈服面上："
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:44
+#: 83a33c32421049f4b2eb282d57dd93cb
+msgid ""
+"\\Delta p = \\frac{f^{tr}}{3\\mu + H}, \\qquad\n"
+"\\boldsymbol{\\sigma} = \\boldsymbol{\\sigma}^{tr} - 2\\mu\\, \\Delta p\\, \\sqrt{\\tfrac32}\\, \\mathbf{N},\n"
+"\\qquad \\mathbf{N} = \\frac{\\mathbf{s}^{tr}}{\\|\\mathbf{s}^{tr}\\|}."
+msgstr ""
+"\\Delta p = \\frac{f^{tr}}{3\\mu + H}, \\qquad\n"
+"\\boldsymbol{\\sigma} = \\boldsymbol{\\sigma}^{tr} - 2\\mu\\, \\Delta p\\, \\sqrt{\\tfrac32}\\, \\mathbf{N},\n"
+"\\qquad \\mathbf{N} = \\frac{\\mathbf{s}^{tr}}{\\|\\mathbf{s}^{tr}\\|}."
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:50
+#: 346cdba080c74bdc90a0877dffd3fe7d
+msgid ""
+"**Consistent tangent** [Simo1985]_ [deSouzaNeto2008]_. Differentiating this "
+"update, not the continuum relation, gives the moduli Newton needs:"
+msgstr ""
+"**一致切线** [Simo1985]_ [deSouzaNeto2008]_。对这一更新（而不是对连续介质的本构关系）求导，就得到牛顿法所需的模量："
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:53
+#: 75e77ef4a83d48778adc4147b5e5c1af
+msgid ""
+"\\frac{\\partial \\boldsymbol{\\sigma}}{\\partial \\boldsymbol{\\varepsilon}}\n"
+"= \\kappa\\, \\mathbf{1} \\otimes \\mathbf{1}\n"
+"+ 2\\mu \\Bigl(1 - \\frac{3\\mu\\, \\Delta p}{q^{tr}}\\Bigr) \\mathbb{I}_{dev}\n"
+"+ 6\\mu^2 \\Bigl(\\frac{\\Delta p}{q^{tr}} - \\frac{1}{3\\mu + H}\\Bigr) \\mathbf{N} \\otimes \\mathbf{N}"
+msgstr ""
+"\\frac{\\partial \\boldsymbol{\\sigma}}{\\partial \\boldsymbol{\\varepsilon}}\n"
+"= \\kappa\\, \\mathbf{1} \\otimes \\mathbf{1}\n"
+"+ 2\\mu \\Bigl(1 - \\frac{3\\mu\\, \\Delta p}{q^{tr}}\\Bigr) \\mathbb{I}_{dev}\n"
+"+ 6\\mu^2 \\Bigl(\\frac{\\Delta p}{q^{tr}} - \\frac{1}{3\\mu + H}\\Bigr) \\mathbf{N} \\otimes \\mathbf{N}"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:60
+#: 03cefeed25ce47a28260ef3bd0eab344
+msgid ""
+"on plastic points, and the elastic moduli elsewhere. ``radial_return`` "
+"computes the stress, the new state and these moduli for all quadrature "
+"points at once:"
+msgstr "以上用于塑性点，其余点取弹性模量。\\ ``radial_return`` 一次性为所有求积点计算应力、更新后的状态以及这些模量："
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:68
+#: 97e6dc723e1f4dbf81f42bf959d4ea8c
+msgid ""
+"The test suite compares the tangent with a forward-mode autodiff derivative "
+"of the stress update, ``torch.func.jvp``. That derivative is also the way to"
+" get the tangent of a model without a closed form."
+msgstr ""
+"测试集把这一切线与应力更新的前向模式自动微分导数 ``torch.func.jvp`` "
+"进行比较。对于没有闭式切线的本构模型，这种导数也正是获得切线的途径。"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:74
+#: 89d26cfb6a10422cbe62244f94c81357
+msgid "Quadrature-point data"
+msgstr "求积点数据"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:76
+#: 54bdc9778cff429bb87e55c66091bb4d
+msgid ""
+"The stress and the moduli are arrays over the quadrature points, "
+"``[n_elements, n_quadrature, ...]``. Passed as ``quadrature_data``, an entry"
+" reaches ``forward`` as its value at the current point, under its own name:"
+msgstr ""
+"应力和模量都是定义在求积点上的数组，形状为 ``[n_elements, n_quadrature, ...]``\\ 。以 "
+"``quadrature_data`` 传入后，每一项都以它在当前求积点处的值、按自身的名称传给 ``forward``\\ ："
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:88
+#: 27c5b6cbdb0d4a7aa3114ba064779432
+#, python-brace-format
+msgid ""
+"The internal-force vector is ``InternalForce(quadrature_data={\"sigma\": "
+"sigma})`` and the stiffness matrix ``Tangent(quadrature_data={\"C\": C})``, "
+"with the in-plane parts of the :math:`3 \\times 3` tensors. The pressure "
+"acts along the outward unit normal of the inner wall, which ``forward`` of a"
+" :class:`~tensormesh.FacetAssembler` receives as ``n``:"
+msgstr ""
+"内力向量为 ``InternalForce(quadrature_data={\"sigma\": sigma})``\\ ，刚度矩阵为 "
+"``Tangent(quadrature_data={\"C\": C})``\\ ，二者使用 :math:`3 \\times 3` "
+"张量的面内部分。压力沿内壁的单位外法向作用，\\ :class:`~tensormesh.FacetAssembler` 的 ``forward`` 以"
+" ``n`` 接收该法向："
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:100
+#: ece2e5628ae9470c91f0557d99393373
+msgid "Newton's method"
+msgstr "牛顿法"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:102
+#: 361ed1153b4b43b2bc00c66a429470b7
+#, python-brace-format
+msgid ""
+"Each load step iterates until the residual on the free degrees of freedom is"
+" below :math:`10^{-10}` of the applied or reaction forces. The first "
+"iteration starts from the converged state of the previous step and carries "
+"the change of the prescribed displacements through the whole body (a linear "
+"predictor, through :meth:`~tensormesh.Condenser.update_dirichlet`); the "
+"later iterations keep the prescribed values. The plastic state is committed "
+"once the step has converged, so every iteration returns from the same state."
+msgstr ""
+"每个载荷步迭代到非约束自由度上的残差低于外加力或反力的 :math:`10^{-10}` "
+"为止。第一次迭代从上一载荷步的收敛状态出发，把指定位移的变化传递到整个物体中（线性预测，借助 "
+":meth:`~tensormesh.Condenser.update_dirichlet`\\ "
+"）；之后的迭代保持指定值不变。塑性状态在该步收敛后才提交，因此每次迭代都从同一个状态出发进行返回映射。"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:116
+#: db5e62a52cb44072bba5de0890983009
+msgid "The thick-walled cylinder"
+msgstr "厚壁圆筒"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:118
+#: 5d397e8211a24d3997ee5de4cedfa4bc
+msgid ""
+"**Geometry**: a quarter of the tube, :math:`a = 100` mm, :math:`b = 200` mm,"
+" plane strain, with :math:`u_y = 0` on the :math:`x` axis and :math:`u_x = "
+"0` on the :math:`y` axis."
+msgstr ""
+"**几何**\\ ：取圆管的四分之一，\\ :math:`a = 100` mm，\\ :math:`b = 200` mm，平面应变；在 "
+":math:`x` 轴上 :math:`u_y = 0`\\ ，在 :math:`y` 轴上 :math:`u_x = 0`\\ 。"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:121
+#: 1f28c0b053904cd187e3433e72ed85ba
+msgid ""
+"**Material**: :math:`E = 200` GPa, :math:`\\nu = 0.3`, :math:`\\sigma_y = "
+"250` MPa, perfect plasticity."
+msgstr ""
+"**材料**\\ ：\\ :math:`E = 200` GPa，\\ :math:`\\nu = 0.3`\\ ，\\ "
+":math:`\\sigma_y = 250` MPa，理想塑性。"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:123
+#: 8388915590a24b6d924f8612bb604136
+msgid ""
+"**Loading**: the inner wall is pushed out to six times the first-yield "
+"displacement in 30 steps. Under this displacement control the pressure is "
+"the reaction on the inner wall, projected on the nodal forces of a unit "
+"pressure. ``--control pressure`` raises the pressure instead, which stops "
+"short of the limit."
+msgstr ""
+"**加载**\\ ：内壁在 30 步内被向外推到初始屈服位移的六倍。在这种位移控制下，压力取为内壁反力在单位压力节点力上的投影。\\ "
+"``--control pressure`` 改为逐步提高压力，此时加载停在极限压力之前。"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:128
+#: cf18c4b0b21642b5be6029a9cbff6405
+msgid ""
+"**Mesh**: six-node triangles on a polar grid, built with NumPy. The radial "
+"spacing grows with :math:`r` and the mid-edge nodes of the arcs lie on the "
+"circles (825 nodes)."
+msgstr ""
+"**网格**\\ ：用 NumPy 在极坐标网格上生成的六节点三角形单元。径向间距随 :math:`r` 增大，圆弧边的中点节点位于圆周上（825 "
+"个节点）。"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:132
+#: 309b227a1c064befa17076d214227c3a
+msgid ""
+"Plastic strain in the quarter tube, pressure against inner-wall "
+"displacement, and Newton residuals"
+msgstr "四分之一圆管中的塑性应变、压力与内壁位移的关系，以及牛顿残差"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:136
+#: 2932319e2db843f7af6c213c042b7caf
+msgid ""
+"Output of ``plasticity_cylinder.py``. Left: the equivalent plastic strain at"
+" the end of loading. Middle: the pressure against the inner-wall "
+"displacement, with the Lamé line, the first-yield point and the limit "
+"pressure. Right: the Newton residuals of an elastic step, the first plastic "
+"step, a half-plastic step and the last one."
+msgstr ""
+"``plasticity_cylinder.py`` 的输出。左：加载结束时的等效塑性应变。中：压力与内壁位移的关系，并标出 Lamé "
+"直线、初始屈服点和极限压力。右：一个弹性步、第一个塑性步、塑性区约占一半的载荷步以及最后一步的牛顿残差。"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:142
+#: a7e4cd99aab94463ad92a26fcea8d61d
+#, python-brace-format, python-format
+msgid ""
+"The response follows the Lamé line until the inner wall yields at :math:`p_e"
+" = 108.1` MPa. The plastic zone then spreads outward, and the pressure rises"
+" more and more slowly. Once the zone reaches the outer wall the tube flows "
+"at a nearly constant pressure: the last step carries 199.7 MPa, within 0.2 %"
+" of the limit pressure :math:`\\tfrac{2}{\\sqrt3}\\, \\sigma_y \\ln(b/a) = "
+"200.1` MPa, approached from below. Elastic steps take one Newton update and "
+"plastic steps three to five, with the residual roughly squared from one to "
+"the next."
+msgstr ""
+"响应沿 Lamé 直线变化，直到内壁在 :math:`p_e = 108.1` MPa "
+"时屈服。随后塑性区向外扩展，压力增长得越来越慢。塑性区到达外壁后，圆筒在几乎恒定的压力下流动：最后一步的压力为 199.7 MPa，与极限压力 "
+":math:`\\tfrac{2}{\\sqrt3}\\, \\sigma_y \\ln(b/a) = 200.1` MPa 相差不到 "
+"0.2%，并从下方逼近。弹性步只需一次牛顿更新，塑性步需要三到五次，每次更新后残差大致平方一次。"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:152
+#: bac71a53b2354a9290ef1d9aa3ed0464
+msgid "Verification"
+msgstr "验证"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:154
+#: 453631bf723c4ec6bc53057ea275bbe6
+msgid "``tests/assemble/test_plasticity_cylinder_example.py`` checks:"
+msgstr "``tests/assemble/test_plasticity_cylinder_example.py`` 检查以下内容："
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:156
+#: a57e69be8a0b4e29937b27022ec646ce
+msgid ""
+"**Return map**: plastic points end on the yield surface, elastic points keep"
+" the elastic stress, the plastic flow is deviatoric, and the tangent equals "
+"a forward-mode autodiff derivative of the stress update."
+msgstr "**返回映射**\\ ：塑性点最终落在屈服面上，弹性点保持弹性应力，塑性流动为偏量，切线与应力更新的前向模式自动微分导数一致。"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:159
+#: e2321b7686934752b3cfab3c8cc5ccd5
+msgid ""
+"**Stiffness matrix**: the assembled tangent against central differences of "
+"the residual."
+msgstr "**刚度矩阵**\\ ：装配得到的切线刚度与残差的中心差分一致。"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:161
+#: 9d1633da434241c59eca0f7f913eb4c3
+msgid ""
+"**Elastic range**: the inner-wall displacement against the Lamé solution,"
+msgstr "**弹性阶段**\\ ：内壁位移与 Lamé 解一致，"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:163
+#: 2cb6f39aaf4543ec882ed133fb9c5073
+#, python-brace-format
+msgid ""
+"\\frac{p}{u_r(a)} = \\frac{E\\, (b^2 - a^2)}{(1 + \\nu)\\, a\\, \\bigl[(1 - "
+"2\\nu)\\, a^2 + b^2\\bigr]},"
+msgstr ""
+"\\frac{p}{u_r(a)} = \\frac{E\\, (b^2 - a^2)}{(1 + \\nu)\\, a\\, \\bigl[(1 - "
+"2\\nu)\\, a^2 + b^2\\bigr]},"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:167
+#: 9ecd52b91b344024b4fe9b449c49f877
+msgid "under pressure and displacement control."
+msgstr "压力控制和位移控制下均如此。"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:168
+#: 553df6c351e0487d8889c0a0e00ae5bc
+msgid ""
+"**First yield**: no plastic point below the first-yield displacement, and "
+"only in the innermost elements just above it."
+msgstr "**初始屈服**\\ ：低于初始屈服位移时没有塑性点；略高于该位移时，塑性点只出现在最内层单元中。"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:170
+#: 5b1d8bda312c4f059b4b63b37313cc69
+msgid ""
+"**Collapse**: the pressure of a perfectly plastic tube rises to the limit "
+"pressure within 1 %, from below, and Newton converges in at most six updates"
+" per load step."
+msgstr "**塑性坍塌**\\ ：理想塑性圆管的压力从下方逼近极限压力，误差在 1% 以内，并且每个载荷步的牛顿法最多六次更新即收敛。"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:173
+#: 775b86b4256e45b585e1e29d5ff262d9
+msgid "**Devices**: CUDA against CPU, when a GPU is present."
+msgstr "**设备**\\ ：存在 GPU 时，比较 CUDA 与 CPU 的结果。"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:177
+#: a45812ce8e444f23b286c2c2f9c60851
+msgid "Running it"
+msgstr "运行它"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:186
+#: 39cb7a1d3f0d42b0817d642638786ca1
+msgid ""
+"The default run takes a few seconds on a CPU. ``--device cuda`` assembles on"
+" the GPU; the Newton systems then use cuDSS if torch-sla has it, and SciPy "
+"on the host otherwise."
+msgstr ""
+"默认运行在 CPU 上只需几秒钟。\\ ``--device cuda`` 在 GPU 上装配；此时若 torch-sla 支持 "
+"cuDSS，牛顿方程组用 cuDSS 求解，否则在主机上用 SciPy 求解。"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:192
+#: 11b192b69b5f45cba8814ae38af96754
+msgid "Notes"
+msgstr "说明"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:194
+#: 610ab498b9d9410c99064d2d2a9ce9dd
+msgid ""
+"**Why displacement control.** Under pressure control a perfectly plastic "
+"tube cannot be loaded past the limit pressure, and close to it the tangent "
+"becomes singular. Prescribing the inner-wall displacement follows the "
+"plateau."
+msgstr ""
+"**为什么用位移控制。** "
+"在压力控制下，理想塑性圆管无法加载到极限压力以上，而且在接近极限压力时切线矩阵会变得奇异。指定内壁位移则可以沿着平台继续加载。"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:198
+#: 61b97bab377840b28f49d599363503a8
+msgid ""
+"**Elements.** Plastic flow preserves volume, and linear (constant-strain) "
+"triangles lock under this constraint in plane strain, overestimating the "
+"collapse load [Nagtegaal1974]_. The quadratic triangles used here reach the "
+"limit pressure within 0.2 %."
+msgstr ""
+"**单元。** 塑性流动保持体积不变，平面应变下线性（常应变）三角形单元在这一约束下会发生锁死，从而高估坍塌载荷 "
+"[Nagtegaal1974]_。本例使用的二次三角形单元得到的极限压力误差在 0.2% 以内。"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:202
+#: 63b9dce941af409da64f0448d0bcf4e6
+msgid ""
+"**The first iteration.** Moving only the boundary nodes to their new "
+"prescribed positions before the first solve strains only the layer of "
+"elements next to them, and can make it yield spuriously. The linear "
+"predictor spreads the change through the body first."
+msgstr ""
+"**第一次迭代。** "
+"如果在第一次求解之前只把边界节点移到新的指定位置，就只有紧邻它们的那一层单元产生应变，可能使这层单元出现虚假的屈服。线性预测会先把这一变化传递到整个物体中。"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:209
+#: 6a55cb8f50ed4447b69e823aafe383ed
+msgid "What's next"
+msgstr "下一步"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:211
+#: a2287debce634197bcbe6a9447775ae6
+msgid ""
+":doc:`plasticity_strip`: the same J2 model as an incremental energy, "
+"minimized with L-BFGS, with :class:`~tensormesh.assemble.J2Plasticity`."
+msgstr ""
+":doc:`plasticity_strip`\\ ：同一个 J2 模型写成增量能量的形式，用 L-BFGS 最小化，使用 "
+":class:`~tensormesh.assemble.J2Plasticity`\\ 。"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:213
+#: 94dcf702fb8d44cbb5f8704937f09b1e
+msgid ""
+":doc:`../../user_guide/forms`: ``quadrature_data``, ``n`` and the other "
+"names ``forward`` can take."
+msgstr ""
+":doc:`../../user_guide/forms`\\ ：\\ ``quadrature_data``\\ 、\\ ``n`` 以及 "
+"``forward`` 可以接收的其他参数名。"
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:217
+#: 711c81d06b204449895dcfe60ea1b54f
+msgid ""
+"R. Hill, *The Mathematical Theory of Plasticity*, Oxford University Press, "
+"1950."
+msgstr ""
+"R. Hill, *The Mathematical Theory of Plasticity*, Oxford University Press, "
+"1950."
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:220
+#: b590489533d34637b6433e8c132d6532
+msgid ""
+"J. C. Simo and R. L. Taylor, *Consistent tangent operators for rate-"
+"independent elastoplasticity*, Computer Methods in Applied Mechanics and "
+"Engineering, 48(1):101–118, 1985."
+msgstr ""
+"J. C. Simo and R. L. Taylor, *Consistent tangent operators for rate-"
+"independent elastoplasticity*, Computer Methods in Applied Mechanics and "
+"Engineering, 48(1):101–118, 1985."
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:224
+#: 101089b5002d4b1ca6cbcd61dcdfc951
+msgid ""
+"E. A. de Souza Neto, D. Perić and D. R. J. Owen, *Computational Methods for "
+"Plasticity: Theory and Applications*, Wiley, 2008."
+msgstr ""
+"E. A. de Souza Neto, D. Perić and D. R. J. Owen, *Computational Methods for "
+"Plasticity: Theory and Applications*, Wiley, 2008."
+
+#: ../../source/example_gallery/solid/plasticity_cylinder.rst:228
+#: 57a2b89754564b82a6bfa13e02e50ec7
+msgid ""
+"J. C. Nagtegaal, D. M. Parks and J. R. Rice, *On numerically accurate finite"
+" element solutions in the fully plastic range*, Computer Methods in Applied "
+"Mechanics and Engineering, 4(2):153–177, 1974."
+msgstr ""
+"J. C. Nagtegaal, D. M. Parks and J. R. Rice, *On numerically accurate finite"
+" element solutions in the fully plastic range*, Computer Methods in Applied "
+"Mechanics and Engineering, 4(2):153–177, 1974."
