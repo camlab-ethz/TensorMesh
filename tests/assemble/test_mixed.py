@@ -238,6 +238,13 @@ def test_layout_helpers(p2_mesh):
 # --------------------------------------------------------------------- #
 # 7. validation errors
 # --------------------------------------------------------------------- #
+@pytest.mark.parametrize("order", [np.int32(4), np.int64(8)])
+def test_numpy_integer_quadrature_orders(p1_mesh, order):
+    actual = ScalarMassMixed.from_mesh(p1_mesh, quadrature_order=order)
+    expected = ScalarMassMixed.from_mesh(p1_mesh, quadrature_order=int(order))
+    torch.testing.assert_close(_dense(actual()), _dense(expected()), rtol=0, atol=0)
+
+
 def test_validation_errors(p2_mesh, p1_mesh):
     with pytest.raises(ValueError):  # trial == test
         Field(trial="u", test="u")
@@ -246,16 +253,17 @@ def test_validation_errors(p2_mesh, p1_mesh):
     with pytest.raises(ValueError):  # grad prefix
         Field(trial="gradient", test="v")
 
-    class BadQuadrature(MixedElementAssembler):
-        # order 4 is supported per se (generalized pairs), but its default
-        # quadrature degree 2*4=8 exceeds the tabulated maximum of 7
+    class HighOrderQuadrature(MixedElementAssembler):
+        # P4's default degree 8 now uses a generated triangle rule.
         fields = [Field(trial="u", test="v", order=4)]
 
         def forward(self, u, v):
             return u * v
 
+    high_order = HighOrderQuadrature.from_mesh(p2_mesh)
+    assert next(iter(high_order.transformation.values())).n_quadrature == 25
     with pytest.raises(ValueError, match="quadrature"):
-        BadQuadrature.from_mesh(p2_mesh)
+        HighOrderQuadrature.from_mesh(p2_mesh, quadrature_order=0)
 
     class DupNames(MixedElementAssembler):
         fields = [Field(trial="u", test="v"), Field(trial="p", test="u")]
