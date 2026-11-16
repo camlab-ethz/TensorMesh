@@ -99,10 +99,7 @@ def test_exodus_node_positions(name):
     assert torch.allclose(nodes, expected, atol=1e-12)
 
 
-# pyramid14 is left out: TensorMesh's order-2 pyramid space is not continuous
-# across the triangular faces two pyramids share, so no Galerkin solution is
-# exact there (its node positions are covered by test_exodus_node_positions)
-@pytest.mark.parametrize("name", [n for n in TYPES if n != "pyramid14"])
+@pytest.mark.parametrize("name", TYPES)
 def test_exodus_side_set_patch_test(name):
     # Laplace(u) = 0 with u exact on every side set: a harmonic polynomial of
     # the element's degree is reproduced to round-off only if the node
@@ -162,13 +159,12 @@ def test_exodus_interior_side_set_integrates_once():
     # the side set selects the x = 1 facets of block 0 only: length 1
     exact = IntegrateOne.from_mesh(mesh, boundary_mask="interface")().sum().item()
     assert exact == pytest.approx(1.0, abs=1e-12)
-    # a node mask cannot tell the two sides apart and integrates twice
+    # a node mask selects boundary facets only, and these are shared by two cells
     by_nodes = IntegrateOne.from_mesh(mesh, boundary_mask=mesh.point_set_mask("interface"))().sum().item()
-    assert by_nodes == pytest.approx(2.0, abs=1e-12)
+    assert by_nodes == pytest.approx(0.0, abs=1e-12)
 
 
-# (FacetAssembler does not integrate over prism/pyramid facets yet)
-@pytest.mark.parametrize("name", ["tri6", "quad9", "tet10", "hex27"])
+@pytest.mark.parametrize("name", TYPES)
 def test_exodus_side_set_matches_node_mask_on_exterior_boundary(name):
     mesh = _read(name)
     for side in mesh.side_sets:

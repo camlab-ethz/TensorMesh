@@ -395,9 +395,10 @@ package (``pip install "tensormesh-fem[exodus]"``):
 
 A side set selects facets, not nodes. Pass its name as the
 ``boundary_mask`` of a :class:`~tensormesh.FacetAssembler` to integrate
-over exactly those facets. This matters on an interior side set: a node
-mask cannot tell the two sides of an interface apart and integrates it
-twice. For Dirichlet conditions, turn either kind of set into a node mask:
+over exactly those facets. It is the only way to integrate over an
+interior side set: a node mask selects boundary facets, and an interface
+between two cells is not one. For Dirichlet conditions, turn either kind
+of set into a node mask:
 
 .. code-block:: python
 
