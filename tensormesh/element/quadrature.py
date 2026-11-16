@@ -4,11 +4,76 @@ pyramid, prism, and their facets.
 Internal helpers wired into :meth:`~tensormesh.Element.get_quadrature` and
 :meth:`~tensormesh.Element.get_facet_quadrature`. Not part of the public API.
 """
+from functools import lru_cache
+from numbers import Integral
+
 import torch
 from typing import Tuple
 from scipy.special import roots_jacobi
 from .polynomial import Polynomials
 from .types import Tensorx2, Tensorx4, Tensorx5
+
+
+def _positive_order(order, rule):
+    if isinstance(order, bool) or not isinstance(order, Integral) or order < 1:
+        raise ValueError(f"{rule} quadrature order must be an integer >= 1")
+
+
+@lru_cache(maxsize=128)
+def _gaussian_interval_rule(n, alpha=0, beta=0):
+    """CPU float64 Gaussian rule for (1-x)**alpha x**beta on [0,1].
+
+    Private cached tensors must not be modified by callers. The Jacobi
+    weights on [-1,1] scale by 2**(-alpha-beta-1) under x=(1+s)/2.
+    alpha=beta=0 is Gauss-Legendre. SciPy generation is setup-only.
+    """
+    points, weights = roots_jacobi(n, alpha, beta)
+    return (torch.tensor(weights / 2 ** (alpha + beta + 1), dtype=torch.float64, device="cpu"),
+            torch.tensor((points + 1) / 2, dtype=torch.float64, device="cpu"))
+
+
+@lru_cache(maxsize=128)
+def _gaussian_triangle_rule(n):
+    """Conical Gaussian product rule, exact through total degree 2*n-1.
+
+    x=u, y=(1-u)*v has Jacobian 1-u, incorporated in the u Jacobi weights.
+    For x**a y**b, the remaining polynomial has degree a+b in u and b in v.
+    Thus n points in each direction suffice, without an extra Jacobian
+    degree. Weights are positive and points strictly inside the triangle.
+    """
+    wu, u = _gaussian_interval_rule(n, 1, 0)
+    wv, v = _gaussian_interval_rule(n)
+    uu, vv = torch.meshgrid(u, v, indexing="ij")
+    points = torch.stack((uu, (1 - uu) * vv), dim=-1).reshape(-1, 2)
+    weights = (wu[:, None] * wv[None, :]).reshape(-1)
+    return weights, points
+
+
+@lru_cache(maxsize=128)
+def _gaussian_tetrahedron_rule(n):
+    """Conical Gaussian product rule, exact through total degree 2*n-1.
+
+    x=u, y=(1-u)*v, z=(1-u)*(1-v)*w has Jacobian (1-u)**2*(1-v),
+    incorporated in the u and v Jacobi weights. For x**a y**b z**c,
+    the remaining polynomial has degrees a+b+c, b+c, c in u, v, w.
+    Thus n points per direction suffice. Generation and caching use CPU
+    float64; weights are positive and points strictly inside the tetrahedron.
+    """
+    wu, u = _gaussian_interval_rule(n, 2, 0)
+    wv, v = _gaussian_interval_rule(n, 1, 0)
+    ww, w = _gaussian_interval_rule(n)
+    u_grid, v_grid, w_grid = torch.meshgrid(u, v, w, indexing="ij")
+    points = torch.stack(
+        (u_grid, (1 - u_grid) * v_grid, (1 - u_grid) * (1 - v_grid) * w_grid),
+        dim=-1,
+    ).reshape(-1, 3)
+    weights = (wu[:, None, None] * wv[None, :, None] * ww[None, None, :]).reshape(-1)
+    return weights, points
+
+
+def _copy_rule(rule, dtype, device):
+    # .to() alone aliases the canonical cache for CPU float64 requests.
+    return tuple(t.to(dtype=dtype, device=device, copy=True) for t in rule)
 
 
 def lin_quadrature(order: int = 1,
@@ -20,7 +85,9 @@ def lin_quadrature(order: int = 1,
     Parameters
     ----------
     order : int, optional
-        Quadrature order between 1 and 7. Defaults to 1.
+        Number of Gaussian points (>= 1), exact through degree
+        ``2 * order - 1``. Defaults to 1. Unlike triangles, this parameter
+        counts points, not polynomial exactness degree.
     dtype : torch.dtype, optional
         Output dtype.
     device : torch.device, optional
@@ -33,7 +100,10 @@ def lin_quadrature(order: int = 1,
     points : torch.Tensor
         2D tensor of shape ``[n_quadrature, 1]``.
     """
-    assert order >= 1 and order <= 7, f"Invalid order {order} for lin quadrature, expected one of [1,7]"
+    _positive_order(order, "line")
+    if order > 7:
+        weights, points = _copy_rule(_gaussian_interval_rule(order), dtype, device)
+        return weights, points[:, None]
     weights_table = {
         1 : torch.tensor([2.0], dtype=dtype),
         2 : torch.tensor([1.0, 1.0], dtype=dtype),
@@ -75,7 +145,11 @@ def tri_quadrature(order: int = 1,
     Parameters
     ----------
     order : int, optional
-        Quadrature order between 1 and 7. Defaults to 1.
+        Requested polynomial exactness degree (>= 1). Defaults to 1.
+        Degrees 1..7 use pre-tabulated rules. Higher degrees
+        use a Gauss-Jacobi/Legendre conical product with
+        ``ceil((order + 1) / 2)**2`` points. These generated rules have
+        positive weights but are not symmetric or minimal-point rules.
     dtype : torch.dtype, optional
         Output dtype.
     device : torch.device, optional
@@ -88,7 +162,9 @@ def tri_quadrature(order: int = 1,
     points : torch.Tensor
         2D tensor of shape ``[n_quadrature, 2]``.
     """
-    assert order >= 1 and order <= 7, f"Invalid order {order} for tri quadrature, expected one of [1,7]"
+    _positive_order(order, "triangle")
+    if order > 7:
+        return _copy_rule(_gaussian_triangle_rule((order + 2) // 2), dtype, device)
     weights_table = {
         1: torch.tensor([0.5],dtype=dtype),
         2: torch.tensor([ 0.16666666666666666, 0.16666666666666666, 0.16666666666666666],dtype=dtype),
@@ -125,7 +201,12 @@ def tet_quadrature(order: int = 1,
     Parameters
     ----------
     order : int, optional
-        Quadrature order between 1 and 7. Defaults to 1.
+        Requested polynomial exactness degree (>= 1). Defaults to 1.
+        Degrees 1..6 use tabulated rules. Higher degrees use
+        a Gauss-Jacobi/Jacobi/Legendre conical product with
+        ``ceil((order + 1) / 2)**3`` points. These generated rules have
+        positive weights and interior points, but are not symmetric or
+        minimal-point rules.
     dtype : torch.dtype, optional
         Output dtype.
     device : torch.device, optional
@@ -137,25 +218,35 @@ def tet_quadrature(order: int = 1,
         1D tensor of shape ``[n_quadrature]``.
     points : torch.Tensor
         2D tensor of shape ``[n_quadrature, 3]``.
+
+    Notes
+    -----
+    Generated rules are cached in CPU float64 and returned as independent
+    copies in the requested dtype/device. Their weights sum to 1/6.
+
+    Pre-tabulated degrees 5 and 6 use 15 and 24 points, respectively.
+    Degree 7 uses a generated 64-point rule. Each returned rule integrates
+    all polynomials through the requested degree. Some pre-tabulated rules
+    have negative weights or points on the boundary.
     """
-    assert order >= 1 and order <= 7, f"Invalid order {order} for tet quadrature, expected one of [1,7]"
+    _positive_order(order, "tetrahedron")
+    if order >= 7:
+        return _copy_rule(_gaussian_tetrahedron_rule((order + 2) // 2), dtype, device)
     weights_table = {
         1: torch.tensor([ 0.16666666666666666],dtype=dtype),
         2: torch.tensor([ 0.041666666666666664, 0.041666666666666664, 0.041666666666666664, 0.041666666666666664],dtype=dtype),
         3: torch.tensor([ -0.13333333333333333, 0.075, 0.075, 0.075, 0.075],dtype=dtype),
         4: torch.tensor([ -0.01315555555555555, 0.007622222222222217, 0.007622222222222217, 0.007622222222222217, 0.007622222222222217, 0.02488888888888888, 0.02488888888888888, 0.02488888888888888, 0.02488888888888888, 0.02488888888888888, 0.02488888888888888],dtype=dtype),
-        5: torch.tensor([ 0.003174603174603167, 0.003174603174603167, 0.003174603174603167, 0.003174603174603167, 0.003174603174603167, 0.003174603174603167, 0.014764970790496783, 0.014764970790496783, 0.014764970790496783, 0.014764970790496783, 0.022139791114265117, 0.022139791114265117, 0.022139791114265117, 0.022139791114265117],dtype=dtype),
-        6: torch.tensor([ 0.030283678097089182, 0.006026785714285717, 0.006026785714285717, 0.006026785714285717, 0.006026785714285717, 0.011645249086028967, 0.011645249086028967, 0.011645249086028967, 0.011645249086028967, 0.010949141561386449, 0.010949141561386449, 0.010949141561386449, 0.010949141561386449, 0.010949141561386449, 0.010949141561386449],dtype=dtype),
-        7: torch.tensor([ 0.0066537917096946494, 0.0066537917096946494, 0.0066537917096946494, 0.0066537917096946494, 0.0016795351758867834, 0.0016795351758867834, 0.0016795351758867834, 0.0016795351758867834, 0.009226196923942399, 0.009226196923942399, 0.009226196923942399, 0.009226196923942399, 0.008035714285714283, 0.008035714285714283, 0.008035714285714283, 0.008035714285714283, 0.008035714285714283, 0.008035714285714283, 0.008035714285714283, 0.008035714285714283, 0.008035714285714283, 0.008035714285714283, 0.008035714285714283, 0.008035714285714283],dtype=dtype)
+        5: torch.tensor([ 0.030283678097089182, 0.006026785714285717, 0.006026785714285717, 0.006026785714285717, 0.006026785714285717, 0.011645249086028967, 0.011645249086028967, 0.011645249086028967, 0.011645249086028967, 0.010949141561386449, 0.010949141561386449, 0.010949141561386449, 0.010949141561386449, 0.010949141561386449, 0.010949141561386449],dtype=dtype),
+        6: torch.tensor([ 0.0066537917096946494, 0.0066537917096946494, 0.0066537917096946494, 0.0066537917096946494, 0.0016795351758867834, 0.0016795351758867834, 0.0016795351758867834, 0.0016795351758867834, 0.009226196923942399, 0.009226196923942399, 0.009226196923942399, 0.009226196923942399, 0.008035714285714283, 0.008035714285714283, 0.008035714285714283, 0.008035714285714283, 0.008035714285714283, 0.008035714285714283, 0.008035714285714283, 0.008035714285714283, 0.008035714285714283, 0.008035714285714283, 0.008035714285714283, 0.008035714285714283],dtype=dtype)
     }
     points_table = {
         1: torch.tensor([ [ 0.25, 0.25, 0.25]],dtype=dtype),
         2: torch.tensor([ [ 0.5854101966249685, 0.1381966011250105, 0.1381966011250105,], [ 0.1381966011250105, 0.1381966011250105, 0.1381966011250105,], [ 0.1381966011250105, 0.1381966011250105, 0.5854101966249685,], [ 0.1381966011250105, 0.5854101966249685, 0.1381966011250105,],],dtype=dtype,),
         3: torch.tensor([ [ 0.25, 0.25, 0.25,], [ 0.5, 0.1666666666666667, 0.1666666666666667,], [ 0.1666666666666667, 0.1666666666666667, 0.1666666666666667,], [ 0.1666666666666667, 0.1666666666666667, 0.5,], [ 0.1666666666666667, 0.5, 0.1666666666666667,],],dtype=dtype),
         4: torch.tensor([ [ 0.25, 0.25, 0.25,], [ 0.7857142857142857, 0.0714285714285714, 0.0714285714285714,], [ 0.0714285714285714, 0.0714285714285714, 0.0714285714285714,], [ 0.0714285714285714, 0.0714285714285714, 0.7857142857142857,], [ 0.0714285714285714, 0.7857142857142857, 0.0714285714285714,], [ 0.1005964238332008, 0.3994035761667992, 0.3994035761667992,], [ 0.3994035761667992, 0.1005964238332008, 0.3994035761667992,], [ 0.3994035761667992, 0.3994035761667992, 0.1005964238332008,], [ 0.3994035761667992, 0.1005964238332008, 0.1005964238332008,], [ 0.1005964238332008, 0.3994035761667992, 0.1005964238332008,], [ 0.1005964238332008, 0.1005964238332008, 0.3994035761667992,],],dtype=dtype),
-        5: torch.tensor([ [ 0.0, 0.5, 0.5,], [ 0.5, 0.0, 0.5,], [ 0.5, 0.5, 0.0,], [ 0.5, 0.0, 0.0,], [ 0.0, 0.5, 0.0,], [ 0.0, 0.0, 0.5,], [ 0.6984197043243866, 0.1005267652252045, 0.1005267652252045,], [ 0.1005267652252045, 0.1005267652252045, 0.1005267652252045,], [ 0.1005267652252045, 0.1005267652252045, 0.6984197043243866,], [ 0.1005267652252045, 0.6984197043243866, 0.1005267652252045,], [ 0.0568813795204234, 0.3143728734931922, 0.3143728734931922,], [ 0.3143728734931922, 0.3143728734931922, 0.3143728734931922,], [ 0.3143728734931922, 0.3143728734931922, 0.0568813795204234,], [ 0.3143728734931922, 0.0568813795204234, 0.3143728734931922,],],dtype=dtype),
-        6: torch.tensor([ [ 0.25, 0.25, 0.25,], [ 0.0, 0.3333333333333333, 0.3333333333333333,], [ 0.3333333333333333, 0.3333333333333333, 0.3333333333333333,], [ 0.3333333333333333, 0.3333333333333333, 0.0,], [ 0.3333333333333333, 0.0, 0.3333333333333333,], [ 0.7272727272727273, 0.0909090909090909, 0.0909090909090909,], [ 0.0909090909090909, 0.0909090909090909, 0.0909090909090909,], [ 0.0909090909090909, 0.0909090909090909, 0.7272727272727273,], [ 0.0909090909090909, 0.7272727272727273, 0.0909090909090909,], [ 0.4334498464263357, 0.0665501535736643, 0.0665501535736643,], [ 0.0665501535736643, 0.4334498464263357, 0.0665501535736643,], [ 0.0665501535736643, 0.0665501535736643, 0.4334498464263357,], [ 0.0665501535736643, 0.4334498464263357, 0.4334498464263357,], [ 0.4334498464263357, 0.0665501535736643, 0.4334498464263357,], [ 0.4334498464263357, 0.4334498464263357, 0.0665501535736643,],],dtype=dtype),
-        7: torch.tensor([ [ 0.3561913862225449, 0.2146028712591517, 0.2146028712591517,], [ 0.2146028712591517, 0.2146028712591517, 0.2146028712591517,], [ 0.2146028712591517, 0.2146028712591517, 0.3561913862225449,], [ 0.2146028712591517, 0.3561913862225449, 0.2146028712591517,], [ 0.877978124396166, 0.0406739585346113, 0.0406739585346113,], [ 0.0406739585346113, 0.0406739585346113, 0.0406739585346113,], [ 0.0406739585346113, 0.0406739585346113, 0.877978124396166,], [ 0.0406739585346113, 0.877978124396166, 0.0406739585346113,], [ 0.0329863295731731, 0.3223378901422757, 0.3223378901422757,], [ 0.3223378901422757, 0.3223378901422757, 0.3223378901422757,], [ 0.3223378901422757, 0.3223378901422757, 0.0329863295731731,], [ 0.3223378901422757, 0.0329863295731731, 0.3223378901422757,], [ 0.2696723314583159, 0.0636610018750175, 0.0636610018750175,], [ 0.0636610018750175, 0.2696723314583159, 0.0636610018750175,], [ 0.0636610018750175, 0.0636610018750175, 0.2696723314583159,], [ 0.6030056647916491, 0.0636610018750175, 0.0636610018750175,], [ 0.0636610018750175, 0.6030056647916491, 0.0636610018750175,], [ 0.0636610018750175, 0.0636610018750175, 0.6030056647916491,], [ 0.0636610018750175, 0.2696723314583159, 0.6030056647916491,], [ 0.2696723314583159, 0.6030056647916491, 0.0636610018750175,], [ 0.6030056647916491, 0.0636610018750175, 0.2696723314583159,], [ 0.0636610018750175, 0.6030056647916491, 0.2696723314583159,], [ 0.2696723314583159, 0.0636610018750175, 0.6030056647916491,], [ 0.6030056647916491, 0.2696723314583159, 0.0636610018750175,],],dtype=dtype)
+        5: torch.tensor([ [ 0.25, 0.25, 0.25,], [ 0.0, 0.3333333333333333, 0.3333333333333333,], [ 0.3333333333333333, 0.3333333333333333, 0.3333333333333333,], [ 0.3333333333333333, 0.3333333333333333, 0.0,], [ 0.3333333333333333, 0.0, 0.3333333333333333,], [ 0.7272727272727273, 0.0909090909090909, 0.0909090909090909,], [ 0.0909090909090909, 0.0909090909090909, 0.0909090909090909,], [ 0.0909090909090909, 0.0909090909090909, 0.7272727272727273,], [ 0.0909090909090909, 0.7272727272727273, 0.0909090909090909,], [ 0.4334498464263357, 0.0665501535736643, 0.0665501535736643,], [ 0.0665501535736643, 0.4334498464263357, 0.0665501535736643,], [ 0.0665501535736643, 0.0665501535736643, 0.4334498464263357,], [ 0.0665501535736643, 0.4334498464263357, 0.4334498464263357,], [ 0.4334498464263357, 0.0665501535736643, 0.4334498464263357,], [ 0.4334498464263357, 0.4334498464263357, 0.0665501535736643,],],dtype=dtype),
+        6: torch.tensor([ [ 0.3561913862225449, 0.2146028712591517, 0.2146028712591517,], [ 0.2146028712591517, 0.2146028712591517, 0.2146028712591517,], [ 0.2146028712591517, 0.2146028712591517, 0.3561913862225449,], [ 0.2146028712591517, 0.3561913862225449, 0.2146028712591517,], [ 0.877978124396166, 0.0406739585346113, 0.0406739585346113,], [ 0.0406739585346113, 0.0406739585346113, 0.0406739585346113,], [ 0.0406739585346113, 0.0406739585346113, 0.877978124396166,], [ 0.0406739585346113, 0.877978124396166, 0.0406739585346113,], [ 0.0329863295731731, 0.3223378901422757, 0.3223378901422757,], [ 0.3223378901422757, 0.3223378901422757, 0.3223378901422757,], [ 0.3223378901422757, 0.3223378901422757, 0.0329863295731731,], [ 0.3223378901422757, 0.0329863295731731, 0.3223378901422757,], [ 0.2696723314583159, 0.0636610018750175, 0.0636610018750175,], [ 0.0636610018750175, 0.2696723314583159, 0.0636610018750175,], [ 0.0636610018750175, 0.0636610018750175, 0.2696723314583159,], [ 0.6030056647916491, 0.0636610018750175, 0.0636610018750175,], [ 0.0636610018750175, 0.6030056647916491, 0.0636610018750175,], [ 0.0636610018750175, 0.0636610018750175, 0.6030056647916491,], [ 0.0636610018750175, 0.2696723314583159, 0.6030056647916491,], [ 0.2696723314583159, 0.6030056647916491, 0.0636610018750175,], [ 0.6030056647916491, 0.0636610018750175, 0.2696723314583159,], [ 0.0636610018750175, 0.6030056647916491, 0.2696723314583159,], [ 0.2696723314583159, 0.0636610018750175, 0.6030056647916491,], [ 0.6030056647916491, 0.2696723314583159, 0.0636610018750175,],],dtype=dtype)
     }
     assert order in weights_table, f"Invalid order {order} for tet quadrature, expected one of {weights_table.keys()}"
     weights = weights_table[order]
@@ -178,7 +269,8 @@ def quad_quadrature(order: int = 1,
     Parameters
     ----------
     order : int, optional
-        Quadrature order between 1 and 7. Defaults to 1.
+        Number of Gaussian points per direction (>= 1). Exact through
+        degree ``2 * order - 1`` in each coordinate. Defaults to 1.
     dtype : torch.dtype, optional
         Output dtype.
     device : torch.device, optional
@@ -214,7 +306,8 @@ def hex_quadrature(order: int = 1,
     Parameters
     ----------
     order : int, optional
-        Quadrature order between 1 and 7. Defaults to 1.
+        Number of Gaussian points per direction (>= 1). Exact through
+        degree ``2 * order - 1`` in each coordinate. Defaults to 1.
     dtype : torch.dtype, optional
         Output dtype.
     device : torch.device, optional
@@ -258,7 +351,7 @@ def pyr_quadrature(order: int = 1,
     Parameters
     ----------
     order : int, optional
-        Number of points per direction, between 1 and 7. Defaults to 1.
+        Number of points per direction (>= 1). Defaults to 1.
     dtype : torch.dtype, optional
         Output dtype.
     device : torch.device, optional
@@ -300,7 +393,8 @@ def pri_quadrature(order: int = 1,
     Parameters
     ----------
     order : int, optional
-        Quadrature order between 1 and 7. Defaults to 1.
+        Triangle exactness degree and number of line points (>= 1).
+        The same integer selects both factors. Defaults to 1.
     dtype : torch.dtype, optional
         Output dtype.
     device : torch.device, optional
@@ -547,4 +641,3 @@ def mix_facet_quadrature_3d(facet_mapping: Polynomials,
           
     else:
         return (*tri_quadrature(order,dtype,device), *quad_quadrature(order,dtype, device))
-      
