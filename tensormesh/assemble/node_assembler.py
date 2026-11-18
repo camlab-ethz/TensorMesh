@@ -656,7 +656,9 @@ class NodeAssembler(nn.Module):
             Connectivity keyed by element-type string, e.g.
             ``{"triangle": tensor([[0, 1, 2], [1, 2, 3]])}``.
         quadrature_order : int, optional
-            Positive integer; defaults to ``2``.
+            Polynomial degree the quadrature rule integrates exactly, on
+            every element shape (see :meth:`~tensormesh.Element.get_quadrature`);
+            defaults to ``2``.
         device : torch.device or str, optional
             Device of the assembler; defaults to ``"cpu"``.
         dtype : torch.dtype, optional
@@ -733,7 +735,9 @@ class NodeAssembler(nn.Module):
         mesh : tensormesh.Mesh
             Source mesh; both connectivity and points are taken from it.
         quadrature_order : int, optional
-            Positive integer; defaults to ``2``.
+            Polynomial degree the quadrature rule integrates exactly, on
+            every element shape (see :meth:`~tensormesh.Element.get_quadrature`);
+            defaults to ``2``.
         project : {'reduce', 'sparse'}, optional
             Projection backend; defaults to ``"reduce"``.
         *args, **kwargs

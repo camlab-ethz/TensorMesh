@@ -76,8 +76,9 @@ def test_pyramid_basis_gradient(order):
 @pytest.mark.parametrize("n", range(1, 7))
 def test_pyramid_quadrature_is_exact(n):
     # \int x^a y^b z^c over the pyramid with cross-section [0, 1 - z]^2 is
-    # c! (a + b + 2)! / ((a + b + c + 3)! (a + 1) (b + 1)); the n-point rule is exact for a + b + c <= 2n - 1
-    w, q = Pyramid.get_quadrature(n, dtype=f64)
+    # c! (a + b + 2)! / ((a + b + c + 3)! (a + 1) (b + 1)); degree 2n - 1 uses n points per direction
+    w, q = Pyramid.get_quadrature(2 * n - 1, dtype=f64)
+    assert len(w) == n ** 3
     for a, b, c in itertools.product(range(2 * n), repeat=3):
         if a + b + c <= 2 * n - 1:
             exact = math.factorial(c) * math.factorial(a + b + 2) / math.factorial(a + b + c + 3) / ((a + 1) * (b + 1))
@@ -115,7 +116,7 @@ def test_pyramid_patch_test(element_type):
     exact = 1 + x + 2 * y + 3 * z if order == 1 else x**2 - y**2 + x * y + y * z + z * x + x
     boundary = ((mesh.points < 1e-12) | (mesh.points > 1 - 1e-12)).any(1)
     assert not bool(boundary.all())
-    K = LaplaceElementAssembler.from_mesh(mesh, quadrature_order=order + 1)(mesh.points)
+    K = LaplaceElementAssembler.from_mesh(mesh, quadrature_order=2 * order)(mesh.points)
     condenser = Condenser(boundary, exact[boundary])
     K_, f_ = condenser(K, torch.zeros(mesh.n_points, dtype=f64))
     u = condenser.recover(K_.solve(f_))
@@ -127,6 +128,6 @@ def test_pyramid_mass_matrix_is_exact(element_type):
     # u^T M u = \int u^2 for u in P_r, which checks the quadrature weights
     order = element_type2order[element_type]
     mesh = _cube_of_pyramids(element_type)
-    M = MassElementAssembler.from_mesh(mesh, quadrature_order=order + 1)(mesh.points).to_dense()
+    M = MassElementAssembler.from_mesh(mesh, quadrature_order=2 * order)(mesh.points).to_dense()
     u = mesh.points[:, 0] ** order
     assert float(u @ M @ u) == pytest.approx(1 / (2 * order + 1), rel=1e-12)   # \int_0^1 x^(2 order) dx
