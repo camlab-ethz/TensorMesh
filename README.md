@@ -318,6 +318,13 @@ Key entry points:
 - [GitHub Issues](https://github.com/camlab-ethz/TensorMesh/issues) — bug reports and feature requests.
 - Email to Shizheng Wen at [shizheng.wen@sam.math.ethz.ch](mailto:shizheng.wen@sam.math.ethz.ch) — collaborations and partnerships.
 
+## Changelog
+
+[`CHANGELOG.md`](https://github.com/camlab-ethz/TensorMesh/blob/main/CHANGELOG.md)
+lists the changes in each release and on `main` since the last one.
+Lines marked **Breaking** change numerical results, quadrature point
+counts, a dependency floor or a public name.
+
 ## Contributing
 
 Contributions are welcome — see [`CONTRIBUTING.md`](https://github.com/camlab-ethz/TensorMesh/blob/main/CONTRIBUTING.md) for the

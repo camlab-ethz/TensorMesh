@@ -146,10 +146,18 @@ The mechanical flow:
    minimum; add a GPU variant if the touched code branches on device.
 3. **Run the relevant tests and a docs build** locally; both should be
    clean.
-4. **Open the PR**, link the issue with ``Fixes #NN`` (or
+4. **Add a changelog line.** A PR with a user-visible change adds one
+   line under ``Unreleased`` in
+   `CHANGELOG.md <https://github.com/camlab-ethz/TensorMesh/blob/main/CHANGELOG.md>`_,
+   in the Added, Changed, Fixed or Removed group, ending with the PR
+   number. Start the line with **Breaking** if the PR renames or removes
+   a public symbol, changes numerical behaviour (results, quadrature
+   point counts) or raises a dependency floor. Changes that users cannot
+   observe (refactoring, CI, internal tests) need no line.
+5. **Open the PR**, link the issue with ``Fixes #NN`` (or
    ``Refs #NN`` for partial fixes), and fill in the body explaining the
    *why* — not just the *what*, since the diff already covers that.
-5. **Commit message style** follows the rest of the project:
+6. **Commit message style** follows the rest of the project:
    ``<type>(<scope>): <imperative summary>``, e.g.
    ``fix(ode): propagate u0.dtype/device through step()``. Types in
    use: ``feat``, ``fix``, ``docs``, ``test``, ``refactor``, ``perf``,
@@ -163,6 +171,8 @@ What reviewers will look for:
 * No accidental backwards-incompatibility — if a public symbol is
   renamed or removed, the PR description should call it out
   explicitly.
+* A ``CHANGELOG.md`` line for every user-visible change, marked
+  **Breaking** where step 4 asks for it.
 * Numerical changes (new element, new quadrature, new solver) should
   include at least one analytical-reference check.
 
