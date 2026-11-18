@@ -26,6 +26,7 @@ upgrading.
 
 ### Changed
 
+- **Breaking:** `quadrature_order`, and `order` in `Element.get_quadrature` / `get_facet_quadrature`, is the polynomial degree the rule integrates exactly on every shape. It used to count Gauss points per direction on lines, quadrilaterals, hexahedra and pyramids and in the height of prisms. On those shapes, and on the edge and quadrilateral facets of any cell, an order of 3 or more now selects `order // 2 + 1` points per direction instead of `order` (3 → 2, 4 → 3, 5 → 3, 6 → 4, 7 → 4), so integrals and the shape of per-quadrature-point data change. A point count `n` of the old convention is order `2 * n - 1` now. Triangle and tetrahedron rules and the default order 2 are unchanged. ([#73], [#77])
 - `Mesh.read` on an Exodus file uses the new reader instead of meshio's. It always converts the connectivity to TensorMesh node ordering and ignores `reorder`. ([#61])
 - `MixedElementAssembler.from_mesh` no longer rejects a default quadrature degree above 7, so fields of order 4 and higher work without an explicit `quadrature_order`. ([#72])
 - An invalid quadrature order raises `ValueError` instead of `AssertionError`, and NumPy integers are accepted. ([#72])
@@ -141,3 +142,5 @@ First public release, as `tensormesh-fem` on PyPI (import name `tensormesh`).
 [#70]: https://github.com/camlab-ethz/TensorMesh/pull/70
 [#71]: https://github.com/camlab-ethz/TensorMesh/pull/71
 [#72]: https://github.com/camlab-ethz/TensorMesh/pull/72
+[#73]: https://github.com/camlab-ethz/TensorMesh/discussions/73
+[#77]: https://github.com/camlab-ethz/TensorMesh/pull/77

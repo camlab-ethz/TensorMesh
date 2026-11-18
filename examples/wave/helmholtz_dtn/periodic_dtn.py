@@ -104,7 +104,7 @@ def modal_trace(mesh, boundary_mask, alpha_n):
         mesh.points,
         elements,
         boundary_mask,
-        quadrature_order=7,
+        quadrature_order=13,   # 7 Gauss points per boundary edge
         dtype=REAL,
         project="reduce",
         alpha_n=alpha_n,

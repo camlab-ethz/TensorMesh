@@ -920,7 +920,9 @@ class ElementAssembler(nn.Module):
         mesh : tensormesh.Mesh
             Source mesh; both connectivity and points are taken from it.
         quadrature_order : int, optional
-            Positive integer; defaults to ``2``.
+            Polynomial degree the quadrature rule integrates exactly, on
+            every element shape (see :meth:`~tensormesh.Element.get_quadrature`);
+            defaults to ``2``.
         project : {'reduce', 'sparse'}, optional
             Backend used for the element-to-edge scatter; defaults to ``'reduce'``.
         *args, **kwargs

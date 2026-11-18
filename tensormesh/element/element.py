@@ -550,7 +550,12 @@ class Element:
         Parameters
         ----------
         order: int 
-            quadrature order
+            Polynomial degree the rule integrates exactly (>= 1); the rule
+            may exceed it. It is a total degree on lines, triangles,
+            tetrahedra and pyramids, a degree in each coordinate on
+            quadrilaterals and hexahedra, and a total degree in the triangle
+            together with a degree in the height on prisms. Obtain the
+            number of points from the returned weights.
         dtype: torch.dtype
             the float data type of the polynomial
         device: torch.device
@@ -623,7 +628,9 @@ class Element:
         Parameters
         ----------
         order : int, optional
-            Quadrature order. Default is 1.
+            Polynomial degree the facet rules integrate exactly, with the
+            same meaning as in :meth:`get_quadrature` for the shape of the
+            facet. Default is 1.
         transform : bool, optional
             Whether to return the transformed facet quadrature.
             If True, returns points in reference element coordinates with shape :math:`[N_f, N_q, D]`, where :math:`N_f` = number of facets, :math:`N_q` = quadrature points per facet, and :math:`D` = spatial dimension.
