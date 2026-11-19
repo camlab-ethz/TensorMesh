@@ -43,8 +43,7 @@ def element_assemble(mesh, model="laplace",
         "product": ProductAssembler
     }[model]
 
-    quadrature_order = 3 if mesh.default_element_type.startswith("quad") else 2
-    K_asm = assambler.from_mesh(mesh, quadrature_order=quadrature_order)
+    K_asm = assambler.from_mesh(mesh, quadrature_order=2)
     K = K_asm(mesh.points)
     
     K_scipy = K.to_scipy_coo()

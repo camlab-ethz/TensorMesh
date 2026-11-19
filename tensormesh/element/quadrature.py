@@ -3,6 +3,17 @@ pyramid, prism, and their facets.
 
 Internal helpers wired into :meth:`~tensormesh.Element.get_quadrature` and
 :meth:`~tensormesh.Element.get_facet_quadrature`. Not part of the public API.
+
+``order`` means the same thing for every shape: the polynomial degree the
+rule must integrate exactly. A rule may exceed it. What "degree" refers to
+follows the shape:
+
+* line, triangle, tetrahedron, pyramid: total degree;
+* quadrilateral, hexahedron: degree in each coordinate;
+* prism: total degree in the triangle and degree in the height.
+
+Gaussian factors use ``order // 2 + 1`` points per direction, the fewest
+that reach degree ``order``.
 """
 from functools import lru_cache
 from numbers import Integral
@@ -17,6 +28,14 @@ from .types import Tensorx2, Tensorx4, Tensorx5
 def _positive_order(order, rule):
     if isinstance(order, bool) or not isinstance(order, Integral) or order < 1:
         raise ValueError(f"{rule} quadrature order must be an integer >= 1")
+
+
+def _gauss_points(order):
+    """Number of Gauss points per direction that reach exactness degree ``order``.
+
+    ``n`` Gauss points are exact through degree ``2 * n - 1``.
+    """
+    return int(order) // 2 + 1
 
 
 @lru_cache(maxsize=128)
@@ -85,9 +104,10 @@ def lin_quadrature(order: int = 1,
     Parameters
     ----------
     order : int, optional
-        Number of Gaussian points (>= 1), exact through degree
-        ``2 * order - 1``. Defaults to 1. Unlike triangles, this parameter
-        counts points, not polynomial exactness degree.
+        Requested polynomial exactness degree (>= 1). Defaults to 1. The
+        rule has ``order // 2 + 1`` points, the fewest that reach it, so it
+        is exact through degree ``2 * (order // 2) + 1``. Rules of up to
+        seven points are pre-tabulated; larger ones are generated.
     dtype : torch.dtype, optional
         Output dtype.
     device : torch.device, optional
@@ -101,8 +121,9 @@ def lin_quadrature(order: int = 1,
         2D tensor of shape ``[n_quadrature, 1]``.
     """
     _positive_order(order, "line")
-    if order > 7:
-        weights, points = _copy_rule(_gaussian_interval_rule(order), dtype, device)
+    n = _gauss_points(order)
+    if n > 7:
+        weights, points = _copy_rule(_gaussian_interval_rule(n), dtype, device)
         return weights, points[:, None]
     weights_table = {
         1 : torch.tensor([2.0], dtype=dtype),
@@ -123,9 +144,8 @@ def lin_quadrature(order: int = 1,
         6 : torch.tensor([[-0.9324695142031521],[-0.6612093864662645],[-0.2386191860831969],[0.2386191860831969],[0.6612093864662645],[0.9324695142031521]], dtype=dtype),
         7 : torch.tensor([[-0.9491079123427585],[-0.7415311855993945],[-0.4058451513773972],[0],[0.4058451513773972],[0.7415311855993945],[0.9491079123427585]], dtype=dtype)
     }
-    assert order in weights_table, f"Invalid order {order} for lin quadrature, expected one of {weights_table.keys()}"
-    weights = weights_table[order]
-    points  = points_table[order]
+    weights = weights_table[n]
+    points  = points_table[n]
 
     weights = weights / 2 
     # points  = (points + 1)
@@ -269,8 +289,8 @@ def quad_quadrature(order: int = 1,
     Parameters
     ----------
     order : int, optional
-        Number of Gaussian points per direction (>= 1). Exact through
-        degree ``2 * order - 1`` in each coordinate. Defaults to 1.
+        Requested polynomial exactness degree in each coordinate (>= 1).
+        Defaults to 1. Uses ``order // 2 + 1`` Gauss points per direction.
     dtype : torch.dtype, optional
         Output dtype.
     device : torch.device, optional
@@ -306,8 +326,8 @@ def hex_quadrature(order: int = 1,
     Parameters
     ----------
     order : int, optional
-        Number of Gaussian points per direction (>= 1). Exact through
-        degree ``2 * order - 1`` in each coordinate. Defaults to 1.
+        Requested polynomial exactness degree in each coordinate (>= 1).
+        Defaults to 1. Uses ``order // 2 + 1`` Gauss points per direction.
     dtype : torch.dtype, optional
         Output dtype.
     device : torch.device, optional
@@ -339,19 +359,19 @@ def pyr_quadrature(order: int = 1,
 
     Conical product rule: the collapse :math:`(x, y, z) = ((1 - t)u, (1 - t)v, t)`
     maps the unit cube onto the pyramid with Jacobian :math:`(1 - t)^2`.
-    ``order`` Gauss-Legendre points are used in :math:`u` and :math:`v`, and
-    ``order`` Gauss-Jacobi points for the weight :math:`(1 - t)^2` in
-    :math:`t`. The rule is exact for every integrand that is a polynomial of
-    degree at most ``2 * order - 1`` in each of :math:`u, v, t`: in particular
-    for :math:`x^a y^b z^c` with :math:`a + b + c \le 2\,\mathrm{order} - 1`,
-    and for the mass and stiffness integrands of the order ``order - 1``
-    pyramid basis (:class:`~tensormesh.element.PyramidBasisFns`) on affine
-    pyramids.
+    With :math:`n` = ``order // 2 + 1``, :math:`n` Gauss-Legendre points are
+    used in :math:`u` and :math:`v`, and :math:`n` Gauss-Jacobi points for
+    the weight :math:`(1 - t)^2` in :math:`t`. The rule is exact for every
+    integrand that is a polynomial of degree at most :math:`2n - 1` in each
+    of :math:`u, v, t`: in particular for :math:`x^a y^b z^c` with
+    :math:`a + b + c \le 2n - 1`, which covers total degree ``order``, and
+    for the mass and stiffness integrands of the order :math:`n - 1` pyramid
+    basis (:class:`~tensormesh.element.PyramidBasisFns`) on affine pyramids.
 
     Parameters
     ----------
     order : int, optional
-        Number of points per direction (>= 1). Defaults to 1.
+        Requested total polynomial exactness degree (>= 1). Defaults to 1.
     dtype : torch.dtype, optional
         Output dtype.
     device : torch.device, optional
@@ -365,7 +385,7 @@ def pyr_quadrature(order: int = 1,
         2D tensor of shape ``[n_quadrature, 3]``.
     """
     lin_weights, lin_points = lin_quadrature(order, dtype,device)
-    t, w_t = roots_jacobi(order, 2, 0)                              # weight (1 - s)^2 on [-1, 1]
+    t, w_t = roots_jacobi(_gauss_points(order), 2, 0)               # weight (1 - s)^2 on [-1, 1]
     t      = torch.tensor((1 + t) / 2, dtype=dtype, device=device)  # s -> t on [0, 1]
     w_t    = torch.tensor(w_t / 8, dtype=dtype, device=device)      # (1 - s)^2 ds = 8 (1 - t)^2 dt
 
@@ -393,8 +413,8 @@ def pri_quadrature(order: int = 1,
     Parameters
     ----------
     order : int, optional
-        Triangle exactness degree and number of line points (>= 1).
-        The same integer selects both factors. Defaults to 1.
+        Requested polynomial exactness degree (>= 1), as a total degree in
+        the triangle and as a degree in the height. Defaults to 1.
     dtype : torch.dtype, optional
         Output dtype.
     device : torch.device, optional

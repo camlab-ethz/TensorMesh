@@ -11,7 +11,7 @@ from tensormesh.element import quadrature
 
 @pytest.mark.parametrize("n", [1, 7, 8, 32])
 def test_line_gaussian_exactness(n):
-    weights, points = Line.get_quadrature(n, torch.float64)
+    weights, points = Line.get_quadrature(2 * n - 1, torch.float64)   # degree 2n - 1: n points
     assert weights.shape == (n,) and points.shape == (n, 1)
     assert (weights > 0).all()
     assert ((points > 0) & (points < 1)).all()
@@ -21,25 +21,26 @@ def test_line_gaussian_exactness(n):
     torch.testing.assert_close(actual / exact, torch.ones_like(exact), atol=3e-12, rtol=0)
 
 
-@pytest.mark.parametrize("order", [8, 12])
+@pytest.mark.parametrize("n", [8, 12])
 @pytest.mark.parametrize("element", [Quadrilateral, Hexahedron, Prism, Pyramid])
-def test_inherited_high_order_rules(element, order):
+def test_inherited_high_order_rules(element, n):
     # Sample constant, axial and mixed moments at the exactness limits of the
     # newly available factors, rather than repeat the upstream low-order tests.
-    limit = 2 * order - 1
+    # Degree 2n - 1 selects n Gauss points per direction.
+    limit = order = 2 * n - 1
     if element in (Quadrilateral, Hexahedron):
         powers = [(0,) * element.dim, (limit,) * element.dim]
         powers += [tuple(limit if d == axis else 0 for d in range(element.dim))
                    for axis in range(element.dim)]
         exact = [math.prod(1 / (a + 1) for a in p) for p in powers]
-        count = order ** element.dim
+        count = n ** element.dim
     elif element is Prism:
-        # Triangle degree is order; the height uses order Gaussian points.
+        # Total degree `order` in the triangle and degree `order` in the height.
         powers = [(0, 0, 0), (order, 0, 0), (0, order, 0), (0, 0, limit),
                   (order // 2, order - order // 2, limit)]
         exact = [math.factorial(a) * math.factorial(b)
                  / (math.factorial(a + b + 2) * (c + 1)) for a, b, c in powers]
-        count = ((order + 2) // 2) ** 2 * order
+        count = n ** 2 * n          # conical n x n triangle rule times n height points
     else:
         # Pyramid cross-sections are [0, 1-z]^2; integrate x and y first,
         # then use the beta integral in z, independently of the collapse rule.
@@ -48,7 +49,7 @@ def test_inherited_high_order_rules(element, order):
         exact = [math.factorial(c) * math.factorial(a + b + 2)
                  / (math.factorial(a + b + c + 3) * (a + 1) * (b + 1))
                  for a, b, c in powers]
-        count = order ** 3
+        count = n ** 3
 
     weights, points = element.get_quadrature(order, dtype=torch.float64)
     assert weights.shape == (count,) and points.shape == (count, element.dim)
@@ -88,14 +89,14 @@ def test_original_low_degree_triangle_rules_retained():
 
 @pytest.mark.parametrize("dtype", [torch.float32, torch.float64])
 def test_generated_rule_layouts_dtype_and_facets(dtype):
-    for element, order, count, dim in [(Line, 12, 12, 1), (Triangle, 20, 121, 2),
+    for element, order, count, dim in [(Line, 23, 12, 1), (Triangle, 20, 121, 2),
                                       (Tetrahedron, 8, 125, 3),
-                                      (Quadrilateral, 8, 64, 2)]:
+                                      (Quadrilateral, 15, 64, 2)]:
         weights, points = element.get_quadrature(order, dtype)
         assert weights.dtype == points.dtype == dtype
         assert weights.shape == (count,) and points.shape == (count, dim)
         assert weights.device.type == points.device.type == "cpu"
-    weights, points = Triangle.get_facet_quadrature(12, dtype=dtype)
+    weights, points = Triangle.get_facet_quadrature(23, dtype=dtype)   # edges: 12 Gauss points
     assert weights.shape == (3, 12) and points.shape == (3, 12, 2)
     torch.testing.assert_close(weights.sum(-1), torch.ones(3, dtype=dtype))
 
