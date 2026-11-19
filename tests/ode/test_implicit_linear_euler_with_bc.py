@@ -171,4 +171,7 @@ def test_implicit_euler_with_bc_cuda():
     U_ode    = _run_ode_stepper(_HeatStepper, M, A, u0, dt, n, cd_ode)
 
     assert U_ode.device.type == "cuda"
-    assert torch.allclose(U_manual, U_ode, atol=1e-12, rtol=1e-12)
+    # Without cuDSS, CUDA solves fall back to torch-sla's Jacobi-CG (residual <= 1e-10), so the two
+    # paths agree to the accumulated solver error, n * 1e-10 / lambda_min(K) ~ 1e-7, not to round-off.
+    err = (U_manual - U_ode).abs().max().item()
+    assert err < 1e-6, f"manual vs ode disagree on CUDA: abs={err:.3e}"
