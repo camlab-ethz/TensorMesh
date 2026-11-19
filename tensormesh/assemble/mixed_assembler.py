@@ -620,13 +620,12 @@ class MixedElementAssembler(nn.Module):
             Source mesh; its element order is the geometry (and maximum
             field) order.
         quadrature_order : int, optional
-            Triangle/tetrahedron polynomial exactness degree. Defaults to
+            Polynomial degree the quadrature rule integrates exactly (see
+            :meth:`~tensormesh.Element.get_quadrature`). Defaults to
             ``2 * max(field.order)``, sufficient for constant-coefficient
-            mass/stiffness products on affine simplices. Higher-degree
+            mass/stiffness products on affine cells. Higher-degree
             coefficients, nonlinear forms and curved geometry may require
             an explicit larger value and quadrature-convergence checks.
-            Line/tensor-product orders count Gaussian points per direction;
-            prism order specifies both triangle degree and line point count.
         *args, **kwargs
             Additional arguments forwarded to ``__post_init__``.
         """
@@ -649,8 +648,8 @@ class MixedElementAssembler(nn.Module):
         mesh_order = next(iter(orders.values()))
         if quadrature_order is None:
             quadrature_order = 2 * max(f.order for f in cls.fields)
-        # Rule conventions are shape-specific; each factory supplies generated
-        # rules when the requested order exceeds its legacy tables.
+        # Each factory supplies generated rules when the requested degree
+        # exceeds its tables.
         if (isinstance(quadrature_order, bool) or not isinstance(quadrature_order, Integral)
                 or quadrature_order < 1):
             raise ValueError("quadrature_order must be an integer >= 1")

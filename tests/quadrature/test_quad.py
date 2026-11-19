@@ -7,11 +7,11 @@ from tensormesh.element import Quadrilateral
 
 @pytest.mark.parametrize("n", range(1, 7))
 def test_shape(n:int):
-    weights, points = Quadrilateral.get_quadrature(n)
+    weights, points = Quadrilateral.get_quadrature(2 * n - 1)   # n Gauss points per direction
     assert weights.shape == ((n)**2,)
     assert points.shape == ((n)**2, 2)
 
 @pytest.mark.parametrize("n", range(1, 7))
 def test_sum(n:int):
-    weights, points = Quadrilateral.get_quadrature(n, dtype=torch.float64)
+    weights, points = Quadrilateral.get_quadrature(2 * n - 1, dtype=torch.float64)
     np.testing.assert_allclose(weights.sum().item(), 1, rtol=1e-12)
