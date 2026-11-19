@@ -431,7 +431,9 @@ class FacetAssembler(nn.Module):
             :attr:`tensormesh.Mesh.side_sets`), which selects exactly those
             facets, interior ones included.
         quadrature_order : int, optional
-            Positive integer; defaults to ``2``.
+            Polynomial degree the quadrature rule integrates exactly, on
+            every element shape (see :meth:`~tensormesh.Element.get_quadrature`);
+            defaults to ``2``.
         device : torch.device or str, optional
             Device of the assembler; defaults to ``"cpu"``.
         dtype : torch.dtype, optional
@@ -603,7 +605,9 @@ class FacetAssembler(nn.Module):
             exactly the facets of that side set, so an interior side set
             can be integrated, once — then in ``mesh.point_sets``.
         quadrature_order : int, optional
-            Positive integer; defaults to ``2``.
+            Polynomial degree the quadrature rule integrates exactly, on
+            every element shape (see :meth:`~tensormesh.Element.get_quadrature`);
+            defaults to ``2``.
         project : {'reduce', 'sparse'}, optional
             Projection backend; defaults to ``"reduce"``.
 

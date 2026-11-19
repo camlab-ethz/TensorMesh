@@ -311,54 +311,64 @@ to the reference element's length, area or volume.
 **Point count and polynomial exactness**
 
 Basis order, quadrature point count and polynomial exactness are different
-quantities. An exactness degree :math:`d` means the rule integrates every
-polynomial of total degree at most :math:`d` exactly on the reference element,
-up to floating-point roundoff. The number of points needed depends on the rule.
+quantities. The ``order`` argument is the third one, on every reference
+shape: the polynomial degree the rule integrates exactly on the reference
+element, up to floating-point roundoff. It is a positive integer,
+independent of the basis order, and a rule may exceed it. The number of
+points is chosen by the library; read it from the returned weights.
 
-A line rule with :math:`n` Gauss–Legendre points is exact through degree
-:math:`2n-1`. Thus four points integrate degree-seven polynomials; asking
-for degree-four exactness needs only three Gaussian points. For a quad or
-hex, the tensor product has the same exactness in **each coordinate**.
-
-The ``order`` argument is a positive integer, independent of basis order.
-Its meaning and the rule construction depend on the reference shape:
+What "degree" refers to follows the shape:
 
 .. list-table:: Volume quadrature rules
    :header-rows: 1
    :widths: 18 30 52
 
    * - Shape
-     - Meaning of ``order``
+     - Exact for
      - Rule construction
    * - Line
-     - Number of points :math:`n`
-     - Gauss–Legendre: pre-tabulated for :math:`n=1,\ldots,7`, generated above 7.
+     - Degree :math:`d`
+     - Gauss–Legendre with :math:`n=\lfloor d/2\rfloor+1` points: pre-tabulated
+       up to 7 points, generated above.
    * - Triangle
-     - Total exactness degree :math:`d`
+     - Total degree :math:`d`
      - Pre-tabulated for :math:`d=1,\ldots,7`; generated conical product above 7.
    * - Tetrahedron
-     - Total exactness degree :math:`d`
+     - Total degree :math:`d`
      - Pre-tabulated for :math:`d=1,\ldots,6`; generated conical product from 7.
    * - Quad / hex
-     - Points per coordinate :math:`n`
-     - Tensor products of line rules, with :math:`n^2` / :math:`n^3` points.
+     - Degree :math:`d` in each coordinate
+     - Tensor products of the :math:`n`-point line rule, with :math:`n^2` /
+       :math:`n^3` points.
    * - Pyramid
-     - Points per collapsed coordinate :math:`n`
-     - Two line rules and a generated Gauss–Jacobi height rule, with :math:`n^3` points.
+     - Total degree :math:`d`
+     - Two :math:`n`-point line rules and an :math:`n`-point Gauss–Jacobi
+       height rule, with :math:`n^3` points.
    * - Prism
-     - Triangle degree :math:`d` and :math:`d` height points
-     - Product of a degree-:math:`d` triangle rule and a :math:`d`-point line rule.
+     - Total degree :math:`d` in the triangle, degree :math:`d` in the height
+     - Product of the degree-:math:`d` triangle rule and the :math:`n`-point
+       line rule.
 
-In particular, ``order=4`` selects four points on a line but a six-point,
-degree-four rule on a triangle. Do not use ``order`` as a point count for
-simplices; obtain the count from the returned weights.
+A rule with :math:`n` Gauss points is exact through degree :math:`2n-1`,
+so :math:`n=\lfloor d/2\rfloor+1` is the smallest count that reaches
+degree :math:`d`: two points for :math:`d=2` or :math:`3`, three for
+:math:`d=4` or :math:`5`.
+
+.. note::
+
+   Up to version 0.2 ``order`` counted Gauss points per direction on lines,
+   quadrilaterals, hexahedra and pyramids, and in the height of a prism.
+   A point count :math:`n` of those versions corresponds to
+   ``order = 2 * n - 1`` now. Triangles and tetrahedra already took a
+   degree, and the default ``quadrature_order=2`` selects the same rules
+   as before on every shape.
 
 **Generated rules**
 
 Generated triangle and tetrahedron rules map tensor-product Gaussian points
 into the simplex. Gauss–Jacobi factors include the map's Jacobian in the
 weights. For requested degree :math:`d`, each direction uses
-:math:`n=\lceil(d+1)/2\rceil` points, giving :math:`n^2` triangle points or
+:math:`n=\lfloor d/2\rfloor+1` points, giving :math:`n^2` triangle points or
 :math:`n^3` tetrahedron points.
 
 These generated rules have positive weights and strictly interior points;
@@ -370,11 +380,11 @@ have negative weights or points on the boundary.
    import torch
    from tensormesh import Line, Quadrilateral, Triangle, Tetrahedron
 
-   # Exact through degree 20 (per coordinate for the quad).
-   n = (20 + 2) // 2  # 11 Gaussian points per direction
-   w, q = Line.get_quadrature(order=n, dtype=torch.float64)
+   # Exact through degree 20 (per coordinate for the quad): 11 Gauss points
+   # per direction.
+   w, q = Line.get_quadrature(order=20, dtype=torch.float64)
    assert w.shape == (11,)
-   w, q = Quadrilateral.get_quadrature(order=n, dtype=torch.float64)
+   w, q = Quadrilateral.get_quadrature(order=20, dtype=torch.float64)
    assert w.shape == (121,)
    w, q = Triangle.get_quadrature(order=20, dtype=torch.float64)
    assert w.shape == (121,)  # 11 x 11 conical Gaussian rule
@@ -389,20 +399,20 @@ tensors; treat these as read-only, or clone them before modifying them.
 
 **Selecting quadrature for a weak form**
 
-For degree-:math:`p` fields on affine triangles and tetrahedra with constant
-coefficients, the stiffness integrand has degree :math:`2p-2` and the mass
-integrand has degree :math:`2p`. The mixed assembler defaults to
-``quadrature_order = 2 * max(field.order)`` and accepts an explicit override.
-Curved geometry, nonpolynomial coefficients and nonlinear forms require
-quadrature-convergence checks. Increasing the order also increases memory
-and computational cost; generated rules remain subject to floating-point
-precision.
+For degree-:math:`p` fields on affine cells with constant coefficients, the
+mass integrand has degree :math:`2p` and the stiffness integrand at most
+that, so ``quadrature_order = 2 * p`` integrates both exactly. The mixed
+assembler defaults to ``quadrature_order = 2 * max(field.order)``; the other
+assemblers default to ``2`` and take an explicit value for higher-order
+elements. Curved geometry, nonpolynomial coefficients and nonlinear forms
+require quadrature-convergence checks. Increasing the order also increases
+memory and computational cost; generated rules remain subject to
+floating-point precision.
 
-Facet quadrature follows the convention of the **facet shape**: edge rules
-take a line point count, triangular face rules take an exactness degree,
-and quadrilateral face rules take points per coordinate. Prisms and pyramids
-return separate triangular and quadrilateral face rules for the same integer
-``order``.
+Facet quadrature takes the same ``order`` and applies it to the **facet
+shape**: a degree on edges, a total degree on triangular faces, a degree in
+each coordinate on quadrilateral faces. Prisms and pyramids return separate
+triangular and quadrilateral face rules for the same ``order``.
 
 
 Step 5 — Reference shape values (``eval_shape_val``)
