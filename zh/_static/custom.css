@@ -1,0 +1,89 @@
+/* TensorMesh brand palette — keep in sync with logo.tex (tmblue / tmteal). */
+:root {
+  --tm-brand-blue: #5B6EE8;
+  --tm-brand-teal: #149B8E;
+}
+
+/* Two-color "TensorMesh" wordmark in the sidebar brand.
+   Furo renders the title as <span class="sidebar-brand-text">TensorMesh</span>.
+   We hide the original text via font-size:0 and re-render the two halves with
+   ::before / ::after so they can be colored independently. Requires
+   html_title = 'TensorMesh' in conf.py — otherwise the span contains the
+   "<project> <version> documentation" string and the trick breaks. */
+.sidebar-brand-text {
+  font-size: 0;
+  line-height: 1;
+  /* Furo's logo image is centered (margin: 0 auto) but the brand-text span
+     is full-width and left-aligned by default — visually misaligned. Center
+     the pseudo-element wordmark so it lines up under the logo. */
+  text-align: center;
+}
+.sidebar-brand-text::before {
+  content: "Tensor";
+  color: var(--tm-brand-blue);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.sidebar-brand-text::after {
+  content: "Mesh";
+  color: var(--tm-brand-teal);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* Language switcher injected into the sidebar (see html_sidebars in conf.py
+   and _templates/language-switcher.html). */
+.sidebar-language-switcher {
+  padding: 0.5rem 1rem 0.75rem;
+  margin: 0 0 0.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  border-bottom: 1px solid var(--color-sidebar-background-border);
+}
+.sidebar-language-switcher a {
+  color: var(--color-sidebar-link-text--top-level);
+  text-decoration: none;
+}
+.sidebar-language-switcher a:hover {
+  color: var(--color-brand-primary);
+}
+.sidebar-language-switcher .active {
+  font-weight: 600;
+  color: var(--color-brand-content);
+}
+.sidebar-language-switcher .sep {
+  margin: 0 0.5rem;
+  color: var(--color-foreground-muted);
+}
+
+/* Inline brand-colored text spans (used in index.rst H1).
+   The roles are declared in conf.py:rst_prolog. */
+.tensor-blue { color: var(--tm-brand-blue); font-weight: inherit; }
+.mesh-teal   { color: var(--tm-brand-teal); font-weight: inherit; }
+
+/* "Developed at" affiliation logos on the index page. Each <img> keeps its
+   native aspect ratio but is normalized to the same height so the row reads
+   as a single visual band regardless of the source asset's dimensions. */
+.affiliation-logo {
+  height: 60px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+/* eth-logo-pos.png is the "positive" ETH wordmark — black ink on transparent.
+   It disappears in dark mode, so flip it to white. The CAMLab and AI Center
+   logos contain brand colors, so we leave those untouched. */
+[data-theme="dark"] .affiliation-logo.eth-wordmark {
+  filter: invert(1) brightness(1.05);
+}
+/* Furo's grid-item adds card-like padding by default; strip it for logos
+   so the row sits flush. */
+.affiliations .sd-card,
+.affiliations .sd-col {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0.25rem 0.5rem;
+}
