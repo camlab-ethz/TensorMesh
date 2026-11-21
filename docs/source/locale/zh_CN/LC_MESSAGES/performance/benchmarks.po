@@ -41,6 +41,16 @@ msgstr ""
 "所有基准测试脚本和参考数据存放在一个独立的仓库中：\\ `camlab-ethz/tensormesh-bench "
 "<https://github.com/camlab-ethz/tensormesh-bench>`_\\ 。"
 
+#: ../../source/performance/benchmarks.rst:14
+msgid ""
+"The results below were obtained in spring 2026, with the release of each "
+"framework (TensorMesh included) that was current at the time. Several of the"
+" frameworks have changed since then, and a re-run with current releases is "
+"planned."
+msgstr ""
+"下文的结果于 2026 年春季取得，各框架（包括 TensorMesh）使用的都是当时的最新版本。此后其中几个框架已有变化，"
+"我们计划用当前版本重新测试。"
+
 #: ../../source/performance/benchmarks.rst:13 f0150348f2954d6b93d969a11ef1f65a
 msgid "Test environment"
 msgstr "测试环境"
@@ -265,12 +275,13 @@ msgstr "10,000"
 #: ../../source/performance/benchmarks.rst:100
 #: c53bd29c9c3e4c1eab5b03afc588e6a2
 msgid ""
-"The only exception is the CUDA path of **torch-fem**, which uses conjugate "
-"gradient (CG) instead of BiCGSTAB — its CUDA backend does not ship a "
-"BiCGSTAB implementation."
+"The only exception is the CUDA path of **torch-fem**, for which the "
+"benchmark script solves with conjugate gradient (CG) instead of BiCGSTAB. "
+"The script predates torch-fem v0.11.0, which added a BiCGSTAB that runs on "
+"CUDA."
 msgstr ""
-"唯一的例外是 **torch-fem** 的 CUDA 路径，它使用共轭梯度法（CG）而非 BiCGSTAB —— 因为其 CUDA 后端未提供 "
-"BiCGSTAB 实现。"
+"唯一的例外是 **torch-fem** 的 CUDA 路径：基准测试脚本在该路径上使用共轭梯度法（CG）而非 BiCGSTAB "
+"求解。该脚本早于 torch-fem v0.11.0，后者加入了可在 CUDA 上运行的 BiCGSTAB。"
 
 #: ../../source/performance/benchmarks.rst:105
 #: d23a7aaa42b949319e1d1b7f72a70a2d
@@ -514,13 +525,12 @@ msgid ""
 "The inverse-problem benchmark exercises the **differentiability** of "
 "TensorMesh on a classical topology-optimization task: compliance "
 "minimization of a 2D cantilever beam using the Solid Isotropic Material with"
-" Penalization (SIMP) method. We compare against JAX-FEM, the only other "
-"framework in the list above that supports end-to-end automatic "
-"differentiation through the FEM pipeline."
+" Penalization (SIMP) method. We compare against JAX-FEM, which also "
+"supports end-to-end automatic differentiation through the FEM pipeline."
 msgstr ""
 "反问题基准测试在一个经典的拓扑优化任务上检验 TensorMesh 的\\ **可微性**\\ "
 "：使用带惩罚的各向同性固体材料法（SIMP）对二维悬臂梁进行柔度最小化。我们将其与 JAX-FEM "
-"对比，后者是上述列表中唯一支持贯穿整个有限元方法流程的端到端自动微分的框架。"
+"对比，后者同样支持贯穿整个有限元方法流程的端到端自动微分。"
 
 #: ../../source/performance/benchmarks.rst:246
 #: e89491437b9b4c0aa83d48cb6d3c6725
