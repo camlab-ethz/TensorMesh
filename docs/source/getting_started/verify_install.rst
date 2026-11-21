@@ -102,9 +102,9 @@ PyTorch build), you should see something close to:
 
    TensorMesh smoke test
    ========================================
-   tensormesh : 0.2.1
+   tensormesh : 0.3.0
    torch      : 2.10.0+cu128
-   torch-sla  : 0.3.2
+   torch-sla  : 0.4.0
    cuda       : 12.8
 
    [CPU ] Poisson 2D ... OK   L2 error = 1.185e-02   0.05 s
