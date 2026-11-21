@@ -10,6 +10,8 @@ upgrading.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-21
+
 ### Added
 
 - Exodus II mesh I/O. `Mesh.read` and `Mesh.save` handle `.e`, `.exo`, `.ex2`, `.exii`, `.gen` and `.g` files (or `file_format="exodus"`) through `tensormesh.mesh.exodus.read_exodus` / `write_exodus`, and keep the element-block ids (`cell_data["block_id"]`), node sets and side sets. Needs netCDF4: `pip install "tensormesh-fem[exodus]"`. Contributed by Max Nezdyur. ([#61])
@@ -26,7 +28,7 @@ upgrading.
 
 ### Changed
 
-- **Breaking:** `quadrature_order`, and `order` in `Element.get_quadrature` / `get_facet_quadrature`, is the polynomial degree the rule integrates exactly on every shape. It used to count Gauss points per direction on lines, quadrilaterals, hexahedra and pyramids and in the height of prisms. On those shapes, and on the edge and quadrilateral facets of any cell, an order of 3 or more now selects `order // 2 + 1` points per direction instead of `order` (3 → 2, 4 → 3, 5 → 3, 6 → 4, 7 → 4), so integrals and the shape of per-quadrature-point data change. A point count `n` of the old convention is order `2 * n - 1` now. Triangle and tetrahedron rules and the default order 2 are unchanged. ([#73], [#77])
+- **Breaking:** `quadrature_order`, and `order` in `Element.get_quadrature` / `get_facet_quadrature`, is the polynomial degree the rule integrates exactly on every shape. It used to count Gauss points per direction on lines, quadrilaterals, hexahedra and pyramids and in the height of prisms. On those shapes, and on the edge and quadrilateral facets of any cell, an order of 3 or more now selects `order // 2 + 1` points per direction instead of `order` (3 → 2, 4 → 3, 5 → 3, 6 → 4, 7 → 4), so integrals and the shape of per-quadrature-point data change. A point count `n` of the old convention is order `2 * n - 1` now. Triangle and tetrahedron rules and the default order 2 are unchanged. ([#73], [#78])
 - `Mesh.read` on an Exodus file uses the new reader instead of meshio's. It always converts the connectivity to TensorMesh node ordering and ignores `reorder`. ([#61])
 - `MixedElementAssembler.from_mesh` no longer rejects a default quadrature degree above 7, so fields of order 4 and higher work without an explicit `quadrature_order`. ([#72])
 - An invalid quadrature order raises `ValueError` instead of `AssertionError`, and NumPy integers are accepted. ([#72])
@@ -48,6 +50,7 @@ upgrading.
 - `ElementAssembler.energy` with `batch_size > 0` and per-quadrature-point `element_data` no longer fails with a shape error. ([#70])
 - `plot_3d` evaluates basis functions only inside the reference element. Plots of tetrahedra, prisms and pyramids showed values outside it. ([#64])
 - Test suite: the quadrature weight-sum tests compare float64 sums. `tests/quadrature/test_quad.py::test_sum[3]` failed on aarch64. ([#63])
+- Test suite: `test_implicit_euler_with_bc_cuda` compares the two CUDA solves at the accuracy of the iterative solver instead of 1e-12. It failed on GPUs without cuDSS. ([#79])
 
 ## [0.2.1] - 2026-09-28
 
@@ -114,7 +117,8 @@ First public release, as `tensormesh-fem` on PyPI (import name `tensormesh`).
 - Boundary conditions and time integration.
 - `python -m tensormesh.verify_install` to check an installation.
 
-[Unreleased]: https://github.com/camlab-ethz/TensorMesh/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/camlab-ethz/TensorMesh/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/camlab-ethz/TensorMesh/releases/tag/v0.3.0
 [0.2.1]: https://github.com/camlab-ethz/TensorMesh/releases/tag/v0.2.1
 [0.2.0]: https://github.com/camlab-ethz/TensorMesh/releases/tag/v0.2.0
 [0.1.1]: https://github.com/camlab-ethz/TensorMesh/releases/tag/v0.1.1
@@ -143,4 +147,5 @@ First public release, as `tensormesh-fem` on PyPI (import name `tensormesh`).
 [#71]: https://github.com/camlab-ethz/TensorMesh/pull/71
 [#72]: https://github.com/camlab-ethz/TensorMesh/pull/72
 [#73]: https://github.com/camlab-ethz/TensorMesh/discussions/73
-[#77]: https://github.com/camlab-ethz/TensorMesh/pull/77
+[#78]: https://github.com/camlab-ethz/TensorMesh/pull/78
+[#79]: https://github.com/camlab-ethz/TensorMesh/pull/79
