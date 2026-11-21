@@ -9,6 +9,13 @@ All benchmark scripts and reference data live in a separate repository:
 `camlab-ethz/tensormesh-bench
 <https://github.com/camlab-ethz/tensormesh-bench>`_.
 
+.. note::
+
+   The results below were obtained in spring 2026, with the release of each
+   framework (TensorMesh included) that was current at the time. Several of
+   the frameworks have changed since then, and a re-run with current releases
+   is planned.
+
 Test environment
 ----------------
 
@@ -97,9 +104,10 @@ linear solver and stopping criteria:
 
 .. note::
 
-   The only exception is the CUDA path of **torch-fem**, which uses
-   conjugate gradient (CG) instead of BiCGSTAB — its CUDA backend does not
-   ship a BiCGSTAB implementation.
+   The only exception is the CUDA path of **torch-fem**, for which the
+   benchmark script solves with conjugate gradient (CG) instead of BiCGSTAB.
+   The script predates torch-fem v0.11.0, which added a BiCGSTAB that runs on
+   CUDA.
 
 Forward problems
 ----------------
@@ -238,9 +246,8 @@ Inverse problem: topology optimization
 The inverse-problem benchmark exercises the **differentiability** of
 TensorMesh on a classical topology-optimization task: compliance
 minimization of a 2D cantilever beam using the Solid Isotropic Material
-with Penalization (SIMP) method. We compare against JAX-FEM, the only
-other framework in the list above that supports end-to-end automatic
-differentiation through the FEM pipeline.
+with Penalization (SIMP) method. We compare against JAX-FEM, which also
+supports end-to-end automatic differentiation through the FEM pipeline.
 
 Problem setup
 ~~~~~~~~~~~~~
